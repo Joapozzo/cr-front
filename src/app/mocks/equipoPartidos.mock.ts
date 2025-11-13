@@ -1,0 +1,111 @@
+import { Partido } from '@/app/types/partido';
+
+// Mock de partidos para el equipo "Los Tigres FC" (id_equipo: 1)
+export const mockEquipoPartidos: Partido[] = [
+  {
+    id_partido: 1,
+    id_equipolocal: 1,
+    id_equipovisita: 2,
+    jornada: 10,
+    dia: '2025-01-20',
+    hora: '20:00',
+    goles_local: null,
+    goles_visita: null,
+    cancha: 1,
+    arbitro: 'Juan Pérez',
+    estado: 'P',
+    equipoLocal: { id_equipo: 1, nombre: 'Los Tigres FC', img: '/img/default-team.png' },
+    equipoVisita: { id_equipo: 2, nombre: 'Real Fútbol', img: '/img/default-team.png' }
+  },
+  {
+    id_partido: 2,
+    id_equipolocal: 3,
+    id_equipovisita: 1,
+    jornada: 9,
+    dia: '2025-01-15',
+    hora: '21:00',
+    goles_local: 2,
+    goles_visita: 1,
+    cancha: 2,
+    arbitro: 'Carlos Gómez',
+    estado: 'T',
+    equipoLocal: { id_equipo: 3, nombre: 'Deportivo Unidos', img: '/img/default-team.png' },
+    equipoVisita: { id_equipo: 1, nombre: 'Los Tigres FC', img: '/img/default-team.png' }
+  },
+  {
+    id_partido: 4,
+    id_equipolocal: 1,
+    id_equipovisita: 4,
+    jornada: 8,
+    dia: '2025-01-10',
+    hora: '20:30',
+    goles_local: 3,
+    goles_visita: 2,
+    cancha: 1,
+    arbitro: 'Diego Martínez',
+    estado: 'T',
+    equipoLocal: { id_equipo: 1, nombre: 'Los Tigres FC', img: '/img/default-team.png' },
+    equipoVisita: { id_equipo: 4, nombre: 'Club Atlético', img: '/img/default-team.png' }
+  },
+  {
+    id_partido: 5,
+    id_equipolocal: 5,
+    id_equipovisita: 1,
+    jornada: 7,
+    dia: '2025-01-05',
+    hora: '19:00',
+    goles_local: 1,
+    goles_visita: 1,
+    cancha: 2,
+    arbitro: 'Martín López',
+    estado: 'T',
+    equipoLocal: { id_equipo: 5, nombre: 'FC Campeones', img: '/img/default-team.png' },
+    equipoVisita: { id_equipo: 1, nombre: 'Los Tigres FC', img: '/img/default-team.png' }
+  },
+  {
+    id_partido: 6,
+    id_equipolocal: 1,
+    id_equipovisita: 3,
+    jornada: 6,
+    dia: '2024-12-30',
+    hora: '20:00',
+    goles_local: 4,
+    goles_visita: 1,
+    cancha: 1,
+    arbitro: 'Lucas Fernández',
+    estado: 'T',
+    equipoLocal: { id_equipo: 1, nombre: 'Los Tigres FC', img: '/img/default-team.png' },
+    equipoVisita: { id_equipo: 3, nombre: 'Deportivo Unidos', img: '/img/default-team.png' }
+  },
+  {
+    id_partido: 7,
+    id_equipolocal: 2,
+    id_equipovisita: 1,
+    jornada: 5,
+    dia: '2024-12-25',
+    hora: '21:00',
+    goles_local: 0,
+    goles_visita: 2,
+    cancha: 1,
+    arbitro: 'Pablo Ramírez',
+    estado: 'T',
+    equipoLocal: { id_equipo: 2, nombre: 'Real Fútbol', img: '/img/default-team.png' },
+    equipoVisita: { id_equipo: 1, nombre: 'Los Tigres FC', img: '/img/default-team.png' }
+  },
+  {
+    id_partido: 8,
+    id_equipolocal: 1,
+    id_equipovisita: 5,
+    jornada: 11,
+    dia: '2025-01-25',
+    hora: '20:00',
+    goles_local: null,
+    goles_visita: null,
+    cancha: 1,
+    arbitro: 'Sebastián Torres',
+    estado: 'P',
+    equipoLocal: { id_equipo: 1, nombre: 'Los Tigres FC', img: '/img/default-team.png' },
+    equipoVisita: { id_equipo: 5, nombre: 'FC Campeones', img: '/img/default-team.png' }
+  }
+];
+

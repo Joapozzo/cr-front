@@ -1,0 +1,210 @@
+import DropdownMenu from "./DropDownMenu";
+import { Button } from "./ui/Button";
+import { MoreHorizontal, Plus, Trash2 } from 'lucide-react';
+import ZonaCard from "./ZonaCard";
+import DropdownItem from "./DrowDownItem";
+import toast from "react-hot-toast";
+import { useFases } from "../hooks/useFases";
+import { useZonasPorFase, useCrearZona, useDatosParaCrearZona } from "../hooks/useZonas";
+import { FormField, FormModal, useModals } from "./modals/ModalAdmin";
+import { Fase } from "../types/fase";
+import { CrearZonaInput } from "../types/zonas";
+import { crearZonaSchema } from "../schemas/zona.schema";
+
+interface FaseSectionProps {
+    fase: Fase;
+    idCatEdicion: number;
+}
+
+const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
+    const { modals, openModal, closeModal } = useModals();
+
+    const {
+        data: zonas,
+        isLoading: loadingZonas,
+        error: errorZonas
+    } = useZonasPorFase(idCatEdicion, fase.numero_fase);
+
+    const {
+        data: datosCrearZona,
+        isLoading: loadingDatos
+    } = useDatosParaCrearZona();
+
+    const { mutate: crearZona } = useCrearZona();
+
+    const { eliminarFase } = useFases(idCatEdicion);
+
+    const handleEliminarFase = async (numeroFase: number) => {
+        const toastId = toast.loading('Eliminando fase...');
+        try {
+            await eliminarFase(numeroFase);
+            toast.success(`Fase ${numeroFase} eliminada exitosamente`, { id: toastId });
+        } catch (error: any) {
+            const errorMessage = error?.response?.data?.error || error?.message || 'Error al eliminar la fase';
+            toast.error(errorMessage, { id: toastId });
+        }
+    };
+
+    const handleCrearZona = async (data: CrearZonaInput): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            crearZona({
+                id_categoria_edicion: idCatEdicion,
+                numero_fase: fase.numero_fase,
+                data
+            }, {
+                onSuccess: () => {
+                    toast.success('Zona creada exitosamente');
+                    resolve();
+                },
+                onError: (error) => {
+                    toast.error(error.message || 'Error al crear la zona');
+                    reject(error);
+                }
+            });
+        });
+    };
+
+    const zonaFields: FormField[] = [
+        {
+            name: 'nombre',
+            label: 'Nombre de la zona',
+            type: 'text',
+            placeholder: 'Ej: Zona A',
+            required: true
+        },
+        {
+            name: 'id_tipo_zona',
+            label: 'Tipo de zona',
+            type: 'select',
+            required: true,
+            options: datosCrearZona?.data.tiposZona?.map(tipo => ({
+                value: tipo.id,
+                label: tipo.nombre
+            })) || []
+        },
+        {
+            name: 'cantidad_equipos',
+            label: 'Cantidad de equipos',
+            type: 'number',
+            placeholder: '8',
+            required: true
+        },
+        {
+            name: 'jornada',
+            label: 'Jornadas de los partidos',
+            type: 'number',
+            placeholder: '1',
+            required: true
+        },
+        {
+            name: 'id_etapa',
+            label: 'Etapa',
+            type: 'select',
+            required: true,
+            options: datosCrearZona?.data.etapas?.map(etapa => ({
+                value: etapa.id_etapa,
+                label: etapa.nombre
+            })) || [],
+        },
+        {
+            name: 'campeon',
+            label: '¿La zona tendrá campeón?',
+            type: 'switch', // ← Nuevo tipo
+            required: true
+        },
+    ];
+
+    return (
+        <div className="space-y-6">
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <h2 className="text-xl font-semibold text-[var(--white)]">
+                        Fase {fase.numero_fase}
+                    </h2>
+                    <Button
+                        variant="success"
+                        size="sm"
+                        onClick={() => openModal('create')}
+                        disabled={loadingDatos}
+                        className="flex items-center gap-2"
+                    >
+                        <Plus className="w-4 h-4" />
+                        {loadingDatos ? 'Cargando...' : 'Agregar zona'}
+                    </Button>
+                </div>
+
+                <DropdownMenu
+                    trigger={
+                        <div className="p-2 hover:bg-[var(--gray-300)] rounded-lg transition-colors">
+                            <MoreHorizontal className="w-4 h-4 text-[var(--gray-100)]" />
+                        </div>
+                    }
+                >
+                    <DropdownItem
+                        onClick={() => handleEliminarFase(fase.numero_fase)}
+                        variant="danger"
+                    >
+                        <Trash2 className="w-4 h-4 inline mr-2" />
+                        Eliminar
+                    </DropdownItem>
+                </DropdownMenu>
+            </div>
+
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
+                {loadingZonas ? (
+                    <div className="flex items-center justify-center py-12">
+                        <div className="flex items-center gap-3 text-[var(--gray-100)]">
+                            <div className="w-6 h-6 border-2 border-[var(--green)] border-t-transparent rounded-full animate-spin" />
+                            <span>Cargando zonas...</span>
+                        </div>
+                    </div>
+                ) : errorZonas ? (
+                    <div className="text-center py-12 bg-[var(--gray-400)] rounded-lg border border-[var(--red)]">
+                        <div className="flex flex-col items-center gap-4">
+                            <div>
+                                <h3 className="text-[var(--red)] font-medium mb-2">
+                                    Error al cargar las zonas
+                                </h3>
+                                <p className="text-[var(--gray-100)] text-sm">
+                                    {errorZonas.message}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                ) : zonas && zonas.length > 0 ? (
+                    zonas.map((zona) => (
+                        <ZonaCard key={zona.id_zona} zona={zona} />
+                    ))
+                ) : (
+                    <div className="text-center py-12 bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
+                        <div className="flex flex-col items-center gap-4">
+                            <div>
+                                <h3 className="text-[var(--white)] font-medium mb-2">
+                                    No hay zonas para mostrar
+                                </h3>
+                                <p className="text-[var(--gray-100)] text-sm max-w-md">
+                                    Comienza creando las zonas para esta fase
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <FormModal
+                isOpen={modals.create}
+                onClose={() => closeModal('create')}
+                title={`Crear zona - Fase ${fase.numero_fase}`}
+                fields={zonaFields}
+                onSubmit={handleCrearZona}
+                type="create"
+                validationSchema={crearZonaSchema}
+                submitText="Crear zona"
+            />
+
+            <div className="border-t border-[var(--gray-300)] my-8"></div>
+        </div>
+    );
+};
+
+export default FaseSection;

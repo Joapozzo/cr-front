@@ -1,0 +1,121 @@
+'use client';
+
+import React, { useState } from 'react';
+
+interface ImageUploaderProps {
+  value?: string;
+  onChange: (url: string) => void;
+  label?: string;
+}
+
+export const ImageUploader: React.FC<ImageUploaderProps> = ({
+  value,
+  onChange,
+  label = 'Imagen de portada'
+}) => {
+  const [preview, setPreview] = useState<string | undefined>(value);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleFileChange = (file: File) => {
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        setPreview(result);
+        onChange(result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      handleFileChange(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  return (
+    <div className="w-full">
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        {label}
+      </label>
+
+      <div
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        className={`
+          border-2 border-dashed rounded-lg p-6 text-center transition-colors
+          ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}
+          ${preview ? '' : 'hover:border-gray-400'}
+        `}
+      >
+        {preview ? (
+          <div className="relative">
+            <img
+              src={preview}
+              alt="Preview"
+              className="max-h-64 mx-auto rounded-lg"
+            />
+            <button
+              onClick={() => {
+                setPreview(undefined);
+                onChange('');
+              }}
+              className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        ) : (
+          <div>
+            <svg
+              className="mx-auto h-12 w-12 text-gray-400"
+              stroke="currentColor"
+              fill="none"
+              viewBox="0 0 48 48"
+            >
+              <path
+                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <p className="mt-2 text-sm text-gray-600">
+              Arrastra una imagen aquí o{' '}
+              <label className="text-blue-600 hover:text-blue-700 cursor-pointer font-medium">
+                selecciona un archivo
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFileChange(file);
+                  }}
+                />
+              </label>
+            </p>
+            <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF hasta 10MB</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};

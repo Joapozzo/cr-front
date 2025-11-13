@@ -1,0 +1,23 @@
+import { AuthLayout } from '@/app/components/auth/AuthLayout';
+import { ResetPasswordForm } from '@/app/components/auth/ResetPasswordForm';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Restablecer Contraseña | Copa Relámpago',
+  description: 'Crea una nueva contraseña segura',
+};
+
+export default function ResetPasswordPage() {
+  return (
+    <AuthLayout
+      title="Nueva contraseña"
+      subtitle="Crea una contraseña segura para tu cuenta"
+      infoTitle="Seguridad"
+      infoDescription="Una contraseña fuerte protege tu cuenta. Usa al menos 8 caracteres con mayúsculas, minúsculas, números y símbolos."
+      showBackButton={false}
+    >
+      <ResetPasswordForm />
+    </AuthLayout>
+  );
+}
+
