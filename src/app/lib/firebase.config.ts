@@ -1,15 +1,14 @@
-// src/lib/firebase.config.ts
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { getStorage, FirebaseStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBqa_2xdobFsh5FMWCtiaVFpY6xfUAyOmc",
-  authDomain: "coparelampago-1dd7e.firebaseapp.com",
-  projectId: "coparelampago-1dd7e",
-  storageBucket: "coparelampago-1dd7e.appspot.com",
-  messagingSenderId: "386465473163",
-  appId: "1:386465473163:web:235f0539432cfad1d4aa8e",
+  apiKey: process.env.apiKey,
+  authDomain: process.env.authDomain,
+  projectId: process.env.projectId,
+  storageBucket: process.env.storageBucket,
+  messagingSenderId: process.env.messagingSenderId,
+  appId: process.env.appId,
 };
 
 // Inicializar Firebase solo una vez
