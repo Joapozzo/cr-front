@@ -15,7 +15,7 @@ const IncidentMinute: React.FC<IncidentMinuteProps> = ({
     const alignment = isLocal ? '' : 'text-right';
 
     return (
-        <span className={`font-semibold text-sm min-w-[32px] ${alignment} ${textColor}`}>
+        <span className={`font-semibold text-xs sm:text-sm min-w-[32px] ${alignment} ${textColor}`}>
             {isAsistencia ? '' : `${minuto}'`}
         </span>
     );

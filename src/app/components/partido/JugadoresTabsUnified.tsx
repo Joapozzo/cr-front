@@ -68,7 +68,7 @@ const JugadoresTabsUnified: React.FC<JugadoresTabsProps> = ({
     jugadorDestacado,
 }) => {
     const [activeTab, setActiveTab] = useState<TabType>('incidencias');
-    
+
     const esPlanillero = mode === 'planillero';
     const permitirAcciones = esPlanillero && ['P', 'C1', 'E', 'C2', 'T'].includes(estadoPartido || '');
 
@@ -119,7 +119,7 @@ const JugadoresTabsUnified: React.FC<JugadoresTabsProps> = ({
         });
 
         return (
-            <div className="space-y-2">
+            <div className="space-y-2 pb-2">
                 {jugadoresOrdenados.map((jugador, index) => (
                     <JugadorRow
                         key={`${activeTab}-${jugador.id_jugador}`}
@@ -189,7 +189,7 @@ const JugadoresTabsUnified: React.FC<JugadoresTabsProps> = ({
             `}
                     >
                         {equipoLocal.nombre}
-                        <span className="ml-2 text-xs">({equipoLocal.jugadores.length})</span>
+                        {/* <span className="ml-2 text-xs">({equipoLocal.jugadores.length})</span> */}
                     </button>
 
                     <button
@@ -203,7 +203,7 @@ const JugadoresTabsUnified: React.FC<JugadoresTabsProps> = ({
             `}
                     >
                         Incidencias
-                        <span className="ml-2 text-xs">({incidenciasProcesadas.length})</span>
+                        {/* <span className="ml-2 text-xs">({incidenciasProcesadas.length})</span> */}
                     </button>
 
                     <button
@@ -217,7 +217,7 @@ const JugadoresTabsUnified: React.FC<JugadoresTabsProps> = ({
             `}
                     >
                         {equipoVisita.nombre}
-                        <span className="ml-2 text-xs">({equipoVisita.jugadores.length})</span>
+                        {/* <span className="ml-2 text-xs">({equipoVisita.jugadores.length})</span> */}
                     </button>
                 </div>
 

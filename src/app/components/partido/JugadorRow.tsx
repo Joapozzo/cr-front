@@ -59,7 +59,7 @@ const JugadorRow: React.FC<JugadorRowProps> = ({
 
             <div
                 className={`
-                    flex items-center gap-3 p-3 rounded-lg border border-[#262626] 
+                    flex items-center gap-3 px-3 py-2.5 rounded-lg border border-[#262626] 
                     transition-colors
                     ${esInhabilitado ? 'opacity-50 bg-[#1a1a1a] pointer-events-none' : 'hover:border-[#404040]'}
                     ${esPlanillero && permitirAcciones && !esInhabilitado ? 'cursor-pointer' : ''}

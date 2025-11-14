@@ -46,3 +46,23 @@ export const deberMostrarResultado = (estado: EstadoPartido): boolean => {
     
     return estadosConResultado.includes(estado);
 };
+
+export const getEstadoConfig = (estado: EstadoPartido) => {
+    switch (estado) {
+      case 'P': // Programado
+        return { showCancha: true, showScore: false, showLive: false };
+      case 'C1': // Primer tiempo
+      case 'E': // Entretiempo
+      case 'C2': // Segundo tiempo
+        return { showCancha: false, showScore: true, showLive: true };
+      case 'T': // Terminado
+      case 'F': // Finalizado
+        return { showCancha: false, showScore: true, showLive: false };
+      case 'S': // Suspendido
+      case 'A': // Anulado
+        return { showCancha: false, showScore: false, showLive: false };
+      default:
+        return { showCancha: true, showScore: false, showLive: false };
+    }
+  };
+  

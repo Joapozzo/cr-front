@@ -94,3 +94,15 @@ export const formatearFechaNoticia = (fecha: Date | string) => {
     if (horas > 0) return `Hace ${horas}h`;
     return 'Reciente';
 };
+
+export const formatearFechaCompleta = (fecha: string) => {
+    const date = new Date(fecha);
+    const dias = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    
+    const diaSemana = dias[date.getDay()];
+    const dia = date.getDate();
+    const mes = meses[date.getMonth()];
+    
+    return `${diaSemana}, ${dia} ${mes}`;
+  };

@@ -15,40 +15,59 @@ export const PartidoTabs: React.FC<PartidoTabsProps> = ({
   onTabChange,
   loading = false
 }) => {
+
   if (loading) {
     return (
-      <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-2 animate-pulse">
-        <div className="flex gap-2">
-          <div className="h-10 bg-[#262626] rounded-lg flex-1" />
-          <div className="h-10 bg-[#262626] rounded-lg flex-1" />
-        </div>
+      <div className="flex items-center gap-6">
+        <div className="h-5 w-16 bg-[#262626] rounded animate-pulse" />
+        <div className="h-5 w-24 bg-[#262626] rounded animate-pulse" />
       </div>
     );
   }
 
   return (
-    <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-2">
-      <div className="flex gap-2">
-        <button
-          onClick={() => onTabChange('previa')}
-          className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+    <div className="flex items-center gap-6 w-full justify-center mt-2">
+      <div
+        onClick={() => onTabChange('previa')}
+        className="cursor-pointer relative pb-1 transition-colors duration-200"
+      >
+        <span
+          className={`text-sm font-medium transition-colors duration-200 ${
             tabActiva === 'previa'
-              ? 'bg-[var(--green)] text-white'
-              : 'text-[#737373] hover:text-white hover:bg-[var(--black-800)]'
+              ? 'text-[var(--green)]'
+              : 'text-white'
           }`}
         >
           Previa
-        </button>
-        <button
-          onClick={() => onTabChange('cara-a-cara')}
-          className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+        </span>
+        <div
+          className={`absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--green)] transition-all duration-300 ease-in-out ${
+            tabActiva === 'previa'
+              ? 'opacity-100 scale-x-100'
+              : 'opacity-0 scale-x-0'
+          }`}
+        />
+      </div>
+      <div
+        onClick={() => onTabChange('cara-a-cara')}
+        className="cursor-pointer relative pb-1 transition-colors duration-200"
+      >
+        <span
+          className={`text-sm font-medium transition-colors duration-200 ${
             tabActiva === 'cara-a-cara'
-              ? 'bg-[var(--green)] text-white'
-              : 'text-[#737373] hover:text-white hover:bg-[var(--black-800)]'
+              ? 'text-[var(--green)]'
+              : 'text-white'
           }`}
         >
           Cara a Cara
-        </button>
+        </span>
+        <div
+          className={`absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--green)] transition-all duration-300 ease-in-out ${
+            tabActiva === 'cara-a-cara'
+              ? 'opacity-100 scale-x-100'
+              : 'opacity-0 scale-x-0'
+          }`}
+        />
       </div>
     </div>
   );

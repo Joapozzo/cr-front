@@ -5,6 +5,8 @@ import { Partido } from '@/app/types/partido';
 import { FiltrosFixture } from '@/app/components/fixture/FiltrosFixture';
 import { ListaPartidos } from '@/app/components/fixture/ListaPartidos';
 import { FixtureSkeleton } from '@/app/components/skeletons/FixtureSkeleton';
+import { formatearFecha } from '@/app/utils/formated';
+import { formatearFechaCompleta } from '@/app/utils/fechas';
 
 interface PartidosTabProps {
   idEquipo: number;
@@ -13,18 +15,6 @@ interface PartidosTabProps {
 }
 
 type VistaType = 'fecha' | 'jornada';
-
-const formatearFecha = (fecha: string) => {
-  const date = new Date(fecha);
-  const dias = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
-  const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-  
-  const diaSemana = dias[date.getDay()];
-  const dia = date.getDate();
-  const mes = meses[date.getMonth()];
-  
-  return `${diaSemana}, ${dia} ${mes}`;
-};
 
 export const PartidosTab: React.FC<PartidosTabProps> = ({
   idEquipo,
@@ -158,7 +148,7 @@ export const PartidosTab: React.FC<PartidosTabProps> = ({
             <ListaPartidos
               partidos={partidosJornadaActual}
               titulo={`Jornada ${jornadaSeleccionada}`}
-              subtitulo={formatearFecha(partidosJornadaActual[0]?.dia)}
+              subtitulo={formatearFechaCompleta(partidosJornadaActual[0]?.dia)}
             />
           ) : (
             <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center">
@@ -175,7 +165,7 @@ export const PartidosTab: React.FC<PartidosTabProps> = ({
                 <ListaPartidos
                   key={fecha}
                   partidos={partidosPorDia[fecha]}
-                  titulo={formatearFecha(fecha)}
+                  subtitulo={formatearFechaCompleta(fecha)}
                 />
               ))}
             </div>

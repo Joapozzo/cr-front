@@ -4,14 +4,14 @@ import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 import BackButton from '@/app/components/ui/BackButton';
 import PartidoHeaderSticky from '@/app/components/partido/CardPartidoHeader';
-import { JugadoresTabsUnified } from '@/app/components/partido/JugadoresTabsUnified';
 import { PartidoTabs, TabPartido } from '@/app/components/partido/PartidoTabs';
 import { PreviaTab } from '@/app/components/partido/PreviaTab';
 import { CaraACaraTab } from '@/app/components/partido/CaraACaraTab';
-import { PartidoDetalleUsuario, UltimoPartidoEquipo, HistorialPartidos } from '@/app/types/partidoDetalle';
+// import { PartidoDetalleUsuario, UltimoPartidoEquipo, HistorialPartidos } from '@/app/types/partidoDetalle';
 import { PartidoCompleto, IncidenciaGol, EstadoPartido } from '@/app/types/partido';
 import { mockPartidoDetalleUsuario } from '@/app/mocks/partidoDetalle.mock';
 import { PartidoDetalleSkeleton } from '@/app/components/skeletons/PartidoDetalleSkeleton';
+import JugadoresTabsUnified from '@/app/components/partido/JugadoresTabsUnified';
 
 export default function PartidoPageUsuario() {
   const params = useParams();
@@ -56,6 +56,8 @@ export default function PartidoPageUsuario() {
             ultimosPartidosVisita={mockPartidoDetalleUsuario.ultimos_partidos_visita}
             nombreEquipoLocal={datosPartido.partido.equipoLocal?.nombre || 'Local'}
             nombreEquipoVisita={datosPartido.partido.equipoVisita?.nombre || 'Visitante'}
+            imgEquipoLocal={datosPartido.partido.equipoLocal?.img}
+            imgEquipoVisita={datosPartido.partido.equipoVisita?.img}
             loading={isLoadingData}
           />
         );
@@ -76,7 +78,7 @@ export default function PartidoPageUsuario() {
   };
 
   return (
-    <div className="min-h-screen p-4 flex flex-col gap-6 max-w-4xl mx-auto">
+    <div className="min-h-screen p-4 flex flex-col gap-6 max-w-4xl mx-auto w-full">
       <BackButton />
 
       {/* Header del partido - Sin botones de control (solo lectura) */}

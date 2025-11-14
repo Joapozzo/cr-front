@@ -7,6 +7,7 @@ import { FiltrosFixture } from '@/app/components/fixture/FiltrosFixture';
 import { ListaPartidos } from '@/app/components/fixture/ListaPartidos';
 import { FixtureSkeleton } from '@/app/components/skeletons/FixtureSkeleton';
 import { Partido } from '@/app/types/partido';
+import { formatearFechaCompleta } from '@/app/utils/fechas';
 
 // Mock data
 const mockJornadas = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
@@ -121,18 +122,6 @@ const mockPartidos: Partido[] = [
 
 type VistaType = 'fecha' | 'jornada';
 
-const formatearFecha = (fecha: string) => {
-  const date = new Date(fecha);
-  const dias = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
-  const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-  
-  const diaSemana = dias[date.getDay()];
-  const dia = date.getDate();
-  const mes = meses[date.getMonth()];
-  
-  return `${diaSemana}, ${dia} ${mes}`;
-};
-
 export default function PartidosPage() {
   const [vistaActiva, setVistaActiva] = useState<VistaType>('jornada');
   const [jornadaSeleccionada, setJornadaSeleccionada] = useState(5);
@@ -230,7 +219,7 @@ export default function PartidosPage() {
                 <ListaPartidos
                   partidos={partidosJornadaActual}
                   titulo={`Jornada ${jornadaSeleccionada}`}
-                  subtitulo={formatearFecha(partidosJornadaActual[0]?.dia)}
+                  subtitulo={formatearFechaCompleta(partidosJornadaActual[0]?.dia)}
                 />
               ) : (
                 <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center">
@@ -246,7 +235,7 @@ export default function PartidosPage() {
                   <ListaPartidos
                     key={fecha}
                     partidos={partidosPorDia[fecha]}
-                    titulo={formatearFecha(fecha)}
+                    titulo={formatearFechaCompleta(fecha)}
                   />
                 ))}
               </div>

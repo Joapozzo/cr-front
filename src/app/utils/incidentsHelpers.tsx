@@ -15,11 +15,11 @@ export const isLocalTeam = (equipoId: number | null, partido: Partido): boolean 
 export const getIcono = (incidencia: IncidenciaPartido) => {
     switch (incidencia.tipo) {
         case 'gol':
-            return <PiSoccerBallFill className="w-5 h-5 text-[var(--green)] fill-current" />;
+            return <PiSoccerBallFill className="w-4 h-4 text-[var(--green)] fill-current" />;
         case 'amarilla':
-            return <TbRectangleVerticalFilled className="w-5 h-5 text-yellow-500" />;
+            return <TbRectangleVerticalFilled className="w-4 h-4 text-yellow-500" />;
         case 'roja':
-            return <TbRectangleVerticalFilled className="w-5 h-5 text-red-500" />;
+            return <TbRectangleVerticalFilled className="w-4 h-4 text-red-500" />;
         case 'doble_amarilla':
             return (
                 <div className= "flex gap-0.5" >
@@ -28,7 +28,7 @@ export const getIcono = (incidencia: IncidenciaPartido) => {
                         </div>
                 );
             case 'asistencia':
-return <GiSoccerKick className="w-5 h-5 text-[var(--green)]" />;
+return <GiSoccerKick className="w-4 h-4 text-[var(--green)]" />;
             default:
 return null;
         }

@@ -17,7 +17,7 @@ const PlayerInfo: React.FC<PlayerInfoProps> = ({
 
     return (
         <div className={containerClasses}>
-            <span className={`font-medium text-sm ${textColor}`}>
+            <span className={`font-medium text-xs sm:text-sm ${textColor}`}>
                 {incidencia.nombre} {incidencia.apellido}
                 {incidencia.tipo === 'gol' && incidencia.en_contra === 'S' && (
                     <span className="text-red-400 ml-1">(e.c)</span>

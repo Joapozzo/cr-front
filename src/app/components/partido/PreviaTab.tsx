@@ -9,6 +9,8 @@ interface PreviaTabProps {
   ultimosPartidosVisita: UltimoPartidoEquipo[];
   nombreEquipoLocal: string;
   nombreEquipoVisita: string;
+  imgEquipoLocal?: string | null;
+  imgEquipoVisita?: string | null;
   loading?: boolean;
 }
 
@@ -17,16 +19,19 @@ export const PreviaTab: React.FC<PreviaTabProps> = ({
   ultimosPartidosVisita,
   nombreEquipoLocal,
   nombreEquipoVisita,
+  imgEquipoLocal = null,
+  imgEquipoVisita = null,
   loading = false
 }) => {
   return (
     <div className="py-4 space-y-4 sm:space-y-6">
       {/* Últimos partidos en dos columnas */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+      <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-4 flex w-full items-center justify-between">
         {/* Últimos partidos Local */}
         <UltimosPartidosEquipo
           partidos={ultimosPartidosLocal}
           titulo={nombreEquipoLocal}
+          imgEquipo={imgEquipoLocal}
           loading={loading}
         />
 
@@ -34,6 +39,7 @@ export const PreviaTab: React.FC<PreviaTabProps> = ({
         <UltimosPartidosEquipo
           partidos={ultimosPartidosVisita}
           titulo={nombreEquipoVisita}
+          imgEquipo={imgEquipoVisita}
           loading={loading}
         />
       </div>

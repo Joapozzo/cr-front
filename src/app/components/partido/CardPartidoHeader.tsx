@@ -56,7 +56,7 @@ const PartidoHeaderSticky: React.FC<PartidoHeaderStickyProps> = ({
     return (
         <div className="bg-[var(--black-900)] border-b border-t border-[#262626] overflow-hidden rounded-xl">
             {/* Header - Categoría */}
-            <div className="bg-[#171717] px-6 py-3 border-b border-[#262626] bg-[var(--black-800)] rounded-t-xl">
+            <div className="bg-[var(--black-800)] px-6 py-3 border-b border-[#262626] rounded-t-xl">
                 <div className="flex items-center justify-center gap-6 text-xs text-[#737373]">
                     <div className="flex items-center gap-2">
                         <Calendar size={12} />
@@ -76,19 +76,19 @@ const PartidoHeaderSticky: React.FC<PartidoHeaderStickyProps> = ({
             {/* Info del partido */}
             <div className="px-6 py-4">
                 {/* Equipos y Resultado */}
-                <div className="flex items-center justify-between gap-6 mb-4">
+                <div className="flex items-center justify-between gap-2 sm:gap-6 mb-4">
                     {/* Equipo Local */}
-                    <div className="flex items-center gap-3 flex-1 justify-end">
-                        <span className="text-white font-medium text-lg text-right truncate">
+                    <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-end min-w-0">
+                        <span className="text-white font-medium text-sm sm:text-lg text-right break-words">
                             {partido.equipoLocal?.nombre || 'Local'}
                         </span>
-                        <div className="w-10 h-10 bg-[#262626] rounded-full flex items-center justify-center flex-shrink-0">
-                            <Shield className="text-[#737373]" size={20} />
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#262626] rounded-full flex items-center justify-center flex-shrink-0">
+                            <Shield className="text-[#737373] w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
                     </div>
 
                     {/* Resultado/Hora y Estado */}
-                    <div className="flex flex-col items-center gap-2 min-w-[120px]">
+                    <div className="flex flex-col items-center gap-2 min-w-[80px] sm:min-w-[120px] flex-shrink-0">
                         {['C1', 'E', 'C2'].includes(partido.estado as EstadoPartido) ? (
                             // Mostrar cronómetro si el partido está en curso
                             cronometro && (
@@ -112,29 +112,29 @@ const PartidoHeaderSticky: React.FC<PartidoHeaderStickyProps> = ({
                         )}
 
                         {/* Resultado */}
-                        <div className="text-3xl font-bold text-white">
+                        <div className="text-xl sm:text-3xl font-bold text-white">
                             {mostrarResultado ? (
                                 <div className="flex items-center gap-1">
                                     {partido.pen_local !== null && partido.pen_local !== undefined && (
-                                        <span className="text-[#737373] text-base">({partido.pen_local})</span>
+                                        <span className="text-[#737373] text-xs sm:text-base">({partido.pen_local})</span>
                                     )}
                                     <span>{partido.goles_local ?? 0}-{partido.goles_visita ?? 0}</span>
                                     {partido.pen_visita !== null && partido.pen_visita !== undefined && (
-                                        <span className="text-[#737373] text-base">({partido.pen_visita})</span>
+                                        <span className="text-[#737373] text-xs sm:text-base">({partido.pen_visita})</span>
                                     )}
                                 </div>
                             ) : (
-                                <span className="text-xl">{formatTime(partido.hora)}</span>
+                                <span className="text-lg sm:text-xl">{formatTime(partido.hora)}</span>
                             )}
                         </div>
                     </div>
 
                     {/* Equipo Visita */}
-                    <div className="flex items-center gap-3 flex-1">
-                        <div className="w-10 h-10 bg-[#262626] rounded-full flex items-center justify-center flex-shrink-0">
-                            <Shield className="text-[#737373]" size={20} />
+                    <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#262626] rounded-full flex items-center justify-center flex-shrink-0">
+                            <Shield className="text-[#737373] w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
-                        <span className="text-white font-medium text-lg truncate">
+                        <span className="text-white font-medium text-sm sm:text-lg break-words">
                             {partido.equipoVisita?.nombre || 'Visitante'}
                         </span>
                     </div>

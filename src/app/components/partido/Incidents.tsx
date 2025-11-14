@@ -50,13 +50,13 @@ const IncidenciaRow: React.FC<{
                                 </div>
                             )}
                             <div className="text-right">
-                                <div className="text-sm font-medium text-white">
+                                <div className="text-xs sm:text-sm font-medium text-white">
                                     {nombreCompleto}
                                     {incidencia.penal === 'S' && <span className="text-[#737373] ml-1">(p)</span>}
                                     {incidencia.en_contra === 'S' && <span className="text-[#737373] ml-1">(ec)</span>}
                                 </div>
                             </div>
-                            <div className="text-xs font-mono text-[#737373]">{incidencia.minuto}'</div>
+                            <div className="text-[10px] sm:text-xs font-mono text-[#737373]">{incidencia.minuto}'</div>
                         </div>
                     )}
                 </div>
@@ -68,9 +68,9 @@ const IncidenciaRow: React.FC<{
                 <div className="flex-1 flex justify-start">
                     {!esLocal && (
                         <div className="flex items-center gap-2">
-                            <div className="text-xs font-mono text-[#737373]">{incidencia.minuto}'</div>
+                            <div className="text-[10px] sm:text-xs font-mono text-[#737373]">{incidencia.minuto}'</div>
                             <div className="text-left">
-                                <div className="text-sm font-medium text-white">
+                                <div className="text-xs sm:text-sm font-medium text-white">
                                     {nombreCompleto}
                                     {incidencia.penal === 'S' && <span className="text-yellow-500 ml-1">(P)</span>}
                                     {incidencia.en_contra === 'S' && <span className="text-red-400 ml-1">(EC)</span>}
@@ -105,7 +105,7 @@ const IncidenciaRow: React.FC<{
                         {esLocal && (
                             <div className="flex items-center gap-2">
                                 <div className="text-right">
-                                    <div className="text-xs font-medium text-[#a3a3a3]">
+                                    <div className="text-[10px] sm:text-xs font-medium text-[#a3a3a3]">
                                         {nombreAsistencia}
                                     </div>
                                 </div>
@@ -121,7 +121,7 @@ const IncidenciaRow: React.FC<{
                         {!esLocal && (
                             <div className="flex items-center gap-2">
                                 <div className="text-left">
-                                    <div className="text-xs font-medium text-[#a3a3a3]">
+                                    <div className="text-[10px] sm:text-xs font-medium text-[#a3a3a3]">
                                         {nombreAsistencia}
                                     </div>
                                 </div>
