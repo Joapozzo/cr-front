@@ -10,8 +10,6 @@ import { usePlayerStore } from '@/app/stores/playerStore';
 
 interface PlantelTabProps {
   idEquipo: number;
-  idCategoriaEdicion: number;
-  idEdicion: number;
   plantel: PlantelEquipo | null;
   perteneceAlEquipo: boolean;
   esCapitan: boolean;
@@ -20,14 +18,16 @@ interface PlantelTabProps {
 
 export const PlantelTab: React.FC<PlantelTabProps> = ({
   idEquipo,
-  idCategoriaEdicion,
-  idEdicion,
   plantel,
   perteneceAlEquipo,
   esCapitan,
   loading = false
 }) => {
-  const { jugador } = usePlayerStore();
+  const { jugador, equipos } = usePlayerStore();
+  
+  // Obtener idEdicion del equipo desde el store
+  const equipoDelStore = equipos.find(eq => eq.id_equipo === idEquipo);
+  const idEdicion = equipoDelStore?.id_edicion;
 
   if (loading) {
     return <PlantelTabSkeleton />;
@@ -71,12 +71,11 @@ export const PlantelTab: React.FC<PlantelTabProps> = ({
 
       {/* Acciones según el rol del usuario */}
       <div className="pt-4 border-t border-[#262626] space-y-4">
-        {!perteneceAlEquipo && jugador?.id_jugador && (
+        {!perteneceAlEquipo && jugador?.id_jugador && idEdicion && (
           <div className="space-y-3">
             <h3 className="text-white font-semibold text-sm px-1">Unirse al equipo</h3>
             <BotonUnirseEquipo
               idEquipo={idEquipo}
-              idCategoriaEdicion={idCategoriaEdicion}
               idEdicion={idEdicion}
               loading={loading}
             />

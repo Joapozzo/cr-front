@@ -5,42 +5,33 @@ import { UserPageWrapper } from '@/app/components/layouts/UserPageWrapper';
 import { FiltrosNoticias, OrdenNoticias } from '@/app/components/noticias/FiltrosNoticias';
 import { NoticiaCardLista } from '@/app/components/noticias/NoticiaCardLista';
 import { NoticiasListaSkeleton } from '@/app/components/skeletons/NoticiasListaSkeleton';
-import { mockNoticias } from '@/app/components/home/NoticiasHome';
-
+import { useNoticiasPublicadas } from '@/app/hooks/useNoticias';
+import { Noticia } from '@/app/types/noticia';
 
 export default function NoticiasPage() {
   const [busqueda, setBusqueda] = useState('');
   const [orden, setOrden] = useState<OrdenNoticias>('fecha-desc');
   const [destacadas, setDestacadas] = useState(false);
-  const [isLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const limit = 20;
 
-  // TODO: Usar hook real
-  // const { data, isLoading } = useNoticiasPublicadas({
-  //   busqueda,
-  //   destacada: destacadas ? true : undefined,
-  //   page: 1,
-  //   limit: 20
-  // });
+  // Obtener noticias publicadas
+  const { data, isLoading, error } = useNoticiasPublicadas(
+    limit,
+    page,
+    busqueda || undefined,
+    destacadas ? true : undefined,
+    undefined, // id_tipo_noticia
+    undefined, // id_categoria_edicion
+  );
 
-  // Filtrar y ordenar noticias
+  // Filtrar y ordenar noticias (ordenamiento en frontend ya que el backend ordena por destacada y fecha)
   const noticiasFiltradas = useMemo(() => {
-    let resultado = [...mockNoticias];
+    if (!data?.noticias) return [];
 
-    // Filtrar por búsqueda
-    if (busqueda) {
-      resultado = resultado.filter(noticia =>
-        noticia.titulo.toLowerCase().includes(busqueda.toLowerCase()) ||
-        noticia.contenido.toLowerCase().includes(busqueda.toLowerCase()) ||
-        noticia.contenido_preview?.toLowerCase().includes(busqueda.toLowerCase())
-      );
-    }
+    let resultado = [...data.noticias];
 
-    // Filtrar por destacadas
-    if (destacadas) {
-      resultado = resultado.filter(noticia => noticia.destacada);
-    }
-
-    // Ordenar
+    // Ordenar según el orden seleccionado
     resultado.sort((a, b) => {
       switch (orden) {
         case 'fecha-desc':
@@ -57,7 +48,7 @@ export default function NoticiasPage() {
     });
 
     return resultado;
-  }, [busqueda, destacadas, orden]);
+  }, [data?.noticias, orden]);
 
   return (
     <UserPageWrapper>
@@ -82,12 +73,19 @@ export default function NoticiasPage() {
           />
 
           {/* Contador de resultados */}
-          {isLoading && (
+          {!isLoading && (
             <div className="flex items-center justify-between w-full">
               <p className="text-[#737373] text-xs">
-                {noticiasFiltradas.length} {noticiasFiltradas.length === 1 ? 'noticia' : 'noticias'}
+                {data?.total || 0} {data?.total === 1 ? 'noticia' : 'noticias'}
                 {busqueda && ` para "${busqueda}"`}
               </p>
+            </div>
+          )}
+
+          {/* Manejar error */}
+          {error && (
+            <div className="bg-[var(--black-900)] border border-red-500/20 rounded-xl p-12 text-center">
+              <p className="text-red-400 text-sm">{error.message}</p>
             </div>
           )}
 

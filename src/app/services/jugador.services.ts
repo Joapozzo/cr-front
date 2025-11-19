@@ -3,6 +3,7 @@ import { Jugador, JugadorDestacadoDt, JugadoresDestacadosResponse, ObtenerEquipo
 import { PosicionJugador } from "../types/partido";
 import { EnviarSolicitudData } from "../types/solicitudes";
 import { getCapitanData } from "../utils/capitanHelpers";
+import { EquipoUsuario } from "../stores/authStore";
 
 export interface BuscarJugadoresPorNombreParams {
     query: string;
@@ -58,8 +59,24 @@ export const jugadorService = {
         return response;
     },
 
-    obtenerEquiposJugador: async (id_jugador: number): Promise<ObtenerEquiposActualesDelJugadorResponse> => {
-        const response = await api.get<ObtenerEquiposActualesDelJugadorResponse>(`/user/jugador/equipos/${id_jugador}`);
+    obtenerEquiposJugador: async (id_jugador: number): Promise<ObtenerEquiposActualesDelJugadorResponse[]> => {
+        const response = await api.get<ObtenerEquiposActualesDelJugadorResponse[]>(`/user/jugador/equipos/${id_jugador}`);
+        return response;
+    },
+
+    /**
+     * Obtener equipos del usuario autenticado (solo id, nombre, img)
+     */
+    obtenerEquiposUsuario: async (): Promise<EquipoUsuario[]> => {
+        const response = await api.get<EquipoUsuario[]>('/user/partidos/equipos');
+        return response;
+    },
+
+    /**
+     * Obtener equipos del usuario autenticado con información completa (incluyendo id_categoria_edicion)
+     */
+    obtenerEquiposUsuarioCompletos: async (): Promise<ObtenerEquiposActualesDelJugadorResponse[]> => {
+        const response = await api.get<ObtenerEquiposActualesDelJugadorResponse[]>('/user/partidos/equipos-completos');
         return response;
     },
 

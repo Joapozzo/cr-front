@@ -10,21 +10,22 @@ import { usePlayerStore } from '@/app/stores/playerStore';
 
 interface BotonUnirseEquipoProps {
   idEquipo: number;
-  idCategoriaEdicion: number;
   idEdicion: number;
   loading?: boolean;
 }
 
 export const BotonUnirseEquipo: React.FC<BotonUnirseEquipoProps> = ({
   idEquipo,
-  idCategoriaEdicion,
-  idEdicion,
   loading = false
 }) => {
-  const { jugador } = usePlayerStore();
-  const [showModal, setShowModal] = useState(false);
-
+  const { equipos, jugador } = usePlayerStore();
   const { mutate: enviarSolicitud, isPending: isEnviando } = useEnviarSolicitudJugador();
+
+  const [showModal, setShowModal] = useState(false);
+  
+  // Obtener idCategoriaEdicion del equipo desde el store (centralizado)
+  const equipoDelStore = equipos.find(eq => eq.id_equipo === idEquipo);
+  const idCategoriaEdicion = equipoDelStore?.id_categoria_edicion || 0;
 
   const handleEnviarSolicitud = (mensaje?: string) => {
     if (!jugador?.id_jugador) {

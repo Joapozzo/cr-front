@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { equiposService } from '../services/equipos.services';
-import { EquipoActual, Equipo, EquiposPorCategoriaResponse, EquipoExpulsadoResponse } from '../types/equipo';
+import { EquipoActual, Equipo, EquiposPorCategoriaResponse, EquipoExpulsadoResponse, ActualizarEquipoInput } from '../types/equipo';
 
 export const equiposKeys = {
     all: ['equipos'] as const,
@@ -116,10 +116,26 @@ export const useCrearEquipo = () => {
             equiposService.crearEquipo(data),
         onSuccess: (response) => {
             queryClient.invalidateQueries({ queryKey: equiposKeys.all });
-
         },
         onError: (error) => {
             console.error('❌ Error al crear equipo:', error);
+        },
+    });
+};
+
+export const useActualizarEquipo = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id_equipo, data }: { id_equipo: number; data: ActualizarEquipoInput }) =>
+            equiposService.actualizarEquipo(id_equipo, data),
+        onSuccess: (response, variables) => {
+            // Invalidar queries relacionadas con el equipo
+            queryClient.invalidateQueries({ queryKey: equiposKeys.detail(variables.id_equipo) });
+            queryClient.invalidateQueries({ queryKey: equiposKeys.all });
+        },
+        onError: (error) => {
+            console.error('❌ Error al actualizar equipo:', error);
         },
     });
 };

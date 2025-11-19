@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { partidosService } from '../services/partidos.services';
-import { Partido } from '../types/partido';
+import { Partido, UltimoYProximoPartidoResponse } from '../types/partido';
 
 // Query Keys para partidos
 export const partidosKeys = {
@@ -12,11 +12,33 @@ export const partidosKeys = {
     ultimaJornadaCategorias: () => [...partidosKeys.generales(), 'ultima-jornada-categorias'] as const,
     proximaJornadaCategorias: () => [...partidosKeys.generales(), 'proxima-jornada-categorias'] as const,
     proximaFechaDia: (dia: string) => [...partidosKeys.generales(), 'proxima-fecha', dia] as const,
+    // Keys para partidos del jugador autenticado
+    jugador: () => [...partidosKeys.all, 'jugador'] as const,
+    jugadorUltimosProximos: () => [...partidosKeys.jugador(), 'ultimos-proximos'] as const,
+    // Keys para partidos con paginación
+    usuario: () => [...partidosKeys.all, 'usuario'] as const,
+    usuarioLista: (
+        tipo: 'fecha' | 'jornada',
+        id_categoria_edicion?: number,
+        jornada?: number,
+        limit?: number,
+        page?: number
+    ) => [...partidosKeys.usuario(), 'lista', tipo, id_categoria_edicion, jornada, limit, page] as const,
+    usuarioDetalle: (id_partido: number) => [...partidosKeys.usuario(), 'detalle', id_partido] as const,
     equipos: () => [...partidosKeys.all, 'equipos'] as const,
     equipo: (id: number) => [...partidosKeys.equipos(), id] as const,
     equipoUltimos: (id: number) => [...partidosKeys.equipo(id), 'ultimos'] as const,
     equipoUltimo: (id: number) => [...partidosKeys.equipo(id), 'ultimo'] as const,
     equipoProximo: (id: number) => [...partidosKeys.equipo(id), 'proximo'] as const,
+    // Key para partidos del equipo con paginación (filtrados por equipo)
+    equipoLista: (
+        id_equipo: number,
+        tipo: 'fecha' | 'jornada',
+        id_categoria_edicion?: number | null,
+        jornada?: number,
+        limit?: number,
+        page?: number
+    ) => [...partidosKeys.equipo(id_equipo), 'lista', tipo, id_categoria_edicion ?? 'auto', jornada, limit, page] as const,
 };
 
 // ==================== HOOKS PARA PARTIDOS GENERALES ====================
@@ -248,4 +270,96 @@ export const usePartidosEquipo = <T extends PartidosEquipoType>(
         refetchOnWindowFocus: false,
         ...options,
     } as any);
+};
+
+// ==================== HOOKS PARA PARTIDOS DEL JUGADOR ====================
+
+
+export const useUltimosYProximosPartidosJugador = (
+    options?: Omit<UseQueryOptions<UltimoYProximoPartidoResponse, Error>, 'queryKey' | 'queryFn'>
+) => {
+    return useQuery({
+        queryKey: partidosKeys.jugadorUltimosProximos(),
+        queryFn: partidosService.obtenerUltimosYProximosPartidosJugador,
+        staleTime: 2 * 60 * 1000, // 2 minutos - datos considerados frescos
+        gcTime: 5 * 60 * 1000, // 5 minutos - tiempo en cache después de no usar
+        retry: 2, // Reintentar 2 veces en caso de error
+        refetchOnWindowFocus: false, // No refetch automático al volver a la ventana (optimización)
+        refetchOnMount: true, // Refetch al montar el componente (para datos actualizados)
+        refetchOnReconnect: true, // Refetch al reconectar (útil si hay problemas de red)
+        ...options, // Permite sobrescribir opciones si es necesario
+    });
+};
+
+// ==================== HOOKS PARA PARTIDOS CON PAGINACIÓN ====================
+
+export interface PartidosUsuarioResponse {
+    partidos: Partido[];
+    total: number;
+    limit: number;
+    offset: number;
+    jornadas: number[];
+}
+
+/**
+ * Hook para obtener partidos con paginación (por fecha o jornada)
+ */
+export const usePartidosUsuario = (
+    tipo: 'fecha' | 'jornada',
+    id_categoria_edicion?: number,
+    jornada?: number,
+    limit?: number,
+    page?: number,
+    options?: Omit<UseQueryOptions<PartidosUsuarioResponse, Error>, 'queryKey' | 'queryFn'>
+) => {
+    return useQuery({
+        queryKey: partidosKeys.usuarioLista(tipo, id_categoria_edicion, jornada, limit, page),
+        queryFn: () => partidosService.obtenerPartidosUsuario(tipo, id_categoria_edicion, jornada, limit, page),
+        staleTime: 2 * 60 * 1000, // 2 minutos
+        gcTime: 5 * 60 * 1000, // 5 minutos
+        retry: 2,
+        refetchOnWindowFocus: false,
+        enabled: !!tipo,
+        ...options,
+    });
+};
+
+/**
+ * Hook para obtener partido completo por ID
+ */
+export const usePartidoDetalleUsuario = (
+    id_partido: number | null,
+    options?: Omit<UseQueryOptions<any, Error>, 'queryKey' | 'queryFn'>
+) => {
+    return useQuery({
+        queryKey: partidosKeys.usuarioDetalle(id_partido || 0),
+        queryFn: () => partidosService.obtenerPartidoDetalleUsuario(id_partido!),
+        staleTime: 3 * 60 * 1000, // 3 minutos
+        gcTime: 10 * 60 * 1000, // 10 minutos
+        retry: 2,
+        refetchOnWindowFocus: false,
+        enabled: !!id_partido,
+        ...options,
+    });
+};
+
+export const usePartidosUsuarioPorEquipo = (
+    id_equipo: number | null,
+    tipo: 'fecha' | 'jornada',
+    id_categoria_edicion?: number | null,
+    jornada?: number,
+    limit?: number,
+    page?: number,
+    options?: Omit<UseQueryOptions<PartidosUsuarioResponse, Error>, 'queryKey' | 'queryFn'>
+) => {
+    return useQuery({
+        queryKey: partidosKeys.equipoLista(id_equipo || 0, tipo, id_categoria_edicion, jornada, limit, page),
+        queryFn: () => partidosService.obtenerPartidosUsuarioPorEquipo(id_equipo!, tipo, id_categoria_edicion ?? undefined, jornada, limit, page),
+        staleTime: 2 * 60 * 1000, // 2 minutos
+        gcTime: 5 * 60 * 1000, // 5 minutos
+        retry: 2,
+        refetchOnWindowFocus: false,
+        enabled: !!id_equipo && !!tipo, // Habilitar solo si id_equipo y tipo están presentes
+        ...options,
+    });
 };

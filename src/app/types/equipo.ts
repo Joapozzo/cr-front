@@ -41,6 +41,17 @@ export interface CrearEquipoInput {
     img?: string;
 }
 
+// Input para actualizar equipo
+export interface ActualizarEquipoInput {
+    nombre?: string;
+    imagen_base64?: string;
+}
+
+export interface ActualizarEquipoResponse {
+    message: string;
+    data: Equipo;
+}
+
 export interface BuscarEquiposDisponiblesResponse {
     message: string;
     data: {

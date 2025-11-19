@@ -1,12 +1,12 @@
 'use client';
 
 import { Newspaper, ExternalLink, Clock, Eye } from 'lucide-react';
-import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { BaseCard, CardHeader } from '../BaseCard';
 import { Noticia } from '@/app/types/noticia';
 import { NoticiaCardSkeleton2 } from '../skeletons/NoticiaCardSkeleton';
 import { formatearFechaNoticia } from '@/app/utils/fechas';
+import { useNoticiasHome } from '@/app/hooks/useNoticiasHome';
 
 interface NoticiasHomeProps {
   noticias?: Noticia[];
@@ -103,49 +103,36 @@ export const NoticiasHome = ({
   loading = false,
   linkNoticiasCompleta = '/noticias'
 }: NoticiasHomeProps) => {
-  const [activeDot, setActiveDot] = useState(0);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const noticiasRefs = useRef<(HTMLDivElement | null)[]>([]);
-  
-  const noticiasPorPagina = 2;
-  const totalPaginas = Math.ceil((noticias?.length || 0) / noticiasPorPagina);
+  const {
+    noticias: noticiasData,
+    loading: isLoading,
+    error,
+    activeDot,
+    scrollContainerRef,
+    noticiasRefs,
+    handleScroll,
+    scrollToPage,
+    totalPaginas,
+  } = useNoticiasHome({ noticias, loading });
 
-  // Detectar scroll para actualizar dot activo
-  const handleScroll = () => {
-    if (!scrollContainerRef.current) return;
-    
-    const container = scrollContainerRef.current;
-    const scrollLeft = container.scrollLeft;
-    
-    // Calcular qué página estamos viendo basándonos en el scroll
-    // Cada página tiene 2 noticias (250px o 380px cada una) + gap de 16px
-    const cardWidth = window.innerWidth >= 640 ? 380 : 250;
-    const gap = 16;
-    const pageWidth = (cardWidth * 2) + gap;
-    const currentPage = Math.round(scrollLeft / pageWidth);
-    
-    setActiveDot(Math.min(currentPage, totalPaginas - 1));
-  };
-
-  // Navegar a una página específica (al clickear un dot)
-  const scrollToPage = (pageIndex: number) => {
-    if (!scrollContainerRef.current || !noticias) return;
-    
-    // Calcular el índice de la primera noticia de esta página
-    const firstNoticiaIndex = pageIndex * noticiasPorPagina;
-    const noticiaElement = noticiasRefs.current[firstNoticiaIndex];
-    
-    if (noticiaElement) {
-      noticiaElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'start'
-      });
-    }
-  };
+  // Manejar error
+  if (error && !noticias) {
+    return (
+      <BaseCard>
+        <CardHeader 
+          icon={<Newspaper size={18} className="text-[var(--green)]" />}
+          title="Noticias"
+          subtitle="Error al cargar"
+        />
+        <div className="flex flex-col items-center justify-center py-12 px-6">
+          <p className="text-[#737373] text-sm text-center">{error.message}</p>
+        </div>
+      </BaseCard>
+    );
+  }
   
   // Casos vacíos
-  if (!noticias || noticias.length === 0) {
+  if (!isLoading && (!noticiasData || noticiasData.length === 0)) {
     return (
       <BaseCard>
         <CardHeader 
@@ -165,7 +152,7 @@ export const NoticiasHome = ({
   }
 
   // Loading state
-  if (loading) {
+  if (isLoading) {
     return (
       <BaseCard>
         <CardHeader 
@@ -186,7 +173,7 @@ export const NoticiasHome = ({
         <CardHeader 
           icon={<Newspaper size={18} className="text-[var(--green)]" />}
           title="Noticias"
-          subtitle={`${noticias.length} ${noticias.length === 1 ? 'noticia' : 'noticias'}`}
+          subtitle={`${noticiasData.length} ${noticiasData.length === 1 ? 'noticia' : 'noticias'}`}
         />
       </div>
 
@@ -198,7 +185,7 @@ export const NoticiasHome = ({
           className="overflow-x-auto scroll-smooth snap-mandatory hide-scrollbar px-2 py-4"
         >
           <div className="flex gap-2 px-2">
-            {noticias.map((noticia, index) => (
+            {noticiasData.map((noticia, index) => (
               <div 
                 key={noticia.id_noticia}
                 ref={(el) => {

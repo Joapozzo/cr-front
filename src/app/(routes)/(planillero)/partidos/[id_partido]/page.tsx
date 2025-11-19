@@ -7,29 +7,35 @@ import PartidoHeaderSticky from '@/app/components/partido/CardPartidoHeader';
 import { PartidoTabs, TabPartido } from '@/app/components/partido/PartidoTabs';
 import { PreviaTab } from '@/app/components/partido/PreviaTab';
 import { CaraACaraTab } from '@/app/components/partido/CaraACaraTab';
-// import { PartidoDetalleUsuario, UltimoPartidoEquipo, HistorialPartidos } from '@/app/types/partidoDetalle';
 import { PartidoCompleto, IncidenciaGol, EstadoPartido } from '@/app/types/partido';
-import { mockPartidoDetalleUsuario } from '@/app/mocks/partidoDetalle.mock';
 import { PartidoDetalleSkeleton } from '@/app/components/skeletons/PartidoDetalleSkeleton';
 import JugadoresTabsUnified from '@/app/components/partido/JugadoresTabsUnified';
+import { usePartidoDetalleUsuario } from '@/app/hooks/usePartidos';
 
 export default function PartidoPageUsuario() {
   const params = useParams();
   const idPartido = params?.id_partido ? parseInt(params.id_partido as string) : null;
   
   const [tabActiva, setTabActiva] = useState<TabPartido>('previa');
-  const [isLoading] = useState(false);
 
-  // TODO: Reemplazar con hook real
-  // const { data: datosPartido, isLoading } = usePartidoDetalleUsuario(idPartido);
-  const datosPartido = mockPartidoDetalleUsuario;
-  const isLoadingData = isLoading;
+  // Hook para obtener detalle del partido
+  const { data: datosPartido, isLoading: isLoadingData, error } = usePartidoDetalleUsuario(idPartido);
 
   if (!idPartido) {
     return (
       <div className="min-h-screen p-4 flex flex-col gap-6 max-w-4xl mx-auto">
         <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-12 text-center">
           <p className="text-[#737373] text-sm">Partido no encontrado</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen p-4 flex flex-col gap-6 max-w-4xl mx-auto">
+        <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-12 text-center">
+          <p className="text-red-400 text-sm">Error al cargar el partido: {error.message}</p>
         </div>
       </div>
     );
@@ -43,8 +49,8 @@ export default function PartidoPageUsuario() {
     );
   }
 
-  const goles = datosPartido.incidencias.filter(inc => inc.tipo === 'gol') as IncidenciaGol[];
-  const estaFinalizado = ['T', 'F'].includes(datosPartido.partido.estado as EstadoPartido);
+  const goles = datosPartido.incidencias?.filter((inc: any) => inc.tipo === 'gol') as IncidenciaGol[] || [];
+  const estaFinalizado = ['T', 'F'].includes(datosPartido.partido?.estado as EstadoPartido);
 
   // Renderizar contenido según tab
   const renderTabContent = () => {
@@ -52,23 +58,23 @@ export default function PartidoPageUsuario() {
       case 'previa':
         return (
           <PreviaTab
-            ultimosPartidosLocal={mockPartidoDetalleUsuario.ultimos_partidos_local}
-            ultimosPartidosVisita={mockPartidoDetalleUsuario.ultimos_partidos_visita}
-            nombreEquipoLocal={datosPartido.partido.equipoLocal?.nombre || 'Local'}
-            nombreEquipoVisita={datosPartido.partido.equipoVisita?.nombre || 'Visitante'}
-            imgEquipoLocal={datosPartido.partido.equipoLocal?.img}
-            imgEquipoVisita={datosPartido.partido.equipoVisita?.img}
+            ultimosPartidosLocal={datosPartido.ultimos_partidos_local || []}
+            ultimosPartidosVisita={datosPartido.ultimos_partidos_visita || []}
+            nombreEquipoLocal={datosPartido.partido?.equipoLocal?.nombre || 'Local'}
+            nombreEquipoVisita={datosPartido.partido?.equipoVisita?.nombre || 'Visitante'}
+            imgEquipoLocal={datosPartido.partido?.equipoLocal?.img}
+            imgEquipoVisita={datosPartido.partido?.equipoVisita?.img}
             loading={isLoadingData}
           />
         );
       case 'cara-a-cara':
         return (
           <CaraACaraTab
-            historial={mockPartidoDetalleUsuario.historial}
-            nombreEquipoLocal={datosPartido.partido.equipoLocal?.nombre || 'Local'}
-            nombreEquipoVisita={datosPartido.partido.equipoVisita?.nombre || 'Visitante'}
-            imgEquipoLocal={datosPartido.partido.equipoLocal?.img}
-            imgEquipoVisita={datosPartido.partido.equipoVisita?.img}
+            historial={datosPartido.historial || []}
+            nombreEquipoLocal={datosPartido.partido?.equipoLocal?.nombre || 'Local'}
+            nombreEquipoVisita={datosPartido.partido?.equipoVisita?.nombre || 'Visitante'}
+            imgEquipoLocal={datosPartido.partido?.equipoLocal?.img}
+            imgEquipoVisita={datosPartido.partido?.equipoVisita?.img}
             loading={isLoadingData}
           />
         );
@@ -95,20 +101,20 @@ export default function PartidoPageUsuario() {
           {/* Incidencias y Formaciones */}
           <JugadoresTabsUnified
             mode="view" // Modo solo lectura
-            estadoPartido={datosPartido.partido.estado as EstadoPartido}
+            estadoPartido={datosPartido.partido?.estado as EstadoPartido}
             equipoLocal={{
-              id_equipo: datosPartido.partido.equipoLocal?.id_equipo!,
-              nombre: datosPartido.partido.equipoLocal?.nombre!,
+              id_equipo: datosPartido.partido?.equipoLocal?.id_equipo || 0,
+              nombre: datosPartido.partido?.equipoLocal?.nombre || 'Local',
               jugadores: datosPartido.plantel_local || []
             }}
             equipoVisita={{
-              id_equipo: datosPartido.partido.equipoVisita?.id_equipo!,
-              nombre: datosPartido.partido.equipoVisita?.nombre!,
+              id_equipo: datosPartido.partido?.equipoVisita?.id_equipo || 0,
+              nombre: datosPartido.partido?.equipoVisita?.nombre || 'Visitante',
               jugadores: datosPartido.plantel_visita || []
             }}
             incidencias={datosPartido.incidencias || []}
-            destacados={datosPartido.jugadores_destacados}
-            jugadorDestacado={datosPartido.partido.jugador_destacado}
+            destacados={datosPartido.jugadores_destacados || []}
+            jugadorDestacado={datosPartido.partido?.id_jugador_destacado || null}
             loading={isLoadingData}
           />
         </>

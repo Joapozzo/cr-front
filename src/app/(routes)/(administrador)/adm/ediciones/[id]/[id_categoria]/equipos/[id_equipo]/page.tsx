@@ -11,6 +11,7 @@ import getPlantelColumns from '@/app/components/columns/PlantelesColumns';
 import CapitanesManager from '@/app/components/CapitanesManager';
 import AgregarJugadorModal from '@/app/components/modals/ModalAgregarJugador';
 import PanelSolicitudesAdmin from '@/app/components/PanelSolicitudesAdmin';
+import ModalEditarEquipo from '@/app/components/modals/ModalEditarEquipo';
 import {
     useSolicitudesEquipo,
     useInvitacionesEnviadas,
@@ -44,8 +45,9 @@ export default function EquipoPlantelPage() {
     const params = useParams();
     const { categoriaSeleccionada } = useCategoriaStore();
 
-    // Estado para el modal
+    // Estado para los modales
     const [isAgregarJugadorModalOpen, setIsAgregarJugadorModalOpen] = useState(false);
+    const [isEditarEquipoModalOpen, setIsEditarEquipoModalOpen] = useState(false);
 
     const idCategoriaEdicion = Number(categoriaSeleccionada?.id_categoria_edicion);
     const idEquipo = Number(params.id_equipo);
@@ -157,7 +159,7 @@ export default function EquipoPlantelPage() {
 
                     <Button
                         variant="success"
-                        onClick={() => console.log('Editar equipo')}
+                        onClick={() => setIsEditarEquipoModalOpen(true)}
                         className="flex items-center gap-2"
                     >
                         <Edit3 className="w-4 h-4" />
@@ -225,7 +227,7 @@ export default function EquipoPlantelPage() {
                 </div>
             </div>
 
-            <div className='flex grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 {/* Gestión de Capitanes */}
                 <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-6">
                     <CapitanesManager
@@ -290,6 +292,21 @@ export default function EquipoPlantelPage() {
                 idEquipo={idEquipo}
                 idCategoriaEdicion={idCategoriaEdicion}
                 equipoNombre={equipo.nombre}
+            />
+
+            {/* Modal para editar equipo */}
+            <ModalEditarEquipo
+                isOpen={isEditarEquipoModalOpen}
+                onClose={() => setIsEditarEquipoModalOpen(false)}
+                equipo={{
+                    id_equipo: equipo.id_equipo,
+                    nombre: equipo.nombre,
+                    descripcion: equipo.descripcion,
+                    img: equipo.img,
+                }}
+                onSuccess={() => {
+                    refetch(); // Recargar datos del equipo
+                }}
             />
         </div>
     );

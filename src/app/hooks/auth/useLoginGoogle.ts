@@ -2,9 +2,10 @@ import { useMutation } from '@tanstack/react-query';
 import { authService } from '../../services/auth.services';
 import { API_BASE_URL } from '../../lib/api';
 import { useAuthStore } from '../../stores/authStore';
+import { jugadorService } from '../../services/jugador.services';
 
 export const useLoginGoogle = () => {
-  const { login: setAuthState } = useAuthStore();
+  const { login: setAuthState, setEquipos } = useAuthStore();
 
   return useMutation({
     mutationFn: async () => {
@@ -88,16 +89,27 @@ export const useLoginGoogle = () => {
       }
     },
     onSuccess: async (data) => {
-      // Guardar en localStorage (compatibilidad)
-      localStorage.setItem('usuario', JSON.stringify(data.usuario));
-      
       // Obtener el token de Firebase actualizado
       const user = authService.obtenerUsuarioActual();
       if (user) {
         const token = await user.getIdToken();
-        localStorage.setItem('token', token);
         // Guardar en authStore (Zustand con persistencia)
         setAuthState(token, data.usuario);
+
+        // Obtener y guardar equipos del usuario (si es jugador)
+        try {
+          const equipos = await jugadorService.obtenerEquiposUsuario();
+          // Solo guardar si tiene equipos
+          if (equipos && equipos.length > 0) {
+            setEquipos(equipos);
+          } else {
+            setEquipos([]);
+          }
+        } catch (error) {
+          // Si falla (usuario no es jugador o no tiene equipos), guardar array vacío
+          console.log('Usuario no tiene equipos o no es jugador');
+          setEquipos([]);
+        }
       }
     },
     onError: (error: Error) => {

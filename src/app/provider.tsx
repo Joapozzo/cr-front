@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useState } from 'react';
+import { AuthTokenListener } from '@/app/components/auth/AuthTokenListener';
 
 export function Providers({ children }: { children: React.ReactNode }) {
     const [queryClient] = useState(
@@ -19,6 +20,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
     return (
         <QueryClientProvider client={queryClient}>
+            <AuthTokenListener />
             {children}
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>

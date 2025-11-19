@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { MoreHorizontal, Shield, Loader2 } from "lucide-react";
+import { MoreHorizontal, Shield } from "lucide-react";
 import { Equipo } from "../types/equipo";
 import DropdownMenu from "./DropDownMenu";
 import DropdownItem from "./DrowDownItem";
@@ -9,6 +8,7 @@ import { useLiberarVacante } from "../hooks/useTemporadas";
 import { useEdicionStore } from "../stores/edicionStore";
 import toast from "react-hot-toast";
 import { PartidoZona } from "../types/partido";
+import { InfoVacante } from "../types/temporada";
 
 interface CardVacanteZonaProps {
     equipo: Equipo | null;
@@ -16,7 +16,10 @@ interface CardVacanteZonaProps {
     idZona: number;
     idCategoriaEdicion: number;
     nomenclatura?: string;
-    temporada?: any;
+    temporada?: {
+        info_vacante?: InfoVacante;
+        [key: string]: unknown;
+    };
     esEliminacionDirecta?: boolean;
     numeroFaseActual?: number;
     partido?: PartidoZona;
@@ -33,18 +36,26 @@ const CardVacanteZona = ({
     numeroFaseActual,
     partido
 }: CardVacanteZonaProps) => {
-    const [isProcessing, setIsProcessing] = useState(false);
-
     const { modals, openModal, closeModal } = useModals();
     const { mutate: liberarVacante } = useLiberarVacante();
     const { edicionSeleccionada } = useEdicionStore();
 
-    const vacanteInfo = temporada?.info_vacante || {
+    // Determinar si hay un equipo asignado
+    const equipoAsignado = equipo || (temporada && 'equipo' in temporada ? temporada.equipo as Equipo | null : null);
+    const tieneEquipo = equipoAsignado !== null && equipoAsignado !== undefined;
+
+    // Construir vacanteInfo: usar info_vacante si existe, sino construir desde el equipo
+    const vacanteInfo = temporada?.info_vacante || (tieneEquipo && equipoAsignado ? {
+        isOcupada: true,
+        label: equipoAsignado.nombre || 'Equipo asignado',
+        tipo: 'equipo_directo' as const,
+        detalles: null
+    } : {
         isOcupada: false,
         label: 'Seleccionar equipo',
-        tipo: 'vacia',
+        tipo: 'vacia' as const,
         detalles: null
-    };
+    });
 
     const isOcupada = vacanteInfo.isOcupada;
     const idEdicion = edicionSeleccionada?.id_edicion || 0;
@@ -61,7 +72,7 @@ const CardVacanteZona = ({
                         vacante: vacante
                     }
                 }, {
-                    onSuccess: (response) => {
+                    onSuccess: () => {
                         toast.success(`Vacante ${vacante} liberada exitosamente`, { id: toastId });
                         closeModal('delete');
                         resolve();
@@ -72,13 +83,13 @@ const CardVacanteZona = ({
                     }
                 });
             });
-        } catch (error) {
+        } catch {
             // Error ya manejado en onError
         }
     };
 
     const handleClickCard = () => {
-        if (!isProcessing && !isOcupada) {
+        if (!isOcupada) {
             openModal('create');
         }
     };
@@ -95,8 +106,7 @@ const CardVacanteZona = ({
     return (
         <>
             <div
-                className={`relative p-4 rounded-lg transition-colors group border hover:opacity-90 ${isProcessing ? 'opacity-60 cursor-not-allowed' : ''
-                    } ${vacanteInfo.tipo === 'equipo_directo'
+                className={`relative p-4 rounded-lg transition-colors group border hover:opacity-90 ${vacanteInfo.tipo === 'equipo_directo'
                         ? 'cursor-pointer'
                         : vacanteInfo.tipo === 'automatizacion_posicion' || vacanteInfo.tipo === 'automatizacion_partido'
                             ? 'cursor-pointer'
@@ -118,18 +128,6 @@ const CardVacanteZona = ({
                 }}
                 onClick={handleClickCard}
             >
-
-                {/* Loading overlay */}
-                {isProcessing && (
-                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-5 rounded-lg">
-                        <div className="bg-[var(--gray-400)] border border-[var(--gray-300)] rounded-lg px-3 py-2 flex items-center gap-2">
-                            <Loader2 className="w-4 h-4 animate-spin text-[var(--green)]" />
-                            <span className="text-[var(--white)] text-xs font-medium">
-                                Procesando...
-                            </span>
-                        </div>
-                    </div>
-                )}
                 <div className="flex items-center justify-between">
                     <div className="flex-1">
                         {isOcupada ? (
@@ -176,16 +174,7 @@ const CardVacanteZona = ({
                     </div>
 
                     <div className="flex items-center gap-2">
-                        {/* <span className={`text-xs px-2 py-1 rounded font-mono ${vacanteInfo.tipo === 'equipo_directo'
-                                ? 'bg-[var(--green)] text-white'
-                                : vacanteInfo.tipo === 'automatizacion_posicion' || vacanteInfo.tipo === 'automatizacion_partido'
-                                    ? 'bg-[var(--orange)] text-white'
-                                    : 'bg-[var(--gray-200)] text-[var(--gray-100)]'
-                            }`}>
-                            {nomenclatura || vacante}
-                        </span> */}
-
-                        {isOcupada && !isProcessing && (
+                        {isOcupada && (
                             <DropdownMenu
                                 trigger={
                                     <div className="p-1 hover:bg-[var(--gray-200)] rounded transition-colors z-10">
@@ -236,6 +225,7 @@ const CardVacanteZona = ({
                 message={`¿Estás seguro de que quieres vaciar la vacante ${vacante}?`}
                 itemName={equipo?.nombre}
                 onConfirm={handleVaciarVacante}
+                error={null}
             />
         </>
     );

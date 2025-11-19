@@ -45,25 +45,36 @@ export const categoriasService = {
         try {
             return await api.post<CategoriaResponse>(`/admin/ediciones/${id_edicion}/categorias`, data);
         } catch (error: any) {
+            const errorData = error.response?.data;
+            
+            // Manejar errores de validación (400) con mensajes específicos
             if (error.response?.status === 400) {
-                const backendErrors = error.response.data.errors;
-                if (backendErrors && Array.isArray(backendErrors)) {
-                    const errorMessages = backendErrors.map((err: any) => err.message).join(', ');
+                // Si hay errores de validación específicos de Zod
+                if (errorData?.errors && Array.isArray(errorData.errors)) {
+                    const errorMessages = errorData.errors.map((err: any) => err.message).join(', ');
                     throw new Error(errorMessages);
                 }
-                throw new Error(error.response.data.message || 'Datos inválidos');
+                // Usar el mensaje del backend si está disponible
+                const message = errorData?.message || errorData?.error || 'Datos inválidos';
+                throw new Error(message);
             }
 
+            // Manejar error 404
             if (error.response?.status === 404) {
-                throw new Error('Edición o categoría no encontrada');
+                const message = errorData?.message || errorData?.error || 'Edición o categoría no encontrada';
+                throw new Error(message);
             }
 
+            // Manejar error 409 (conflicto - categoría duplicada)
             if (error.response?.status === 409) {
-                throw new Error('Esta categoría ya existe en la edición');
+                const message = errorData?.message || errorData?.error || 'Esta categoría ya existe en la edición';
+                throw new Error(message);
             }
 
+            // Para otros errores, usar el mensaje del backend si está disponible
             console.error('Error al crear categoría edición:', error);
-            throw new Error(error.response?.data?.message || 'No se pudo crear la categoría');
+            const message = errorData?.message || errorData?.error || error.message || 'No se pudo crear la categoría';
+            throw new Error(message);
         }
     },
 

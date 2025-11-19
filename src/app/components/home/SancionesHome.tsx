@@ -1,25 +1,11 @@
 'use client';
 
 import { AlertTriangle, ChevronLeft, ChevronRight, ExternalLink, User } from 'lucide-react';
-import { useState } from 'react';
 import { BaseCard, CardHeader } from '../BaseCard';
 import { BaseCardTableSkeleton } from '../skeletons/BaseCardTableSkeleton';
 import Link from 'next/link';
-
-interface ISancion {
-  id: number;
-  id_jugador: number;
-  nombre_jugador: string;
-  apellido_jugador: string;
-  foto_jugador?: string | null;
-  id_equipo: number;
-  nombre_equipo: string;
-  categoria_edicion: string;
-  articulo: string;
-  fechas_cumplidas: number;
-  fechas_totales: number;
-  tipo_falta: 'AMARILLA' | 'ROJA' | 'SUSPENSION';
-}
+import { useSancionesHome } from '@/app/hooks/useSancionesHome';
+import { ISancion } from '@/app/hooks/useSanciones';
 
 interface SancionesHomeProps {
   sanciones?: ISancion[];
@@ -32,32 +18,36 @@ export const SancionesHome = ({
   loading = false,
   linkSancionesCompleta = '/sanciones'
 }: SancionesHomeProps) => {
-  const [currentPage, setCurrentPage] = useState(0);
-  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
-  
-  const sancionesPorPagina = 5;
-  const totalPaginas = Math.ceil((sanciones?.length || 0) / sancionesPorPagina);
-  
-  // Obtener sanciones de la página actual
-  const inicio = currentPage * sancionesPorPagina;
-  const fin = inicio + sancionesPorPagina;
-  const sancionesLimitadas = sanciones?.slice(inicio, fin) || [];
+  const {
+    sanciones: sancionesData,
+    sancionesPorPagina,
+    loading: isLoading,
+    error,
+    currentPage,
+    totalPaginas,
+    slideDirection,
+    handlePageChange,
+    esMiSancion,
+  } = useSancionesHome({ sanciones, loading, limit: 5 });
 
-  // Manejar cambio de página con dirección de animación
-  const handlePageChange = (newPage: number) => {
-    if (newPage < 0 || newPage >= totalPaginas || newPage === currentPage) return;
-    
-    if (newPage > currentPage) {
-      setSlideDirection('left');
-    } else {
-      setSlideDirection('right');
-    }
-    
-    setCurrentPage(newPage);
-  };
+  // Manejar error
+  if (error && !sanciones) {
+    return (
+      <BaseCard>
+        <CardHeader 
+          icon={<AlertTriangle size={18} className="text-yellow-500" />}
+          title="Sanciones Activas"
+          subtitle="Error al cargar"
+        />
+        <div className="flex flex-col items-center justify-center py-12 px-6">
+          <p className="text-[#737373] text-sm text-center">{error.message}</p>
+        </div>
+      </BaseCard>
+    );
+  }
 
   // Casos vacíos
-  if (!sanciones || sanciones.length === 0) {
+  if (!isLoading && (!sancionesData || sancionesData.length === 0)) {
     return (
       <BaseCard>
         <CardHeader 
@@ -77,7 +67,7 @@ export const SancionesHome = ({
   }
 
   // Loading state
-  if (loading) {
+  if (isLoading) {
     return (
       <BaseCard>
         <CardHeader 
@@ -154,18 +144,23 @@ export const SancionesHome = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-[#262626]">
-              {sancionesLimitadas.map((sancion, index) => {
+              {sancionesPorPagina.map((sancion, index) => {
                 const cumplidas = sancion.fechas_cumplidas;
                 const totales = sancion.fechas_totales;
                 const porcentaje = (cumplidas / totales) * 100;
+                const esMiSancionActual = esMiSancion(sancion);
                 
                 return (
                   <tr
                     key={sancion.id}
-                    className="hover:bg-[#0a0a0a] transition-colors"
+                    className={`transition-colors ${
+                      esMiSancionActual ? 'bg-green-500/10' : 'hover:bg-[#0a0a0a]'
+                    }`}
                   >
-                    <td className="py-3 px-3 text-white text-sm font-bold">
-                      {inicio + index + 1}
+                    <td className={`py-3 px-3 text-sm font-bold ${
+                      esMiSancionActual ? 'text-green-400' : 'text-white'
+                    }`}>
+                      {currentPage * 5 + index + 1}
                     </td>
                     <td className="py-3 px-3">
                       <div className="flex items-center gap-2">
@@ -183,7 +178,9 @@ export const SancionesHome = ({
                         </div>
                         {/* Info del jugador */}
                         <div className="flex flex-col min-w-0">
-                          <span className="text-white text-sm font-medium truncate">
+                          <span className={`text-sm font-medium truncate ${
+                            esMiSancionActual ? 'text-green-400' : 'text-white'
+                          }`}>
                             {sancion.nombre_jugador} {sancion.apellido_jugador}
                           </span>
                           <span className="text-[#737373] text-[10px] truncate">
@@ -195,7 +192,9 @@ export const SancionesHome = ({
                     <td className="text-center py-3 px-2">
                       <div className="flex flex-col items-center gap-1">
                         <span className={`text-sm font-bold ${
-                          cumplidas === totales ? 'text-green-400' : 'text-yellow-400'
+                          cumplidas === totales 
+                            ? esMiSancionActual ? 'text-green-400' : 'text-green-400'
+                            : esMiSancionActual ? 'text-green-400' : 'text-yellow-400'
                         }`}>
                           {cumplidas}/{totales}
                         </span>
@@ -203,7 +202,9 @@ export const SancionesHome = ({
                         <div className="w-12 h-1.5 bg-[#262626] rounded-full overflow-hidden">
                           <div 
                             className={`h-full transition-all duration-300 ${
-                              cumplidas === totales ? 'bg-green-400' : 'bg-yellow-400'
+                              cumplidas === totales 
+                                ? esMiSancionActual ? 'bg-green-400' : 'bg-green-400'
+                                : esMiSancionActual ? 'bg-green-400' : 'bg-yellow-400'
                             }`}
                             style={{ width: `${porcentaje}%` }}
                           />
@@ -211,7 +212,9 @@ export const SancionesHome = ({
                       </div>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="text-white text-xs">
+                      <span className={`text-xs ${
+                        esMiSancionActual ? 'text-green-400' : 'text-white'
+                      }`}>
                         {sancion.articulo}
                       </span>
                     </td>

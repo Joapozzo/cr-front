@@ -18,6 +18,7 @@ import { LoadingScreen } from '../LoadingScreen';
 
 type LoginState = 'idle' | 'loading' | 'success' | 'error';
 
+
 export const LoginForm = () => {
     const router = useRouter();
     
@@ -57,11 +58,11 @@ export const LoginForm = () => {
 
                         // ✅ Login completo según rol
                         if (data.usuario.rol === 'ADMIN') {
-                            router.push('/admin/dashboard');
+                            router.push('/adm/dashboard');
                         } else if (data.usuario.rol === 'PLANILLERO') {
                             router.push('/planillero');
                         } else {
-                            router.push('/perfil');
+                            router.push('/home');
                         }
                     }, 1200);
                 },

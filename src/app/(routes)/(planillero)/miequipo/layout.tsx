@@ -46,7 +46,56 @@ export default function EquipoLayout({
         }
         return pathname === `/miequipo/${id_edicion}`;
     };
-    const equipoInfo = equipos[0];
+    const equipoInfo = equipos?.[0];
+
+    // Si no hay equipos, mostrar mensaje
+    if (!equipos || equipos.length === 0) {
+        return (
+            <div className="min-h-screen bg-[var(--background)] pb-20">
+                {/* Header con breadcrumb */}
+                <div className="bg-[var(--card-background)] border-b border-[var(--gray-300)] py-4">
+                    <div className="flex items-center space-x-2 max-w-[1400px] mx-auto px-10">
+                        <Link
+                            href="/"
+                            className="flex items-center text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
+                        >
+                            <ArrowLeft className="w-4 h-4 mr-1" />
+                            Inicio
+                        </Link>
+                        <span className="text-[var(--gray-100)]">/</span>
+                        <span className="text-[var(--white)]">Mi Equipo</span>
+                    </div>
+                </div>
+
+                {/* Mensaje cuando no hay equipos */}
+                <div className="min-h-[60vh] flex items-center justify-center">
+                    <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-12 text-center w-full max-w-md">
+                        <div className="flex flex-col items-center justify-center gap-4">
+                            <div className="w-16 h-16 rounded-full bg-[#1a1a1a] border border-[#262626] flex items-center justify-center">
+                                <svg 
+                                    className="w-8 h-8 text-[#737373]" 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path 
+                                        strokeLinecap="round" 
+                                        strokeLinejoin="round" 
+                                        strokeWidth={2} 
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" 
+                                    />
+                                </svg>
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-white text-base font-medium">Todavía no tienes ningún equipo asignado</p>
+                                <p className="text-[#737373] text-sm">Cuando te asignen a un equipo, aparecerá aquí</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-[var(--background)] pb-20">

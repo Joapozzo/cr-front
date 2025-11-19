@@ -28,18 +28,20 @@ interface FormField {
     disabled?: boolean;
 }
 
+type FormDataValue = string | number | boolean | 'S' | 'N' | File | null | undefined;
+
 interface FormModalProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
     fields: FormField[];
-    initialData?: Record<string, any>;
-    onSubmit: (data: Record<string, any>) => Promise<void>;
+    initialData?: Record<string, FormDataValue>;
+    onSubmit: (data: Record<string, FormDataValue>) => Promise<void>;
     submitText?: string;
     type?: 'create' | 'edit';
-    validationSchema?: z.ZodSchema<any>;
+    validationSchema?: z.ZodTypeAny;
     children?: React.ReactNode;
-    onFieldChange?: (name: string, value: any) => void;
+    onFieldChange?: (name: string, value: FormDataValue) => void;
 }
 
 interface DeleteModalProps {
@@ -49,7 +51,7 @@ interface DeleteModalProps {
     message: string;
     itemName?: string;
     onConfirm: () => Promise<void>;
-    error: any;
+    error: Error | { message: string } | null;
 }
 
 interface ImportModalProps {
@@ -163,7 +165,7 @@ const FormModal = ({
     children,
     onFieldChange,
 }: FormModalProps & { children?: React.ReactNode }) => {
-    const [formData, setFormData] = useState<Record<string, any>>(initialData);
+    const [formData, setFormData] = useState<Record<string, FormDataValue>>(initialData);
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -172,15 +174,20 @@ const FormModal = ({
             setFormData(initialData);
             setErrors({});
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
-    const handleChange = (name: string, value: any) => {
+    const handleChange = (name: string, value: FormDataValue) => {
         const field = fields.find(f => f.name === name);
 
         let processedValue = value;
 
+        // Para campos switch, convertir booleano a "S" o "N"
+        if (field?.type === 'switch') {
+            processedValue = value ? 'S' : 'N';
+        }
         // Para campos numéricos, convertir a number solo si no está vacío
-        if (field?.type === 'number') {
+        else if (field?.type === 'number') {
             if (value === '' || value === null || value === undefined) {
                 processedValue = ''; // Mantener vacío para mostrar placeholder
             } else {
@@ -194,10 +201,16 @@ const FormModal = ({
         // Validar solo este campo en tiempo real
         if (validationSchema && errors[name]) {
             try {
-                const shape = (validationSchema as any).shape;
-                if (shape && shape[name]) {
-                    shape[name].parse(processedValue);
-                    setErrors(prev => ({ ...prev, [name]: '' }));
+                // Acceder de forma segura al shape del schema de Zod
+                if (validationSchema && typeof validationSchema === 'object' && 'shape' in validationSchema) {
+                    const shape = (validationSchema as z.ZodObject<z.ZodRawShape>).shape;
+                    if (shape && typeof shape === 'object' && name in shape) {
+                        const fieldSchema = shape[name as keyof typeof shape];
+                        if (fieldSchema && 'parse' in fieldSchema && typeof fieldSchema.parse === 'function') {
+                            (fieldSchema as z.ZodTypeAny).parse(processedValue);
+                            setErrors(prev => ({ ...prev, [name]: '' }));
+                        }
+                    }
                 }
             } catch (error) {
                 if (error instanceof z.ZodError) {
@@ -269,18 +282,25 @@ const FormModal = ({
             await onSubmit(formData);
             // Si llega aquí, cerrar modal
             onClose();
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error en el formulario:', error);
 
             // Manejar diferentes tipos de errores
-            if (error.response?.status === 400 && error.response.data?.errors) {
-                const backendErrors: Record<string, string> = {};
-                error.response.data.errors.forEach((err: any) => {
-                    backendErrors[err.field] = err.message;
-                });
-                setErrors(backendErrors);
-            } else if (error.message && error.message !== 'Procesando...') {
-                // Solo mostrar errores reales, no el "Procesando..."
+            if (error && typeof error === 'object' && 'response' in error) {
+                const apiError = error as { response?: { status?: number; data?: { errors?: Array<{ field?: string; message?: string }> } } };
+                if (apiError.response?.status === 400 && apiError.response.data?.errors) {
+                    const backendErrors: Record<string, string> = {};
+                    apiError.response.data.errors.forEach((err) => {
+                        if (err.field && err.message) {
+                            backendErrors[err.field] = err.message;
+                        }
+                    });
+                    setErrors(backendErrors);
+                }
+            }
+
+            // Si es un Error estándar, mostrar el mensaje
+            if (error instanceof Error && error.message && error.message !== 'Procesando...') {
                 setErrors({ general: error.message });
             }
         } finally {
@@ -293,10 +313,11 @@ const FormModal = ({
 
         switch (field.type) {
             case 'select':
+                const selectValue = formData[field.name];
                 return (
                     <Select
                         options={field.options || []}
-                        value={formData[field.name] || ""}
+                        value={selectValue !== undefined && selectValue !== null ? String(selectValue) : ""}
                         onChange={(value) => handleChange(field.name, value)}
                         placeholder={
                             field.placeholder ||
@@ -307,9 +328,10 @@ const FormModal = ({
                 );
 
             case 'textarea':
+                const textareaValue = formData[field.name];
                 return (
                     <textarea
-                        value={formData[field.name] || ''}
+                        value={textareaValue !== undefined && textareaValue !== null ? String(textareaValue) : ''}
                         onChange={(e) => handleChange(field.name, e.target.value)}
                         placeholder={field.placeholder}
                         rows={4}
@@ -330,22 +352,25 @@ const FormModal = ({
                 );
 
             case 'switch':
+                // Convertir "S" o "N" a booleano para el switch, o usar false por defecto
+                const isChecked = formData[field.name] === 'S' || formData[field.name] === true;
                 return (
                     <div className="flex items-center gap-3">
                         <Switch
-                            checked={Boolean(formData[field.name])}
+                            checked={isChecked}
                             onChange={(checked) => handleChange(field.name, checked)}
                         />
                         <span className="text-[var(--gray-100)] text-sm">
-                            {formData[field.name] ? 'Sí' : 'No'}
+                            {isChecked ? 'Sí' : 'No'}
                         </span>
                     </div>
                 );
 
             case 'date':
+                const dateValue = formData[field.name];
                 return (
                     <DateInput
-                        value={formData[field.name] || ''}
+                        value={dateValue !== undefined && dateValue !== null ? String(dateValue) : ''}
                         onChange={(e) => handleChange(field.name, e.target.value)}
                         placeholder={field.placeholder}
                         error={errors[field.name]}
@@ -353,9 +378,10 @@ const FormModal = ({
                 );
 
             case 'time':
+                const timeValue = formData[field.name];
                 return (
                     <TimeInput
-                        value={formData[field.name] || ''}
+                        value={timeValue !== undefined && timeValue !== null ? String(timeValue) : ''}
                         onChange={(e) => handleChange(field.name, e.target.value)}
                         placeholder={field.placeholder}
                         error={errors[field.name]}
@@ -363,11 +389,12 @@ const FormModal = ({
                 );
 
             default:
+                const inputValue = formData[field.name];
                 return (
                     <Input
                         type={field.type}
-                        // ✅ CORRECCIÓN: Manejar correctamente el valor 0
-                        value={formData[field.name] !== undefined && formData[field.name] !== null ? formData[field.name] : ''}
+                        // ✅ CORRECCIÓN: Manejar correctamente el valor 0 y convertir a string
+                        value={inputValue !== undefined && inputValue !== null ? String(inputValue) : ''}
                         onChange={(e) => handleChange(field.name, e.target.value)}
                         placeholder={field.placeholder}
                         error={errors[field.name]}

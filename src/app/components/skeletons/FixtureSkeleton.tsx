@@ -2,7 +2,7 @@
 
 export const FixtureSkeleton: React.FC = () => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 mt-4">
       {[...Array(1)].map((_, groupIndex) => (
         <div key={groupIndex} className="bg-[var(--black-900)] border border-[#262626] rounded-xl overflow-hidden">
           {/* Header skeleton */}

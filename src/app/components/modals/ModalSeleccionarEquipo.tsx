@@ -83,6 +83,7 @@ const ModalSeleccionarEquipo = ({
                         idCategoriaEdicion={idCategoriaEdicion}
                         vacante={vacante}
                         isOcupada={isOcupada}
+                        esEliminacionDirecta={esEliminacionDirecta}
                         onClose={onClose}
                     />
                 ) : (

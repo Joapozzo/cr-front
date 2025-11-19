@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, MoreHorizontal, Shield, Trash2, Edit3 } from 'lucide-react';
+import { ChevronDown, MoreHorizontal, Trash2, Edit3 } from 'lucide-react';
 import DropdownMenu from "./DropDownMenu";
 import DropdownItem from "./DrowDownItem";
 import { useDatosParaCrearZona, useEditarZona, useEliminarZona } from "../hooks/useZonas";
@@ -10,6 +10,11 @@ import { EditarZonaInput, editarZonaSchema } from "../schemas/zona.schema";
 import CardVacanteZona from "./CardVacanteZona";
 import { calcularVacantesOcupadas } from '../utils/vacantesHelpers';
 
+interface EquipoCampeon {
+    id: number;
+    nombre: string;
+}
+
 const ZonaCard = ({ zona }: { zona: Zona }) => {
     const temporadas = zona.temporadas || [];
     const idZona = Number(zona.id_zona);
@@ -18,18 +23,17 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const {
-        data: datosCrearZona,
-        isLoading: loadingDatos
+        data: datosCrearZona
     } = useDatosParaCrearZona();
     const eliminarZonaMutation = useEliminarZona();
     const { modals, openModal, closeModal } = useModals();
-    const { mutate: editar, error: errorEditar } = useEditarZona();
+    const { mutate: editar } = useEditarZona();
 
-    const equiposAsignados = temporadas.filter((t) => t.id_equipo !== null);
     const vacantesOcupadas = calcularVacantesOcupadas(zona);
     const isCompleto = vacantesOcupadas === zona.cantidad_equipos
 
-    const getTipoZonaLabel = (tipo: string | any) => {
+    const getTipoZonaLabel = (tipo: string | null | undefined): string => {
+        if (!tipo) return '';
         const labels: Record<string, string> = {
             'todos-contra-todos': 'Todos contra todos',
             'eliminacion-directa': 'Eliminación directa',
@@ -51,9 +55,9 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
 
             // Solo se ejecuta si NO hay error
             toast.success("Zona eliminada exitosamente", { id: toastId });
-        } catch (error: any) {
+        } catch (error: unknown) {
             // Solo se ejecuta si HAY error
-            const errorMessage = error?.message || "Error al eliminar la zona";
+            const errorMessage = error instanceof Error ? error.message : "Error al eliminar la zona";
             toast.error(errorMessage, { id: toastId });
         } finally {
             setIsDeleting(false);
@@ -87,7 +91,7 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
         });
     };
 
-    const getEditarZonaFields = (zona: Zona, campeones: any[] = []): FormField[] => {
+    const getEditarZonaFields = (zona: Zona, campeones: EquipoCampeon[] = []): FormField[] => {
         const fields: FormField[] = [
             {
                 name: 'nombre',
@@ -275,7 +279,7 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
 
                 {isExpanded && (
                     <div className="border-t border-[var(--gray-300)] p-2">
-                        {zona.tipoZona?.id === 1 && zona.partidos && zona.partidos.length > 0 ? (
+                        {zona.tipoZona?.id === 2 && zona.partidos && zona.partidos.length > 0 ? (
                             <div
                                 className={`grid ${zona.partidos.length === 1 ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-1'
                                     }`}
@@ -351,6 +355,7 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
                                             idZona={zona.id_zona}
                                             idCategoriaEdicion={zona.id_categoria_edicion}
                                             temporada={temporada}
+                                            esEliminacionDirecta={false}
                                         />
                                     );
                                 })}

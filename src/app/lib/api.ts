@@ -1,4 +1,7 @@
 import { useAuthStore } from '@/app/stores/authStore';
+import { auth } from '../lib/firebase.config';
+import { obtenerToken } from '../services/auth.services';
+
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 export interface ApiOptions extends RequestInit {
@@ -9,7 +12,29 @@ export const apiFetch = async <T>(
   endpoint: string,
   options: ApiOptions = {}
 ): Promise<T> => {
-  const { token } = useAuthStore.getState(); // ✅ Acceso directo al estado de zustand
+  // Obtener token fresco de Firebase (siempre actualizado)
+  let token: string | null = null;
+  try {
+    if (auth.currentUser) {
+      // Obtener token fresco, forzando renovación si está por expirar
+      token = await obtenerToken(false); // false = solo renovar si está por expirar
+    } else {
+      // Si no hay usuario actual, intentar usar el token guardado como fallback
+      const { token: storedToken } = useAuthStore.getState();
+      token = storedToken;
+    }
+  } catch (error) {
+    console.error('Error al obtener token:', error);
+    // Fallback al token guardado si falla obtener uno fresco
+    const { token: storedToken } = useAuthStore.getState();
+    token = storedToken;
+  }
+  
+  // Si aún no hay token, intentar obtenerlo del store
+  if (!token) {
+    const { token: storedToken } = useAuthStore.getState();
+    token = storedToken;
+  }
 
   const { timeout = 10000, ...fetchOptions } = options;
   const url = `${API_BASE_URL}${endpoint}`;

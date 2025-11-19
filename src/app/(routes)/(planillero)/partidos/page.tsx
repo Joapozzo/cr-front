@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { UserPageWrapper } from '@/app/components/layouts/UserPageWrapper';
 import { EdicionLayout } from '@/app/components/layouts/EdicionLayout';
 import { FiltrosFixture } from '@/app/components/fixture/FiltrosFixture';
@@ -8,153 +8,101 @@ import { ListaPartidos } from '@/app/components/fixture/ListaPartidos';
 import { FixtureSkeleton } from '@/app/components/skeletons/FixtureSkeleton';
 import { Partido } from '@/app/types/partido';
 import { formatearFechaCompleta } from '@/app/utils/fechas';
-
-// Mock data
-const mockJornadas = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-
-const mockPartidos: Partido[] = [
-  {
-    id_partido: 1,
-    id_equipolocal: 1,
-    id_equipovisita: 2,
-    jornada: 5,
-    dia: '2025-11-15',
-    hora: '20:00',
-    goles_local: null,
-    goles_visita: null,
-    cancha: 1,
-    arbitro: 'Juan Pérez',
-    estado: 'P',
-    equipoLocal: { id_equipo: 1, nombre: 'Los Cracks FC', img: '/img/team1.png' },
-    equipoVisita: { id_equipo: 2, nombre: 'Real Fútbol', img: '/img/team2.png' }
-  },
-  {
-    id_partido: 2,
-    id_equipolocal: 3,
-    id_equipovisita: 4,
-    jornada: 5,
-    dia: '2025-11-15',
-    hora: '21:00',
-    goles_local: null,
-    goles_visita: null,
-    cancha: 2,
-    arbitro: 'Carlos Gómez',
-    estado: 'P',
-    equipoLocal: { id_equipo: 3, nombre: 'Deportivo Unidos', img: '/img/team3.png' },
-    equipoVisita: { id_equipo: 4, nombre: 'Club Atlético', img: '/img/team4.png' }
-  },
-  {
-    id_partido: 3,
-    id_equipolocal: 5,
-    id_equipovisita: 1,
-    jornada: 5,
-    dia: '2025-11-15',
-    hora: '22:00',
-    goles_local: 2,
-    goles_visita: 1,
-    cancha: 1,
-    arbitro: 'Diego Martínez',
-    estado: 'C2',
-    equipoLocal: { id_equipo: 5, nombre: 'FC Campeones', img: '/img/team5.png' },
-    equipoVisita: { id_equipo: 1, nombre: 'Los Cracks FC', img: '/img/team1.png' }
-  },
-  {
-    id_partido: 4,
-    id_equipolocal: 2,
-    id_equipovisita: 3,
-    jornada: 4,
-    dia: '2025-11-10',
-    hora: '20:30',
-    goles_local: 3,
-    goles_visita: 2,
-    cancha: 1,
-    arbitro: 'Martín López',
-    estado: 'T',
-    equipoLocal: { id_equipo: 2, nombre: 'Real Fútbol', img: '/img/team2.png' },
-    equipoVisita: { id_equipo: 3, nombre: 'Deportivo Unidos', img: '/img/team3.png' }
-  },
-  {
-    id_partido: 5,
-    id_equipolocal: 4,
-    id_equipovisita: 5,
-    jornada: 4,
-    dia: '2025-11-10',
-    hora: '21:30',
-    goles_local: 1,
-    goles_visita: 1,
-    cancha: 2,
-    arbitro: 'Lucas Fernández',
-    estado: 'T',
-    equipoLocal: { id_equipo: 4, nombre: 'Club Atlético', img: '/img/team4.png' },
-    equipoVisita: { id_equipo: 5, nombre: 'FC Campeones', img: '/img/team5.png' }
-  },
-  {
-    id_partido: 6,
-    id_equipolocal: 1,
-    id_equipovisita: 4,
-    jornada: 6,
-    dia: '2025-11-20',
-    hora: '19:00',
-    goles_local: null,
-    goles_visita: null,
-    cancha: 1,
-    arbitro: 'Pablo Ramírez',
-    estado: 'P',
-    equipoLocal: { id_equipo: 1, nombre: 'Los Cracks FC', img: '/img/team1.png' },
-    equipoVisita: { id_equipo: 4, nombre: 'Club Atlético', img: '/img/team4.png' }
-  },
-  {
-    id_partido: 7,
-    id_equipolocal: 2,
-    id_equipovisita: 5,
-    jornada: 6,
-    dia: '2025-11-20',
-    hora: '20:00',
-    goles_local: null,
-    goles_visita: null,
-    cancha: 2,
-    arbitro: 'Sebastián Torres',
-    estado: 'P',
-    equipoLocal: { id_equipo: 2, nombre: 'Real Fútbol', img: '/img/team2.png' },
-    equipoVisita: { id_equipo: 5, nombre: 'FC Campeones', img: '/img/team5.png' }
-  }
-];
+import { usePartidosUsuario } from '@/app/hooks/usePartidos';
 
 type VistaType = 'fecha' | 'jornada';
 
 export default function PartidosPage() {
   const [vistaActiva, setVistaActiva] = useState<VistaType>('jornada');
-  const [jornadaSeleccionada, setJornadaSeleccionada] = useState(5);
-  const [isLoading] = useState(false);
+  const [jornadaSeleccionada, setJornadaSeleccionada] = useState<number | undefined>(undefined);
+  const [page, setPage] = useState(1);
+  const [allPartidos, setAllPartidos] = useState<Partido[]>([]);
+  const observerTarget = useRef<HTMLDivElement>(null);
+  const limit = 20;
 
-  // TODO: Usar hooks reales
-  // const { data: partidos, isLoading } = usePartidosPorJornadaYCategoria(jornadaSeleccionada, id_categoria_edicion);
+  // Hook para obtener partidos
+  const { 
+    data: partidosData, 
+    isLoading, 
+    error
+  } = usePartidosUsuario(
+    vistaActiva,
+    undefined, // id_categoria_edicion - se puede agregar después
+    vistaActiva === 'jornada' ? jornadaSeleccionada : undefined,
+    limit,
+    page
+  );
+
+  // Actualizar lista acumulada de partidos cuando cambian los datos
+  useEffect(() => {
+    if (partidosData?.partidos) {
+      if (page === 1) {
+        setAllPartidos(partidosData.partidos);
+      } else {
+        setAllPartidos(prev => [...prev, ...partidosData.partidos]);
+      }
+    }
+  }, [partidosData, page]);
+
+  // Calcular si hay más páginas
+  const hasNextPage = partidosData ? (partidosData.offset + partidosData.limit) < partidosData.total : false;
+  const isFetchingNextPage = isLoading && page > 1;
+
+  // Resetear cuando cambia la vista o jornada
+  useEffect(() => {
+    setPage(1);
+    setAllPartidos([]);
+  }, [vistaActiva, jornadaSeleccionada]);
+
+  // Infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage && !isLoading) {
+          setPage(prev => prev + 1);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [hasNextPage, isFetchingNextPage, isLoading]);
 
   // Agrupar partidos por jornada
   const partidosPorJornada = useMemo(() => {
-    return mockPartidos.reduce((acc, partido) => {
+    return allPartidos.reduce((acc, partido) => {
       if (!acc[partido.jornada]) {
         acc[partido.jornada] = [];
       }
       acc[partido.jornada].push(partido);
       return acc;
     }, {} as Record<number, Partido[]>);
-  }, []);
+  }, [allPartidos]);
 
   // Obtener partidos de la jornada seleccionada
-  const partidosJornadaActual = partidosPorJornada[jornadaSeleccionada] || [];
+  const partidosJornadaActual = jornadaSeleccionada ? (partidosPorJornada[jornadaSeleccionada] || []) : [];
 
   // Agrupar partidos por fecha (día)
   const partidosPorDia = useMemo(() => {
-    return mockPartidos.reduce((acc, partido) => {
+    return allPartidos.reduce((acc, partido) => {
       const fecha = partido.dia;
+      if (!fecha) return acc;
       if (!acc[fecha]) {
         acc[fecha] = [];
       }
       acc[fecha].push(partido);
       return acc;
     }, {} as Record<string, Partido[]>);
-  }, []);
+  }, [allPartidos]);
 
   // Ordenar fechas de más reciente a más antigua
   const fechasOrdenadas = useMemo(() => {
@@ -162,6 +110,18 @@ export default function PartidosPage() {
       new Date(b).getTime() - new Date(a).getTime()
     );
   }, [partidosPorDia]);
+
+  // Obtener jornadas disponibles
+  const jornadasDisponibles = useMemo(() => {
+    return partidosData?.jornadas || [];
+  }, [partidosData?.jornadas]);
+
+  // Inicializar jornada seleccionada cuando se cargan las jornadas
+  useEffect(() => {
+    if (vistaActiva === 'jornada' && !jornadaSeleccionada && jornadasDisponibles.length > 0) {
+      setJornadaSeleccionada(jornadasDisponibles[0]);
+    }
+  }, [jornadasDisponibles, vistaActiva, jornadaSeleccionada]);
 
   return (
     <UserPageWrapper>
@@ -177,7 +137,11 @@ export default function PartidosPage() {
             {/* Tabs */}
             <div className="flex gap-2 bg-[var(--black-900)] border border-[#262626] rounded-xl p-1">
               <button
-                onClick={() => setVistaActiva('jornada')}
+                onClick={() => {
+                  setVistaActiva('jornada');
+                  setPage(1);
+                  setAllPartidos([]);
+                }}
                 className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
                   vistaActiva === 'jornada'
                     ? 'bg-[var(--green)] text-white'
@@ -187,7 +151,11 @@ export default function PartidosPage() {
                 Por Jornada
               </button>
               <button
-                onClick={() => setVistaActiva('fecha')}
+                onClick={() => {
+                  setVistaActiva('fecha');
+                  setPage(1);
+                  setAllPartidos([]);
+                }}
                 className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
                   vistaActiva === 'fecha'
                     ? 'bg-[var(--green)] text-white'
@@ -199,11 +167,15 @@ export default function PartidosPage() {
             </div>
 
             {/* Filtros */}
-            {vistaActiva === 'jornada' && (
+            {vistaActiva === 'jornada' && jornadasDisponibles.length > 0 && (
               <FiltrosFixture
-                jornadas={mockJornadas}
-                jornadaActual={jornadaSeleccionada}
-                onJornadaChange={setJornadaSeleccionada}
+                jornadas={jornadasDisponibles}
+                jornadaActual={jornadaSeleccionada || jornadasDisponibles[0]}
+                onJornadaChange={(jornada) => {
+                  setJornadaSeleccionada(jornada);
+                  setPage(1);
+                  setAllPartidos([]);
+                }}
                 loading={isLoading}
               />
             )}
@@ -211,33 +183,79 @@ export default function PartidosPage() {
 
           {/* Contenido */}
           <div>
-            {isLoading ? (
+            {isLoading && page === 1 ? (
               <FixtureSkeleton />
+            ) : error ? (
+              <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center">
+                <p className="text-red-400 text-sm">
+                  Error al cargar los partidos: {error.message}
+                </p>
+              </div>
             ) : vistaActiva === 'jornada' ? (
               // Vista por Jornada
-              partidosJornadaActual.length > 0 ? (
-                <ListaPartidos
-                  partidos={partidosJornadaActual}
-                  titulo={`Jornada ${jornadaSeleccionada}`}
-                  subtitulo={formatearFechaCompleta(partidosJornadaActual[0]?.dia)}
-                />
+              jornadasDisponibles.length === 0 ? (
+                <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center">
+                  <p className="text-[#737373] text-sm">
+                    No hay partidos disponibles
+                  </p>
+                </div>
+              ) : jornadaSeleccionada ? (
+                partidosJornadaActual.length > 0 ? (
+                  <>
+                    <ListaPartidos
+                      partidos={partidosJornadaActual}
+                      titulo={`Jornada ${jornadaSeleccionada}`}
+                      subtitulo={partidosJornadaActual[0]?.dia ? formatearFechaCompleta(partidosJornadaActual[0].dia) : undefined}
+                    />
+                    {/* Observer para infinite scroll */}
+                    <div ref={observerTarget} className="h-4" />
+                    {isFetchingNextPage && (
+                      <div className="flex justify-center py-4">
+                        <p className="text-[#737373] text-sm">Cargando más partidos...</p>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center">
+                    <p className="text-[#737373] text-sm">
+                      No hay partidos programados para esta jornada
+                    </p>
+                  </div>
+                )
               ) : (
                 <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center">
                   <p className="text-[#737373] text-sm">
-                    No hay partidos programados para esta jornada
+                    Selecciona una jornada
                   </p>
                 </div>
               )
             ) : (
               // Vista por Fecha (Día)
               <div className="space-y-4">
-                {fechasOrdenadas.map((fecha) => (
-                  <ListaPartidos
-                    key={fecha}
-                    partidos={partidosPorDia[fecha]}
-                    titulo={formatearFechaCompleta(fecha)}
-                  />
-                ))}
+                {fechasOrdenadas.length > 0 ? (
+                  <>
+                    {fechasOrdenadas.map((fecha) => (
+                      <ListaPartidos
+                        key={fecha}
+                        partidos={partidosPorDia[fecha]}
+                        titulo={formatearFechaCompleta(fecha)}
+                      />
+                    ))}
+                    {/* Observer para infinite scroll */}
+                    <div ref={observerTarget} className="h-4" />
+                    {isFetchingNextPage && (
+                      <div className="flex justify-center py-4">
+                        <p className="text-[#737373] text-sm">Cargando más partidos...</p>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center">
+                    <p className="text-[#737373] text-sm">
+                      No hay partidos disponibles
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>

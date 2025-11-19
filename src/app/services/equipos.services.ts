@@ -1,5 +1,5 @@
 import { api } from "../lib/api";
-import { EquipoActual, Equipo, CrearEquipoInput, EquipoResponse, EquiposPorCategoriaResponse, BuscarEquiposDisponiblesResponse, EquipoExpulsadoResponse, BuscarEquiposEdicionResponse } from "../types/equipo";
+import { EquipoActual, Equipo, CrearEquipoInput, EquipoResponse, EquiposPorCategoriaResponse, BuscarEquiposDisponiblesResponse, EquipoExpulsadoResponse, BuscarEquiposEdicionResponse, ActualizarEquipoInput, ActualizarEquipoResponse } from "../types/equipo";
 import { UltimoYProximoPartidoResponse } from "../types/partido";
 import { EstadisticasPlantelResponse } from "../types/plantel";
 import { CancelarInvitacionParams, ConfirmarSolicitudParams, EnviarInvitacionParams, ObtenerSolicitudesEquipoResponse, RechazarSolicitudParams, SolicitudBajaResponse } from "../types/solicitudes";
@@ -418,5 +418,31 @@ export const equiposService = {
             `/user/ultimo-proximo-partido/${id_equipo}/${id_categoria_edicion}`
         );
         return response;
-    }
+    },
+
+    actualizarEquipo: async (id_equipo: number, data: ActualizarEquipoInput): Promise<ActualizarEquipoResponse> => {
+        try {
+            return await api.put<ActualizarEquipoResponse>(`/admin/equipos/${id_equipo}`, data);
+        } catch (error: any) {
+            if (error.response?.status === 400) {
+                const backendErrors = error.response.data.errors;
+                if (backendErrors && Array.isArray(backendErrors)) {
+                    const errorMessages = backendErrors.map((err: any) => err.message).join(', ');
+                    throw new Error(errorMessages);
+                }
+                throw new Error(error.response.data.error || 'Datos inválidos');
+            }
+
+            if (error.response?.status === 404) {
+                throw new Error(error.response.data.error || 'Equipo no encontrado');
+            }
+
+            if (error.response?.status === 409) {
+                throw new Error(error.response.data.error || 'Ya existe un equipo con ese nombre');
+            }
+
+            console.error('Error al actualizar equipo:', error);
+            throw new Error(error.response?.data?.error || 'No se pudo actualizar el equipo');
+        }
+    },
 };

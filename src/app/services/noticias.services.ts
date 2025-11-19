@@ -7,22 +7,29 @@ export const noticiasService = {
     // RUTAS PÚBLICAS (Usuario)
     // ============================================
 
-    // Obtener noticias con filtros y paginación
+    // Obtener noticias publicadas con filtros y paginación
     obtenerNoticiasPublicadas: async (
-        filtros: FiltrosNoticias = {}
-    ): Promise<NoticiasPaginadas> => {
+        limit?: number,
+        page?: number,
+        busqueda?: string,
+        destacada?: boolean,
+        id_tipo_noticia?: number,
+        id_categoria_edicion?: number
+    ) => {
         try {
             const params = new URLSearchParams();
 
-            if (filtros.page) params.append('page', filtros.page.toString());
-            if (filtros.limit) params.append('limit', filtros.limit.toString());
-            if (filtros.publicada !== undefined) params.append('publicada', filtros.publicada.toString());
-            if (filtros.id_tipo_noticia) params.append('id_tipo_noticia', filtros.id_tipo_noticia.toString());
-            if (filtros.id_categoria_edicion) params.append('id_categoria_edicion', filtros.id_categoria_edicion.toString());
-            if (filtros.destacada !== undefined) params.append('destacada', filtros.destacada.toString());
-            if (filtros.busqueda) params.append('busqueda', filtros.busqueda);
+            if (limit) params.append('limit', limit.toString());
+            if (page) params.append('page', page.toString());
+            if (busqueda) params.append('busqueda', busqueda);
+            if (destacada !== undefined) params.append('destacada', destacada.toString());
+            if (id_tipo_noticia) params.append('id_tipo_noticia', id_tipo_noticia.toString());
+            if (id_categoria_edicion) params.append('id_categoria_edicion', id_categoria_edicion.toString());
 
-            return await api.get<NoticiasPaginadas>(`/user/noticias?${params}`);
+            const queryString = params.toString();
+            const endpoint = `/user/noticias${queryString ? `?${queryString}` : ''}`;
+            
+            return await api.get(endpoint);
         } catch (error) {
             console.error("Error al obtener noticias publicadas:", error);
             throw new Error("No se pudieron cargar las noticias publicadas");
@@ -54,7 +61,7 @@ export const noticiasService = {
     // Obtener noticia por slug
     obtenerNoticiaPorSlug: async (slug: string): Promise<Noticia> => {
         try {
-            return await api.get<Noticia>(`/user/noticias/slug/${slug}`);
+            return await api.get<Noticia>(`/user/noticias/${slug}`);
         } catch (error) {
             console.error("Error al obtener noticia por slug:", error);
             throw new Error("No se pudo cargar la noticia");

@@ -15,6 +15,7 @@ import {
     ActualizarPartidoResponseSchema,
     EliminarPartidoResponseSchema
 } from "../schemas/partidos.schema";
+import { UltimoYProximoPartidoResponse } from "../types/partido";
 
 export const partidosService = {
     obtenerUltimos5PartidosJugados: async (): Promise<PartidoResponse[]> => {
@@ -143,6 +144,98 @@ export const partidosService = {
         } catch (error) {
             console.error('Error al actualizar partido:', error);
             throw error;
+        }
+    },
+
+    /**
+     * Obtener últimos y próximos partidos del jugador autenticado
+     */
+    obtenerUltimosYProximosPartidosJugador: async (): Promise<UltimoYProximoPartidoResponse> => {
+        try {
+            const response = await api.get<UltimoYProximoPartidoResponse>('/user/partidos/ultimos-proximos');
+            return response;
+        } catch (error) {
+            console.error('Error al obtener últimos y próximos partidos del jugador:', error);
+            throw new Error('No se pudieron cargar los partidos del jugador');
+        }
+    },
+
+    /**
+     * Obtener partidos con paginación para usuarios
+     */
+    obtenerPartidosUsuario: async (
+        tipo: 'fecha' | 'jornada',
+        id_categoria_edicion?: number,
+        jornada?: number,
+        limit?: number,
+        page?: number
+    ) => {
+        try {
+            const params = new URLSearchParams();
+            params.append('tipo', tipo);
+            if (id_categoria_edicion) params.append('id_categoria_edicion', id_categoria_edicion.toString());
+            if (jornada) params.append('jornada', jornada.toString());
+            if (limit) params.append('limit', limit.toString());
+            if (page) params.append('page', page.toString());
+
+            const queryString = params.toString();
+            const endpoint = `/user/partidos${queryString ? `?${queryString}` : ''}`;
+            
+            return await api.get(endpoint);
+        } catch (error: any) {
+            console.error('Error al obtener partidos del usuario:', error);
+            throw new Error(error.response?.data?.error || 'No se pudieron obtener los partidos');
+        }
+    },
+
+    /**
+     * Obtener partido completo por ID para usuarios
+     */
+    obtenerPartidoDetalleUsuario: async (id_partido: number) => {
+        try {
+            return await api.get(`/user/partidos/${id_partido}`);
+        } catch (error: any) {
+            console.error('Error al obtener detalle del partido:', error);
+            throw new Error(error.response?.data?.error || 'No se pudo obtener el detalle del partido');
+        }
+    },
+
+    // ============================================
+    // PARTIDOS POR EQUIPO (filtrados por equipo)
+    // ============================================
+
+    /**
+     * Obtener partidos del equipo con paginación (por fecha o jornada)
+     * @param id_equipo - ID del equipo (requerido)
+     * @param tipo - Tipo de filtrado: 'fecha' o 'jornada'
+     * @param id_categoria_edicion - ID de la categoría edición (opcional). Si no se pasa, se usará la última categoría activa donde participa el equipo
+     * @param jornada - Jornada específica (opcional, solo si tipo === 'jornada')
+     * @param limit - Límite de resultados por página (default: 20)
+     * @param page - Número de página (default: 1)
+     */
+    obtenerPartidosUsuarioPorEquipo: async (
+        id_equipo: number,
+        tipo: 'fecha' | 'jornada',
+        id_categoria_edicion?: number | null,
+        jornada?: number,
+        limit?: number,
+        page?: number
+    ) => {
+        try {
+            const params = new URLSearchParams();
+            params.append('tipo', tipo);
+            if (id_categoria_edicion) params.append('id_categoria_edicion', id_categoria_edicion.toString());
+            if (jornada) params.append('jornada', jornada.toString());
+            if (limit) params.append('limit', limit.toString());
+            if (page) params.append('page', page.toString());
+
+            const queryString = params.toString();
+            const endpoint = `/user/partidos/equipo/${id_equipo}${queryString ? `?${queryString}` : ''}`;
+            
+            return await api.get(endpoint);
+        } catch (error: any) {
+            console.error('Error al obtener partidos del equipo:', error);
+            throw new Error(error.response?.data?.error || 'No se pudieron obtener los partidos del equipo');
         }
     },
 };

@@ -57,13 +57,26 @@ export interface VerificarDisponibilidadResponse {
 
 /**
  * Obtener token de Firebase del usuario actual
+ * Fuerza la renovación si el token está por expirar (menos de 5 minutos restantes)
  */
-export const obtenerToken = async (): Promise<string | null> => {
+export const obtenerToken = async (forceRefresh = false): Promise<string | null> => {
   try {
     const user = auth.currentUser;
     if (!user) return null;
 
-    const token = await user.getIdToken();
+    // Obtener el token con información de expiración
+    const tokenResult = await user.getIdTokenResult();
+    
+    // Verificar si el token está por expirar (menos de 5 minutos)
+    const expTime = tokenResult.expirationTime ? new Date(tokenResult.expirationTime).getTime() : 0;
+    const now = Date.now();
+    const timeUntilExpiry = expTime - now;
+    const fiveMinutes = 5 * 60 * 1000; // 5 minutos en milisegundos
+    
+    // Si el token está por expirar en menos de 5 minutos o forceRefresh es true, renovar
+    const shouldRefresh = forceRefresh || (timeUntilExpiry > 0 && timeUntilExpiry < fiveMinutes);
+    
+    const token = await user.getIdToken(shouldRefresh);
     return token;
   } catch (error) {
     console.error('Error al obtener token:', error);

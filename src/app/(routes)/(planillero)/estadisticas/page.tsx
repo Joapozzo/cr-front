@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { UserPageWrapper } from '@/app/components/layouts/UserPageWrapper';
 import { EdicionLayout } from '@/app/components/layouts/EdicionLayout';
 import { CategoriaSelector, CategoriaOption } from '@/app/components/estadisticas/CategoriaSelector';
@@ -8,255 +8,137 @@ import { EstadisticasTabs, EstadisticaTab } from '@/app/components/estadisticas/
 import { TablaPosicionesCompleta } from '@/app/components/estadisticas/TablaPosicionesCompleta';
 import { TablaJugadoresEstadisticas } from '@/app/components/estadisticas/TablaJugadoresEstadisticas';
 import { EquipoPosicion } from '@/app/types/posiciones';
-import { JugadorEstadistica } from '@/app/types/estadisticas';
-
-// Mock data para testing
-const mockCategorias: CategoriaOption[] = [
-  { id: 1, nombre: 'Primera - Masculino', edicion: 'Clausura 2025' },
-  { id: 2, nombre: 'Segunda - Masculino', edicion: 'Clausura 2025' },
-  { id: 3, nombre: 'Femenino', edicion: 'Clausura 2025' },
-  { id: 4, nombre: 'Primera - Masculino', edicion: 'Apertura 2024' },
-];
-
-const mockPosiciones: EquipoPosicion[] = [
-  {
-    id_equipo: 1,
-    nombre_equipo: 'Los Cracks FC',
-    partidos_jugados: 10,
-    ganados: 8,
-    empatados: 1,
-    perdidos: 1,
-    goles_favor: 25,
-    goles_contra: 8,
-    diferencia_goles: 17,
-    puntos: 25,
-    ultima_actualizacion: '2025-01-10',
-    img_equipo: '/img/team1.png'
-  },
-  {
-    id_equipo: 2,
-    nombre_equipo: 'Real Fútbol',
-    partidos_jugados: 10,
-    ganados: 7,
-    empatados: 2,
-    perdidos: 1,
-    goles_favor: 22,
-    goles_contra: 10,
-    diferencia_goles: 12,
-    puntos: 23,
-    ultima_actualizacion: '2025-01-10',
-    img_equipo: '/img/team2.png'
-  },
-  {
-    id_equipo: 3,
-    nombre_equipo: 'Deportivo Unidos',
-    partidos_jugados: 10,
-    ganados: 6,
-    empatados: 2,
-    perdidos: 2,
-    goles_favor: 18,
-    goles_contra: 12,
-    diferencia_goles: 6,
-    puntos: 20,
-    ultima_actualizacion: '2025-01-10',
-    img_equipo: '/img/team3.png'
-  },
-  {
-    id_equipo: 4,
-    nombre_equipo: 'Club Atlético',
-    partidos_jugados: 10,
-    ganados: 5,
-    empatados: 3,
-    perdidos: 2,
-    goles_favor: 16,
-    goles_contra: 11,
-    diferencia_goles: 5,
-    puntos: 18,
-    ultima_actualizacion: '2025-01-10',
-    img_equipo: '/img/team4.png'
-  },
-  {
-    id_equipo: 5,
-    nombre_equipo: 'FC Campeones',
-    partidos_jugados: 10,
-    ganados: 4,
-    empatados: 4,
-    perdidos: 2,
-    goles_favor: 14,
-    goles_contra: 10,
-    diferencia_goles: 4,
-    puntos: 16,
-    ultima_actualizacion: '2025-01-10',
-    img_equipo: '/img/team5.png'
-  },
-];
-
-const mockGoleadores: JugadorEstadistica[] = [
-  {
-    id_jugador: 1,
-    nombre: 'Juan',
-    apellido: 'Pérez',
-    img: '/img/player1.png',
-    equipo: { id_equipo: 1, nombre: 'Los Cracks FC', img: '/img/team1.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 15
-  },
-  {
-    id_jugador: 2,
-    nombre: 'Carlos',
-    apellido: 'García',
-    img: '/img/player2.png',
-    equipo: { id_equipo: 2, nombre: 'Real Fútbol', img: '/img/team2.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 12
-  },
-  {
-    id_jugador: 3,
-    nombre: 'Mateo',
-    apellido: 'Rodríguez',
-    img: '/img/player3.png',
-    equipo: { id_equipo: 3, nombre: 'Deportivo Unidos', img: '/img/team3.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 10
-  },
-  {
-    id_jugador: 4,
-    nombre: 'Lucas',
-    apellido: 'Fernández',
-    img: '/img/player4.png',
-    equipo: { id_equipo: 1, nombre: 'Los Cracks FC', img: '/img/team1.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 9
-  },
-  {
-    id_jugador: 5,
-    nombre: 'Diego',
-    apellido: 'Martínez',
-    img: '/img/player5.png',
-    equipo: { id_equipo: 4, nombre: 'Club Atlético', img: '/img/team4.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 8
-  },
-];
-
-const mockAsistencias: JugadorEstadistica[] = [
-  {
-    id_jugador: 6,
-    nombre: 'Sebastián',
-    apellido: 'López',
-    img: '/img/player6.png',
-    equipo: { id_equipo: 1, nombre: 'Los Cracks FC', img: '/img/team1.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 10
-  },
-  {
-    id_jugador: 7,
-    nombre: 'Martín',
-    apellido: 'González',
-    img: '/img/player7.png',
-    equipo: { id_equipo: 2, nombre: 'Real Fútbol', img: '/img/team2.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 8
-  },
-  {
-    id_jugador: 8,
-    nombre: 'Tomás',
-    apellido: 'Sánchez',
-    img: '/img/player8.png',
-    equipo: { id_equipo: 3, nombre: 'Deportivo Unidos', img: '/img/team3.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 7
-  },
-];
-
-const mockAmarillas: JugadorEstadistica[] = [
-  {
-    id_jugador: 9,
-    nombre: 'Pablo',
-    apellido: 'Ramírez',
-    img: '/img/player9.png',
-    equipo: { id_equipo: 4, nombre: 'Club Atlético', img: '/img/team4.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 5
-  },
-  {
-    id_jugador: 10,
-    nombre: 'Facundo',
-    apellido: 'Torres',
-    img: '/img/player10.png',
-    equipo: { id_equipo: 5, nombre: 'FC Campeones', img: '/img/team5.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 4
-  },
-];
-
-const mockRojas: JugadorEstadistica[] = [
-  {
-    id_jugador: 11,
-    nombre: 'Nicolás',
-    apellido: 'Díaz',
-    img: '/img/player11.png',
-    equipo: { id_equipo: 3, nombre: 'Deportivo Unidos', img: '/img/team3.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 2
-  },
-  {
-    id_jugador: 12,
-    nombre: 'Agustín',
-    apellido: 'Morales',
-    img: '/img/player12.png',
-    equipo: { id_equipo: 4, nombre: 'Club Atlético', img: '/img/team4.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 1
-  },
-];
-
-const mockMVPs: JugadorEstadistica[] = [
-  {
-    id_jugador: 1,
-    nombre: 'Juan',
-    apellido: 'Pérez',
-    img: '/img/player1.png',
-    equipo: { id_equipo: 1, nombre: 'Los Cracks FC', img: '/img/team1.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 7
-  },
-  {
-    id_jugador: 2,
-    nombre: 'Carlos',
-    apellido: 'García',
-    img: '/img/player2.png',
-    equipo: { id_equipo: 2, nombre: 'Real Fútbol', img: '/img/team2.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 5
-  },
-  {
-    id_jugador: 6,
-    nombre: 'Sebastián',
-    apellido: 'López',
-    img: '/img/player6.png',
-    equipo: { id_equipo: 1, nombre: 'Los Cracks FC', img: '/img/team1.png' },
-    categoria_edicion: 'Primera - Clausura 2025',
-    valor: 4
-  },
-];
+import { useEdicionesConCategorias } from '@/app/hooks/useEdiciones';
+import {
+  usePosicionesPorCategoriaEdicion,
+  useGoleadoresPorCategoriaEdicion,
+  useAsistenciasPorCategoriaEdicion,
+  useAmarillasPorCategoriaEdicion,
+  useRojasPorCategoriaEdicion,
+  useMVPsPorCategoriaEdicion
+} from '@/app/hooks/useEstadisticas';
+import { useAuthStore } from '@/app/stores/authStore';
 
 export default function EstadisticasPage() {
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<CategoriaOption | null>(mockCategorias[0]);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<CategoriaOption | null>(null);
   const [activeTab, setActiveTab] = useState<EstadisticaTab>('posiciones');
+  const equipos = useAuthStore((state) => state.equipos || []);
+  const userTeamIds = useMemo(() => equipos.map(e => e.id), [equipos]);
 
-  // TODO: Implementar hooks reales
-  // const { data: categorias, isLoading: loadingCategorias } = useCategorias();
-  // const { data: edicion, isLoading: loadingEdicion } = useEdicionActual();
+  // Obtener ediciones con categorías
+  const { data: edicionesConCategorias, isLoading: loadingCategorias } = useEdicionesConCategorias();
+
+  // Mapear categorías al formato esperado
+  const categoriasOptions = useMemo(() => {
+    if (!edicionesConCategorias) return [];
+    
+    const categorias: CategoriaOption[] = [];
+    edicionesConCategorias.forEach(edicion => {
+      edicion.categorias.forEach(categoria => {
+        categorias.push({
+          id: categoria.id_categoria_edicion,
+          nombre: categoria.nombre,
+          edicion: `${edicion.nombre} ${edicion.temporada}`
+        });
+      });
+    });
+    
+    return categorias;
+  }, [edicionesConCategorias]);
+
+  // Inicializar categoría seleccionada
+  useEffect(() => {
+    if (!categoriaSeleccionada && categoriasOptions.length > 0) {
+      setCategoriaSeleccionada(categoriasOptions[0]);
+    }
+  }, [categoriasOptions, categoriaSeleccionada]);
+
+  // Hooks para estadísticas
+  const { data: posicionesData, isLoading: loadingPosiciones } = usePosicionesPorCategoriaEdicion(
+    categoriaSeleccionada?.id || null
+  );
+  const { data: goleadores, isLoading: loadingGoleadores } = useGoleadoresPorCategoriaEdicion(
+    categoriaSeleccionada?.id || null
+  );
+  const { data: asistencias, isLoading: loadingAsistencias } = useAsistenciasPorCategoriaEdicion(
+    categoriaSeleccionada?.id || null
+  );
+  const { data: amarillas, isLoading: loadingAmarillas } = useAmarillasPorCategoriaEdicion(
+    categoriaSeleccionada?.id || null
+  );
+  const { data: rojas, isLoading: loadingRojas } = useRojasPorCategoriaEdicion(
+    categoriaSeleccionada?.id || null
+  );
+  const { data: mvps, isLoading: loadingMVPs } = useMVPsPorCategoriaEdicion(
+    categoriaSeleccionada?.id || null
+  );
+
+  // Procesar posiciones: si hay múltiples zonas, aplanarlas o mostrar por zona
+  const posicionesAplanadas = useMemo(() => {
+    if (!posicionesData || posicionesData.length === 0) return [];
+    
+    // Si hay una sola zona, devolver sus posiciones directamente
+    if (posicionesData.length === 1) {
+      return posicionesData[0].posiciones.map(pos => ({
+        id_equipo: pos.id_equipo,
+        nombre_equipo: pos.nombre_equipo,
+        partidos_jugados: pos.partidos_jugados,
+        ganados: pos.partidos_ganados,
+        empatados: pos.partidos_empatados,
+        perdidos: pos.partidos_perdidos,
+        goles_favor: pos.goles_favor,
+        goles_contra: pos.goles_contra,
+        diferencia_goles: pos.diferencia_goles,
+        puntos: pos.puntos,
+        ultima_actualizacion: new Date().toISOString().split('T')[0],
+        img_equipo: pos.img_equipo || undefined
+      }));
+    }
+    
+    // Si hay múltiples zonas, aplanar todas las posiciones
+    const todasPosiciones: EquipoPosicion[] = [];
+    posicionesData.forEach(zona => {
+      zona.posiciones.forEach(pos => {
+        todasPosiciones.push({
+          id_equipo: pos.id_equipo,
+          nombre_equipo: pos.nombre_equipo,
+          partidos_jugados: pos.partidos_jugados,
+          ganados: pos.partidos_ganados,
+          empatados: pos.partidos_empatados,
+          perdidos: pos.partidos_perdidos,
+          goles_favor: pos.goles_favor,
+          goles_contra: pos.goles_contra,
+        diferencia_goles: pos.diferencia_goles,
+        puntos: pos.puntos,
+        ultima_actualizacion: new Date().toISOString().split('T')[0],
+        img_equipo: pos.img_equipo || undefined
+        });
+      });
+    });
+    
+    // Ordenar por puntos, diferencia de goles, goles a favor
+    return todasPosiciones.sort((a, b) => {
+      if (b.puntos !== a.puntos) return b.puntos - a.puntos;
+      if (b.diferencia_goles !== a.diferencia_goles) return b.diferencia_goles - a.diferencia_goles;
+      return b.goles_favor - a.goles_favor;
+    });
+  }, [posicionesData]);
+
+  // Obtener información de la edición seleccionada
+  const edicionActual = useMemo(() => {
+    if (!categoriaSeleccionada || !edicionesConCategorias) return null;
+    return edicionesConCategorias.find(e => 
+      e.categorias.some(c => c.id_categoria_edicion === categoriaSeleccionada.id)
+    );
+  }, [categoriaSeleccionada, edicionesConCategorias]);
 
   return (
     <UserPageWrapper>
       <EdicionLayout
-        nombreEdicion="Copa Relámpago"
-        temporada="Clausura 2025"
+        nombreEdicion={edicionActual?.nombre || 'Copa Relámpago'}
+        temporada={edicionActual?.temporada?.toString() || '2025'}
         nombreCategoria={categoriaSeleccionada?.nombre}
-        // logoEdicion={edicion?.logo}
-        // loading={loadingEdicion}
+        loading={loadingCategorias}
       >
         <div className="w-full space-y-6">
           {/* Selector de categorías */}
@@ -266,10 +148,10 @@ export default function EstadisticasPage() {
             </div>
             
             <CategoriaSelector 
-              categorias={mockCategorias}
+              categorias={categoriasOptions}
               categoriaSeleccionada={categoriaSeleccionada}
               onSeleccionar={setCategoriaSeleccionada}
-              // loading={loadingCategorias}
+              loading={loadingCategorias}
             />
           </div>
 
@@ -284,19 +166,53 @@ export default function EstadisticasPage() {
             {/* Contenido según tab seleccionado */}
             <div className="min-h-[300px]">
               {activeTab === 'posiciones' && (
-                <TablaPosicionesCompleta
-                  posiciones={mockPosiciones}
-                  zonasPlayoff={[]} // TODO: Agregar mock de playoffs si es necesario
-                  isLoading={false}
-                  userTeamIds={[1]} // TODO: Obtener del authStore/playerStore
-                />
+                <>
+                  {posicionesData && posicionesData.length > 1 ? (
+                    // Si hay múltiples zonas, mostrar cada una
+                    <div className="space-y-6">
+                      {posicionesData.map((zona) => (
+                        <div key={zona.id_zona} className="space-y-2">
+                          <h3 className="text-white font-semibold text-sm px-2">
+                            {zona.nombre_zona}
+                          </h3>
+                          <TablaPosicionesCompleta
+                            posiciones={zona.posiciones.map(pos => ({
+                              id_equipo: pos.id_equipo,
+                              nombre_equipo: pos.nombre_equipo,
+                              partidos_jugados: pos.partidos_jugados,
+                              ganados: pos.partidos_ganados,
+                              empatados: pos.partidos_empatados,
+                              perdidos: pos.partidos_perdidos,
+                              goles_favor: pos.goles_favor,
+                              goles_contra: pos.goles_contra,
+                              diferencia_goles: pos.diferencia_goles,
+                              puntos: pos.puntos,
+                              ultima_actualizacion: new Date().toISOString().split('T')[0],
+                              img_equipo: pos.img_equipo || undefined
+                            }))}
+                            zonasPlayoff={[]}
+                            isLoading={loadingPosiciones}
+                            userTeamIds={userTeamIds}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <TablaPosicionesCompleta
+                      posiciones={posicionesAplanadas}
+                      zonasPlayoff={[]}
+                      isLoading={loadingPosiciones}
+                      userTeamIds={userTeamIds}
+                    />
+                  )}
+                </>
               )}
 
               {activeTab === 'goleadores' && (
                 <TablaJugadoresEstadisticas
-                  jugadores={mockGoleadores}
+                  jugadores={goleadores || []}
                   tipo="goleadores"
-                  isLoading={false}
+                  isLoading={loadingGoleadores}
                   onRowClick={(jugador) => {
                     console.log('Jugador seleccionado:', jugador);
                     // TODO: Abrir modal con filtros o detalles del jugador
@@ -306,9 +222,9 @@ export default function EstadisticasPage() {
 
               {activeTab === 'asistencias' && (
                 <TablaJugadoresEstadisticas
-                  jugadores={mockAsistencias}
+                  jugadores={asistencias || []}
                   tipo="asistencias"
-                  isLoading={false}
+                  isLoading={loadingAsistencias}
                   onRowClick={(jugador) => {
                     console.log('Jugador seleccionado:', jugador);
                   }}
@@ -317,9 +233,9 @@ export default function EstadisticasPage() {
 
               {activeTab === 'amarillas' && (
                 <TablaJugadoresEstadisticas
-                  jugadores={mockAmarillas}
+                  jugadores={amarillas || []}
                   tipo="amarillas"
-                  isLoading={false}
+                  isLoading={loadingAmarillas}
                   onRowClick={(jugador) => {
                     console.log('Jugador seleccionado:', jugador);
                   }}
@@ -328,9 +244,9 @@ export default function EstadisticasPage() {
 
               {activeTab === 'rojas' && (
                 <TablaJugadoresEstadisticas
-                  jugadores={mockRojas}
+                  jugadores={rojas || []}
                   tipo="rojas"
-                  isLoading={false}
+                  isLoading={loadingRojas}
                   onRowClick={(jugador) => {
                     console.log('Jugador seleccionado:', jugador);
                   }}
@@ -339,9 +255,9 @@ export default function EstadisticasPage() {
 
               {activeTab === 'mvps' && (
                 <TablaJugadoresEstadisticas
-                  jugadores={mockMVPs}
+                  jugadores={mvps || []}
                   tipo="mvps"
-                  isLoading={false}
+                  isLoading={loadingMVPs}
                   onRowClick={(jugador) => {
                     console.log('Jugador seleccionado:', jugador);
                   }}
@@ -352,10 +268,13 @@ export default function EstadisticasPage() {
         )}
 
           {/* Mensaje si no hay categoría seleccionada */}
-          {!categoriaSeleccionada && (
+          {!categoriaSeleccionada && !loadingCategorias && (
             <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-12">
               <p className="text-[#737373] text-center text-sm">
-                Selecciona una categoría para ver las estadísticas
+                {categoriasOptions.length === 0 
+                  ? 'No hay categorías disponibles'
+                  : 'Selecciona una categoría para ver las estadísticas'
+                }
               </p>
             </div>
           )}

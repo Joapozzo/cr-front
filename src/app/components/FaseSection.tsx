@@ -91,7 +91,7 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
         },
         {
             name: 'jornada',
-            label: 'Jornadas de los partidos',
+            label: 'Cantidad de jornadas',
             type: 'number',
             placeholder: '1',
             required: true

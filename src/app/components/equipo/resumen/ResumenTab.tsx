@@ -20,9 +20,10 @@ export const ResumenTab: React.FC<ResumenTabProps> = ({
   loading = false,
   onVerTodosStats
 }) => {
+  
   if (!resumen && !loading) {
     return (
-      <div className="px-3 sm:px-4 py-3 sm:py-4">
+      <div className="py-4">
         <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-6 sm:p-8 text-center">
           <p className="text-[#737373] text-xs sm:text-sm">No hay datos disponibles</p>
         </div>

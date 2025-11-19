@@ -34,10 +34,8 @@ export const useLogout = (): UseLogoutReturn => {
       clearPlayerStore();
 
       // 3. Limpiar localStorage manualmente (por si acaso)
-      localStorage.removeItem('auth-storage');
+      localStorage.removeItem('auth');
       localStorage.removeItem('player-storage');
-      localStorage.removeItem('token');
-      localStorage.removeItem('usuario');
 
       // 4. Esperar un momento para que se vea el loader
       await new Promise((resolve) => setTimeout(resolve, 800));

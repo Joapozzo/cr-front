@@ -1,32 +1,11 @@
 'use client';
 
 import { Shield, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
-import { useState } from 'react';
 import { BaseCard, CardHeader } from '../BaseCard';
 import { BaseCardTableSkeleton } from '../skeletons/BaseCardTableSkeleton';
 import Link from 'next/link';
-
-export interface IEquipoPosicion {
-  posicion: number;
-  id_equipo: number;
-  nombre_equipo: string;
-  img_equipo?: string | null;
-  puntos: number;
-  partidos_jugados: number;
-  partidos_ganados: number;
-  partidos_empatados: number;
-  partidos_perdidos: number;
-  goles_favor: number;
-  goles_contra: number;
-  diferencia_goles: number;
-}
-
-export interface ITablaPosicion {
-  id_equipo: number; // ID del equipo del usuario al que pertenece esta tabla
-  nombre_equipo: string; // Nombre del equipo del usuario
-  categoria_edicion: string; // Ej: "Primera - Apertura 2024"
-  posiciones: IEquipoPosicion[]; // 6 equipos (contexto alrededor del equipo del usuario)
-}
+import { useTablasPosicionesHome } from '@/app/hooks/useTablasPosicionesHome';
+import { ITablaPosicion } from '@/app/types/posiciones';
 
 interface TablaPosicionesHomeProps {
   tablas?: ITablaPosicion[]; // Array de tablas (una por cada equipo del usuario)
@@ -44,28 +23,36 @@ export const TablaPosicionesHome = ({
   loading = false,
   linkTablaCompleta = '/posiciones'
 }: TablaPosicionesHomeProps) => {
-  const [currentTablaIndex, setCurrentTablaIndex] = useState(0);
-  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
-  
-  const totalTablas = tablas?.length || 0;
-  const tablaActual = tablas?.[currentTablaIndex];
+  const {
+    tablas: tablasData,
+    loading: isLoading,
+    error,
+    currentTablaIndex,
+    slideDirection,
+    handleTablaChange,
+  } = useTablasPosicionesHome({ tablas, loading, limitPosiciones: 6 });
 
-  // Manejar cambio de tabla con dirección de animación
-  const handleTablaChange = (newIndex: number) => {
-    if (newIndex < 0 || newIndex >= totalTablas || newIndex === currentTablaIndex) return;
-    
-    // Determinar dirección del slide
-    if (newIndex > currentTablaIndex) {
-      setSlideDirection('left'); // Tabla siguiente: slide desde derecha
-    } else {
-      setSlideDirection('right'); // Tabla anterior: slide desde izquierda
-    }
-    
-    setCurrentTablaIndex(newIndex);
-  };
+  const totalTablas = tablasData?.length || 0;
+  const tablaActual = tablasData?.[currentTablaIndex];
+
+  // Manejar error
+  if (error && !tablas) {
+    return (
+      <BaseCard>
+        <CardHeader 
+          icon={<Shield size={18} className="text-[var(--green)]" />}
+          title="Tabla de Posiciones"
+          subtitle="Error al cargar"
+        />
+        <div className="flex flex-col items-center justify-center py-12 px-6">
+          <p className="text-[#737373] text-sm text-center">{error.message}</p>
+        </div>
+      </BaseCard>
+    );
+  }
 
   // Casos vacíos
-  if (!tablas || tablas.length === 0) {
+  if (!isLoading && (!tablasData || tablasData.length === 0)) {
     return (
       <BaseCard>
         <CardHeader 
@@ -85,7 +72,7 @@ export const TablaPosicionesHome = ({
   }
 
   // Loading state
-  if (loading) {
+  if (isLoading) {
     return (
       <BaseCard>
         <CardHeader 
@@ -271,196 +258,3 @@ export const TablaPosicionesHome = ({
     </BaseCard>
   );
 };
-
-// ============================================
-// 🎨 MOCK DATA PARA TESTING
-// ============================================
-
-// Tabla para "Los Tigres FC" (id_equipo: 1) - Primera posición
-const tablaTigres: ITablaPosicion = {
-  id_equipo: 1,
-  nombre_equipo: 'Los Tigres FC',
-  categoria_edicion: 'Primera - Apertura 2024',
-  posiciones: [
-    {
-      posicion: 1,
-      id_equipo: 1,
-      nombre_equipo: 'Los Tigres FC',
-      img_equipo: null,
-      puntos: 38,
-      partidos_jugados: 14,
-      partidos_ganados: 12,
-      partidos_empatados: 2,
-      partidos_perdidos: 0,
-      goles_favor: 45,
-      goles_contra: 12,
-      diferencia_goles: 33
-    },
-    {
-      posicion: 2,
-      id_equipo: 2,
-      nombre_equipo: 'Deportivo Central',
-      img_equipo: null,
-      puntos: 32,
-      partidos_jugados: 14,
-      partidos_ganados: 10,
-      partidos_empatados: 2,
-      partidos_perdidos: 2,
-      goles_favor: 38,
-      goles_contra: 18,
-      diferencia_goles: 20
-    },
-    {
-      posicion: 3,
-      id_equipo: 4,
-      nombre_equipo: 'Atlético Sur',
-      img_equipo: null,
-      puntos: 25,
-      partidos_jugados: 14,
-      partidos_ganados: 8,
-      partidos_empatados: 1,
-      partidos_perdidos: 5,
-      goles_favor: 28,
-      goles_contra: 25,
-      diferencia_goles: 3
-    },
-    {
-      posicion: 4,
-      id_equipo: 5,
-      nombre_equipo: 'Club Estrella',
-      img_equipo: null,
-      puntos: 22,
-      partidos_jugados: 14,
-      partidos_ganados: 7,
-      partidos_empatados: 1,
-      partidos_perdidos: 6,
-      goles_favor: 25,
-      goles_contra: 26,
-      diferencia_goles: -1
-    },
-    {
-      posicion: 5,
-      id_equipo: 6,
-      nombre_equipo: 'Sporting Villa',
-      img_equipo: null,
-      puntos: 18,
-      partidos_jugados: 14,
-      partidos_ganados: 5,
-      partidos_empatados: 3,
-      partidos_perdidos: 6,
-      goles_favor: 22,
-      goles_contra: 28,
-      diferencia_goles: -6
-    },
-    {
-      posicion: 6,
-      id_equipo: 7,
-      nombre_equipo: 'Unión Barrio',
-      img_equipo: null,
-      puntos: 15,
-      partidos_jugados: 14,
-      partidos_ganados: 4,
-      partidos_empatados: 3,
-      partidos_perdidos: 7,
-      goles_favor: 18,
-      goles_contra: 30,
-      diferencia_goles: -12
-    }
-  ]
-};
-
-// Tabla para "Deportivo Huracán" (id_equipo: 3) - Tercera posición
-const tablaHuracan: ITablaPosicion = {
-  id_equipo: 3,
-  nombre_equipo: 'Deportivo Huracán',
-  categoria_edicion: 'Segunda - Clausura 2024',
-  posiciones: [
-    {
-      posicion: 1,
-      id_equipo: 10,
-      nombre_equipo: 'Real Barrio',
-      img_equipo: null,
-      puntos: 35,
-      partidos_jugados: 14,
-      partidos_ganados: 11,
-      partidos_empatados: 2,
-      partidos_perdidos: 1,
-      goles_favor: 42,
-      goles_contra: 15,
-      diferencia_goles: 27
-    },
-    {
-      posicion: 2,
-      id_equipo: 11,
-      nombre_equipo: 'Juventud FC',
-      img_equipo: null,
-      puntos: 30,
-      partidos_jugados: 14,
-      partidos_ganados: 10,
-      partidos_empatados: 0,
-      partidos_perdidos: 4,
-      goles_favor: 35,
-      goles_contra: 20,
-      diferencia_goles: 15
-    },
-    {
-      posicion: 3,
-      id_equipo: 3,
-      nombre_equipo: 'Deportivo Huracán',
-      img_equipo: null,
-      puntos: 28,
-      partidos_jugados: 14,
-      partidos_ganados: 9,
-      partidos_empatados: 1,
-      partidos_perdidos: 4,
-      goles_favor: 32,
-      goles_contra: 22,
-      diferencia_goles: 10
-    },
-    {
-      posicion: 4,
-      id_equipo: 12,
-      nombre_equipo: 'Argentino FC',
-      img_equipo: null,
-      puntos: 24,
-      partidos_jugados: 14,
-      partidos_ganados: 8,
-      partidos_empatados: 0,
-      partidos_perdidos: 6,
-      goles_favor: 28,
-      goles_contra: 25,
-      diferencia_goles: 3
-    },
-    {
-      posicion: 5,
-      id_equipo: 13,
-      nombre_equipo: 'FC Norte',
-      img_equipo: null,
-      puntos: 20,
-      partidos_jugados: 14,
-      partidos_ganados: 6,
-      partidos_empatados: 2,
-      partidos_perdidos: 6,
-      goles_favor: 24,
-      goles_contra: 28,
-      diferencia_goles: -4
-    },
-    {
-      posicion: 6,
-      id_equipo: 14,
-      nombre_equipo: 'Deportivo Este',
-      img_equipo: null,
-      puntos: 16,
-      partidos_jugados: 14,
-      partidos_ganados: 5,
-      partidos_empatados: 1,
-      partidos_perdidos: 8,
-      goles_favor: 20,
-      goles_contra: 32,
-      diferencia_goles: -12
-    }
-  ]
-};
-
-export const mockTablasPosiciones: ITablaPosicion[] = [tablaTigres, tablaHuracan];
-

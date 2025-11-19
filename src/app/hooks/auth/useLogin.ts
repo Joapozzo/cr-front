@@ -4,9 +4,10 @@ import { useAuthStore } from '@/app/stores/authStore';
 import { obtenerToken } from '@/app/services/auth.services';
 import { api } from '@/app/lib/api';
 import { toast } from 'react-hot-toast';
+import { jugadorService } from '@/app/services/jugador.services';
 
 export const useLogin = () => {
-  const { login } = useAuthStore();
+  const { login, setEquipos } = useAuthStore();
 
   return useMutation({
     mutationFn: async ({ email, password }: { email: string; password: string }) => {
@@ -43,10 +44,23 @@ export const useLogin = () => {
         proximoPaso: 'VALIDAR_DNI' | 'SELFIE' | 'COMPLETO';
       };
 
-      // 5️⃣ Guardar datos en Zustand y localStorage
+      // 5️⃣ Guardar datos en Zustand (persist maneja localStorage automáticamente)
       login(token, data.usuario);
-      localStorage.setItem('token', token);
-      localStorage.setItem('usuario', JSON.stringify(data.usuario));
+
+      // 6️⃣ Obtener y guardar equipos del usuario (si es jugador)
+      try {
+        const equipos = await jugadorService.obtenerEquiposUsuario();
+        // Solo guardar si tiene equipos
+        if (equipos && equipos.length > 0) {
+          setEquipos(equipos);
+        } else {
+          setEquipos([]);
+        }
+      } catch (error) {
+        // Si falla (usuario no es jugador o no tiene equipos), guardar array vacío
+        console.log('Usuario no tiene equipos o no es jugador');
+        setEquipos([]);
+      }
 
       return data;
     },

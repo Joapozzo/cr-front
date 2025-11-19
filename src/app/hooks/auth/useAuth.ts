@@ -11,24 +11,6 @@ interface UseAuthOptions {
   redirectIfAuthenticated?: boolean;
 }
 
-/**
- * Hook de autenticación y autorización
- * 
- * @param options - Opciones de protección de ruta
- * @param options.requireAuth - Requiere estar autenticado (redirige a /login si no)
- * @param options.requireRole - Requiere un rol específico (redirige según rol si no coincide)
- * @param options.redirectIfAuthenticated - Redirige si YA está autenticado (útil para /login, /registro)
- * 
- * @example
- * // Requiere autenticación básica
- * useAuth({ requireAuth: true })
- * 
- * // Requiere ser admin
- * useAuth({ requireAuth: true, requireRole: 'ADMIN' })
- * 
- * // Redirige si ya está logueado (para /login)
- * useAuth({ redirectIfAuthenticated: true })
- */
 export const useAuth = (options: UseAuthOptions | boolean = {}) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -47,12 +29,12 @@ export const useAuth = (options: UseAuthOptions | boolean = {}) => {
     
     switch (userRole) {
       case 'ADMIN':
-        return '/admin/dashboard';
+        return '/adm/dashboard';
       case 'PLANILLERO':
         return '/planillero';
       case 'USER':
       default:
-        return '/perfil';
+        return '/home';
     }
   };
 
@@ -82,21 +64,17 @@ export const useAuth = (options: UseAuthOptions | boolean = {}) => {
       return;
     }
 
-    // Si está autenticado y estamos en rutas públicas de auth → redirigir SOLO si el registro está completo
+    // Si está autenticado y estamos en rutas públicas de auth → redirigir
     if (redirectIfAuthenticated && isAuthenticated && usuario) {
       const authRoutes = ['/login', '/registro', '/recuperar-password', '/reset-password'];
       
       // Solo redirigir si estamos en una ruta de auth
       if (authRoutes.includes(pathname)) {
-        // ⚠️ SOLO redirigir si la cuenta está completamente activada
-        // Si el usuario está en proceso de registro (dni_validado: false, cuenta_activada: false)
-        // NO redirigir, dejar que el LoginForm maneje el flujo con proximoPaso
-        const registroCompleto = usuario.cuenta_activada && usuario.estado === 'A';
-        
-        if (registroCompleto) {
-          const homeRoute = getHomeRoute(usuario.rol);
-          router.replace(homeRoute);
-        }
+        // Redirigir siempre que esté autenticado (estado 'A' o 'S')
+        // Si el usuario está en proceso de registro, el LoginForm ya lo manejará antes
+        // de que llegue a esta verificación porque el login completo requiere cuenta activada
+        const homeRoute = getHomeRoute(usuario.rol);
+        router.replace(homeRoute);
       }
     }
   }, [requireAuth, requireRole, redirectIfAuthenticated, isAuthenticated, usuario, router, pathname, hasRequiredRole]);
