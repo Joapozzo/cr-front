@@ -197,12 +197,9 @@ export const DateInput: React.FC<DateInputProps> = ({
     ease-in-out
     disabled:opacity-50 
     disabled:cursor-not-allowed
-    [&::-webkit-calendar-picker-indicator]:opacity-0
-    [&::-webkit-calendar-picker-indicator]:absolute
-    [&::-webkit-calendar-picker-indicator]:w-full
-    [&::-webkit-calendar-picker-indicator]:h-full
-    [&::-webkit-calendar-picker-indicator]:left-0
-    [&::-webkit-calendar-picker-indicator]:cursor-pointer
+    [&::-webkit-calendar-picker-indicator]:hidden
+    [&::-webkit-inner-spin-button]:hidden
+    [&::-webkit-outer-spin-button]:hidden
   `;
 
     const widthClasses = fullWidth ? 'w-full' : '';
@@ -226,9 +223,19 @@ export const DateInput: React.FC<DateInputProps> = ({
                     )}
                     {...props}
                 />
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <button
+                    type="button"
+                    onClick={() => {
+                        const input = document.querySelector(`input[type="date"][value="${props.value || ''}"]`) as HTMLInputElement;
+                        if (input) {
+                            input.showPicker?.();
+                        }
+                    }}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-auto z-10 cursor-pointer hover:opacity-80 transition-opacity"
+                    tabIndex={-1}
+                >
                     <Calendar className="w-4 h-4 text-[#fafafa]" />
-                </div>
+                </button>
             </div>
             {error && (
                 <span className="text-xs text-[#EF4444] mt-1">

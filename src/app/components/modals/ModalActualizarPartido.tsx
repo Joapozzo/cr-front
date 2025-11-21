@@ -7,6 +7,8 @@ import { useEquiposPorCategoriaEdicion } from '@/app/hooks/useEquipos';
 import { useObtenerPlanilleros } from '@/app/hooks/useUsuarios';
 import { useObtenerTodasLasZonas } from '@/app/hooks/useZonas';
 import { useActualizarPartido } from '@/app/hooks/usePartidosAdmin';
+import { usePredios, useCanchasPorPredio } from '@/app/hooks/usePredios';
+import { useVerificarDisponibilidadCancha } from '@/app/hooks/useCanchas';
 import { useCategoriaStore } from '@/app/stores/categoriaStore';
 import toast from 'react-hot-toast';
 import { Usuario } from '@/app/types/user';
@@ -24,7 +26,8 @@ const actualizarPartidoSchema = z.object({
     jornada: z.number().min(1, 'La jornada debe ser mayor a 0'),
     dia: z.string().min(1, 'Debe seleccionar una fecha'),
     hora: z.string().min(1, 'Debe seleccionar una hora'),
-    cancha: z.number().min(1, 'Debe seleccionar una cancha'),
+    id_predio: z.number().min(1, 'Debe seleccionar un predio'),
+    id_cancha: z.number().min(1, 'Debe seleccionar una cancha'),
     arbitro: z.string().optional(),
     id_planillero: z.string().optional(),
     id_zona: z.number().min(1, 'Debe seleccionar una zona'),
@@ -53,6 +56,33 @@ export default function ModalActualizarPartido({
     const { data: equipos, isLoading: loadingEquipos } = useEquiposPorCategoriaEdicion(idCategoriaEdicion);
     const { data: usuarios, isLoading: loadingUsuarios } = useObtenerPlanilleros();
     const { data: zonas, isLoading: loadingZonas } = useObtenerTodasLasZonas(idCategoriaEdicion);
+    
+    // Obtener predios activos
+    const { data: predios = [], isLoading: loadingPredios } = usePredios(false);
+    const prediosActivos = predios.filter(p => p.estado === 'A');
+    
+    // Estados para predio y cancha seleccionados
+    const [selectedPredio, setSelectedPredio] = useState<number | null>(null);
+    const [selectedCancha, setSelectedCancha] = useState<number | null>(null);
+    const [selectedFecha, setSelectedFecha] = useState<string | null>(null);
+    const [selectedHora, setSelectedHora] = useState<string | null>(null);
+    
+    // Obtener canchas del predio seleccionado (solo activas)
+    const { data: canchasDelPredio = [], isLoading: loadingCanchas } = useCanchasPorPredio(
+        selectedPredio || 0,
+        false, // No incluir inactivas
+        { enabled: !!selectedPredio }
+    );
+    const canchasActivas = canchasDelPredio.filter(c => c.estado === 'A');
+    
+    // Verificar disponibilidad de cancha cuando se seleccionan fecha, hora y cancha
+    const { data: disponibilidadCancha, isLoading: loadingDisponibilidad } = useVerificarDisponibilidadCancha(
+        selectedFecha,
+        selectedHora,
+        idCategoriaEdicion || null,
+        selectedCancha,
+        partido?.id_partido // Excluir el partido actual al verificar
+    );
 
     const {
         mutate: actualizarPartido,
@@ -96,9 +126,16 @@ export default function ModalActualizarPartido({
         label: zona.nombre || `Zona ${zona.id_zona}`
     })) || [];
 
-    const canchasOptions = Array.from({ length: 10 }, (_, i) => ({
-        value: i + 1,
-        label: `Cancha ${i + 1}`
+    // Opciones de predios activos
+    const prediosOptions = prediosActivos.map(predio => ({
+        value: predio.id_predio,
+        label: predio.nombre
+    }));
+
+    // Opciones de canchas activas del predio seleccionado
+    const canchasOptions = canchasActivas.map(cancha => ({
+        value: cancha.id_cancha,
+        label: `${cancha.nombre} - ${cancha.predio?.nombre || ''}`
     }));
 
     // Opciones de estado (solo permitir P, A, S para edición)
@@ -134,7 +171,8 @@ export default function ModalActualizarPartido({
         jornada: partido?.jornada || 1,
         dia: formatearFechaParaInput(partido?.dia),
         hora: formatearHoraParaInput(partido?.hora),
-        cancha: partido?.cancha || '',
+        id_predio: partido?.cancha?.id_predio || partido?.cancha?.predio?.id_predio || '',
+        id_cancha: partido?.cancha?.id_cancha || partido?.id_cancha || '',
         arbitro: partido?.arbitro || '',
         id_planillero: partido?.id_planillero || '',
         id_zona: partido?.id_zona || '',
@@ -182,12 +220,27 @@ export default function ModalActualizarPartido({
             required: true
         },
         {
-            name: 'cancha',
+            name: 'id_predio',
+            label: 'Predio',
+            type: 'select',
+            required: true,
+            options: prediosOptions,
+            placeholder: loadingPredios ? 'Cargando predios...' : 
+                        prediosOptions.length === 0 ? 'No hay predios disponibles' :
+                        'Seleccionar predio',
+            disabled: loadingPredios || prediosOptions.length === 0
+        },
+        {
+            name: 'id_cancha',
             label: 'Cancha',
             type: 'select',
             required: true,
             options: canchasOptions,
-            placeholder: 'Seleccionar cancha'
+            placeholder: !selectedPredio ? 'Primero seleccione un predio' :
+                        loadingCanchas ? 'Cargando canchas...' :
+                        canchasOptions.length === 0 ? 'No hay canchas disponibles en este predio' :
+                        'Seleccionar cancha',
+            disabled: !selectedPredio || loadingCanchas || canchasOptions.length === 0
         },
         {
             name: 'arbitro',
@@ -253,7 +306,8 @@ export default function ModalActualizarPartido({
             jornada: Number(data.jornada),
             dia: data.dia,
             hora: data.hora,
-            cancha: Number(data.cancha),
+            id_predio: Number(data.id_predio),
+            id_cancha: Number(data.id_cancha),
             arbitro: data.arbitro || undefined,
             id_planillero: data.id_planillero || undefined,
             id_zona: Number(data.id_zona),
@@ -284,6 +338,20 @@ export default function ModalActualizarPartido({
             setSelectedVisitante(Number(value));
         } else if (name === 'estado') {
             setSelectedEstado(value);
+        } else if (name === 'id_predio') {
+            const newPredio = Number(value);
+            setSelectedPredio(newPredio);
+            // Resetear selección de cancha cuando cambia el predio
+            setSelectedCancha(null);
+        } else if (name === 'id_cancha') {
+            setSelectedCancha(Number(value) || null);
+        } else if (name === 'dia') {
+            // Convertir fecha a formato YYYY-MM-DD si viene como Date o string
+            const fechaValue = typeof value === 'string' ? value : value instanceof Date ? value.toISOString().split('T')[0] : null;
+            setSelectedFecha(fechaValue);
+        } else if (name === 'hora') {
+            const horaValue = typeof value === 'string' ? value : null;
+            setSelectedHora(horaValue);
         }
     };
 
@@ -317,6 +385,39 @@ export default function ModalActualizarPartido({
             setSelectedLocal(partido?.equipoLocal?.id_equipo || null);
             setSelectedVisitante(partido?.equipoVisita?.id_equipo || null);
             setSelectedEstado(partido?.estado || 'P');
+            
+            // Inicializar predio y cancha - IMPORTANTE: establecer predio primero
+            // para que se carguen las canchas del predio
+            const predioId = partido?.cancha?.id_predio || partido?.cancha?.predio?.id_predio;
+            const canchaId = partido?.cancha?.id_cancha || partido?.id_cancha;
+            
+            if (predioId) {
+                setSelectedPredio(Number(predioId));
+            } else {
+                setSelectedPredio(null);
+            }
+            
+            if (canchaId) {
+                setSelectedCancha(Number(canchaId));
+            } else {
+                setSelectedCancha(null);
+            }
+            
+            // Inicializar fecha y hora para verificación de disponibilidad
+            if (partido?.dia) {
+                const fechaFormateada = formatearFechaParaInput(partido.dia);
+                setSelectedFecha(fechaFormateada);
+            } else {
+                setSelectedFecha(null);
+            }
+            
+            if (partido?.hora) {
+                const horaFormateada = formatearHoraParaInput(partido.hora);
+                setSelectedHora(horaFormateada);
+            } else {
+                setSelectedHora(null);
+            }
+            
             setPromiseResolvers(null);
             resetMutation();
         }
@@ -360,7 +461,7 @@ export default function ModalActualizarPartido({
             )}
 
             {/* Indicadores de carga */}
-            {(loadingEquipos || loadingUsuarios || loadingZonas) && (
+            {(loadingEquipos || loadingUsuarios || loadingZonas || loadingPredios || loadingCanchas) && (
                 <div className="mb-4">
                     <div className="bg-[var(--import)]/10 border border-[var(--import)]/30 rounded-lg p-3">
                         <p className="text-[var(--import)] text-sm flex items-center gap-2">
@@ -369,6 +470,47 @@ export default function ModalActualizarPartido({
                         </p>
                     </div>
                 </div>
+            )}
+
+            {/* Advertencias de disponibilidad de cancha */}
+            {selectedCancha && selectedFecha && selectedHora && (
+                <>
+                    {loadingDisponibilidad ? (
+                        <div className="mb-4">
+                            <div className="bg-[var(--blue)]/10 border border-[var(--blue)]/30 rounded-lg p-3">
+                                <p className="text-[var(--blue)] text-sm flex items-center gap-2">
+                                    <div className="w-4 h-4 border-2 border-[var(--blue)] border-t-transparent rounded-full animate-spin" />
+                                    Verificando disponibilidad de cancha...
+                                </p>
+                            </div>
+                        </div>
+                    ) : disponibilidadCancha?.advertencia ? (
+                        <div className="mb-4">
+                            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+                                <h4 className="text-yellow-500 font-medium text-sm mb-1">
+                                    ⚠️ Advertencia
+                                </h4>
+                                <p className="text-[var(--gray-100)] text-sm whitespace-pre-line">
+                                    {disponibilidadCancha.advertencia}
+                                </p>
+                                {disponibilidadCancha.conflictos && disponibilidadCancha.conflictos.length > 0 && (
+                                    <div className="mt-2 pt-2 border-t border-yellow-500/20">
+                                        <p className="text-[var(--gray-100)] text-xs font-medium mb-1">
+                                            Partidos conflictivos:
+                                        </p>
+                                        <ul className="text-[var(--gray-100)] text-xs space-y-1">
+                                            {disponibilidadCancha.conflictos.map((conflicto) => (
+                                                <li key={conflicto.id_partido}>
+                                                    • Jornada {conflicto.jornada || 'N/A'}: {conflicto.equipos?.local || 'N/A'} vs {conflicto.equipos?.visita || 'N/A'} ({conflicto.hora_inicio} - {conflicto.hora_fin})
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ) : null}
+                </>
             )}
 
             {isUpdating && (

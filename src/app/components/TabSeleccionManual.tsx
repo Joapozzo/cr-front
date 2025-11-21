@@ -172,20 +172,17 @@ const TabSeleccionManual = ({
                         <label className="block text-sm font-medium text-[var(--white)]">
                             Buscar equipos disponibles
                         </label>
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--gray-100)]" />
-                            <Input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => {
-                                    setSearchQuery(e.target.value);
-                                    setNewEquipoName(e.target.value);
-                                }}
-                                placeholder="Buscar por nombre de equipo (mínimo 2 caracteres)..."
-                                className="pl-10"
-                                disabled={isLoading}
-                            />
-                        </div>
+                        <Input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                setNewEquipoName(e.target.value);
+                            }}
+                            icon={<Search className="w-4 h-4" />}
+                            placeholder="Buscar por nombre de equipo (mínimo 2 caracteres)..."
+                            disabled={isLoading}
+                        />
                     </div>
 
                     {/* Resultados de búsqueda */}
@@ -207,38 +204,58 @@ const TabSeleccionManual = ({
                                 </div>
                             ) : equiposEncontrados.length > 0 ? (
                                 <div className="space-y-2 max-h-[300px] overflow-y-auto">
-                                    {equiposEncontrados.map((equipo) => (
-                                        <div
-                                            key={equipo.id_equipo}
-                                            onClick={() => handleSelectEquipo(equipo.id_equipo)}
-                                            className={`p-3 rounded-lg border cursor-pointer transition-colors ${
-                                                equipoBeingProcessed === equipo.id_equipo
-                                                    ? 'border-[var(--green)] bg-[var(--green)]/10'
-                                                    : 'border-[var(--gray-300)] hover:border-[var(--green)] hover:bg-[var(--green)]/5'
-                                            } ${isLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                {equipo.img ? (
-                                                    // eslint-disable-next-line @next/next/no-img-element
-                                                    <img
-                                                        src={equipo.img}
-                                                        alt={equipo.nombre}
-                                                        className="w-10 h-10 rounded-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="w-10 h-10 bg-[var(--gray-200)] rounded-full flex items-center justify-center flex-shrink-0">
-                                                        <Shield className="w-5 h-5 text-[var(--gray-100)]" />
+                                    {equiposEncontrados.map((equipo) => {
+                                        const isApto = equipo.apto !== false; // Si no viene el campo, asumir apto
+                                        const isDisabled = !isApto || isLoading || equipoBeingProcessed !== null;
+                                        
+                                        return (
+                                            <div
+                                                key={equipo.id_equipo}
+                                                onClick={() => {
+                                                    if (!isDisabled) {
+                                                        handleSelectEquipo(equipo.id_equipo);
+                                                    }
+                                                }}
+                                                className={`p-3 rounded-lg border transition-colors ${
+                                                    isDisabled
+                                                        ? 'border-[var(--gray-400)] bg-[var(--gray-400)]/10 opacity-50 cursor-not-allowed'
+                                                        : equipoBeingProcessed === equipo.id_equipo
+                                                        ? 'border-[var(--green)] bg-[var(--green)]/10 cursor-pointer'
+                                                        : 'border-[var(--gray-300)] hover:border-[var(--green)] hover:bg-[var(--green)]/5 cursor-pointer'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    {equipo.img ? (
+                                                        // eslint-disable-next-line @next/next/no-img-element
+                                                        <img
+                                                            src={equipo.img}
+                                                            alt={equipo.nombre}
+                                                            className="w-10 h-10 rounded-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-10 h-10 bg-[var(--gray-200)] rounded-full flex items-center justify-center flex-shrink-0">
+                                                            <Shield className="w-5 h-5 text-[var(--gray-100)]" />
+                                                        </div>
+                                                    )}
+                                                    <div className="flex-1">
+                                                        <p className={`font-medium ${isApto ? 'text-[var(--white)]' : 'text-[var(--gray-100)]'}`}>
+                                                            {equipo.nombre}
+                                                        </p>
+                                                        {!isApto && (
+                                                            <p className="text-xs text-[var(--red)] mt-1">
+                                                                No disponible (ya está asignado o expulsado)
+                                                            </p>
+                                                        )}
                                                     </div>
-                                                )}
-                                                <div className="flex-1">
-                                                    <p className="text-[var(--white)] font-medium">{equipo.nombre}</p>
+                                                    {equipoBeingProcessed === equipo.id_equipo ? (
+                                                        <Loader2 className="w-4 h-4 animate-spin text-[var(--green)]" />
+                                                    ) : !isApto && (
+                                                        <AlertTriangle className="w-4 h-4 text-[var(--red)]" />
+                                                    )}
                                                 </div>
-                                                {equipoBeingProcessed === equipo.id_equipo && (
-                                                    <Loader2 className="w-4 h-4 animate-spin text-[var(--green)]" />
-                                                )}
                                             </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             ) : null}
 
@@ -270,7 +287,7 @@ const TabSeleccionManual = ({
                                                 onClick={handleCrearYAsignarEquipo}
                                                 disabled={isLoading || !newEquipoName.trim()}
                                                 variant="success"
-                                                className='flex items-center gap-1 text-sm justify-center min-w-[130px]'
+                                                className='flex items-center gap-1 text-sm justify-center min-w-[150px]'
                                             >
                                                 {isCreating ? (
                                                     <>
@@ -280,7 +297,7 @@ const TabSeleccionManual = ({
                                                 ) : (
                                                     <>
                                                         <Plus className="w-4 h-4" />
-                                                        Crear y Asignar
+                                                        Crear
                                                     </>
                                                 )}
                                             </Button>

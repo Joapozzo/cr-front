@@ -2,7 +2,7 @@ import { Plus, User, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import CardCanchaFutbol from './CardCanchaFutbol';
 import ModalSeleccionarJugador from './modals/ModalSeleccionarJugador';
-import { usePosiciones } from '../hooks/usePosiciones';
+import { usePosiciones } from '../hooks/usePosicionesJugador';
 import { useCategoriaStore } from '../stores/categoriaStore';
 import { useAgregarJugadorDreamteam } from '../hooks/useDreamteam';
 import toast from 'react-hot-toast';

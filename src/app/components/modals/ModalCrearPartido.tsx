@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { z } from 'zod';
-import { FormModal, FormField } from '../modals/ModalAdmin';
+import { FormModal, FormField, FormDataValue } from '../modals/ModalAdmin';
 import { useEquiposPorCategoriaEdicion } from '@/app/hooks/useEquipos';
 import { useObtenerPlanilleros } from '@/app/hooks/useUsuarios';
 import { useObtenerTodasLasZonas } from '@/app/hooks/useZonas';
 import { useCrearPartido } from '@/app/hooks/usePartidosAdmin';
+import { usePredios, useCanchasPorPredio } from '@/app/hooks/usePredios';
+import { useVerificarDisponibilidadCancha } from '@/app/hooks/useCanchas';
 import { useCategoriaStore } from '@/app/stores/categoriaStore';
 import toast from 'react-hot-toast';
 import { Usuario } from '@/app/types/user';
@@ -24,7 +26,8 @@ const partidoSchema = z.object({
     jornada: z.number().min(1, 'La jornada debe ser mayor a 0'),
     dia: z.string().min(1, 'Debe seleccionar una fecha'),
     hora: z.string().min(1, 'Debe seleccionar una hora'),
-    cancha: z.number().min(1, 'Debe seleccionar una cancha'),
+    id_predio: z.number().min(1, 'Debe seleccionar un predio'),
+    id_cancha: z.number().min(1, 'Debe seleccionar una cancha'),
     arbitro: z.string().optional(),
     id_planillero: z.string().optional(),
     id_zona: z.number().min(1, 'Debe seleccionar una zona'),
@@ -48,6 +51,33 @@ export default function ModalCrearPartido({
     const { data: equipos, isLoading: loadingEquipos } = useEquiposPorCategoriaEdicion(idCategoriaEdicion);
     const { data: usuarios, isLoading: loadingUsuarios } = useObtenerPlanilleros();
     const { data: zonas, isLoading: loadingZonas } = useObtenerTodasLasZonas(idCategoriaEdicion);
+    
+    // Obtener predios activos
+    const { data: predios = [], isLoading: loadingPredios } = usePredios(false);
+    const prediosActivos = predios.filter(p => p.estado === 'A');
+    
+    // Estados para predio y cancha seleccionados
+    const [selectedPredio, setSelectedPredio] = useState<number | null>(null);
+    const [selectedCancha, setSelectedCancha] = useState<number | null>(null);
+    const [selectedFecha, setSelectedFecha] = useState<string | null>(null);
+    const [selectedHora, setSelectedHora] = useState<string | null>(null);
+    
+    // Obtener canchas del predio seleccionado (solo activas)
+    const { data: canchasDelPredio = [], isLoading: loadingCanchas } = useCanchasPorPredio(
+        selectedPredio || 0,
+        false, // No incluir inactivas
+        { enabled: !!selectedPredio }
+    );
+    const canchasActivas = canchasDelPredio.filter(c => c.estado === 'A');
+    
+    // Verificar disponibilidad de cancha cuando se seleccionan fecha, hora y cancha
+    const { data: disponibilidadCancha, isLoading: loadingDisponibilidad } = useVerificarDisponibilidadCancha(
+        selectedFecha,
+        selectedHora,
+        idCategoriaEdicion || null,
+        selectedCancha,
+        undefined // No excluir ningún partido al crear
+    );
 
     const {
         mutate: crearPartido,
@@ -68,8 +98,8 @@ export default function ModalCrearPartido({
     } | null>(null);
 
     const zonaSeleccionada = zonas?.find(z => z.id_zona === selectedZona);
-    const esZonaTipo1 = zonaSeleccionada?.id_tipo_zona === 1; // Eliminación directa
-    const esZonaTipo2 = zonaSeleccionada?.id_tipo_zona === 2; // Todos contra todos
+    const esZonaTipo1 = zonaSeleccionada?.id_tipo_zona === 2; // Eliminación directa
+    const esZonaTipo2 = zonaSeleccionada?.id_tipo_zona === 1; // Todos contra todos
 
     const getEquiposDisponibles = () => {
         if (!equipos?.equipos) return [];
@@ -110,25 +140,34 @@ export default function ModalCrearPartido({
         !selectedLocal || equipo.value !== selectedLocal
     );
 
-    const planillerosOptions = usuarios?.map((usuario: Usuario) => ({
-        value: usuario.uid,
-        label: `${usuario.nombre} ${usuario.apellido}`
-    })) || [];
+    const fields: FormField[] = useMemo(() => {
+        // Opciones de planilleros
+        const planillerosOptions = usuarios?.map((usuario: Usuario) => ({
+            value: usuario.uid,
+            label: `${usuario.nombre} ${usuario.apellido}`
+        })) || [];
 
-    // ✅ Filtrar zonas para mostrar solo tipo 2 (todos contra todos)
-    const zonasDisponibles = zonas?.filter(zona => zona.id_tipo_zona === 2) || [];
-    
-    const zonasOptions = zonasDisponibles.map(zona => ({
-        value: zona.id_zona,
-        label: zona.nombre || `Zona ${zona.id_zona}`
-    }));
+        // ✅ Filtrar zonas para mostrar solo tipo 2 (todos contra todos)
+        const zonasDisponibles = zonas?.filter(zona => zona.id_tipo_zona === 1) || [];
+        
+        const zonasOptions = zonasDisponibles.map(zona => ({
+            value: zona.id_zona,
+            label: zona.nombre || `Zona ${zona.id_zona}`
+        }));
 
-    const canchasOptions = Array.from({ length: 10 }, (_, i) => ({
-        value: i + 1,
-        label: `Cancha ${i + 1}`
-    }));
+        // Opciones de predios activos
+        const prediosOptions = prediosActivos.map(predio => ({
+            value: predio.id_predio,
+            label: predio.nombre
+        }));
 
-    const fields: FormField[] = [
+        // Opciones de canchas activas del predio seleccionado
+        const canchasOptions = canchasActivas.map(cancha => ({
+            value: cancha.id_cancha,
+            label: `${cancha.nombre} - ${cancha.predio?.nombre || ''}`
+        }));
+
+        const campos: FormField[] = [
         {
             name: 'id_zona',
             label: 'Zona',
@@ -183,12 +222,27 @@ export default function ModalCrearPartido({
             required: true
         },
         {
-            name: 'cancha',
+            name: 'id_predio',
+            label: 'Predio',
+            type: 'select',
+            required: true,
+            options: prediosOptions,
+            placeholder: loadingPredios ? 'Cargando predios...' : 
+                        prediosOptions.length === 0 ? 'No hay predios disponibles' :
+                        'Seleccionar predio',
+            disabled: loadingPredios || prediosOptions.length === 0
+        },
+        {
+            name: 'id_cancha',
             label: 'Cancha',
             type: 'select',
             required: true,
             options: canchasOptions,
-            placeholder: 'Seleccionar cancha'
+            placeholder: !selectedPredio ? 'Primero seleccione un predio' :
+                        loadingCanchas ? 'Cargando canchas...' :
+                        canchasOptions.length === 0 ? 'No hay canchas disponibles en este predio' :
+                        'Seleccionar cancha',
+            disabled: !selectedPredio || loadingCanchas || canchasOptions.length === 0
         },
         {
             name: 'arbitro',
@@ -210,39 +264,62 @@ export default function ModalCrearPartido({
         }
     ];
 
-    // ✅ Solo agregar campo interzonal si la zona es tipo 2
-    if (esZonaTipo2) {
-        fields.push({
-            name: 'interzonal',
-            label: 'Partido Interzonal',
-            type: 'switch'
-        });
-    }
+        // ✅ Solo agregar campo interzonal si la zona es tipo 2
+        if (esZonaTipo2) {
+            campos.push({
+                name: 'interzonal',
+                label: 'Partido Interzonal',
+                type: 'switch'
+            });
+        }
 
-    // ✅ Ventaja deportiva solo para zona tipo 1 (pero no deberíamos llegar aquí si bloqueamos tipo 1)
-    if (esZonaTipo1) {
-        fields.push({
-            name: 'ventaja_deportiva',
-            label: 'Ventaja Deportiva',
-            type: 'switch',
-            placeholder: 'Número de ventaja deportiva (opcional)'
-        });
-    }
+        // ✅ Ventaja deportiva solo para zona tipo 1 (pero no deberíamos llegar aquí si bloqueamos tipo 1)
+        if (esZonaTipo1) {
+            campos.push({
+                name: 'ventaja_deportiva',
+                label: 'Ventaja Deportiva',
+                type: 'switch',
+                placeholder: 'Número de ventaja deportiva (opcional)'
+            });
+        }
 
-    const handleSubmit = async (data: Record<string, any>) => {
+        return campos;
+    }, [
+        selectedZona,
+        esZonaTipo1,
+        esZonaTipo2,
+        zonas,
+        equiposLocalOptions,
+        equiposVisitanteOptions,
+        prediosActivos,
+        canchasActivas,
+        loadingZonas,
+        loadingEquipos,
+        loadingPredios,
+        loadingCanchas,
+        selectedPredio,
+        usuarios,
+        loadingUsuarios
+    ]);
+
+    const handleSubmit = async (data: Record<string, FormDataValue>) => {
+        // Convertir dia de string a Date
+        const diaString = typeof data.dia === 'string' ? data.dia : String(data.dia || '');
+        const diaDate = diaString ? new Date(diaString) : undefined;
+
         const partidoData = {
             id_equipolocal: Number(data.id_equipolocal),
             id_equipovisita: Number(data.id_equipovisita),
             jornada: Number(data.jornada),
-            dia: data.dia,
-            hora: data.hora,
-            cancha: Number(data.cancha),
-            arbitro: data.arbitro || undefined,
-            id_planillero: data.id_planillero || undefined,
+            dia: diaDate,
+            hora: typeof data.hora === 'string' ? data.hora : String(data.hora || ''),
+            id_cancha: Number(data.id_cancha),
+            arbitro: data.arbitro ? String(data.arbitro) : undefined,
+            id_planillero: data.id_planillero ? String(data.id_planillero) : undefined,
             id_zona: Number(data.id_zona),
             destacado: Boolean(data.destacado),
             interzonal: Boolean(data.interzonal),
-            ventaja_deportiva: Boolean(data.ventaja_deportiva),
+            ventaja_deportiva: data.ventaja_deportiva ? Boolean(data.ventaja_deportiva) : undefined,
         };
 
         return new Promise<void>((resolve, reject) => {
@@ -255,7 +332,7 @@ export default function ModalCrearPartido({
     };
 
     // Manejar cambios en los campos
-    const handleFieldChange = (name: string, value: any) => {
+    const handleFieldChange = (name: string, value: FormDataValue) => {
         if (name === 'id_zona') {
             const newZona = Number(value);
             setSelectedZona(newZona);
@@ -272,6 +349,20 @@ export default function ModalCrearPartido({
             // Resetear equipos cuando cambia interzonal
             setSelectedLocal(null);
             setSelectedVisitante(null);
+        } else if (name === 'id_predio') {
+            const newPredio = Number(value);
+            setSelectedPredio(newPredio);
+            // Resetear selección de cancha cuando cambia el predio
+            setSelectedCancha(null);
+        } else if (name === 'id_cancha') {
+            setSelectedCancha(Number(value) || null);
+        } else if (name === 'dia') {
+            // Convertir fecha a formato YYYY-MM-DD si viene como Date o string
+            const fechaValue = typeof value === 'string' ? value : value instanceof Date ? value.toISOString().split('T')[0] : null;
+            setSelectedFecha(fechaValue);
+        } else if (name === 'hora') {
+            const horaValue = typeof value === 'string' ? value : null;
+            setSelectedHora(horaValue);
         }
     };
 
@@ -304,6 +395,10 @@ export default function ModalCrearPartido({
             setSelectedLocal(null);
             setSelectedVisitante(null);
             setIsInterzonal(false);
+            setSelectedPredio(null);
+            setSelectedCancha(null);
+            setSelectedFecha(null);
+            setSelectedHora(null);
             setPromiseResolvers(null);
             resetMutation();
         }
@@ -350,14 +445,14 @@ export default function ModalCrearPartido({
                         </h4>
                         <p className="text-[var(--gray-100)] text-sm">
                             No se pueden crear partidos manualmente para zonas de eliminación directa.
-                            Por favor, seleccione una zona de "Todos contra todos".
+                            Por favor, seleccione una zona de &quot;Todos contra todos&quot;.
                         </p>
                     </div>
                 </div>
             )}
 
             {/* Indicadores de carga */}
-            {(loadingEquipos || loadingUsuarios || loadingZonas) && (
+            {(loadingEquipos || loadingUsuarios || loadingZonas || loadingPredios || loadingCanchas) && (
                 <div className="mb-4">
                     <div className="bg-[var(--import)]/10 border border-[var(--import)]/30 rounded-lg p-3">
                         <div className="text-[var(--import)] text-sm flex items-center gap-2">
@@ -366,6 +461,47 @@ export default function ModalCrearPartido({
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Advertencias de disponibilidad de cancha */}
+            {selectedCancha && selectedFecha && selectedHora && (
+                <>
+                    {loadingDisponibilidad ? (
+                        <div className="mb-4">
+                            <div className="bg-[var(--blue)]/10 border border-[var(--blue)]/30 rounded-lg p-3">
+                                <p className="text-[var(--blue)] text-sm flex items-center gap-2">
+                                    <div className="w-4 h-4 border-2 border-[var(--blue)] border-t-transparent rounded-full animate-spin" />
+                                    Verificando disponibilidad de cancha...
+                                </p>
+                            </div>
+                        </div>
+                    ) : disponibilidadCancha?.advertencia ? (
+                        <div className="mb-4">
+                            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+                                <h4 className="text-yellow-500 font-medium text-sm mb-1">
+                                    ⚠️ Advertencia
+                                </h4>
+                                <p className="text-[var(--gray-100)] text-sm whitespace-pre-line">
+                                    {disponibilidadCancha.advertencia}
+                                </p>
+                                {disponibilidadCancha.conflictos && disponibilidadCancha.conflictos.length > 0 && (
+                                    <div className="mt-2 pt-2 border-t border-yellow-500/20">
+                                        <p className="text-[var(--gray-100)] text-xs font-medium mb-1">
+                                            Partidos conflictivos:
+                                        </p>
+                                        <ul className="text-[var(--gray-100)] text-xs space-y-1">
+                                            {disponibilidadCancha.conflictos.map((conflicto) => (
+                                                <li key={conflicto.id_partido}>
+                                                    • Jornada {conflicto.jornada || 'N/A'}: {conflicto.equipos?.local || 'N/A'} vs {conflicto.equipos?.visita || 'N/A'} ({conflicto.hora_inicio} - {conflicto.hora_fin})
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ) : null}
+                </>
             )}
 
             {isCreating && (

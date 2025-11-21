@@ -110,9 +110,12 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: any) => void, onEditar
         {
             key: "cancha",
             label: "CANCHA",
-            render: (value: string, row: any) => (
-                <span className="text-[var(--gray-100)]">Cancha {value}</span>
-            ),
+            render: (value: any, row: any) => {
+                const canchaNombre = row.cancha?.nombre || value || 'Sin cancha';
+                return (
+                    <span className="text-[var(--gray-100)]">{canchaNombre}</span>
+                );
+            },
         },
         {
             key: "actions",

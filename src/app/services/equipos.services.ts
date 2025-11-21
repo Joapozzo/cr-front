@@ -1,5 +1,5 @@
 import { api } from "../lib/api";
-import { EquipoActual, Equipo, CrearEquipoInput, EquipoResponse, EquiposPorCategoriaResponse, BuscarEquiposDisponiblesResponse, EquipoExpulsadoResponse, BuscarEquiposEdicionResponse, ActualizarEquipoInput, ActualizarEquipoResponse } from "../types/equipo";
+import { EquipoActual, Equipo, CrearEquipoInput, EquipoResponse, EquiposPorCategoriaResponse, BuscarEquiposDisponiblesResponse, EquipoExpulsadoResponse, BuscarEquiposEdicionResponse, ActualizarEquipoInput, ActualizarEquipoResponse, EquipoDisponible } from "../types/equipo";
 import { UltimoYProximoPartidoResponse } from "../types/partido";
 import { EstadisticasPlantelResponse } from "../types/plantel";
 import { CancelarInvitacionParams, ConfirmarSolicitudParams, EnviarInvitacionParams, ObtenerSolicitudesEquipoResponse, RechazarSolicitudParams, SolicitudBajaResponse } from "../types/solicitudes";
@@ -36,22 +36,16 @@ export const equiposService = {
     crearEquipo: async (data: CrearEquipoInput): Promise<EquipoResponse> => {
         try {
             return await api.post<EquipoResponse>('/admin/equipos', data);
-        } catch (error: any) {
-            if (error.response?.status === 400) {
-                const backendErrors = error.response.data.errors;
-                if (backendErrors && Array.isArray(backendErrors)) {
-                    const errorMessages = backendErrors.map((err: any) => err.message).join(', ');
-                    throw new Error(errorMessages);
-                }
-                throw new Error(error.response.data.message || 'Datos inválidos');
+        } catch (error: unknown) {
+            // api.ts ya procesa el error y extrae el mensaje de errorData.error || errorData.message
+            // El mensaje del backend ya está en error.message
+            if (error instanceof Error) {
+                // El mensaje del backend ya viene procesado desde api.ts
+                throw new Error(error.message);
             }
-
-            if (error.response?.status === 409) {
-                throw new Error(error.response.data.message || 'Ya existe un equipo con ese nombre');
-            }
-
+            
             console.error('Error al crear equipo:', error);
-            throw new Error(error.response?.data?.message || 'No se pudo crear el equipo');
+            throw new Error('No se pudo crear el equipo');
         }
     },
 
@@ -72,7 +66,7 @@ export const equiposService = {
         query: string,
         id_edicion: number,
         limit: number = 10
-    ): Promise<{ equipos: Equipo[]; total: number }> => {
+    ): Promise<{ equipos: EquipoDisponible[]; total: number }> => {
         try {
             if (query.trim().length < 2) {
                 return { equipos: [], total: 0 };

@@ -52,10 +52,14 @@ export interface ActualizarEquipoResponse {
     data: Equipo;
 }
 
+export interface EquipoDisponible extends Equipo {
+    apto: boolean;
+}
+
 export interface BuscarEquiposDisponiblesResponse {
     message: string;
     data: {
-        equipos: Equipo[];
+        equipos: EquipoDisponible[];
         total: number;
     };
 }

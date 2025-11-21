@@ -106,7 +106,7 @@ const CardVacanteZona = ({
     return (
         <>
             <div
-                className={`relative p-4 rounded-lg transition-colors group border hover:opacity-90 ${vacanteInfo.tipo === 'equipo_directo'
+                className={`relative p-4 rounded-lg transition-colors group border hover:opacity-50 ${vacanteInfo.tipo === 'equipo_directo'
                         ? 'cursor-pointer'
                         : vacanteInfo.tipo === 'automatizacion_posicion' || vacanteInfo.tipo === 'automatizacion_partido'
                             ? 'cursor-pointer'

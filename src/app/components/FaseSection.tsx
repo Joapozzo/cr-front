@@ -150,46 +150,48 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
                 </DropdownMenu>
             </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
-                {loadingZonas ? (
-                    <div className="flex items-center justify-center py-12">
-                        <div className="flex items-center gap-3 text-[var(--gray-100)]">
-                            <div className="w-6 h-6 border-2 border-[var(--green)] border-t-transparent rounded-full animate-spin" />
-                            <span>Cargando zonas...</span>
-                        </div>
+            {loadingZonas ? (
+                <div className="flex items-center justify-center py-12 w-full min-h-[200px]">
+                    <div className="flex items-center gap-3 text-[var(--gray-100)]">
+                        <div className="w-6 h-6 border-2 border-[var(--green)] border-t-transparent rounded-full animate-spin" />
+                        <span>Cargando zonas...</span>
                     </div>
-                ) : errorZonas ? (
-                    <div className="text-center py-12 bg-[var(--gray-400)] rounded-lg border border-[var(--red)]">
-                        <div className="flex flex-col items-center gap-4">
-                            <div>
-                                <h3 className="text-[var(--red)] font-medium mb-2">
-                                    Error al cargar las zonas
-                                </h3>
-                                <p className="text-[var(--gray-100)] text-sm">
-                                    {errorZonas.message}
-                                </p>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
+                    {errorZonas ? (
+                        <div className="col-span-full text-center py-12 bg-[var(--gray-400)] rounded-lg border border-[var(--red)]">
+                            <div className="flex flex-col items-center gap-4">
+                                <div>
+                                    <h3 className="text-[var(--red)] font-medium mb-2">
+                                        Error al cargar las zonas
+                                    </h3>
+                                    <p className="text-[var(--gray-100)] text-sm">
+                                        {errorZonas.message}
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ) : zonas && zonas.length > 0 ? (
-                    zonas.map((zona) => (
-                        <ZonaCard key={zona.id_zona} zona={zona} />
-                    ))
-                ) : (
-                    <div className="text-center py-12 bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
-                        <div className="flex flex-col items-center gap-4">
-                            <div>
-                                <h3 className="text-[var(--white)] font-medium mb-2">
-                                    No hay zonas para mostrar
-                                </h3>
-                                <p className="text-[var(--gray-100)] text-sm max-w-md">
-                                    Comienza creando las zonas para esta fase
-                                </p>
+                    ) : zonas && zonas.length > 0 ? (
+                        zonas.map((zona) => (
+                            <ZonaCard key={zona.id_zona} zona={zona} />
+                        ))
+                    ) : (
+                        <div className="col-span-full text-center py-12 bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
+                            <div className="flex flex-col items-center gap-4">
+                                <div>
+                                    <h3 className="text-[var(--white)] font-medium mb-2">
+                                        No hay zonas para mostrar
+                                    </h3>
+                                    <p className="text-[var(--gray-100)] text-sm max-w-md">
+                                        Comienza creando las zonas para esta fase
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
-            </div>
+                    )}
+                </div>
+            )}
 
             <FormModal
                 isOpen={modals.create}

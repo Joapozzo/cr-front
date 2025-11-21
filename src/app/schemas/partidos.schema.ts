@@ -6,7 +6,7 @@ export const PostPartidoSchema = z.object({
     jornada: z.number().min(1),
     dia: z.coerce.date().optional(),
     hora: z.string().optional(),
-    cancha: z.number().optional(),
+    id_cancha: z.number().optional(), // Cambiado de 'cancha' a 'id_cancha'
     arbitro: z.string().optional(),
     id_planillero: z.string().optional(),
     id_zona: z.number().optional(),
@@ -26,7 +26,7 @@ export const UpdatePartidoSchema = z.object({
     jornada: z.number().min(1).optional(),
     dia: z.coerce.date().optional(),
     hora: z.string().optional(),
-    cancha: z.number().optional(),
+    id_cancha: z.number().optional(), // Cambiado de 'cancha' a 'id_cancha'
     arbitro: z.string().optional(),
     id_planillero: z.string().optional(),
     id_zona: z.number().optional(),
@@ -50,7 +50,16 @@ export const PartidoResponseSchema = z.object({
     goles_visita: z.number().optional(),
     pen_local: z.number().optional(),
     pen_visita: z.number().optional(),
-    cancha: z.string().optional(),
+    cancha: z.object({
+        id_cancha: z.number(),
+        nombre: z.string(),
+        estado: z.string(),
+        id_predio: z.number(),
+        predio: z.object({
+            id_predio: z.number(),
+            nombre: z.string(),
+        }).optional(),
+    }).nullable().optional(),
     arbitro: z.string().optional(),
     destacado: z.boolean(),
     descripcion: z.string().optional(),

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { equiposService } from '../services/equipos.services';
-import { EquipoActual, Equipo, EquiposPorCategoriaResponse, EquipoExpulsadoResponse, ActualizarEquipoInput } from '../types/equipo';
+import { EquipoActual, Equipo, EquiposPorCategoriaResponse, EquipoExpulsadoResponse, ActualizarEquipoInput, EquipoDisponible } from '../types/equipo';
 
 export const equiposKeys = {
     all: ['equipos'] as const,
@@ -144,7 +144,7 @@ export const useBuscarEquiposDisponibles = (
     query: string,
     id_edicion: number,
     limit: number = 10,
-    options?: Omit<UseQueryOptions<{ equipos: Equipo[]; total: number }, Error>, 'queryKey' | 'queryFn'>
+    options?: Omit<UseQueryOptions<{ equipos: EquipoDisponible[]; total: number }, Error>, 'queryKey' | 'queryFn'>
 ) => {
     return useQuery({
         queryKey: equiposKeys.buscarDisponibles(query, id_edicion),

@@ -15,6 +15,7 @@ import InstruccionesDreamTeam from '@/app/components/InstruccionesDreamTeam';
 import GetPartidosColumns from '@/app/components/columns/PartidosColumns';
 import ModalCrearPartido from '@/app/components/modals/ModalCrearPartido';
 import ModalActualizarPartido from '@/app/components/modals/ModalActualizarPartido';
+import ModalGenerarFixture from '@/app/components/modals/ModalGenerarFixture';
 import { usePartidosPorJornadaYCategoria, useEliminarPartido } from '@/app/hooks/usePartidosAdmin';
 import { useCategoriaStore } from '@/app/stores/categoriaStore';
 import { useModals, DeleteModal } from "@/app/components/modals/ModalAdmin";
@@ -76,6 +77,7 @@ export default function FixtureDreamTeamPage() {
 
     const [vistaActual, setVistaActual] = useState<'fixture' | 'dreamteam'>('fixture');
     const [isRefetch, setIsRefetch] = useState(false);
+    const [isModalGenerarFixtureOpen, setIsModalGenerarFixtureOpen] = useState(false);
     const [partidoAEliminar, setPartidoAEliminar] = useState<Partido | null>(null);
     const [partidoAEditar, setPartidoAEditar] = useState<Partido | null>(null);
     const [partidoDescripcion, setPartidoDescripcion] = useState<Partido | null>(null);
@@ -265,6 +267,15 @@ export default function FixtureDreamTeamPage() {
                         Crear partido
                     </Button>
                     <Button
+                        variant="import"
+                        onClick={() => setIsModalGenerarFixtureOpen(true)}
+                        className="flex items-center gap-2"
+                        disabled={!categoriaSeleccionada}
+                    >
+                        <Calendar className="w-4 h-4" />
+                        Automatizar Fixture
+                    </Button>
+                    <Button
                         variant="default"
                         onClick={handleRefresh}
                         className="flex items-center gap-2"
@@ -368,7 +379,7 @@ export default function FixtureDreamTeamPage() {
                 title="Eliminar Partido"
                 message="¿Estás seguro de que deseas eliminar este partido?"
                 itemName={partidoAEliminar ?
-                    `${partidoAEliminar.equipoLocal.nombre} vs ${partidoAEliminar.equipoVisita.nombre} - Fecha ${partidoAEliminar.jornada}`
+                    `${partidoAEliminar?.equipoLocal?.nombre || 'Equipo 1'} vs ${partidoAEliminar?.equipoVisita?.nombre || 'Equipo 2'} - Fecha ${partidoAEliminar?.jornada}`
                     : ''
                 }
                 onConfirm={confirmarEliminacion}
@@ -382,6 +393,14 @@ export default function FixtureDreamTeamPage() {
                     setPartidoDescripcion(null);
                 }}
                 partido={partidoDescripcion}
+            />
+            <ModalGenerarFixture
+                isOpen={isModalGenerarFixtureOpen}
+                onClose={() => setIsModalGenerarFixtureOpen(false)}
+                onSuccess={() => {
+                    refetch();
+                    setIsModalGenerarFixtureOpen(false);
+                }}
             />
 
             {/* Mostrar errores de carga si existen */}

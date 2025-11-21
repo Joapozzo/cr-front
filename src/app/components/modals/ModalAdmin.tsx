@@ -28,7 +28,7 @@ interface FormField {
     disabled?: boolean;
 }
 
-type FormDataValue = string | number | boolean | 'S' | 'N' | File | null | undefined;
+export type FormDataValue = string | number | boolean | 'S' | 'N' | File | null | undefined;
 
 interface FormModalProps {
     isOpen: boolean;
@@ -648,6 +648,9 @@ const useModals = () => {
         delete: false,
         import: false,
         info: false,
+        createCancha: false,
+        editCancha: false,
+        deleteCancha: false,
     });
 
     const openModal = (type: keyof typeof modals) => {
@@ -659,7 +662,16 @@ const useModals = () => {
     };
 
     const closeAllModals = () => {
-        setModals({ create: false, edit: false, delete: false, import: false, info: false });
+        setModals({ 
+            create: false, 
+            edit: false, 
+            delete: false, 
+            import: false, 
+            info: false,
+            createCancha: false,
+            editCancha: false,
+            deleteCancha: false,
+        });
     };
 
     return {

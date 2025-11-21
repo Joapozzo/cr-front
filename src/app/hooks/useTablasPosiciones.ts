@@ -1,19 +1,23 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { tablasService, TablasPosicionesPorEquiposResponse } from '../services/posiciones.services';
 
-// Query Keys para posiciones
-export const posicionesKeys = {
-    all: ['posiciones'] as const,
-    tablas: () => [...posicionesKeys.all, 'tablas'] as const,
-    tablasPorEquipos: () => [...posicionesKeys.tablas(), 'por-equipos'] as const,
+// Query Keys para tablas de posiciones (rankings de equipos)
+export const tablasPosicionesKeys = {
+    all: ['tablas-posiciones'] as const,
+    tablas: () => [...tablasPosicionesKeys.all, 'tablas'] as const,
+    tablasPorEquipos: () => [...tablasPosicionesKeys.tablas(), 'por-equipos'] as const,
     tablasPorEquiposHome: (limitPosiciones?: number) => 
-        [...posicionesKeys.tablasPorEquipos(), 'home', limitPosiciones] as const,
+        [...tablasPosicionesKeys.tablasPorEquipos(), 'home', limitPosiciones] as const,
     tablasPorEquiposCompleta: (page?: number) => 
-        [...posicionesKeys.tablasPorEquipos(), 'completa', page] as const,
+        [...tablasPosicionesKeys.tablasPorEquipos(), 'completa', page] as const,
 };
+
+// Mantener compatibilidad con código existente (exportar también como posicionesKeys)
+export const posicionesKeys = tablasPosicionesKeys;
 
 /**
  * Hook para obtener tablas de posiciones por equipos del usuario
+ * (Rankings de equipos en las zonas)
  * @param limitPosiciones - Cantidad máxima de posiciones por tabla (para home: 6)
  * @param limitTablas - Cantidad máxima de tablas a retornar
  * @param page - Número de página para paginación
@@ -29,8 +33,8 @@ export const useTablasPosicionesPorEquipos = (
 ) => {
     return useQuery({
         queryKey: limitPosiciones === 6 
-            ? posicionesKeys.tablasPorEquiposHome(limitPosiciones)
-            : posicionesKeys.tablasPorEquiposCompleta(page),
+            ? tablasPosicionesKeys.tablasPorEquiposHome(limitPosiciones)
+            : tablasPosicionesKeys.tablasPorEquiposCompleta(page),
         queryFn: () => tablasService.obtenerTablasPosicionesPorEquipos(
             limitPosiciones,
             limitTablas,
@@ -46,3 +50,4 @@ export const useTablasPosicionesPorEquipos = (
         ...options,
     });
 };
+
