@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fasesService } from '../services/fases.services';
 import { FaseResponse } from '../types/fase';
+import { zonasKeys } from './useZonas';
 
 // Query keys
 export const FASES_KEYS = {
@@ -91,6 +92,7 @@ export const useEliminarFase = () => {
 };
 
 export const useFases = (id_categoria_edicion: number) => {
+    const queryClient = useQueryClient();
     const fasesQuery = useFasesPorCategoria(id_categoria_edicion);
     const crearFaseMutation = useCrearFase();
     const eliminarFaseMutation = useEliminarFase();
@@ -99,6 +101,7 @@ export const useFases = (id_categoria_edicion: number) => {
         // Datos de las fases
         fases: fasesQuery.data,
         isLoading: fasesQuery.isLoading,
+        isFetching: fasesQuery.isFetching,
         isError: fasesQuery.isError,
         error: fasesQuery.error,
 
@@ -127,7 +130,11 @@ export const useFases = (id_categoria_edicion: number) => {
             });
         },
         
-        refetch: fasesQuery.refetch,
+        refetch: async () => {
+            // Invalidar también las zonas para que se actualicen
+            queryClient.invalidateQueries({ queryKey: zonasKeys.all });
+            return fasesQuery.refetch();
+        },
 
         // Estados computados
         isEmpty: fasesQuery.data?.length === 0,

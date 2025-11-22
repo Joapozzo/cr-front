@@ -6,10 +6,11 @@ import DropdownItem from "./DrowDownItem";
 import toast from "react-hot-toast";
 import { useFases } from "../hooks/useFases";
 import { useZonasPorFase, useCrearZona, useDatosParaCrearZona } from "../hooks/useZonas";
-import { FormField, FormModal, useModals } from "./modals/ModalAdmin";
+import { FormField, FormModal, useModals, FormDataValue } from "./modals/ModalAdmin";
 import { Fase } from "../types/fase";
 import { CrearZonaInput } from "../types/zonas";
 import { crearZonaSchema } from "../schemas/zona.schema";
+import { useState } from "react";
 
 interface FaseSectionProps {
     fase: Fase;
@@ -18,6 +19,7 @@ interface FaseSectionProps {
 
 const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
     const { modals, openModal, closeModal } = useModals();
+    const [tipoZonaSeleccionado, setTipoZonaSeleccionado] = useState<number | null>(null);
 
     const {
         data: zonas,
@@ -39,8 +41,10 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
         try {
             await eliminarFase(numeroFase);
             toast.success(`Fase ${numeroFase} eliminada exitosamente`, { id: toastId });
-        } catch (error: any) {
-            const errorMessage = error?.response?.data?.error || error?.message || 'Error al eliminar la fase';
+        } catch (error: unknown) {
+            const errorMessage = (error as { response?: { data?: { error?: string } }; message?: string })?.response?.data?.error || 
+                               (error as { message?: string })?.message || 
+                               'Error al eliminar la fase';
             toast.error(errorMessage, { id: toastId });
         }
     };
@@ -63,6 +67,18 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
             });
         });
     };
+
+    // Función para manejar cambios en el campo tipo de zona
+    const handleTipoZonaChange = (name: string, value: FormDataValue) => {
+        if (name === 'id_tipo_zona') {
+            setTipoZonaSeleccionado(value ? Number(value) : null);
+        }
+    };
+
+    // Determinar si se debe mostrar el campo jornada
+    // Solo mostrar cuando el tipo de zona NO sea 1 (todos contra todos) ni 3 (todos contra todos ida y vuelta)
+    // Es decir, mostrar solo cuando sea 2 o 4
+    const mostrarJornada = tipoZonaSeleccionado !== null && tipoZonaSeleccionado !== 1 && tipoZonaSeleccionado !== 3;
 
     const zonaFields: FormField[] = [
         {
@@ -89,13 +105,14 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
             placeholder: '8',
             required: true
         },
-        {
+        // Campo jornada solo se muestra cuando el tipo de zona NO es 1 ni 3
+        ...(mostrarJornada ? [{
             name: 'jornada',
-            label: 'Cantidad de jornadas',
-            type: 'number',
+            label: 'Número de jornada',
+            type: 'number' as const,
             placeholder: '1',
             required: true
-        },
+        }] : []),
         {
             name: 'id_etapa',
             label: 'Etapa',
@@ -109,7 +126,7 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
         {
             name: 'campeon',
             label: '¿La zona tendrá campeón?',
-            type: 'switch', // ← Nuevo tipo
+            type: 'switch',
             required: true
         },
     ];
@@ -158,9 +175,9 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
                     </div>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
+                <div className="flex flex-wrap gap-4 items-start">
                     {errorZonas ? (
-                        <div className="col-span-full text-center py-12 bg-[var(--gray-400)] rounded-lg border border-[var(--red)]">
+                        <div className="w-full text-center py-12 bg-[var(--gray-400)] rounded-lg border border-[var(--red)]">
                             <div className="flex flex-col items-center gap-4">
                                 <div>
                                     <h3 className="text-[var(--red)] font-medium mb-2">
@@ -174,10 +191,15 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
                         </div>
                     ) : zonas && zonas.length > 0 ? (
                         zonas.map((zona) => (
-                            <ZonaCard key={zona.id_zona} zona={zona} />
+                            <div 
+                                key={zona.id_zona} 
+                                className={`${zonas.length === 1 ? 'w-full' : 'w-full xl:w-[calc(50%-0.5rem)]'}`}
+                            >
+                                <ZonaCard zona={zona} />
+                            </div>
                         ))
                     ) : (
-                        <div className="col-span-full text-center py-12 bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
+                        <div className="w-full text-center py-12 bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
                             <div className="flex flex-col items-center gap-4">
                                 <div>
                                     <h3 className="text-[var(--white)] font-medium mb-2">
@@ -195,13 +217,17 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
 
             <FormModal
                 isOpen={modals.create}
-                onClose={() => closeModal('create')}
+                onClose={() => {
+                    closeModal('create');
+                    setTipoZonaSeleccionado(null);
+                }}
                 title={`Crear zona - Fase ${fase.numero_fase}`}
                 fields={zonaFields}
                 onSubmit={handleCrearZona}
                 type="create"
                 validationSchema={crearZonaSchema}
                 submitText="Crear zona"
+                onFieldChange={handleTipoZonaChange}
             />
 
             <div className="border-t border-[var(--gray-300)] my-8"></div>

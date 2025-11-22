@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { temporadasService } from '../services/temporadas.services';
 import { ConfigurarAutomatizacionPartidoData, OcuparVacanteConAutomatizacionInput } from '../types/temporada';
+import { zonasKeys } from './useZonas';
 
 export const useOcuparVacanteConAutomatizacion = () => {
     const queryClient = useQueryClient();
@@ -22,18 +23,26 @@ export const useOcuparVacanteConAutomatizacion = () => {
             });
         },
         onSuccess: (data, variables) => {
-            // Invalidar queries relacionadas con la zona y categoría
-            queryClient.invalidateQueries({
-                queryKey: ['zona', variables.id_zona]
+            // Invalidar todas las queries de zonas para que se refresquen automáticamente
+            queryClient.invalidateQueries({ queryKey: zonasKeys.all });
+            
+            // Invalidar todas las queries de zonas por fase para esta categoría
+            // Esto cubrirá todas las fases posibles
+            queryClient.invalidateQueries({ 
+                queryKey: ['zonas', 'fase', variables.id_categoria_edicion],
+                exact: false 
             });
+
+            // Invalidar queries de temporadas relacionadas
             queryClient.invalidateQueries({
-                queryKey: ['zonas', variables.id_categoria_edicion]
+                queryKey: ['temporadas'],
+                exact: false
             });
+            
+            // Invalidar queries de tabla de posiciones
             queryClient.invalidateQueries({
-                queryKey: ['temporadas', variables.id_zona, variables.id_categoria_edicion]
-            });
-            queryClient.invalidateQueries({
-                queryKey: ['tabla-posiciones']
+                queryKey: ['tabla-posiciones'],
+                exact: false
             });
 
             console.log('✅ Vacante ocupada con automatización:', data.mensaje);
@@ -60,7 +69,7 @@ export const useConfigurarAutomatizacionPartido = () => {
                 res_partido_previo
             });
         },
-        onSuccess: (data, variables) => {
+        onSuccess: async (data, variables) => {
             // Invalidar queries relacionadas con el partido
             queryClient.invalidateQueries({
                 queryKey: ['partido', variables.id_partido]
@@ -68,6 +77,9 @@ export const useConfigurarAutomatizacionPartido = () => {
             queryClient.invalidateQueries({
                 queryKey: ['partidos']
             });
+
+            // También invalidar todas las zonas ya que el partido puede afectar la visualización
+            queryClient.invalidateQueries({ queryKey: zonasKeys.all });
 
             console.log('✅ Automatización de partido configurada:', data.mensaje);
         },

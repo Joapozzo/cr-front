@@ -12,8 +12,6 @@ interface EquipoCardProps {
 }
 
 const EquipoCard = ({ equipo, infoVacante, goles, penales, isWinner, isPending }: EquipoCardProps) => {
-    console.log(penales);
-    
     return (
         <div className={`
             flex items-center justify-between p-3 rounded-lg border

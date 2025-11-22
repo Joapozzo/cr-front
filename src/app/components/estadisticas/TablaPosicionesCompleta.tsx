@@ -27,7 +27,7 @@ export const TablaPosicionesCompleta: React.FC<TablaPosicionesCompletaProps> = (
 
   const hasPlayoffs = zonasPlayoff && zonasPlayoff.length > 0;
   const hasPositions = posiciones && posiciones.length > 0;
-
+  console.log(hasPlayoffs);
   // Si solo hay una de las dos, no mostrar tabs
   const showTabs = hasPlayoffs && hasPositions;
 

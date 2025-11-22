@@ -10,19 +10,20 @@ import EstadisticasRapidasSkeleton from '@/app/components/skeletons/Estadisticas
 import TablaGoleadoresSkeleton from '@/app/components/skeletons/TablaGoleadoresSkeleton';
 import ZonasPlayoff from '@/app/components/stats/ZonaPlayOff';
 import { useObtenerTodasLasZonas } from '@/app/hooks/useZonas';
+import { Zona } from '@/app/types/zonas';
 
 export default function EstadisticasPage() {
     const { categoriaSeleccionada } = useCategoriaStore();
     const { zonaSeleccionada } = useZonaStore();
     const idCategoriaEdicion = Number(categoriaSeleccionada?.id_categoria_edicion);
 
-    const { data: stats, isLoading, isError } = useStatsCategoria(idCategoriaEdicion);
-    const { data: goleadores, isLoading: isLoadingGoleadores, isError: isErrorGoleadores } = useGoleadoresCategoria(idCategoriaEdicion);
-    const { data: expulsados, isLoading: isLoadingExpulsados, isError: isErrorExpulsados } = useExpulsadosCategoria(idCategoriaEdicion);
-    const { data: posiciones, isLoading: isLoadingPosiciones, isError: isErrorPosiciones } = usePosicionesZonaCategoria(zonaSeleccionada, idCategoriaEdicion);
-    const { data: zonasPlayoff, isLoading: isLoadingZonasPlayoff, isError: isErrorZonasPlayoff } = useZonasPlayoffCategoria(idCategoriaEdicion);
-    const { data: zonas, isLoading: isLoadingZonas, isError: isErrorZonas } = useObtenerTodasLasZonas(idCategoriaEdicion);
-    const zonasLiguilla = zonas?.filter(z => z.tipoZona?.id === 2);
+    const { data: stats, isLoading } = useStatsCategoria(idCategoriaEdicion);
+    const { data: goleadores, isLoading: isLoadingGoleadores } = useGoleadoresCategoria(idCategoriaEdicion);
+    const { data: expulsados, isLoading: isLoadingExpulsados } = useExpulsadosCategoria(idCategoriaEdicion);
+    const { data: posiciones, isLoading: isLoadingPosiciones } = usePosicionesZonaCategoria(zonaSeleccionada, idCategoriaEdicion);
+    const { data: zonasPlayoff, isLoading: isLoadingZonasPlayoff } = useZonasPlayoffCategoria(idCategoriaEdicion);
+    const { data: zonas } = useObtenerTodasLasZonas(idCategoriaEdicion);
+    const zonasLiguilla = zonas?.filter(z => z.tipoZona?.id === 1) as Zona[] | undefined;
     
     return (
         <div className="space-y-6">
@@ -57,12 +58,12 @@ export default function EstadisticasPage() {
                 {
                     isLoadingGoleadores
                         ? <TablaGoleadoresSkeleton />
-                        : <TablaGoleadores goleadores={goleadores?.goleadores || []} />
+                        : <TablaGoleadores goleadores={goleadores?.data?.goleadores || []} />
                 }
                 {
-                    isErrorGoleadores
+                    isLoadingExpulsados
                         ? <TablaGoleadoresSkeleton />
-                        : <TablaExpulsados expulsados={expulsados?.expulsados || []} />
+                        : <TablaExpulsados expulsados={expulsados?.data?.expulsados || []} />
                 }
             </div>
         </div>

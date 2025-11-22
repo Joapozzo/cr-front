@@ -12,26 +12,37 @@ export const temporadasService = {
                 `/admin/temporadas/${id_zona}/${id_categoria_edicion}`,
                 data
             );
-        } catch (error: any) {
-            if (error.response?.status === 400) {
-                const backendErrors = error.response.data.errors;
-                if (backendErrors && Array.isArray(backendErrors)) {
-                    const errorMessages = backendErrors.map((err: any) => err.message).join(', ');
-                    throw new Error(errorMessages);
-                }
-                throw new Error(error.response.data.message || 'Datos inválidos');
+        } catch (error: unknown) {
+            // apiFetch ya extrae el mensaje de error del backend y lo pone en error.message
+            if (error instanceof Error && error.message) {
+                throw error;
             }
 
-            if (error.response?.status === 404) {
+            const errorObj = error as { response?: { status?: number; data?: { errors?: Array<{ message?: string }>; message?: string; error?: string } } };
+            
+            if (errorObj.response?.status === 400) {
+                const backendErrors = errorObj.response.data?.errors;
+                if (backendErrors && Array.isArray(backendErrors)) {
+                    const errorMessages = backendErrors.map((err) => err.message || '').filter(Boolean).join(', ');
+                    throw new Error(errorMessages || 'Datos inválidos');
+                }
+                throw new Error(errorObj.response.data?.error || errorObj.response.data?.message || 'Datos inválidos');
+            }
+
+            if (errorObj.response?.status === 404) {
                 throw new Error('Zona, categoría o equipo no encontrados');
             }
 
-            if (error.response?.status === 409) {
-                throw new Error(error.response.data.message || 'La vacante ya está ocupada o el equipo ya participa en esta temporada');
+            if (errorObj.response?.status === 409) {
+                throw new Error(errorObj.response.data?.error || errorObj.response.data?.message || 'La vacante ya está ocupada o el equipo ya participa en esta temporada');
             }
 
             console.error('Error al ocupar vacante:', error);
-            throw new Error(error.response?.data?.message || 'No se pudo ocupar la vacante');
+            const errorMessage = error instanceof Error ? error.message : 
+                               errorObj.response?.data?.error || 
+                               errorObj.response?.data?.message || 
+                               'No se pudo ocupar la vacante';
+            throw new Error(errorMessage);
         }
     },
 
@@ -45,26 +56,37 @@ export const temporadasService = {
                 `/admin/temporadas/vaciar/${id_zona}/${id_categoria_edicion}`,
                 data
             );
-        } catch (error: any) {
-            if (error.response?.status === 400) {
-                const backendErrors = error.response.data.errors;
-                if (backendErrors && Array.isArray(backendErrors)) {
-                    const errorMessages = backendErrors.map((err: any) => err.message).join(', ');
-                    throw new Error(errorMessages);
-                }
-                throw new Error(error.response.data.message || 'Datos inválidos');
+        } catch (error: unknown) {
+            // apiFetch ya extrae el mensaje de error del backend y lo pone en error.message
+            // Si el error ya tiene un mensaje (viene de apiFetch), usarlo directamente
+            if (error instanceof Error && error.message) {
+                throw error; // Re-lanzar el error con el mensaje original
             }
 
-            if (error.response?.status === 404) {
+            const errorObj = error as { response?: { status?: number; data?: { error?: string; message?: string } } };
+
+            // Fallback: intentar extraer el mensaje de response si existe
+            if (errorObj.response?.status === 400) {
+                const errorMessage = errorObj.response.data?.error || 
+                                   errorObj.response.data?.message || 
+                                   'Datos inválidos';
+                throw new Error(errorMessage);
+            }
+
+            if (errorObj.response?.status === 404) {
                 throw new Error('Zona o categoría no encontradas');
             }
 
-            if (error.response?.status === 409) {
-                throw new Error(error.response.data.message || 'La vacante ya está libre');
+            if (errorObj.response?.status === 409) {
+                throw new Error(errorObj.response.data?.error || errorObj.response.data?.message || 'La vacante ya está libre');
             }
 
-            console.error('Error al liberar vacante:', error);
-            throw new Error(error.response?.data?.message || 'No se pudo liberar la vacante');
+            // Si no hay mensaje específico, usar el mensaje del error o uno genérico
+            const errorMessage = error instanceof Error ? error.message : 
+                               errorObj.response?.data?.error || 
+                               errorObj.response?.data?.message || 
+                               'No se pudo liberar la vacante';
+            throw new Error(errorMessage);
         }
     },
 
@@ -78,26 +100,36 @@ export const temporadasService = {
                 `/admin/temporadas/actualizar/${id_zona}/${id_categoria_edicion}`,
                 data
             );
-        } catch (error: any) {
-            if (error.response?.status === 400) {
-                const backendErrors = error.response.data.errors;
-                if (backendErrors && Array.isArray(backendErrors)) {
-                    const errorMessages = backendErrors.map((err: any) => err.message).join(', ');
-                    throw new Error(errorMessages);
-                }
-                throw new Error(error.response.data.message || 'Datos inválidos');
+        } catch (error: unknown) {
+            if (error instanceof Error && error.message) {
+                throw error;
             }
 
-            if (error.response?.status === 404) {
+            const errorObj = error as { response?: { status?: number; data?: { errors?: Array<{ message?: string }>; message?: string; error?: string } } };
+
+            if (errorObj.response?.status === 400) {
+                const backendErrors = errorObj.response.data?.errors;
+                if (backendErrors && Array.isArray(backendErrors)) {
+                    const errorMessages = backendErrors.map((err) => err.message || '').filter(Boolean).join(', ');
+                    throw new Error(errorMessages || 'Datos inválidos');
+                }
+                throw new Error(errorObj.response.data?.error || errorObj.response.data?.message || 'Datos inválidos');
+            }
+
+            if (errorObj.response?.status === 404) {
                 throw new Error('Zona, categoría o equipo no encontrados');
             }
 
-            if (error.response?.status === 409) {
-                throw new Error(error.response.data.message || 'El equipo ya participa en esta temporada');
+            if (errorObj.response?.status === 409) {
+                throw new Error(errorObj.response.data?.error || errorObj.response.data?.message || 'El equipo ya participa en esta temporada');
             }
 
             console.error('Error al actualizar vacante:', error);
-            throw new Error(error.response?.data?.message || 'No se pudo actualizar la vacante');
+            const errorMessage = error instanceof Error ? error.message : 
+                               errorObj.response?.data?.error || 
+                               errorObj.response?.data?.message || 
+                               'No se pudo actualizar la vacante';
+            throw new Error(errorMessage);
         }
     },
 
@@ -109,26 +141,36 @@ export const temporadasService = {
                 `/admin/temporadas/automatizar-vacante`,
                 data
             );
-        } catch (error: any) {
-            if (error.response?.status === 400) {
-                const backendErrors = error.response.data.errors;
-                if (backendErrors && Array.isArray(backendErrors)) {
-                    const errorMessages = backendErrors.map((err: any) => err.message).join(', ');
-                    throw new Error(errorMessages);
-                }
-                throw new Error(error.response.data.message || 'Datos inválidos para la automatización');
+        } catch (error: unknown) {
+            if (error instanceof Error && error.message) {
+                throw error;
             }
 
-            if (error.response?.status === 404) {
+            const errorObj = error as { response?: { status?: number; data?: { errors?: Array<{ message?: string }>; message?: string; error?: string } } };
+
+            if (errorObj.response?.status === 400) {
+                const backendErrors = errorObj.response.data?.errors;
+                if (backendErrors && Array.isArray(backendErrors)) {
+                    const errorMessages = backendErrors.map((err) => err.message || '').filter(Boolean).join(', ');
+                    throw new Error(errorMessages || 'Datos inválidos para la automatización');
+                }
+                throw new Error(errorObj.response.data?.error || errorObj.response.data?.message || 'Datos inválidos para la automatización');
+            }
+
+            if (errorObj.response?.status === 404) {
                 throw new Error('Zona, categoría o zona previa no encontradas');
             }
 
-            if (error.response?.status === 409) {
-                throw new Error(error.response.data.message || 'Conflicto al configurar la automatización');
+            if (errorObj.response?.status === 409) {
+                throw new Error(errorObj.response.data?.error || errorObj.response.data?.message || 'Conflicto al configurar la automatización');
             }
 
             console.error('Error al ocupar vacante con automatización:', error);
-            throw new Error(error.response?.data?.message || 'No se pudo configurar la vacante con automatización');
+            const errorMessage = error instanceof Error ? error.message : 
+                               errorObj.response?.data?.error || 
+                               errorObj.response?.data?.message || 
+                               'No se pudo configurar la vacante con automatización';
+            throw new Error(errorMessage);
         }
     },
 
@@ -141,26 +183,36 @@ export const temporadasService = {
                 `/admin/temporadas/automatizar-partido/${id_partido}/vacante`,
                 data
             );
-        } catch (error: any) {
-            if (error.response?.status === 400) {
-                const backendErrors = error.response.data.errors;
-                if (backendErrors && Array.isArray(backendErrors)) {
-                    const errorMessages = backendErrors.map((err: any) => err.message).join(', ');
-                    throw new Error(errorMessages);
-                }
-                throw new Error(error.response.data.message || 'Datos inválidos para la automatización del partido');
+        } catch (error: unknown) {
+            if (error instanceof Error && error.message) {
+                throw error;
             }
 
-            if (error.response?.status === 404) {
+            const errorObj = error as { response?: { status?: number; data?: { errors?: Array<{ message?: string }>; message?: string; error?: string } } };
+
+            if (errorObj.response?.status === 400) {
+                const backendErrors = errorObj.response.data?.errors;
+                if (backendErrors && Array.isArray(backendErrors)) {
+                    const errorMessages = backendErrors.map((err) => err.message || '').filter(Boolean).join(', ');
+                    throw new Error(errorMessages || 'Datos inválidos para la automatización del partido');
+                }
+                throw new Error(errorObj.response.data?.error || errorObj.response.data?.message || 'Datos inválidos para la automatización del partido');
+            }
+
+            if (errorObj.response?.status === 404) {
                 throw new Error('Partido o partido previo no encontrado');
             }
 
-            if (error.response?.status === 409) {
-                throw new Error(error.response.data.message || 'Conflicto al configurar la automatización del partido');
+            if (errorObj.response?.status === 409) {
+                throw new Error(errorObj.response.data?.error || errorObj.response.data?.message || 'Conflicto al configurar la automatización del partido');
             }
 
             console.error('Error al configurar automatización de partido:', error);
-            throw new Error(error.response?.data?.message || 'No se pudo configurar la automatización del partido');
+            const errorMessage = error instanceof Error ? error.message : 
+                               errorObj.response?.data?.error || 
+                               errorObj.response?.data?.message || 
+                               'No se pudo configurar la automatización del partido';
+            throw new Error(errorMessage);
         }
     },
 };

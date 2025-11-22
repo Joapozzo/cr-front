@@ -16,6 +16,11 @@ export const crearZonaSchema = z.object({
         .min(2, 'La cantidad mínima de equipos es 2')
         .max(32, 'La cantidad máxima de equipos es 32'),
 
+    jornada: z.number()
+        .int('La jornada debe ser un número entero')
+        .positive('La jornada debe ser un número positivo')
+        .optional(),
+
     id_etapa: z.number()
         .int('La etapa debe ser un número entero')
         .positive('Debe seleccionar una etapa válida'),
@@ -31,6 +36,16 @@ export const crearZonaSchema = z.object({
 }, {
     message: "Para eliminación directa, la cantidad de equipos debe ser un número par",
     path: ["cantidad_equipos"]
+}).refine((data) => {
+    // Si el tipo de zona NO es 1 (todos contra todos) ni 3 (todos contra todos ida y vuelta),
+    // entonces jornada es requerida
+    if (data.id_tipo_zona !== 1 && data.id_tipo_zona !== 3) {
+        return data.jornada !== undefined && data.jornada !== null;
+    }
+    return true;
+}, {
+    message: "El número de jornada es requerido para este tipo de zona",
+    path: ["jornada"]
 });
 
 export const editarZonaSchema = z.object({

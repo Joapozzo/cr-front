@@ -20,15 +20,18 @@ export default function CategoriaFormatoPage() {
         totalFases, 
         refetch,
         isError,
-        error
+        error,
+        isFetching
     } = useFases(idCatEdicion);
 
     const handleCrearFase = async () => {
         try {
             await crearFase();
             toast.success(`Fase ${totalFases + 1} creada exitosamente`);
-        } catch (error: any) {
-            const errorMessage = error?.response?.data?.error || error?.message || 'Error al crear la fase';
+        } catch (error: unknown) {
+            const errorMessage = (error as { response?: { data?: { error?: string } }; message?: string })?.response?.data?.error || 
+                               (error as { message?: string })?.message || 
+                               'Error al crear la fase';
             toast.error(errorMessage);
         }
     };
@@ -36,9 +39,12 @@ export default function CategoriaFormatoPage() {
     const handleRefresh = async () => {
         try {
             await refetch();
-            toast.success('Datos actualizados');
-        } catch (error) {
-            toast.error('Error al actualizar los datos');
+            toast.success('Datos actualizados correctamente');
+        } catch (error: unknown) {
+            const errorMessage = (error as { response?: { data?: { error?: string } }; message?: string })?.response?.data?.error || 
+                               (error as { message?: string })?.message || 
+                               'Error al actualizar los datos';
+            toast.error(errorMessage);
         }
     };
 
@@ -93,10 +99,11 @@ export default function CategoriaFormatoPage() {
                     <Button
                         onClick={handleRefresh}
                         variant="more"
+                        disabled={isFetching}
                         className="flex items-center gap-2"
                     >
-                        <RefreshCcw className="w-4 h-4" />
-                        Reintentar
+                        <RefreshCcw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
+                        {isFetching ? 'Reintentando...' : 'Reintentar'}
                     </Button>
                 </div>
             </div>
@@ -127,10 +134,11 @@ export default function CategoriaFormatoPage() {
                         onClick={handleRefresh}
                         variant="ghost"
                         size="sm"
+                        disabled={isFetching}
                         className="flex items-center gap-1"
                     >
-                        <RefreshCcw className="w-3 h-3" />
-                        Actualizar
+                        <RefreshCcw className={`w-3 h-3 ${isFetching ? 'animate-spin' : ''}`} />
+                        {isFetching ? 'Actualizando...' : 'Actualizar'}
                     </Button>
                 </div>
             </div>

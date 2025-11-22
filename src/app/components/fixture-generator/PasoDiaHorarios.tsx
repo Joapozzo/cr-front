@@ -86,13 +86,13 @@ export default function PasoDiaHorarios({
                     <label className="block text-sm font-medium text-[var(--white)] mb-2">
                         Preview de próximas fechas
                     </label>
-                    <div className="space-y-2">
+                    <div className="flex flex-wrap gap-2">
                         {previewFechas.map((fecha, idx) => (
                             <div
                                 key={idx}
-                                className="p-3 bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)]"
+                                className="px-3 py-2 bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] flex-shrink-0"
                             >
-                                <p className="text-sm text-[var(--white)]">
+                                <p className="text-sm text-[var(--white)] whitespace-nowrap">
                                     <strong>Fecha {idx + 1}:</strong> {fecha.fecha} - {fecha.diaSemana}
                                 </p>
                             </div>
@@ -111,7 +111,8 @@ export default function PasoDiaHorarios({
                         value: p.id_predio.toString(),
                         label: p.nombre
                     }))}
-                    placeholder="Seleccione un predio"
+                    placeholder={loadingPredios ? 'Cargando predios...' : 'Seleccione un predio'}
+                    disabled={loadingPredios}
                 />
             </div>
 
@@ -126,24 +127,24 @@ export default function PasoDiaHorarios({
                     ) : canchas.length === 0 ? (
                         <p className="text-[var(--red)]">No hay canchas disponibles en este predio</p>
                     ) : (
-                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                        <div className="flex flex-wrap gap-2">
                             {canchas.map((cancha) => (
                                 <label
                                     key={cancha.id_cancha}
-                                    className="flex items-center p-3 bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] cursor-pointer hover:border-[var(--green)] transition-colors"
+                                    className="flex items-center px-3 py-2 bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] cursor-pointer hover:border-[var(--green)] transition-colors flex-shrink-0"
                                 >
                                     <input
                                         type="checkbox"
                                         checked={formData.canchas_seleccionadas?.includes(cancha.id_cancha) || false}
                                         onChange={() => onToggleCancha(cancha.id_cancha)}
-                                        className="mr-3 w-4 h-4"
+                                        className="mr-2 w-4 h-4 flex-shrink-0"
                                     />
-                                    <div className="flex-1">
-                                        <p className="text-[var(--white)] font-medium">
+                                    <div className="flex flex-col min-w-0">
+                                        <p className="text-[var(--white)] font-medium text-sm whitespace-nowrap">
                                             {cancha.nombre}
                                         </p>
-                                        <p className="text-xs text-[var(--gray-100)]">
-                                            {cancha.predio?.nombre || 'Sin predio'} - Fútbol {cancha.tipo_futbol || 'N/A'}
+                                        <p className="text-xs text-[var(--gray-100)] whitespace-nowrap">
+                                            Fútbol {cancha.tipo_futbol || 'N/A'}
                                         </p>
                                     </div>
                                 </label>

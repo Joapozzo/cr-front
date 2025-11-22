@@ -66,12 +66,13 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                         onMouseDown={() => setIsOpen(prev => !prev)} // ✅ Cambiado
                         onBlur={() => setIsOpen(false)}
                         className={clsx(
-                            'w-full px-6 py-4 pr-10 rounded-[20px] font-medium transition-all duration-200 appearance-none',
-                            'focus:outline-none focus:ring-2 focus:ring-[var(--green)] focus:shadow-lg',
-                            bgColor,
-                            'text-white hover:bg-[#2a2a2a]',
-                            disabled && 'opacity-50 cursor-not-allowed hover:bg-[var(--gray-400)]',
-                            error && 'ring-2 ring-[var(--red)] focus:ring-[var(--red)]',
+                            'w-full px-4 py-2.5 pr-10 rounded-[20px] font-medium transition-all duration-200 appearance-none',
+                            'border border-[#2D2F30]',
+                            'bg-[#1A1A1A] text-[#fafafa]',
+                            'focus:outline-none focus:ring-2 focus:ring-[#2AD174] focus:border-transparent',
+                            'hover:border-[#3D3F40]',
+                            disabled && 'opacity-50 cursor-not-allowed',
+                            error && 'border-[#EF4444] focus:ring-[#EF4444]',
                             'relative cursor-pointer',
                             className
                         )}

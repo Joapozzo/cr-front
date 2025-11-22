@@ -29,9 +29,12 @@ const DropdownMenu = ({
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            <div className="cursor-pointer">{trigger}</div>
+            <div className="cursor-pointer relative z-10">{trigger}</div>
             {isOpen && (
-                <div className="absolute right-0 top-full mt-1 w-48 bg-[var(--gray-400)] border border-[var(--gray-300)] rounded-lg shadow-lg z-20">
+                <div 
+                    className="absolute right-0 top-full mt-1 w-48 bg-[var(--gray-400)] border border-[var(--gray-300)] rounded-lg shadow-xl z-[100]"
+                    style={{ opacity: 1 }}
+                >
                     <div className="py-1">{children}</div>
                 </div>
             )}

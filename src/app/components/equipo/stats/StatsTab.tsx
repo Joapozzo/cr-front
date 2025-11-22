@@ -14,6 +14,7 @@ import {
   useRojasPorEquipo,
   useMVPsPorEquipo
 } from '@/app/hooks/useEstadisticas';
+import { useCategoriaStore } from '@/app/stores/categoriaStore';
 
 interface StatsTabProps {
   idEquipo: number;
@@ -23,12 +24,11 @@ export const StatsTab: React.FC<StatsTabProps> = ({
   idEquipo,
 }) => {
   const [activeTab, setActiveTab] = useState<EstadisticaTab>('posiciones');
+  const { categoriaSeleccionada } = useCategoriaStore();
+  const id_categoria_edicion = categoriaSeleccionada?.id_categoria_edicion;
 
-  // Hooks para posiciones - SIEMPRE de toda la categoría edición
-  const { data: posicionesData, isLoading: loadingPosiciones } = usePosicionesPorCategoriaEdicion()
+  const { data: posicionesData, isLoading: loadingPosiciones } = usePosicionesPorCategoriaEdicion(id_categoria_edicion || 0)
 
-  // Hooks para estadísticas de jugadores - FILTRADAS POR EQUIPO (no de toda la categoría)
-  // Usamos los hooks por equipo que aceptan id_equipo e id_categoria_edicion opcional (igual que el plantel)
   const { data: goleadores, isLoading: loadingGoleadores } = useGoleadoresPorEquipo(
     idEquipo
   );
@@ -49,7 +49,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
   // Misma lógica que en /estadisticas/page.tsx
   const posicionesAplanadas = useMemo(() => {
     if (!posicionesData || posicionesData.length === 0) return [];
-    
+
     // Si hay una sola zona, devolver sus posiciones directamente
     if (posicionesData.length === 1) {
       return posicionesData[0].posiciones.map(pos => ({
@@ -67,7 +67,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
         img_equipo: pos.img_equipo || undefined
       }));
     }
-    
+
     // Si hay múltiples zonas, aplanar todas las posiciones
     const todasPosiciones: EquipoPosicion[] = [];
     posicionesData.forEach(zona => {
@@ -88,7 +88,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
         });
       });
     });
-    
+
     // Ordenar por puntos, diferencia de goles, goles a favor
     return todasPosiciones.sort((a, b) => {
       if (b.puntos !== a.puntos) return b.puntos - a.puntos;
@@ -113,7 +113,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
   return (
     <div className="py-4 space-y-6">
       {/* Tabs de estadísticas - Idéntico a /estadisticas */}
-      <EstadisticasTabs 
+      <EstadisticasTabs
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />

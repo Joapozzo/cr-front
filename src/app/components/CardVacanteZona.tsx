@@ -77,8 +77,14 @@ const CardVacanteZona = ({
                         closeModal('delete');
                         resolve();
                     },
-                    onError: (error) => {
-                        toast.error(error.message || 'Error al vaciar vacante', { id: toastId });
+                    onError: (error: unknown) => {
+                        // Extraer el mensaje de error del backend
+                        const errorObj = error as { response?: { data?: { error?: string; message?: string } }; message?: string };
+                        const errorMessage = errorObj?.response?.data?.error || 
+                                        errorObj?.response?.data?.message || 
+                                        errorObj?.message || 
+                                        'Error al vaciar vacante';
+                        toast.error(errorMessage, { id: toastId });
                         reject(error);
                     }
                 });
@@ -106,7 +112,7 @@ const CardVacanteZona = ({
     return (
         <>
             <div
-                className={`relative p-4 rounded-lg transition-colors group border hover:opacity-50 ${vacanteInfo.tipo === 'equipo_directo'
+                className={`relative p-4 rounded-lg transition-colors group border ${vacanteInfo.tipo === 'equipo_directo'
                         ? 'cursor-pointer'
                         : vacanteInfo.tipo === 'automatizacion_posicion' || vacanteInfo.tipo === 'automatizacion_partido'
                             ? 'cursor-pointer'
@@ -129,7 +135,7 @@ const CardVacanteZona = ({
                 onClick={handleClickCard}
             >
                 <div className="flex items-center justify-between">
-                    <div className="flex-1">
+                    <div className="flex-1 group-hover:opacity-50 transition-opacity">
                         {isOcupada ? (
                             <>
                                 <div className={`text-xs font-medium mb-1 ${vacanteInfo.tipo === 'equipo_directo'
@@ -173,11 +179,11 @@ const CardVacanteZona = ({
                         )}
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 opacity-100" onClick={(e) => e.stopPropagation()}>
                         {isOcupada && (
                             <DropdownMenu
                                 trigger={
-                                    <div className="p-1 hover:bg-[var(--gray-200)] rounded transition-colors z-10">
+                                    <div className="p-1 hover:bg-[var(--gray-200)] rounded transition-colors" onClick={(e) => e.stopPropagation()}>
                                         <MoreHorizontal className="w-3 h-3 text-[var(--gray-100)]" />
                                     </div>
                                 }
