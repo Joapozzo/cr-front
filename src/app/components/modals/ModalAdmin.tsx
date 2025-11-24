@@ -34,9 +34,9 @@ interface FormModalProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
-    fields: FormField[];
+    fields?: FormField[];
     initialData?: Record<string, FormDataValue>;
-    onSubmit: (data: Record<string, FormDataValue>) => Promise<void>;
+    onSubmit?: (data: Record<string, FormDataValue>) => Promise<void>;
     submitText?: string;
     type?: 'create' | 'edit';
     validationSchema?: z.ZodTypeAny;
@@ -178,7 +178,7 @@ const FormModal = ({
     }, [isOpen]);
 
     const handleChange = (name: string, value: FormDataValue) => {
-        const field = fields.find(f => f.name === name);
+        const field = fields?.find(f => f.name === name);
 
         let processedValue = value;
 
@@ -263,17 +263,25 @@ const FormModal = ({
 
         // Fallback a validación básica si no hay schema
         const newErrors: Record<string, string> = {};
-        fields.forEach(field => {
-            if (field.required && !formData[field.name]) {
-                newErrors[field.name] = `${field.label} es requerido`;
-            }
-        });
+        if (fields) {
+            fields.forEach(field => {
+                if (field.required && !formData[field.name]) {
+                    newErrors[field.name] = `${field.label} es requerido`;
+                }
+            });
+        }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async () => {
-        if (!validateForm()) return;
+        // Si hay fields, validar el formulario
+        if (fields && fields.length > 0) {
+            if (!validateForm()) return;
+        }
+
+        // Si no hay onSubmit, el formulario se maneja en children
+        if (!onSubmit) return;
 
         setIsLoading(true);
         setErrors({});
@@ -415,7 +423,7 @@ const FormModal = ({
             {children}
 
             {/* Solo mostrar grid de campos si hay fields */}
-            {fields.length > 0 && (
+            {fields && fields.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {fields.map((field) => (
                         <div key={field.name} className="space-y-2">
@@ -446,29 +454,32 @@ const FormModal = ({
                 </div>
             )}
 
-            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[var(--gray-300)]">
-                <Button onClick={onClose} className="">
-                    Cancelar
-                </Button>
-                <Button
-                    onClick={handleSubmit}
-                    disabled={isLoading}
-                    className="flex items-center px-15 gap-2"
-                    variant="success"
-                >
-                    {isLoading ? (
-                        <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            Guardando...
-                        </>
-                    ) : (
-                        <>
-                            <Check className="w-4 h-4" />
-                            {submitText}
-                        </>
-                    )}
-                </Button>
-            </div>
+            {/* Solo mostrar botones de acción si hay fields y onSubmit */}
+            {fields && fields.length > 0 && onSubmit && (
+                <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[var(--gray-300)]">
+                    <Button onClick={onClose} className="">
+                        Cancelar
+                    </Button>
+                    <Button
+                        onClick={handleSubmit}
+                        disabled={isLoading}
+                        className="flex items-center px-15 gap-2"
+                        variant="success"
+                    >
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                Guardando...
+                            </>
+                        ) : (
+                            <>
+                                <Check className="w-4 h-4" />
+                                {submitText}
+                            </>
+                        )}
+                    </Button>
+                </div>
+            )}
         </BaseModal>
     );
 };

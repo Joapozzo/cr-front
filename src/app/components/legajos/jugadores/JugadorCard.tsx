@@ -14,20 +14,20 @@ interface JugadorCardProps {
 
 export const JugadorCard: React.FC<JugadorCardProps> = ({ jugador }) => {
     const estadoColor = jugador.estado === 'A' 
-        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-        : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200';
+        ? 'bg-[var(--green)] text-[var(--white)]'
+        : 'bg-[var(--gray-300)] text-[var(--gray-100)]';
 
     return (
         <Link
-            href={`/admin/legajos/jugadores/${jugador.id_jugador}`}
+            href={`/adm/legajos/jugadores/${jugador.id_jugador}`}
             className="group block"
         >
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow hover:border-blue-500 dark:hover:border-blue-400">
+            <div className="bg-[var(--gray-400)] border border-[var(--gray-300)] rounded-lg p-4 hover:shadow-md transition-shadow hover:border-[var(--primary)]">
                 <div className="flex items-start gap-4">
                     {/* Foto del jugador */}
                     <div className="flex-shrink-0">
                         {jugador.img ? (
-                            <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700">
+                            <div className="relative w-16 h-16 rounded-full overflow-hidden bg-[var(--gray-300)]">
                                 <Image
                                     src={jugador.img}
                                     alt={`${jugador.nombre} ${jugador.apellido}`}
@@ -36,27 +36,27 @@ export const JugadorCard: React.FC<JugadorCardProps> = ({ jugador }) => {
                                 />
                             </div>
                         ) : (
-                            <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                                <User className="h-8 w-8 text-gray-400 dark:text-gray-500" />
+                            <div className="w-16 h-16 rounded-full bg-[var(--gray-300)] flex items-center justify-center">
+                                <User className="h-8 w-8 text-[var(--gray-100)]" />
                             </div>
                         )}
                     </div>
 
                     {/* Información */}
                     <div className="flex-1 min-w-0">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 truncate">
+                        <h3 className="text-lg font-semibold text-[var(--white)] truncate">
                             {jugador.nombre_completo}
                         </h3>
                         
                         <div className="mt-1 space-y-1">
                             {jugador.dni && (
-                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                <p className="text-sm text-[var(--gray-100)]">
                                     DNI: {jugador.dni}
                                 </p>
                             )}
                             
                             {jugador.posicion && (
-                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                <p className="text-sm text-[var(--gray-100)]">
                                     {jugador.posicion.nombre}
                                 </p>
                             )}
@@ -68,7 +68,7 @@ export const JugadorCard: React.FC<JugadorCardProps> = ({ jugador }) => {
 
                         {jugador.equipos_actuales.length > 0 && (
                             <div className="mt-2">
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                <p className="text-xs text-[var(--gray-100)]">
                                     {jugador.equipos_actuales.length === 1
                                         ? jugador.equipos_actuales[0].nombre
                                         : `${jugador.equipos_actuales.length} equipos`
@@ -80,7 +80,7 @@ export const JugadorCard: React.FC<JugadorCardProps> = ({ jugador }) => {
 
                     {/* Botón ver legajo */}
                     <div className="flex-shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
+                        <ArrowRight className="h-5 w-5 text-[var(--gray-100)] group-hover:text-[var(--primary)]" />
                     </div>
                 </div>
             </div>

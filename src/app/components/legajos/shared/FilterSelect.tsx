@@ -25,7 +25,7 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
 }) => {
     return (
         <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="text-sm font-medium text-[var(--white)]">
                 {label}
             </label>
             <select
@@ -34,7 +34,7 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
                     const newValue = e.target.value;
                     onChange(newValue === '' ? undefined : newValue);
                 }}
-                className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="block w-full px-3 py-2 border border-[var(--gray-300)] rounded-lg bg-[var(--gray-300)] text-[var(--white)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
             >
                 <option value="">{placeholder}</option>
                 {options.map((option) => (

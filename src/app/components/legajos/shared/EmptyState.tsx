@@ -18,13 +18,13 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
     return (
         <div className="flex flex-col items-center justify-center py-12 px-4">
-            <div className="text-gray-400 dark:text-gray-500 mb-4">
+            <div className="text-[var(--gray-100)] mb-4">
                 {icon || <FileQuestion className="h-12 w-12" />}
             </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+            <h3 className="text-lg font-medium text-[var(--white)] mb-2">
                 {title}
             </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 text-center max-w-md">
+            <p className="text-sm text-[var(--gray-100)] text-center max-w-md">
                 {message}
             </p>
         </div>

@@ -8,17 +8,17 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 export const EquipoCardSkeleton: React.FC = () => {
     return (
-        <SkeletonTheme baseColor="#e5e7eb" highlightColor="#f3f4f6">
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+        <SkeletonTheme baseColor="#1f1f1f" highlightColor="#333333">
+            <div className="bg-[var(--gray-400)] border border-[var(--gray-300)] rounded-lg p-4">
                 <div className="flex items-start gap-4">
                     {/* Logo skeleton */}
                     <Skeleton width={64} height={64} borderRadius={8} />
 
                     {/* Información skeleton */}
                     <div className="flex-1 space-y-2">
-                        <Skeleton height={20} width="70%" />
+                        <Skeleton height={20} width="70%" borderRadius={6} />
                         <Skeleton height={24} width={100} borderRadius={9999} />
-                        <Skeleton height={16} width="40%" />
+                        <Skeleton height={16} width="40%" borderRadius={6} />
                     </div>
 
                     {/* Botón skeleton */}
