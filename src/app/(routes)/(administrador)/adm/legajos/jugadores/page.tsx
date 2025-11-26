@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useEdicionesConCategorias } from '@/app/hooks/useEdiciones';
 import { useJugadoresBusqueda } from '@/app/hooks/legajos/useLegajosBusqueda';
 import { SearchBar } from '@/app/components/legajos/shared/SearchBar';
 import { FilterSelect } from '@/app/components/legajos/shared/FilterSelect';
 import { JugadorGrid } from '@/app/components/legajos/jugadores/JugadorGrid';
 import { TabNavigation } from '@/app/components/legajos/shared/TabNavigation';
+import { PageHeader } from '@/app/components/ui/PageHeader';
 import { Button } from '@/app/components/ui/Button';
 import { EstadoJugador } from '@/app/types/legajos';
 
@@ -15,7 +16,7 @@ const JugadoresPage = () => {
     const [selectedCategoria, setSelectedCategoria] = useState<number | undefined>();
     const [selectedEstado, setSelectedEstado] = useState<EstadoJugador | undefined>();
     const [page, setPage] = useState(1);
-    const limit = 20;
+    const limit = 15;
 
     // Obtener categorías-ediciones para el filtro
     const { data: categoriasEdiciones } = useEdicionesConCategorias();
@@ -32,16 +33,20 @@ const JugadoresPage = () => {
         );
     }, [categoriasEdiciones]);
 
-    // Búsqueda solo si hay query o filtros
+    // Búsqueda siempre habilitada - trae todos los jugadores si no hay query ni filtros
+    // Enviar q como string vacío si no hay query para que el backend traiga todos
     const { data, isLoading, error } = useJugadoresBusqueda({
-        q: searchQuery || undefined,
+        q: searchQuery || '',
         id_categoria_edicion: selectedCategoria,
         estado: selectedEstado,
         page,
         limit,
-    }, {
-        enabled: !!searchQuery || selectedCategoria !== undefined || selectedEstado !== undefined,
     });
+
+    // Resetear página cuando cambian los filtros
+    useEffect(() => {
+        setPage(1);
+    }, [searchQuery, selectedCategoria, selectedEstado]);
 
     const handleClearFilters = () => {
         setSearchQuery('');
@@ -59,10 +64,10 @@ const JugadoresPage = () => {
 
     return (
         <div className="space-y-6">
-            <div>
-                <h1 className="text-2xl font-bold text-[var(--white)]">Legajos</h1>
-                <p className="text-[var(--gray-100)] mt-1">Consulta la información histórica y estadísticas de jugadores y equipos</p>
-            </div>
+            <PageHeader
+                title="Legajos"
+                description="Consulta la información histórica y estadísticas de jugadores y equipos"
+            />
 
             <TabNavigation tabs={tabs} />
 

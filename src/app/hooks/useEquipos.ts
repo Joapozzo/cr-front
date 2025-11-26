@@ -313,7 +313,7 @@ export const useExpulsarEquipo = () => {
             id_categoria_edicion: number;
             motivo?: string;
         }) => equiposService.expulsarEquipo(id_equipo, id_categoria_edicion, motivo),
-        onSuccess: (data, variables) => {
+        onSuccess: (_data, variables) => {
             // Invalidar queries relacionadas para refrescar los datos
             queryClient.invalidateQueries({
                 queryKey: equiposKeys.porCategoriaEdicion(variables.id_categoria_edicion)

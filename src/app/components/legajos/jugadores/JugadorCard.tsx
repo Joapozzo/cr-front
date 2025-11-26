@@ -22,7 +22,7 @@ export const JugadorCard: React.FC<JugadorCardProps> = ({ jugador }) => {
             href={`/adm/legajos/jugadores/${jugador.id_jugador}`}
             className="group block"
         >
-            <div className="bg-[var(--gray-400)] border border-[var(--gray-300)] rounded-lg p-4 hover:shadow-md transition-shadow hover:border-[var(--primary)]">
+            <div className="bg-[var(--gray-400)] border border-[var(--gray-300)] rounded-lg p-4 hover:shadow-md transition-shadow hover:border-[var(--green)] min-h-[130px]">
                 <div className="flex items-start gap-4">
                     {/* Foto del jugador */}
                     <div className="flex-shrink-0">
@@ -80,7 +80,7 @@ export const JugadorCard: React.FC<JugadorCardProps> = ({ jugador }) => {
 
                     {/* Botón ver legajo */}
                     <div className="flex-shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <ArrowRight className="h-5 w-5 text-[var(--gray-100)] group-hover:text-[var(--primary)]" />
+                        <ArrowRight className="h-5 w-5 text-[var(--gray-100)] group-hover:text-[var(--green)]" />
                     </div>
                 </div>
             </div>

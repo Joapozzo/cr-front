@@ -40,6 +40,8 @@ const CategoriasPage = () => {
                 puntos_victoria: categoriaEdicion.configuracion.puntos_victoria,
                 puntos_empate: categoriaEdicion.configuracion.puntos_empate,
                 puntos_derrota: categoriaEdicion.configuracion.puntos_derrota,
+                limite_cambios: categoriaEdicion.configuracion.limite_cambios,
+                recambio: categoriaEdicion.configuracion.recambio,
             });
             
             router.push(`/adm/ediciones/${edicionId}/${id_categoria}/resumen`);

@@ -25,7 +25,8 @@ export const useJugadoresBusqueda = (
         gcTime: 10 * 60 * 1000, // 10 minutos
         retry: 1,
         refetchOnWindowFocus: false,
-        enabled: !!params.q || params.id_categoria_edicion !== undefined || params.estado !== undefined,
+        // Siempre habilitado - si no hay query ni filtros, trae todos los jugadores
+        enabled: true,
         ...options,
     });
 };
@@ -44,7 +45,8 @@ export const useEquiposBusqueda = (
         gcTime: 10 * 60 * 1000, // 10 minutos
         retry: 1,
         refetchOnWindowFocus: false,
-        enabled: !!params.q || params.id_categoria_edicion !== undefined,
+        // Siempre habilitado - si no hay query ni filtros, trae todos los equipos
+        enabled: true,
         ...options,
     });
 };

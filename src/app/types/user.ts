@@ -30,3 +30,31 @@ export interface Usuario {
     nombre: string;
     apellido: string;
 }
+
+export interface UsuarioAdmin {
+    uid: string;
+    email: string;
+    nombre: string;
+    apellido: string;
+    estado: 'I' | 'O' | 'A';
+    creado_en: string;
+    actualizado_en: string;
+    img: string | null;
+    foto_selfie_url?: string | null;
+    rol: {
+        id_rol: number;
+        nombre: string;
+    };
+    es_jugador: boolean;
+    id_jugador?: number;
+}
+
+export interface UsuariosAdminPaginados {
+    data: UsuarioAdmin[];
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+    };
+}

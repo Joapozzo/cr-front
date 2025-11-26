@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Input } from '@/app/components/ui/Input';
 import { Button } from '@/app/components/ui/Button';
 import Select, { SelectOption } from '@/app/components/ui/Select';
+import Switch from '@/app/components/ui/Switch';
 import { useCategoriaStore } from '@/app/stores/categoriaStore';
 import { useActualizarCategoriaEdicion } from '@/app/hooks/useCategorias';
 import toast from 'react-hot-toast';
@@ -18,6 +19,8 @@ interface CategoriaEdicionConfig {
     puntos_derrota: number;
     fecha_inicio_mercado?: string;
     fecha_fin_mercado?: string;
+    limite_cambios?: number | null;
+    recambio?: boolean | null;
 }
 
 const ConfiguracionCategoriaPage = () => {
@@ -31,6 +34,8 @@ const ConfiguracionCategoriaPage = () => {
         puntos_victoria: 3,
         puntos_empate: 1,
         puntos_derrota: 0,
+        limite_cambios: null,
+        recambio: null,
     });
 
     const [isLoading, setIsLoading] = useState(false);
@@ -51,7 +56,7 @@ const ConfiguracionCategoriaPage = () => {
         { value: 5, label: '5 puntos' },
     ];
 
-    const handleInputChange = (field: keyof CategoriaEdicionConfig, value: string | number) => {
+    const handleInputChange = (field: keyof CategoriaEdicionConfig, value: string | number | boolean | null) => {
         const newConfig = { ...config, [field]: value };
         setConfig(newConfig);
         setHasChanges(detectChanges(newConfig));
@@ -99,6 +104,12 @@ const ConfiguracionCategoriaPage = () => {
                 // Convertir la fecha "YYYY-MM-DD" a un string ISO completo
                 datosActualizar.fecha_fin_mercado = convertDateToISO(config.fecha_fin_mercado);
             }
+            if (config.limite_cambios !== categoriaSeleccionada.limite_cambios) {
+                datosActualizar.limite_cambios = config.limite_cambios;
+            }
+            if (config.recambio !== categoriaSeleccionada.recambio) {
+                datosActualizar.recambio = config.recambio;
+            }
             if (Object.keys(datosActualizar).length === 0) {
                 toast.error('No hay cambios para guardar');
                 return;
@@ -138,7 +149,9 @@ const ConfiguracionCategoriaPage = () => {
             newConfig.puntos_empate !== categoriaSeleccionada.puntos_empate ||
             newConfig.puntos_derrota !== categoriaSeleccionada.puntos_derrota ||
             newConfig.fecha_inicio_mercado !== categoriaSeleccionada.fecha_inicio_mercado ||
-            newConfig.fecha_fin_mercado !== categoriaSeleccionada.fecha_fin_mercado
+            newConfig.fecha_fin_mercado !== categoriaSeleccionada.fecha_fin_mercado ||
+            newConfig.limite_cambios !== categoriaSeleccionada.limite_cambios ||
+            newConfig.recambio !== categoriaSeleccionada.recambio
         );
     };
 
@@ -152,7 +165,9 @@ const ConfiguracionCategoriaPage = () => {
                 puntos_empate: categoriaSeleccionada.puntos_empate || 1,
                 puntos_derrota: categoriaSeleccionada.puntos_derrota || 0,
                 fecha_inicio_mercado: formatISOToDateInput(categoriaSeleccionada.fecha_inicio_mercado),
-                fecha_fin_mercado: formatISOToDateInput(categoriaSeleccionada.fecha_fin_mercado)
+                fecha_fin_mercado: formatISOToDateInput(categoriaSeleccionada.fecha_fin_mercado),
+                limite_cambios: categoriaSeleccionada.limite_cambios ?? null,
+                recambio: categoriaSeleccionada.recambio ?? null,
             };
             setConfig(newConfig);
             setHasChanges(false);
@@ -261,6 +276,32 @@ const ConfiguracionCategoriaPage = () => {
                         placeholder="Fecha de fin del mercado"
                         type="date"
                     />
+
+                    {/* Límite de cambios */}
+                    <Input
+                        label="LÍMITE DE CAMBIOS"
+                        value={config.limite_cambios ?? ''}
+                        onChange={(e) => handleInputChange('limite_cambios', e.target.value ? Number(e.target.value) : null)}
+                        placeholder="Límite de cambios"
+                        type="number"
+                        min="0"
+                    />
+
+                    {/* Recambio */}
+                    <div className="flex flex-col gap-1 w-full">
+                        <label className="text-sm font-medium text-[var(--white)] mb-1">
+                            RECAMBIO
+                        </label>
+                        <div className="flex items-center gap-3">
+                            <Switch
+                                checked={config.recambio ?? false}
+                                onChange={(checked) => handleInputChange('recambio', checked)}
+                            />
+                            <span className="text-[var(--gray-100)] text-sm">
+                                {config.recambio ? 'Permitido' : 'No permitido'}
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Botón de actualizar */}

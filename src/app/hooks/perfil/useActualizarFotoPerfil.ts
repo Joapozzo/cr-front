@@ -1,7 +1,7 @@
-
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { perfilService } from '@/app/services/perfil.service';
 import { useAuthStore } from '@/app/stores/authStore';
+import { toast } from 'react-hot-toast';
 
 export const useActualizarFotoPerfil = () => {
   const queryClient = useQueryClient();
@@ -29,6 +29,11 @@ export const useActualizarFotoPerfil = () => {
       // Invalidar queries relacionadas
       queryClient.invalidateQueries({ queryKey: ['perfil'] });
       queryClient.invalidateQueries({ queryKey: ['usuario'] });
+
+      toast.success('Foto de perfil actualizada correctamente');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Error al actualizar la foto de perfil');
     },
   });
 };

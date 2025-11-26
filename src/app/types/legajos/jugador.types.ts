@@ -43,6 +43,7 @@ export interface JugadorInformacionBasica {
         apellido: string;
         dni?: string;
         img?: string;
+        foto_selfie_url?: string | null;
         nacimiento?: string;
         edad?: number | null;
     };

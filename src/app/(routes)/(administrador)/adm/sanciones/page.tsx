@@ -15,6 +15,7 @@ import ModalConfirmarEliminar from '@/app/components/sanciones/ModalConfirmarEli
 import { Sancion, CrearSancionInput, EditarSancionInput } from '@/app/types/sancion';
 import { toast } from 'react-hot-toast';
 import { Button } from '@/app/components/ui/Button';
+import { PageHeader } from '@/app/components/ui/PageHeader';
 import { TableSkeleton } from '@/app/components/skeletons/TableSkeleton';
 
 export default function SancionesPage() {
@@ -109,14 +110,10 @@ export default function SancionesPage() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div>
-                <h1 className="text-2xl font-bold text-[var(--white)] mb-2">
-                    Sanciones
-                </h1>
-                <p className="text-[var(--gray-100)]">
-                    Gestión de sanciones y expulsiones
-                </p>
-            </div>
+            <PageHeader
+                title="Sanciones"
+                description="Gestión de sanciones y expulsiones"
+            />
 
             {/* Selector de Categoría */}
             <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-4">

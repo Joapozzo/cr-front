@@ -60,7 +60,7 @@ const getEquiposInactivosColumns = (
             render: (value: any, row: any) => (
                 <div className="flex items-center gap-2">
                     <Button
-                        variant="more"
+                        variant="success"
                         size="sm"
                         onClick={(e) => {
                             e.stopPropagation();

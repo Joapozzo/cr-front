@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { Plus, MapPin, RefreshCw } from 'lucide-react';
 import { Button } from '@/app/components/ui/Button';
+import { PageHeader } from '@/app/components/ui/PageHeader';
 import { FormModal, useModals, FormField, FormDataValue } from '@/app/components/modals/ModalAdmin';
 import { usePredios, useCrearPredio, useActualizarPredio, useEliminarPredio } from '@/app/hooks/usePredios';
 import { useCrearCancha, useActualizarCancha, useEliminarCancha } from '@/app/hooks/usePredios';
@@ -286,52 +287,45 @@ const PrediosPage = () => {
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div className="flex items-center justify-between bg-[var(--black-900)] border border-[var(--gray-300)] rounded-lg p-6">
-                <div>
-                    <h1 className="text-3xl font-bold text-[var(--white)] mb-1">
-                        Gestión de predios y canchas
-                    </h1>
-                    <p className="text-[var(--gray-100)] text-sm">
-                        Administra los predios y canchas disponibles para los partidos
-                    </p>
-                </div>
-                <div className="flex items-center gap-3 flex-wrap">
-                    <DateInput
-                        value={fechaVisualizacion}
-                        onChange={(e) => setFechaVisualizacion(e.target.value)}
-                        className="bg-[var(--gray-300)] border-[var(--gray-200)] text-[var(--white)] w-auto min-w-[160px] min-h-[50px]"
-                        fullWidth={false}
-                    />
-                    <Button
-                        variant="default"
-                        size="sm"
-                        onClick={async () => {
-                            try {
-                                await refetch();
-                                toast.success('Datos actualizados');
-                            } catch {
-                                toast.error('Error al actualizar los datos');
-                            }
-                        }}
-                        disabled={isLoading || isRefetching}
-                        className="flex items-center gap-2 min-h-[50px]"
-                    >
-                        <RefreshCw className={`w-4 h-4 ${isLoading || isRefetching ? 'animate-spin' : ''}`} />
-                        Actualizar
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            setPredioSeleccionado(null);
-                            openModal('create');
-                        }}
-                        variant="success"
-                        className="flex items-center gap-2 min-h-[50px]"
-                    >
-                        <Plus className="w-4 h-4" />
-                        Nuevo Predio
-                    </Button>
-                </div>
-            </div>
+            <PageHeader
+                title="Gestión de predios y canchas"
+                description="Administra los predios y canchas disponibles para los partidos"
+            >
+                <DateInput
+                    value={fechaVisualizacion}
+                    onChange={(e) => setFechaVisualizacion(e.target.value)}
+                    className="bg-[var(--gray-300)] border-[var(--gray-200)] text-[var(--white)] w-auto min-w-[160px] min-h-[50px]"
+                    fullWidth={false}
+                />
+                <Button
+                    variant="default"
+                    size="sm"
+                    onClick={async () => {
+                        try {
+                            await refetch();
+                            toast.success('Datos actualizados');
+                        } catch {
+                            toast.error('Error al actualizar los datos');
+                        }
+                    }}
+                    disabled={isLoading || isRefetching}
+                    className="flex items-center gap-2 min-h-[50px]"
+                >
+                    <RefreshCw className={`w-4 h-4 ${isLoading || isRefetching ? 'animate-spin' : ''}`} />
+                    Actualizar
+                </Button>
+                <Button
+                    onClick={() => {
+                        setPredioSeleccionado(null);
+                        openModal('create');
+                    }}
+                    variant="success"
+                    className="flex items-center gap-2 min-h-[50px]"
+                >
+                    <Plus className="w-4 h-4" />
+                    Nuevo Predio
+                </Button>
+            </PageHeader>
 
             {/* Lista de Predios */}
             {isLoading && predios.length === 0 ? (

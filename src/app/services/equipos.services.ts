@@ -252,24 +252,33 @@ export const equiposService = {
     expulsarEquipo: async (
         id_equipo: number,
         id_categoria_edicion: number,
-    ): Promise<{ message: string; expulsion: any }> => {
+        motivo?: string
+    ): Promise<{ message: string; expulsion: unknown }> => {
         try {
-            return await api.post(`/admin/equipos/expulsar/${id_equipo}/${id_categoria_edicion}`);
-        } catch (error: any) {
-            if (error.response?.status === 400) {
-                throw new Error(error.response.data.error || 'Datos inválidos');
-            }
+            return await api.post(`/admin/equipos/expulsar/${id_equipo}/${id_categoria_edicion}`, {
+                motivo: motivo || undefined
+            });
+        } catch (error: unknown) {
+            if (error && typeof error === 'object' && 'response' in error) {
+                const apiError = error as { response?: { status?: number; data?: { error?: string } } };
+                if (apiError.response?.status === 400) {
+                    throw new Error(apiError.response.data?.error || 'Datos inválidos');
+                }
 
-            if (error.response?.status === 404) {
-                throw new Error('Equipo o categoría edición no encontrados');
-            }
+                if (apiError.response?.status === 404) {
+                    throw new Error('Equipo o categoría edición no encontrados');
+                }
 
-            if (error.response?.status === 409) {
-                throw new Error('El equipo ya está expulsado de esta categoría');
+                if (apiError.response?.status === 409) {
+                    throw new Error('El equipo ya está expulsado de esta categoría');
+                }
+
+                console.error('Error al expulsar equipo:', error);
+                throw new Error(apiError.response?.data?.error || 'No se pudo expulsar el equipo');
             }
 
             console.error('Error al expulsar equipo:', error);
-            throw new Error(error.response?.data?.error || 'No se pudo expulsar el equipo');
+            throw new Error('No se pudo expulsar el equipo');
         }
     },
 

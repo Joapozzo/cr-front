@@ -1,11 +1,8 @@
-/**
- * Servicio para endpoints de jugadores en legajos
- */
 import { api } from '@/app/lib/api';
 import {
     JugadorInformacionBasica,
-    EstadisticasJugador,
     HistorialEquiposJugador,
+    EstadisticasJugador,
     HistorialPartidosJugadorResponse,
     HistorialDisciplinarioJugador,
     DestacadosJugador,
@@ -37,23 +34,34 @@ export const jugadoresLegajosService = {
             return response.data || [];
         } catch (error) {
             console.error('Error al obtener equipos del jugador:', error);
-            throw new Error('No se pudo cargar el historial de equipos');
+            throw new Error('No se pudieron cargar los equipos');
         }
     },
 
     /**
      * Obtener estadísticas generales de un jugador
      */
-    obtenerJugadorEstadisticas: async (id_jugador: number, id_categoria_edicion?: number): Promise<EstadisticasJugador> => {
+    obtenerJugadorEstadisticasGenerales: async (id_jugador: number): Promise<EstadisticasJugador> => {
         try {
-            const url = id_categoria_edicion
-                ? `/legajos/jugador/${id_jugador}/estadisticas/${id_categoria_edicion}`
-                : `/legajos/jugador/${id_jugador}/estadisticas`;
-            const response = await api.get<{ success: boolean; data: EstadisticasJugador }>(url);
+            const response = await api.get<{ success: boolean; data: EstadisticasJugador }>(`/legajos/jugador/${id_jugador}/estadisticas`);
             if (!response.data) throw new Error('No se pudieron cargar las estadísticas');
             return response.data;
         } catch (error) {
             console.error('Error al obtener estadísticas del jugador:', error);
+            throw new Error('No se pudieron cargar las estadísticas');
+        }
+    },
+
+    /**
+     * Obtener estadísticas de un jugador por categoría-edición
+     */
+    obtenerJugadorEstadisticasPorCategoria: async (id_jugador: number, id_categoria_edicion: number): Promise<EstadisticasJugador> => {
+        try {
+            const response = await api.get<{ success: boolean; data: EstadisticasJugador }>(`/legajos/jugador/${id_jugador}/estadisticas/${id_categoria_edicion}`);
+            if (!response.data) throw new Error('No se pudieron cargar las estadísticas');
+            return response.data;
+        } catch (error) {
+            console.error('Error al obtener estadísticas del jugador por categoría:', error);
             throw new Error('No se pudieron cargar las estadísticas');
         }
     },
@@ -83,7 +91,7 @@ export const jugadoresLegajosService = {
             const response = await api.get<{ success: boolean; data: HistorialPartidosJugadorResponse['data']; pagination: HistorialPartidosJugadorResponse['pagination'] }>(url);
             return {
                 data: response.data || [],
-                pagination: response.pagination
+                pagination: response.pagination || { total: 0, totalPages: 0, currentPage: 1, hasNext: false, hasPrev: false }
             };
         } catch (error) {
             console.error('Error al obtener partidos del jugador:', error);
@@ -103,7 +111,7 @@ export const jugadoresLegajosService = {
             if (!response.data) throw new Error('No se pudo cargar el historial disciplinario');
             return response.data;
         } catch (error) {
-            console.error('Error al obtener historial disciplinario:', error);
+            console.error('Error al obtener historial disciplinario del jugador:', error);
             throw new Error('No se pudo cargar el historial disciplinario');
         }
     },
@@ -139,4 +147,3 @@ export const jugadoresLegajosService = {
         }
     },
 };
-

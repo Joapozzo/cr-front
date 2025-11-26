@@ -2,6 +2,7 @@
 
 import { useCrearEdicion, useTodasLasEdiciones } from '@/app/hooks/useEdiciones';
 import { Button } from '@/app/components/ui/Button';
+import { PageHeader } from '@/app/components/ui/PageHeader';
 import { DataTable } from '@/app/components/ui/DataTable';
 import { TableSkeleton } from '@/app/components/skeletons/TableSkeleton';
 import { Plus } from 'lucide-react';
@@ -95,24 +96,20 @@ const EdicionesPage = () => {
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div className="flex items-center justify-between bg-[var(--black-900)] border border-[var(--gray-300)] rounded-lg p-6">
-                <div>
-                    <h1 className="text-3xl font-bold text-[var(--white)] mb-1">
-                        Ediciones
-                    </h1>
-                    <p className="text-[var(--gray-100)] text-sm">
-                        Gestiona todas las ediciones del torneo
-                    </p>
-                </div>
-                <Button
-                    onClick={() => openModal('create')}
-                    variant='success'
-                    className='flex items-center'
-                >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Agregar nueva edición
-                </Button>
-            </div>
+            <PageHeader
+                title="Ediciones"
+                description="Gestiona todas las ediciones del torneo"
+                actions={
+                    <Button
+                        onClick={() => openModal('create')}
+                        variant='success'
+                        className='flex items-center'
+                    >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Agregar nueva edición
+                    </Button>
+                }
+            />
 
             {/* Contenido */}
             {isLoading ? (

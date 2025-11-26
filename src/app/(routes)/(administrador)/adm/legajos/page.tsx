@@ -1,6 +1,7 @@
 'use client';
 
 import { TabNavigation } from '@/app/components/legajos/shared/TabNavigation';
+import { PageHeader } from '@/app/components/ui/PageHeader';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -22,10 +23,10 @@ const LegajosPage = () => {
 
     return (
         <div className="space-y-6">
-            <div>
-                <h1 className="text-2xl font-bold text-[var(--white)]">Legajos</h1>
-                <p className="text-[var(--gray-100)] mt-1">Consulta la información histórica y estadísticas de jugadores y equipos</p>
-            </div>
+            <PageHeader
+                title="Legajos"
+                description="Consulta la información histórica y estadísticas de jugadores y equipos"
+            />
 
             <TabNavigation tabs={tabs} />
         </div>

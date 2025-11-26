@@ -19,7 +19,7 @@ const EstadisticasRapidasSkeleton: React.FC = () => {
                             
                             {/* Contenido skeleton */}
                             <div className="flex-1">
-                                <Skeleton width={120} height={14} borderRadius={6} className="mb-2" />
+                                <Skeleton width={50} height={14} borderRadius={6} className="mb-2" />
                                 <Skeleton width={40} height={24} borderRadius={6} />
                             </div>
                         </div>

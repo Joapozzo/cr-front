@@ -10,8 +10,15 @@ import { BusquedaJugadoresParams, BusquedaJugadoresResponse, BusquedaEquiposPara
 const buildUrl = (base: string, params: Record<string, any>): string => {
     const url = new URL(base, window.location.origin);
     Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== '') {
-            url.searchParams.append(key, String(value));
+        // Permitir strings vacíos para 'q' cuando hay otros filtros (categoría, estado)
+        // o cuando no hay query pero queremos traer todos los resultados
+        if (value !== undefined && value !== null) {
+            if (key === 'q') {
+                // Siempre incluir 'q', incluso si está vacío (el backend lo maneja)
+                url.searchParams.append(key, value === '' ? '' : String(value));
+            } else if (value !== '') {
+                url.searchParams.append(key, String(value));
+            }
         }
     });
     return url.pathname + url.search;

@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useLogout } from '../hooks/auth/useLogout';
 import { MdStadium } from 'react-icons/md';
+import { useAuthStore } from '../stores/authStore';
 
 interface MenuItem {
     id: string;
@@ -81,6 +82,7 @@ const menuItems: MenuItem[] = [
 
 export default function Sidebar() {
     const { logout, state: logoutState } = useLogout();
+    const { usuario } = useAuthStore();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const pathname = usePathname();
     const isLoggingOut = logoutState === 'loading';
@@ -137,15 +139,19 @@ export default function Sidebar() {
             <div className="p-4 border-b border-[var(--black-900)]">
                 {isCollapsed ? (
                     <div className="flex flex-col items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-[var(--green)] flex items-center justify-center">
-                            <User className="w-6 h-6 text-white" />
+                        <div className="w-10 h-10 rounded-full bg-[var(--green)] flex items-center justify-center overflow-hidden">
+                            {usuario?.img ? (
+                                <Image
+                                    src={usuario.img}
+                                    alt="Avatar"
+                                    width={40}
+                                    height={40}
+                                    className="w-full h-full object-cover rounded-full"
+                                />
+                            ) : (
+                                <User className="w-6 h-6 text-white" />
+                            )}
                         </div>
-                        <button
-                            className="w-full p-2 rounded-lg transition-colors group hover:bg-[var(--black-900)] flex items-center justify-center"
-                            title="Perfil"
-                        >
-                            <User className="w-5 h-5 text-[var(--green)] group-hover:text-[var(--green)] transition-colors" />
-                        </button>
                         <button
                             onClick={logout}
                             disabled={isLoggingOut}
@@ -158,20 +164,30 @@ export default function Sidebar() {
                 ) : (
                     <>
                         <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 rounded-full bg-[var(--green)] flex items-center justify-center">
-                                <User className="w-6 h-6 text-white" />
+                            <div className="w-10 h-10 rounded-full bg-[var(--green)] flex items-center justify-center overflow-hidden">
+                                {usuario?.img ? (
+                                    <Image
+                                        src={usuario.img}
+                                        alt="Avatar"
+                                        width={40}
+                                        height={40}
+                                        className="w-full h-full object-cover rounded-full"
+                                    />
+                                ) : (
+                                    <User className="w-6 h-6 text-white" />
+                                )}
                             </div>
                             <div className="flex-1">
-                                <h3 className="text-white font-medium">Octavio</h3>
-                                <p className="text-gray-400 text-sm">Administrador</p>
+                                <h3 className="text-white font-medium text-md">{usuario?.nombre} {usuario?.apellido}</h3>
+                                <p className="text-gray-400 text-sm">{usuario?.email}</p>
                             </div>
                         </div>
 
                         <div className="mt-3 flex space-x-2">
-                            <button className="flex-1 bg-[var(--green)] text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-300 transition-colors flex items-center justify-center space-x-2">
+                            <Link href="/adm/perfil" className="flex-1 bg-[var(--green)] text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-300 transition-colors flex items-center justify-center space-x-2">
                                 <User className="w-4 h-4" />
                                 <span>Perfil</span>
-                            </button>
+                            </Link>
                             <button
                                 onClick={logout}
                                 disabled={isLoggingOut}

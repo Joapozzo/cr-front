@@ -5,8 +5,8 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { jugadoresLegajosService } from '@/app/services/legajos/jugadores.service';
 import {
     JugadorInformacionBasica,
-    EstadisticasJugador,
     HistorialEquiposJugador,
+    EstadisticasJugador,
     HistorialPartidosJugadorResponse,
     HistorialDisciplinarioJugador,
     DestacadosJugador,
@@ -18,7 +18,8 @@ export const jugadoresLegajosKeys = {
     all: ['legajos-jugadores'] as const,
     detalle: (id: number) => [...jugadoresLegajosKeys.all, 'detalle', id] as const,
     equipos: (id: number) => [...jugadoresLegajosKeys.all, 'equipos', id] as const,
-    estadisticas: (id: number, idCategoria?: number) => [...jugadoresLegajosKeys.all, 'estadisticas', id, idCategoria] as const,
+    estadisticasGenerales: (id: number) => [...jugadoresLegajosKeys.all, 'estadisticas-generales', id] as const,
+    estadisticasPorCategoria: (id: number, idCategoria: number) => [...jugadoresLegajosKeys.all, 'estadisticas', id, idCategoria] as const,
     partidos: (id: number, params?: any) => [...jugadoresLegajosKeys.all, 'partidos', id, params] as const,
     disciplina: (id: number, idCategoria?: number) => [...jugadoresLegajosKeys.all, 'disciplina', id, idCategoria] as const,
     destacados: (id: number) => [...jugadoresLegajosKeys.all, 'destacados', id] as const,
@@ -64,21 +65,40 @@ export const useJugadorEquipos = (
 };
 
 /**
- * Hook para obtener estadísticas de un jugador
+ * Hook para obtener estadísticas generales de un jugador
  */
-export const useJugadorEstadisticas = (
+export const useJugadorEstadisticasGenerales = (
     id_jugador: number,
-    id_categoria_edicion?: number,
     options?: Omit<UseQueryOptions<EstadisticasJugador, Error>, 'queryKey' | 'queryFn'>
 ) => {
     return useQuery({
-        queryKey: jugadoresLegajosKeys.estadisticas(id_jugador, id_categoria_edicion),
-        queryFn: () => jugadoresLegajosService.obtenerJugadorEstadisticas(id_jugador, id_categoria_edicion),
+        queryKey: jugadoresLegajosKeys.estadisticasGenerales(id_jugador),
+        queryFn: () => jugadoresLegajosService.obtenerJugadorEstadisticasGenerales(id_jugador),
         staleTime: 5 * 60 * 1000,
         gcTime: 10 * 60 * 1000,
         retry: 1,
         refetchOnWindowFocus: false,
         enabled: !!id_jugador,
+        ...options,
+    });
+};
+
+/**
+ * Hook para obtener estadísticas de un jugador por categoría-edición
+ */
+export const useJugadorEstadisticasPorCategoria = (
+    id_jugador: number,
+    id_categoria_edicion: number,
+    options?: Omit<UseQueryOptions<EstadisticasJugador, Error>, 'queryKey' | 'queryFn'>
+) => {
+    return useQuery({
+        queryKey: jugadoresLegajosKeys.estadisticasPorCategoria(id_jugador, id_categoria_edicion),
+        queryFn: () => jugadoresLegajosService.obtenerJugadorEstadisticasPorCategoria(id_jugador, id_categoria_edicion),
+        staleTime: 5 * 60 * 1000,
+        gcTime: 10 * 60 * 1000,
+        retry: 1,
+        refetchOnWindowFocus: false,
+        enabled: !!id_jugador && !!id_categoria_edicion,
         ...options,
     });
 };
@@ -167,4 +187,3 @@ export const useJugadorSolicitudes = (
         ...options,
     });
 };
-

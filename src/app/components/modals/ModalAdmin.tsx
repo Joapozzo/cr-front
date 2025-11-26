@@ -454,8 +454,8 @@ const FormModal = ({
                 </div>
             )}
 
-            {/* Solo mostrar botones de acción si hay fields y onSubmit */}
-            {fields && fields.length > 0 && onSubmit && (
+            {/* Mostrar botones de acción si hay onSubmit (con o sin fields) */}
+            {onSubmit && (
                 <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[var(--gray-300)]">
                     <Button onClick={onClose} className="">
                         Cancelar

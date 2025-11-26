@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { Plus, Search, AlertCircle } from 'lucide-react';
 import { Button } from '@/app/components/ui/Button';
+import { PageHeader } from '@/app/components/ui/PageHeader';
 import { Input } from '@/app/components/ui/Input';
 import Select from '@/app/components/ui/Select';
 import { FormModal, DeleteModal, useModals } from '@/app/components/modals/ModalAdmin';
@@ -116,12 +117,10 @@ export default function NoticiasPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-bold text-[var(--white)]">Gestión de Noticias</h1>
-            <p className="text-[var(--gray-100)] mt-1">Administra el contenido y noticias del portal</p>
-          </div>
+      <PageHeader
+        title="Gestión de Noticias"
+        description="Administra el contenido y noticias del portal"
+        actions={
           <Button
             onClick={() => {
               setEditingNoticia(undefined);
@@ -133,49 +132,49 @@ export default function NoticiasPage() {
             <Plus className="w-5 h-5" />
             Nueva Noticia
           </Button>
-        </div>
+        }
+      />
 
-        {/* Filtros */}
-        <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="">
-              <Input
-                placeholder="Buscar por título..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 flex items-center justify-center"
-                icon={<Search />}
-              />
-            </div>
-
-            <Select
-              value={filterTipo}
-              onChange={(value) => setFilterTipo(value)}
-              options={[
-                { value: 'all', label: 'Todos los tipos' },
-                { value: 'Informativa', label: 'Informativa' },
-                { value: 'Resultado', label: 'Resultado' },
-                { value: 'Anuncio', label: 'Anuncio' },
-                { value: 'Entrevista', label: 'Entrevista' }
-              ]}
-              placeholder="Todos los tipos"
+      {/* Filtros */}
+      <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="">
+            <Input
+              placeholder="Buscar por título..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 flex items-center justify-center"
+              icon={<Search />}
             />
+          </div>
 
-            <Select
-              value={filterEstado}
-              onChange={(value) => setFilterEstado(value)}
-              options={[
-                { value: 'all', label: 'Todos los estados' },
-                { value: 'publicada', label: 'Publicadas' },
-                { value: 'borrador', label: 'Borradores' }
-              ]}
-              placeholder="Todos los estados"
-            />
+          <Select
+            value={filterTipo}
+            onChange={(value) => setFilterTipo(value)}
+            options={[
+              { value: 'all', label: 'Todos los tipos' },
+              { value: 'Informativa', label: 'Informativa' },
+              { value: 'Resultado', label: 'Resultado' },
+              { value: 'Anuncio', label: 'Anuncio' },
+              { value: 'Entrevista', label: 'Entrevista' }
+            ]}
+            placeholder="Todos los tipos"
+          />
 
-            <div className="flex items-center justify-center px-4 py-3 bg-[var(--gray-300)] rounded-lg">
-              <span className="text-[var(--white)] font-semibold">{filteredNoticias.length}</span>
-              <span className="text-[var(--gray-100)] ml-1">noticias</span>
-            </div>
+          <Select
+            value={filterEstado}
+            onChange={(value) => setFilterEstado(value)}
+            options={[
+              { value: 'all', label: 'Todos los estados' },
+              { value: 'publicada', label: 'Publicadas' },
+              { value: 'borrador', label: 'Borradores' }
+            ]}
+            placeholder="Todos los estados"
+          />
+
+          <div className="flex items-center justify-center px-4 py-3 bg-[var(--gray-300)] rounded-lg">
+            <span className="text-[var(--white)] font-semibold">{filteredNoticias.length}</span>
+            <span className="text-[var(--gray-100)] ml-1">noticias</span>
           </div>
         </div>
       </div>
@@ -269,7 +268,7 @@ export default function NoticiasPage() {
         message="¿Estás seguro de que deseas eliminar esta noticia?"
         itemName={deletingNoticia?.titulo}
         onConfirm={handleConfirmDelete}
-        error={undefined}
+        error={null}
       />
     </div>
   );

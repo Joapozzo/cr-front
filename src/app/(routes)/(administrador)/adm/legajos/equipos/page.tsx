@@ -1,22 +1,20 @@
-/**
- * Página de búsqueda de equipos
- */
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useEdicionesConCategorias } from '@/app/hooks/useEdiciones';
 import { useEquiposBusqueda } from '@/app/hooks/legajos/useLegajosBusqueda';
 import { SearchBar } from '@/app/components/legajos/shared/SearchBar';
 import { FilterSelect } from '@/app/components/legajos/shared/FilterSelect';
 import { EquipoGrid } from '@/app/components/legajos/equipos/EquipoGrid';
 import { TabNavigation } from '@/app/components/legajos/shared/TabNavigation';
+import { PageHeader } from '@/app/components/ui/PageHeader';
 import { Button } from '@/app/components/ui/Button';
 
 const EquiposPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategoria, setSelectedCategoria] = useState<number | undefined>();
     const [page, setPage] = useState(1);
-    const limit = 20;
+    const limit = 15;
 
     // Obtener categorías-ediciones para el filtro
     const { data: categoriasEdiciones } = useEdicionesConCategorias();
@@ -33,15 +31,19 @@ const EquiposPage = () => {
         );
     }, [categoriasEdiciones]);
 
-    // Búsqueda solo si hay query o filtros
+    // Búsqueda siempre habilitada - trae todos los equipos si no hay query ni filtros
+    // Enviar q como string vacío si no hay query para que el backend traiga todos
     const { data, isLoading, error } = useEquiposBusqueda({
-        q: searchQuery || undefined,
+        q: searchQuery || '',
         id_categoria_edicion: selectedCategoria,
         page,
         limit,
-    }, {
-        enabled: !!searchQuery || selectedCategoria !== undefined,
     });
+
+    // Resetear página cuando cambian los filtros
+    useEffect(() => {
+        setPage(1);
+    }, [searchQuery, selectedCategoria]);
 
     const handleClearFilters = () => {
         setSearchQuery('');
@@ -58,10 +60,10 @@ const EquiposPage = () => {
 
     return (
         <div className="space-y-6">
-            <div>
-                <h1 className="text-2xl font-bold text-[var(--white)]">Legajos</h1>
-                <p className="text-[var(--gray-100)] mt-1">Consulta la información histórica y estadísticas de jugadores y equipos</p>
-            </div>
+            <PageHeader
+                title="Legajos"
+                description="Consulta la información histórica y estadísticas de jugadores y equipos"
+            />
 
             <TabNavigation tabs={tabs} />
 

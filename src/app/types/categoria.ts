@@ -68,6 +68,8 @@ export interface CategoriaEdicionDto {
     puntos_victoria: number;
     puntos_empate: number;
     puntos_derrota: number;
+    limite_cambios?: number | null;
+    recambio?: boolean | null;
   };
   estadisticas: {
     partidos_jugados: string;
@@ -109,6 +111,8 @@ export interface CrearCategoriaInput {
   puntos_victoria: number;
   puntos_empate: number;
   puntos_derrota: number;
+  limite_cambios?: number | null;
+  recambio?: boolean | null;
 }
 
 export interface ActualizarCategoriaInput {
@@ -118,6 +122,8 @@ export interface ActualizarCategoriaInput {
   puntos_victoria?: number;
   puntos_empate?: number;
   puntos_derrota?: number;
+  limite_cambios?: number | null;
+  recambio?: boolean | null;
 }
 
 export interface CategoriaResponse {
@@ -139,6 +145,8 @@ export interface CategoriaSeleccionada {
     puntos_derrota: number;
     fecha_inicio_mercado?: string;
     fecha_fin_mercado?: string;
+    limite_cambios?: number | null;
+    recambio?: boolean | null;
 }
 
 export interface StatsCategoria {

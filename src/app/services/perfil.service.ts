@@ -1,10 +1,34 @@
 import { API_BASE_URL } from '../lib/api';
 import { useAuthStore } from '../stores/authStore';
+import { api } from '../lib/api';
 
 export interface ActualizarFotoPerfilResponse {
   success: boolean;
   mensaje: string;
   img: string;
+}
+
+export interface ActualizarDatosPerfilResponse {
+  success: boolean;
+  mensaje: string;
+  usuario: {
+    uid: string;
+    nombre: string;
+    apellido: string;
+    email: string;
+    dni: string | null;
+    telefono: bigint | null;
+    nacimiento: Date | null;
+    img: string | null;
+    username: string | null;
+  };
+}
+
+export interface ActualizarDatosPerfilParams {
+  nombre?: string;
+  apellido?: string;
+  telefono?: string | null;
+  nacimiento?: string | null;
 }
 
 /**
@@ -41,7 +65,23 @@ export const actualizarFotoPerfil = async (
   }
 };
 
+/**
+ * Actualizar datos del perfil del usuario
+ */
+export const actualizarDatosPerfil = async (
+  datos: ActualizarDatosPerfilParams
+): Promise<ActualizarDatosPerfilResponse> => {
+  try {
+    const response = await api.put<ActualizarDatosPerfilResponse>('/user/perfil/datos', datos);
+    return response;
+  } catch (error: any) {
+    console.error('Error al actualizar datos del perfil:', error);
+    throw new Error(error.response?.data?.error || error.message || 'Error al actualizar datos del perfil');
+  }
+};
+
 export const perfilService = {
   actualizarFotoPerfil,
+  actualizarDatosPerfil,
 };
 

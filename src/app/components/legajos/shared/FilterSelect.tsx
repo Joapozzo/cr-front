@@ -34,7 +34,7 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
                     const newValue = e.target.value;
                     onChange(newValue === '' ? undefined : newValue);
                 }}
-                className="block w-full px-3 py-2 border border-[var(--gray-300)] rounded-lg bg-[var(--gray-300)] text-[var(--white)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
+                className="block w-full px-3 py-2 border border-[var(--gray-300)] rounded-lg bg-[var(--gray-300)] text-[var(--white)] focus:outline-none focus:ring-2 focus:ring-[var(--green)] focus:border-transparent"
             >
                 <option value="">{placeholder}</option>
                 {options.map((option) => (

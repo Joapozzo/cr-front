@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Shield, Users, FileText, Ban, AlertTriangle, Trash2, RotateCcw } from 'lucide-react';
+import { Shield, Users, FileText, Ban, AlertTriangle, RotateCcw } from 'lucide-react';
 import { DataTable } from '@/app/components/ui/DataTable';
+import { PageHeader } from '@/app/components/ui/PageHeader';
 import getEquiposColumns from '@/app/components/columns/EquiposColumns';
 import getEquiposInactivosColumns from '@/app/components/columns/EquiposInactivosColumns';
 import { FormModal, useModals } from '@/app/components/modals/ModalAdmin';
@@ -22,9 +23,9 @@ export default function EquiposPage() {
     const categoriaEdicionId = Number(categoriaEdicion?.id_categoria_edicion);
 
     const [activeTab, setActiveTab] = useState<TabType>('activos');
-    const [equipoToExpulsar, setEquipoToExpulsar] = useState<any>(null);
+    const [equipoToExpulsar, setEquipoToExpulsar] = useState<{ id_equipo: number; nombre: string } | null>(null);
     const { modals, openModal, closeModal } = useModals();
-    const [equipoToReactivar, setEquipoToReactivar] = useState<any>(null);
+    const [equipoToReactivar, setEquipoToReactivar] = useState<{ id_equipo: number; nombre: string; expulsion?: { motivo?: string; fecha_expulsion: string } } | null>(null);
 
     const {
         data: equiposActivosData,
@@ -65,15 +66,18 @@ export default function EquiposPage() {
         if (!equipoToExpulsar) return;
 
         try {
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve, reject) => {
                 expulsarEquipo({
                     id_equipo: equipoToExpulsar.id_equipo,
                     id_categoria_edicion: categoriaEdicionId,
                     motivo: formData.motivo
                 }, {
-                    onSuccess: () => resolve(true),
+                    onSuccess: (data) => {
+                        toast.success(data.message || 'Equipo expulsado exitosamente');
+                        resolve();
+                    },
                     onError: (error) => {
-                        throw error;
+                        reject(error);
                     }
                 });
             });
@@ -118,7 +122,7 @@ export default function EquiposPage() {
         }
     };
 
-    const handleRowClick = (equipo: any) => {
+    const handleRowClick = (equipo: { id_equipo: number }) => {
         router.push(`/adm/ediciones/${id}/${id_categoria}/equipos/${equipo.id_equipo}`);
     };
 
@@ -163,16 +167,10 @@ export default function EquiposPage() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-[var(--white)] mb-2">
-                        Equipos - {categoriaEdicion?.nombre_completo || 'Cargando...'}
-                    </h1>
-                    <p className="text-[var(--gray-100)]">
-                        Gestiona los equipos de la categoría. Haz clic en cualquier fila para ver los detalles del equipo.
-                    </p>
-                </div>
-            </div>
+            <PageHeader
+                title={`Equipos - ${categoriaEdicion?.nombre_completo || 'Cargando...'}`}
+                description="Gestiona los equipos de la categoría. Haz clic en cualquier fila para ver los detalles del equipo."
+            />
 
             {/* Estadísticas rápidas */}
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">

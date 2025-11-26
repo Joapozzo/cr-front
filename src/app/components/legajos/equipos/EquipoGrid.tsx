@@ -1,6 +1,3 @@
-/**
- * Grid de equipos con paginación
- */
 'use client';
 
 import { EquipoCard } from './EquipoCard';
