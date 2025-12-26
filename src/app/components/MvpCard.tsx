@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Star, User } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { BaseCard, CardHeader } from './BaseCard';
 import Select, { SelectOption } from './ui/Select';
 import MVPComponentSkeleton from './skeletons/CardMvpSkeleton';
 import { JugadorDestacado, JugadorDestacadoPartido, PartidoCompleto } from '../types/partido';
 import { useSeleccionarMVP } from '../hooks/useJugadoresDestacados';
+import { ImagenPublica } from './common/ImagenPublica';
 
 interface MVPComponentProps {
     jugadores: JugadorDestacadoPartido[];
-    partido: PartidoCompleto;
+    partido: PartidoCompleto | undefined;
     mvpActual?: JugadorDestacado | null;
     onMVPChange: (jugadorId: number) => void;
     permitirEdicion?: boolean;
@@ -53,7 +54,7 @@ const MVPComponent: React.FC<MVPComponentProps> = ({
         const nuevoMvpId = Number(jugadorId);
         const jugadorSeleccionado = jugadores?.find(j => Number(j.id_jugador) === nuevoMvpId);
 
-        if (!jugadorSeleccionado) return;
+        if (!jugadorSeleccionado || !partido) return;
 
         // Actualizar el estado local inmediatamente para la UI
         setMvpSeleccionadoId(nuevoMvpId);
@@ -111,17 +112,13 @@ const MVPComponent: React.FC<MVPComponentProps> = ({
                     <div className="flex items-start gap-4 p-4 bg-[#171717] rounded-lg border border-[#262626]">
                         {/* Foto del jugador */}
                         <div className="flex-shrink-0">
-                            {jugadorSeleccionado.img_jugador ? (
-                                <img
-                                    src={jugadorSeleccionado.img_jugador}
-                                    alt={`${jugadorSeleccionado.nombre} ${jugadorSeleccionado.apellido}`}
-                                    className="w-16 h-16 rounded-full object-cover border-2 border-yellow-500"
-                                />
-                            ) : (
-                                <div className="w-16 h-16 bg-[#262626] rounded-full flex items-center justify-center border-2 border-yellow-500">
-                                    <User className="w-8 h-8 text-[#737373]" />
-                                </div>
-                            )}
+                            <ImagenPublica
+                                src={jugadorSeleccionado.img_jugador}
+                                alt={`${jugadorSeleccionado.apellido.toUpperCase()}, ${jugadorSeleccionado.nombre}`}
+                                width={64}
+                                height={64}
+                                className="w-16 h-16 object-cover rounded-full"
+                            />
                         </div>
 
                         {/* Información del jugador */}
@@ -137,22 +134,15 @@ const MVPComponent: React.FC<MVPComponentProps> = ({
                             {/* Equipo y posición */}
                             <div className="flex items-center gap-2">
                                 <p className="text-[#e5e5e5] text-sm font-medium">
-                                    {jugadorSeleccionado.nombre_equipo},
+                                    {jugadorSeleccionado.nombre_equipo}
                                 </p>
                                 {jugadorSeleccionado.posicion && (
                                     <p className="text-[#737373] text-sm">
-                                        Posicion: {jugadorSeleccionado.posicion}
+                                        , Posicion: {jugadorSeleccionado.posicion}
                                     </p>
                                 )}
                             </div>
                         </div>
-
-                        {/* Estrellas decorativas */}
-                        {/* <div className="flex flex-col gap-1">
-                            <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                            <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                        </div> */}
                     </div>
                 )}
 

@@ -1,11 +1,13 @@
 import { api } from '../lib/api';
 import { JugadorEstadistica } from '../types/estadisticas';
 import { IEquipoPosicion } from '../types/posiciones';
+import { FormatoPosicion } from '../types/zonas';
 
 export interface PosicionZona {
     id_zona: number;
     nombre_zona: string;
     posiciones: IEquipoPosicion[];
+    formatosPosicion?: FormatoPosicion[];
 }
 
 export const estadisticasService = {
@@ -17,7 +19,45 @@ export const estadisticasService = {
             return await api.get<PosicionZona[]>(`/user/estadisticas/posiciones/${id_categoria_edicion}`);
         } catch (error: any) {
             console.error('Error al obtener posiciones por categoría edición:', error);
-            throw new Error(error.response?.data?.error || 'No se pudieron obtener las posiciones');
+            
+            // Detectar errores de conexión a base de datos
+            const errorMessage = error.message || '';
+            const isDatabaseError = 
+                error.status === 503 ||
+                errorMessage.includes('conexión a la base de datos') ||
+                errorMessage.includes('Can\'t reach database server') ||
+                errorMessage.includes('database server');
+            
+            if (isDatabaseError) {
+                throw new Error('Error de conexión a la base de datos. Por favor, intente nuevamente en unos momentos.');
+            }
+            
+            throw new Error(error.response?.data?.error || error.message || 'No se pudieron obtener las posiciones');
+        }
+    },
+
+    /**
+     * Obtener zonas de playoff por categoría edición
+     */
+    obtenerZonasPlayoffPorCategoriaEdicion: async (id_categoria_edicion: number): Promise<any[]> => {
+        try {
+            return await api.get<any[]>(`/user/estadisticas/playoff/${id_categoria_edicion}`);
+        } catch (error: any) {
+            console.error('Error al obtener zonas de playoff por categoría edición:', error);
+            
+            // Detectar errores de conexión a base de datos
+            const errorMessage = error.message || '';
+            const isDatabaseError = 
+                error.status === 503 ||
+                errorMessage.includes('conexión a la base de datos') ||
+                errorMessage.includes('Can\'t reach database server') ||
+                errorMessage.includes('database server');
+            
+            if (isDatabaseError) {
+                throw new Error('Error de conexión a la base de datos. Por favor, intente nuevamente en unos momentos.');
+            }
+            
+            throw new Error(error.response?.data?.error || error.message || 'No se pudieron obtener las zonas de playoff');
         }
     },
 
@@ -29,7 +69,20 @@ export const estadisticasService = {
             return await api.get<JugadorEstadistica[]>(`/user/estadisticas/goleadores/${id_categoria_edicion}`);
         } catch (error: any) {
             console.error('Error al obtener goleadores por categoría edición:', error);
-            throw new Error(error.response?.data?.error || 'No se pudieron obtener los goleadores');
+            
+            // Detectar errores de conexión a base de datos
+            const errorMessage = error.message || '';
+            const isDatabaseError = 
+                error.status === 503 ||
+                errorMessage.includes('conexión a la base de datos') ||
+                errorMessage.includes('Can\'t reach database server') ||
+                errorMessage.includes('database server');
+            
+            if (isDatabaseError) {
+                throw new Error('Error de conexión a la base de datos. Por favor, intente nuevamente en unos momentos.');
+            }
+            
+            throw new Error(error.response?.data?.error || error.message || 'No se pudieron obtener los goleadores');
         }
     },
 
@@ -41,7 +94,20 @@ export const estadisticasService = {
             return await api.get<JugadorEstadistica[]>(`/user/estadisticas/asistencias/${id_categoria_edicion}`);
         } catch (error: any) {
             console.error('Error al obtener asistencias por categoría edición:', error);
-            throw new Error(error.response?.data?.error || 'No se pudieron obtener las asistencias');
+            
+            // Detectar errores de conexión a base de datos
+            const errorMessage = error.message || '';
+            const isDatabaseError = 
+                error.status === 503 ||
+                errorMessage.includes('conexión a la base de datos') ||
+                errorMessage.includes('Can\'t reach database server') ||
+                errorMessage.includes('database server');
+            
+            if (isDatabaseError) {
+                throw new Error('Error de conexión a la base de datos. Por favor, intente nuevamente en unos momentos.');
+            }
+            
+            throw new Error(error.response?.data?.error || error.message || 'No se pudieron obtener las asistencias');
         }
     },
 
@@ -53,7 +119,20 @@ export const estadisticasService = {
             return await api.get<JugadorEstadistica[]>(`/user/estadisticas/amarillas/${id_categoria_edicion}`);
         } catch (error: any) {
             console.error('Error al obtener amarillas por categoría edición:', error);
-            throw new Error(error.response?.data?.error || 'No se pudieron obtener las amarillas');
+            
+            // Detectar errores de conexión a base de datos
+            const errorMessage = error.message || '';
+            const isDatabaseError = 
+                error.status === 503 ||
+                errorMessage.includes('conexión a la base de datos') ||
+                errorMessage.includes('Can\'t reach database server') ||
+                errorMessage.includes('database server');
+            
+            if (isDatabaseError) {
+                throw new Error('Error de conexión a la base de datos. Por favor, intente nuevamente en unos momentos.');
+            }
+            
+            throw new Error(error.response?.data?.error || error.message || 'No se pudieron obtener las amarillas');
         }
     },
 
@@ -65,7 +144,20 @@ export const estadisticasService = {
             return await api.get<JugadorEstadistica[]>(`/user/estadisticas/rojas/${id_categoria_edicion}`);
         } catch (error: any) {
             console.error('Error al obtener rojas por categoría edición:', error);
-            throw new Error(error.response?.data?.error || 'No se pudieron obtener las rojas');
+            
+            // Detectar errores de conexión a base de datos
+            const errorMessage = error.message || '';
+            const isDatabaseError = 
+                error.status === 503 ||
+                errorMessage.includes('conexión a la base de datos') ||
+                errorMessage.includes('Can\'t reach database server') ||
+                errorMessage.includes('database server');
+            
+            if (isDatabaseError) {
+                throw new Error('Error de conexión a la base de datos. Por favor, intente nuevamente en unos momentos.');
+            }
+            
+            throw new Error(error.response?.data?.error || error.message || 'No se pudieron obtener las rojas');
         }
     },
 
@@ -77,7 +169,20 @@ export const estadisticasService = {
             return await api.get<JugadorEstadistica[]>(`/user/estadisticas/mvps/${id_categoria_edicion}`);
         } catch (error: any) {
             console.error('Error al obtener MVPs por categoría edición:', error);
-            throw new Error(error.response?.data?.error || 'No se pudieron obtener los MVPs');
+            
+            // Detectar errores de conexión a base de datos
+            const errorMessage = error.message || '';
+            const isDatabaseError = 
+                error.status === 503 ||
+                errorMessage.includes('conexión a la base de datos') ||
+                errorMessage.includes('Can\'t reach database server') ||
+                errorMessage.includes('database server');
+            
+            if (isDatabaseError) {
+                throw new Error('Error de conexión a la base de datos. Por favor, intente nuevamente en unos momentos.');
+            }
+            
+            throw new Error(error.response?.data?.error || error.message || 'No se pudieron obtener los MVPs');
         }
     },
 

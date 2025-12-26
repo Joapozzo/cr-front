@@ -2,14 +2,15 @@
 
 import { Shield, Star, User } from "lucide-react";
 import { JugadorDestacadoDt } from "../types/jugador";
+import { ImagenPublica } from "./common/ImagenPublica";
 
-interface JugadorModalDreamTeamProps { 
-    jugador : JugadorDestacadoDt;
-    jugadorSeleccionado : number | null;
-    handleSeleccionarJugador : (jugador : JugadorDestacadoDt) => void;
+interface JugadorModalDreamTeamProps {
+    jugador: JugadorDestacadoDt;
+    jugadorSeleccionado: number | null;
+    handleSeleccionarJugador: (jugador: JugadorDestacadoDt) => void;
 }
 
-const JugadorModalDreamTeam = ({  jugador, jugadorSeleccionado, handleSeleccionarJugador } : JugadorModalDreamTeamProps) => {
+const JugadorModalDreamTeam = ({ jugador, jugadorSeleccionado, handleSeleccionarJugador }: JugadorModalDreamTeamProps) => {
     return (
         <button
             key={jugador.id_jugador}
@@ -30,11 +31,8 @@ const JugadorModalDreamTeam = ({  jugador, jugadorSeleccionado, handleSelecciona
             <div className="flex items-start gap-3 mb-3">
                 {/* Avatar */}
                 <div className="w-16 h-16 rounded-full border-2 border-[var(--gray-200)] overflow-hidden bg-[var(--gray-400)] flex-shrink-0">
-                    <div className="w-full h-full bg-gradient-to-br from-[var(--green)]/20 to-transparent flex items-center justify-center">
-                        <User className="w-8 h-8 text-[var(--gray-100)]" />
-                    </div>
+                    <ImagenPublica src={jugador.img} alt={`${jugador.nombre} ${jugador.apellido}`} width={64} height={64} className="w-full h-full object-cover" />
                 </div>
-
                 {/* Info del jugador */}
                 <div className="flex-1 text-left">
                     <h3 className="text-[var(--white)] font-semibold text-base leading-tight">

@@ -50,7 +50,9 @@ export const validarDniYDatosSchema = z.object({
     .regex(/^[a-zA-Z0-9_]+$/, 'Solo letras, números y guión bajo'),
   telefono: z
     .string()
-    .regex(/^[0-9]{10}$/, 'El teléfono debe tener 10 dígitos')
+    .regex(/^[0-9]{10}$/, 'El teléfono debe tener 10 dígitos'),
+  // Posición del jugador (opcional)
+  id_posicion: z.number().optional(),
 });
 
 export type ValidarDniYDatosFormData = z.infer<typeof validarDniYDatosSchema>;

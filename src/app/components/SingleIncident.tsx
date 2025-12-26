@@ -11,6 +11,14 @@ interface SingleIncidentProps {
     partido: Partido;
     isAsistencia?: boolean;
     showActions?: boolean;
+    segundaAmarillaRelacionada?: IncidenciaPartido;
+    rojaRelacionada?: IncidenciaPartido;
+    esDobleAmarilla?: boolean;
+    dobleAmarillaData?: {
+        primeraAmarilla: IncidenciaPartido;
+        segundaAmarilla: IncidenciaPartido;
+        roja: IncidenciaPartido;
+    };
     onEdit?: (incidencia: IncidenciaPartido) => void;
     onDelete?: (incidencia: IncidenciaPartido) => void;
 }
@@ -20,10 +28,17 @@ const SingleIncident: React.FC<SingleIncidentProps> = ({
     partido,
     isAsistencia = false,
     showActions = false,
+    segundaAmarillaRelacionada,
+    rojaRelacionada,
+    esDobleAmarilla,
+    dobleAmarillaData,
     onEdit,
     onDelete
 }) => {
     const isLocal = isLocalTeam(incidencia.id_equipo, partido);
+    
+    // Detectar si es la segunda amarilla de una doble amarilla
+    const esSegundaAmarillaDoble = incidencia.tipo === 'amarilla' && esDobleAmarilla && (segundaAmarillaRelacionada || (dobleAmarillaData && incidencia.id === dobleAmarillaData.segundaAmarilla.id));
 
     const containerClasses = `flex items-center w-full py-2 px-3 rounded-lg transition-colors ${isLocal ? 'justify-start' : 'justify-end bg-[#171717]'
         } ${isAsistencia ? 'opacity-70' : ''}`;
@@ -36,7 +51,33 @@ const SingleIncident: React.FC<SingleIncidentProps> = ({
                     <IncidentMinute minuto={incidencia.minuto} isLocal={true} isAsistencia={isAsistencia} />
 
                     <div className="flex items-center justify-center mx-3">
-                        <IncidentIcon incidencia={incidencia} />
+                        {esSegundaAmarillaDoble && (segundaAmarillaRelacionada || dobleAmarillaData?.roja) ? (
+                            // Mostrar tarjetas superpuestas: amarilla detrás, roja delante
+                            <div className="relative" style={{ width: '20px', height: '28px' }}>
+                                {/* Tarjeta amarilla (atrás) */}
+                                <div className="absolute" style={{ 
+                                    left: '2px', 
+                                    top: '2px',
+                                    width: '16px', 
+                                    height: '24px', 
+                                    backgroundColor: '#eab308',
+                                    borderRadius: '2px',
+                                    zIndex: 1
+                                }} />
+                                {/* Tarjeta roja (delante) */}
+                                <div className="absolute" style={{ 
+                                    left: '0px', 
+                                    top: '0px',
+                                    width: '16px', 
+                                    height: '24px', 
+                                    backgroundColor: '#dc2626',
+                                    borderRadius: '2px',
+                                    zIndex: 2
+                                }} />
+                            </div>
+                        ) : (
+                            <IncidentIcon incidencia={incidencia} />
+                        )}
                     </div>
 
                     <PlayerInfo incidencia={incidencia} isLocal={true} isAsistencia={isAsistencia} />
@@ -65,7 +106,33 @@ const SingleIncident: React.FC<SingleIncidentProps> = ({
                     <PlayerInfo incidencia={incidencia} isLocal={false} isAsistencia={isAsistencia} />
 
                     <div className="flex items-center justify-center mx-3">
-                        <IncidentIcon incidencia={incidencia} />
+                        {esSegundaAmarillaDoble && (segundaAmarillaRelacionada || dobleAmarillaData?.roja) ? (
+                            // Mostrar tarjetas superpuestas: amarilla detrás, roja delante
+                            <div className="relative" style={{ width: '20px', height: '28px' }}>
+                                {/* Tarjeta amarilla (atrás) */}
+                                <div className="absolute" style={{ 
+                                    left: '2px', 
+                                    top: '2px',
+                                    width: '16px', 
+                                    height: '24px', 
+                                    backgroundColor: '#eab308',
+                                    borderRadius: '2px',
+                                    zIndex: 1
+                                }} />
+                                {/* Tarjeta roja (delante) */}
+                                <div className="absolute" style={{ 
+                                    left: '0px', 
+                                    top: '0px',
+                                    width: '16px', 
+                                    height: '24px', 
+                                    backgroundColor: '#dc2626',
+                                    borderRadius: '2px',
+                                    zIndex: 2
+                                }} />
+                            </div>
+                        ) : (
+                            <IncidentIcon incidencia={incidencia} />
+                        )}
                     </div>
 
                     <IncidentMinute minuto={incidencia.minuto} isLocal={false} isAsistencia={isAsistencia} />

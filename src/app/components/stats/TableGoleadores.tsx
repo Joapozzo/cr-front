@@ -6,13 +6,12 @@ interface GoleadoresProps {
 }
 
 const TablaGoleadores = ({ goleadores }: GoleadoresProps) => {
-    
     return (
         <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] overflow-hidden">
             <div className="p-4 border-b border-[var(--gray-300)]">
                 <h3 className="text-[var(--white)] font-semibold text-lg flex items-center gap-2">
                     <Volleyball className="w-5 h-5 text-[var(--green)]" />
-                    Tabla de Goleadores
+                    Tabla de goleadores
                 </h3>
             </div>
 
@@ -37,19 +36,6 @@ const TablaGoleadores = ({ goleadores }: GoleadoresProps) => {
                         <tbody className="divide-y divide-[var(--gray-300)]">
                             {goleadores.map((jugador) => (
                                 <tr key={jugador.jugador.id_jugador} className="hover:bg-[var(--gray-300)] transition-colors">
-                                    {/* <td className="px-4 py-3">
-                                        <div className="flex items-center">
-                                            {index < 3 && (
-                                                <div
-                                                    className="w-1 h-6 rounded-r mr-3"
-                                                    style={{ backgroundColor: index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : '#CD7F32' }}
-                                                ></div>
-                                            )}
-                                            <span className="text-[var(--white)] font-semibold">
-                                                {index + 1}
-                                            </span>
-                                        </div>
-                                    </td> */}
                                     <td className="px-4 py-3">
                                         <div className="flex items-center gap-3">
                                             <div className="w-6 h-6 bg-[var(--gray-200)] rounded-full flex items-center justify-center">
@@ -57,7 +43,7 @@ const TablaGoleadores = ({ goleadores }: GoleadoresProps) => {
                                             </div>
                                             <div className="flex flex-col">
                                                 <span className="text-[var(--white)] font-medium">
-                                                    {jugador.jugador.nombre}
+                                                    {jugador.jugador.nombre} {jugador.jugador.apellido}
                                                 </span>
                                                 <span className="text-xs text-[var(--gray-100)]">
                                                     {jugador.equipo.nombre}

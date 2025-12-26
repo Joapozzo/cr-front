@@ -6,14 +6,20 @@ import { ArrowLeft, Shield } from 'lucide-react';
 import { usePlayerStore } from '@/app/stores/playerStore';
 import Image from 'next/image';
 import { useMemo } from 'react';
+import { EquipoProvider, useEquipoSeleccionado } from './EquipoContext';
+import { useEquiposUsuario } from '@/app/hooks/useEquiposUsuario';
+import SelectGeneral from '@/app/components/ui/SelectGeneral';
+import { SelectOption } from '@/app/components/ui/Select';
 
-export default function EquipoLayout({
+function EquipoLayoutContent({
     children,
 }: {
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
     const { jugador, equipos } = usePlayerStore();
+    const { equipoSeleccionado, setEquipoSeleccionado } = useEquipoSeleccionado();
+    const { data: equiposUsuario } = useEquiposUsuario();
 
     const edicionesDisponibles = useMemo(() => {
         if (!equipos || equipos.length === 0) {
@@ -46,7 +52,41 @@ export default function EquipoLayout({
         }
         return pathname === `/miequipo/${id_edicion}`;
     };
-    const equipoInfo = equipos?.[0];
+    
+    // Usar equipo seleccionado del contexto, o el primero del store como fallback
+    const equipoInfo = equipoSeleccionado || equipos?.[0];
+    
+    // Mapear equipos para el selector
+    const equiposParaSelector = useMemo(() => {
+        if (!equiposUsuario) return [];
+        return equiposUsuario.map(eq => ({
+            id_equipo: eq.id_equipo,
+            nombre_equipo: eq.nombre_equipo,
+            img_equipo: eq.img_equipo,
+            id_categoria_edicion: eq.id_categoria_edicion,
+            nombre_categoria: eq.nombre_categoria,
+            id_edicion: eq.id_edicion,
+            nombre_torneo: eq.nombre_torneo,
+            temporada: eq.temporada,
+            es_capitan: eq.es_capitan
+        }));
+    }, [equiposUsuario]);
+
+    const formatSelectTeam = (): SelectOption[] => {
+        return equiposParaSelector.map((eq) => ({
+            value: eq.id_equipo.toString(),
+            label: `${eq.nombre_equipo} ${eq.es_capitan ? '👑' : ''} - ${eq.nombre_categoria}`,
+            image: eq.img_equipo || undefined,
+            disabled: false
+        }));
+    };
+
+    const handleCambiarEquipo = (nuevoIdEquipo: string | number) => {
+        const nuevoEquipo = equiposUsuario?.find(eq => eq.id_equipo === Number(nuevoIdEquipo));
+        if (nuevoEquipo) {
+            setEquipoSeleccionado(nuevoEquipo);
+        }
+    };
 
     // Si no hay equipos, mostrar mensaje
     if (!equipos || equipos.length === 0) {
@@ -63,7 +103,7 @@ export default function EquipoLayout({
                             Inicio
                         </Link>
                         <span className="text-[var(--gray-100)]">/</span>
-                        <span className="text-[var(--white)]">Mi Equipo</span>
+                        <span className="text-[var(--white)]">Mi equipo</span>
                     </div>
                 </div>
 
@@ -110,7 +150,7 @@ export default function EquipoLayout({
                         Inicio
                     </Link>
                     <span className="text-[var(--gray-100)]">/</span>
-                    <span className="text-[var(--white)]">Mi Equipo</span>
+                    <span className="text-[var(--white)]">Mi equipo</span>
                 </div>
             </div>
 
@@ -119,8 +159,8 @@ export default function EquipoLayout({
                 <div className="flex items-center space-x-4 max-w-[1400px] mx-auto px-10">
                     {/* Logo del equipo */}
                     <div className="relative">
-                        <div className="w-16 h-16 rounded-full overflow-hidden bg-[var(--gray-300)] flex items-center justify-center border-2 border-[var(--green)]">
-                            {equipoInfo?.img_equipo ? (
+                        {equipoInfo?.img_equipo ? (
+                            <div className="w-16 h-16">
                                 <Image
                                     src={equipoInfo.img_equipo}
                                     alt={equipoInfo.nombre_equipo}
@@ -128,17 +168,54 @@ export default function EquipoLayout({
                                     height={80}
                                     className="w-full h-full object-cover"
                                 />
-                            ) : (
+                            </div>
+                        ) : (
+                            <div className="w-16 h-16 rounded-full overflow-hidden bg-[var(--gray-300)] flex items-center justify-center border-2 border-[var(--green)]">
                                 <Shield className="w-8 h-8 text-[var(--gray-100)]" />
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Información del equipo */}
                     <div className="flex-1 min-w-0">
-                        <h1 className="text-lg md:text-xl font-bold text-[var(--white)] truncate">
-                            {equipoInfo?.nombre_equipo || 'Mi Equipo'}
-                        </h1>
+                        <div className="flex items-center gap-3 flex-wrap">
+                            {equiposParaSelector.length > 1 ? (
+                                <div className="flex-1 min-w-[200px] max-w-[400px]">
+                                    <SelectGeneral
+                                        options={formatSelectTeam()}
+                                        onChange={handleCambiarEquipo}
+                                        placeholder="Seleccionar equipo"
+                                        showImages={true}
+                                        size="md"
+                                        value={equipoSeleccionado?.id_equipo.toString()}
+                                    />
+                                </div>
+                            ) : (
+                                <h1 className="text-lg md:text-xl font-bold text-[var(--white)] truncate">
+                                    {equipoInfo?.nombre_equipo || 'Mi Equipo'}
+                                </h1>
+                            )}
+                            {/* Badge de rol (Capitán/Jugador) */}
+                            {equipoInfo && (
+                                <>
+                                    {equipoInfo.es_capitan ? (
+                                        <div className="flex items-center gap-1.5 px-3 py-1 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                                            <svg className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                            </svg>
+                                            <span className="text-yellow-500 text-xs font-medium">Capitán</span>
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center gap-1.5 px-3 py-1 bg-[var(--black-800)] border border-[#262626] rounded-lg">
+                                            <svg className="w-4 h-4 text-[var(--green)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                            <span className="text-[var(--green)] text-xs font-medium">Jugador</span>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </div>
                         <p className="text-sm text-[var(--gray-100)] truncate">
                             {jugador?.nombre} {jugador?.apellido}
                         </p>
@@ -218,5 +295,21 @@ export default function EquipoLayout({
                 }
             `}</style>
         </div>
+    );
+}
+
+export default function EquipoLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    const { data: equiposUsuario } = useEquiposUsuario();
+    
+    return (
+        <EquipoProvider equiposUsuario={equiposUsuario}>
+            <EquipoLayoutContent>
+                {children}
+            </EquipoLayoutContent>
+        </EquipoProvider>
     );
 }

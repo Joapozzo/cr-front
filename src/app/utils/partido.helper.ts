@@ -1,4 +1,4 @@
-import { EstadoPartido } from "../types/partido";
+import { EstadoPartido, Partido, PartidoCompleto } from "../types/partido";
 
 export const getEstadoInfo = (estado: EstadoPartido) => {
     switch (estado) {
@@ -66,3 +66,33 @@ export const getEstadoConfig = (estado: EstadoPartido) => {
     }
   };
   
+  // Helper function to convert PartidoCompleto to Partido
+export function convertPartidoCompletoToPartido(partidoCompleto: PartidoCompleto): Partido {
+    return {
+        id_partido: partidoCompleto.id_partido,
+        id_equipolocal: partidoCompleto.equipoLocal?.id_equipo || 0,
+        id_equipovisita: partidoCompleto.equipoVisita?.id_equipo || 0,
+        jornada: partidoCompleto.jornada,
+        dia: partidoCompleto.dia || '',
+        hora: partidoCompleto.hora || '',
+        goles_local: partidoCompleto.goles_local,
+        goles_visita: partidoCompleto.goles_visita,
+        pen_local: partidoCompleto.pen_local,
+        pen_visita: partidoCompleto.pen_visita,
+        cancha: partidoCompleto.cancha || 0,
+        arbitro: partidoCompleto.arbitro,
+        estado: partidoCompleto.estado as Partido['estado'],
+        id_categoria_edicion: partidoCompleto.id_categoria_edicion,
+        equipoLocal: {
+            id_equipo: partidoCompleto.equipoLocal?.id_equipo,
+            nombre: partidoCompleto.equipoLocal?.nombre || '',
+            img: partidoCompleto.equipoLocal?.img || null,
+        },
+        equipoVisita: {
+            id_equipo: partidoCompleto.equipoVisita?.id_equipo,
+            nombre: partidoCompleto.equipoVisita?.nombre || '',
+            img: partidoCompleto.equipoVisita?.img || null,
+        },
+        nombre_categoria_completo: partidoCompleto.categoriaEdicion?.categoria?.nombreCategoria?.nombre_categoria || null,
+    };
+}

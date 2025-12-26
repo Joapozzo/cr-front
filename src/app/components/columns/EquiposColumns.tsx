@@ -1,5 +1,6 @@
-import { FileText, Shield, Trash2, Users } from "lucide-react";
+import { FileText, Trash2, Users, Mail } from "lucide-react";
 import { Button } from "../ui/Button";
+import { EscudoEquipo } from "../common/EscudoEquipo";
 
 const getEquiposColumns = (
     handleDeleteEquipo: (id: number) => void,
@@ -23,9 +24,7 @@ const getEquiposColumns = (
             label: "NOMBRE",
             render: (value: string, row: any) => (
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-[var(--gray-200)] rounded-full flex items-center justify-center">
-                        <Shield className="w-4 h-4 text-[var(--gray-100)]" />
-                    </div>
+                    <EscudoEquipo src={row.img} alt={row.nombre} size={32} className="flex-shrink-0" />
                     <span className="text-[var(--white)] font-medium">
                         {row.nombre}
                     </span>
@@ -52,17 +51,42 @@ const getEquiposColumns = (
         {
             key: "solicitudes_pendientes",
             label: "SOLICITUDES PENDIENTES",
-            render: (value: number) => (
-                <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-[var(--yellow)]" />
-                    <span
-                        className={`font-medium ${value === 0 ? "text-[var(--gray-100)]" : "text-[var(--yellow)]"
-                            }`}
-                    >
-                        {value}
-                    </span>
-                </div>
-            ),
+            render: (value: number, row: any) => {
+                const solicitudes = value || 0;
+                const invitaciones = row.invitaciones_pendientes || 0;
+                const total = solicitudes + invitaciones;
+                
+                return (
+                    <div className="flex items-center gap-3">
+                        {/* Solicitudes (jugadores solicitan unirse) */}
+                        <div className="flex items-center gap-2">
+                            <FileText className="w-4 h-4 text-[var(--yellow)]" />
+                            <span
+                                className={`font-medium text-xs ${solicitudes === 0 ? "text-[var(--gray-100)]" : "text-[var(--yellow)]"
+                                    }`}
+                            >
+                                {solicitudes}
+                            </span>
+                        </div>
+                        {/* Invitaciones (equipo invita jugadores) */}
+                        <div className="flex items-center gap-2">
+                            <Mail className="w-4 h-4 text-[var(--blue)]" />
+                            <span
+                                className={`font-medium text-xs ${invitaciones === 0 ? "text-[var(--gray-100)]" : "text-[var(--blue)]"
+                                    }`}
+                            >
+                                {invitaciones}
+                            </span>
+                        </div>
+                        {/* Total */}
+                        {total > 0 && (
+                            <span className="text-[var(--white)] font-semibold text-xs">
+                                ({total})
+                            </span>
+                        )}
+                    </div>
+                );
+            },
         },
         {
             key: "actions",

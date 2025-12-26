@@ -27,3 +27,23 @@ export interface EstadisticasJugador {
     sancionado: 'S' | 'N';
     solicitud_baja?: boolean;
 }
+
+export interface JugadorBusqueda {
+    id_jugador: number;
+    nombre: string;
+    apellido: string;
+    dni?: string;
+    fecha_nacimiento?: string | null;
+    img: string | null;
+    posicion?: {
+        id_posicion: number;
+        nombre: string;
+    };
+}
+
+export interface BuscarJugadoresResponse {
+    data: {
+        jugadores: JugadorBusqueda[];
+        total: number;
+    };
+}

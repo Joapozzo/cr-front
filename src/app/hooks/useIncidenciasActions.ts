@@ -1,11 +1,13 @@
 import toast from 'react-hot-toast';
 import { IncidenciaPartido, JugadorPlantel } from '@/app/types/partido';
 import { useEliminarGol, useEliminarAmonestacion, useEliminarExpulsion } from '@/app/hooks/useIncidentsEditDelete';
+import { useEliminarCambioJugador } from '@/app/hooks/useCambiosJugador';
 
 export const useIncidenciasActions = (idPartido: number, todosLosJugadores: JugadorPlantel[]) => {
     const { mutateAsync: eliminarGol, isPending: isEliminandoGol } = useEliminarGol();
     const { mutateAsync: eliminarAmonestacion, isPending: isEliminandoAmonestacion } = useEliminarAmonestacion();
     const { mutateAsync: eliminarExpulsion, isPending: isEliminandoExpulsion } = useEliminarExpulsion();
+    const { mutateAsync: eliminarCambio, isPending: isEliminandoCambio } = useEliminarCambioJugador();
 
     const handleEditAction = (action: IncidenciaPartido, onOpenAccionModal: (jugador: JugadorPlantel, accion: IncidenciaPartido) => void) => {
         const jugadorAsociado = todosLosJugadores.find(j => j.id_jugador === action.id_jugador);
@@ -30,6 +32,10 @@ export const useIncidenciasActions = (idPartido: number, todosLosJugadores: Juga
                     await eliminarExpulsion({ idExpulsion: action.id, idPartido });
                     toast.success('Expulsión eliminada correctamente');
                     break;
+                case 'cambio':
+                    await eliminarCambio({ idCambio: action.id, idPartido });
+                    toast.success('Cambio eliminado correctamente');
+                    break;
                 default:
                     toast.error('Tipo de incidencia no reconocido');
                     throw new Error('Tipo no reconocido');
@@ -41,7 +47,7 @@ export const useIncidenciasActions = (idPartido: number, todosLosJugadores: Juga
         }
     };
 
-    const isEliminandoIncidencia = isEliminandoGol || isEliminandoAmonestacion || isEliminandoExpulsion;
+    const isEliminandoIncidencia = isEliminandoGol || isEliminandoAmonestacion || isEliminandoExpulsion || isEliminandoCambio;
 
     return {
         handleEditAction,

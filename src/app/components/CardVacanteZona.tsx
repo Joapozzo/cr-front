@@ -1,4 +1,4 @@
-import { MoreHorizontal, Shield } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { Equipo } from "../types/equipo";
 import DropdownMenu from "./DropDownMenu";
 import DropdownItem from "./DrowDownItem";
@@ -9,6 +9,7 @@ import { useEdicionStore } from "../stores/edicionStore";
 import toast from "react-hot-toast";
 import { PartidoZona } from "../types/partido";
 import { InfoVacante } from "../types/temporada";
+import { EscudoEquipo } from "./common/EscudoEquipo";
 
 interface CardVacanteZonaProps {
     equipo: Equipo | null;
@@ -80,10 +81,10 @@ const CardVacanteZona = ({
                     onError: (error: unknown) => {
                         // Extraer el mensaje de error del backend
                         const errorObj = error as { response?: { data?: { error?: string; message?: string } }; message?: string };
-                        const errorMessage = errorObj?.response?.data?.error || 
-                                        errorObj?.response?.data?.message || 
-                                        errorObj?.message || 
-                                        'Error al vaciar vacante';
+                        const errorMessage = errorObj?.response?.data?.error ||
+                            errorObj?.response?.data?.message ||
+                            errorObj?.message ||
+                            'Error al vaciar vacante';
                         toast.error(errorMessage, { id: toastId });
                         reject(error);
                     }
@@ -113,10 +114,10 @@ const CardVacanteZona = ({
         <>
             <div
                 className={`relative p-4 rounded-lg transition-colors group border ${vacanteInfo.tipo === 'equipo_directo'
+                    ? 'cursor-pointer'
+                    : vacanteInfo.tipo === 'automatizacion_posicion' || vacanteInfo.tipo === 'automatizacion_partido'
                         ? 'cursor-pointer'
-                        : vacanteInfo.tipo === 'automatizacion_posicion' || vacanteInfo.tipo === 'automatizacion_partido'
-                            ? 'cursor-pointer'
-                            : 'cursor-pointer'
+                        : 'cursor-pointer'
                     }`}
                 style={{
                     borderColor:
@@ -155,9 +156,13 @@ const CardVacanteZona = ({
                                 {/* ✅ Label principal del backend */}
                                 <div className="flex items-center gap-2">
                                     {vacanteInfo.tipo === 'equipo_directo' && (
-                                        <div className="w-6 h-6 bg-[var(--gray-200)] rounded-full flex items-center justify-center">
-                                            <Shield className="w-3 h-3 text-[var(--gray-100)]" />
-                                        </div>
+                                        <EscudoEquipo
+                                            src={equipoAsignado?.img}
+                                            alt={equipoAsignado?.nombre || 'Equipo'}
+                                            size={24}
+                                            className="w-6 h-6 object-cover rounded-full"
+                                        />
+
                                     )}
                                     <span className={`text-sm text-[var(--white)] font-medium ${vacanteInfo.tipo === 'equipo_directo'
                                         ? 'text-[var(--gray-100)]'

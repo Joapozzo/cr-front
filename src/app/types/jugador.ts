@@ -2,12 +2,54 @@ import { PartidoExpulsados } from './../../../../cr-back/src/models/partido';
 import { Equipo } from "./equipo";
 import { PosicionJugador } from "./partido";
 
+// Tipo base para posición (sin id_posicion, útil para casos donde solo se necesita codigo y nombre)
+export interface PosicionJugadorSimple {
+    codigo: string;
+    nombre: string;
+}
+
+// Tipo base para jugador con información básica
+export interface JugadorBase {
+    id_jugador: number;
+    nombre: string;
+    apellido?: string;
+    dni?: string;
+    img?: string | null;
+}
+
+// Tipo base para jugador con posición
+export interface JugadorConPosicion extends JugadorBase {
+    posicion: PosicionJugador | PosicionJugadorSimple;
+}
+
+// Tipo para jugador en plantel (con información adicional del plantel)
+export interface JugadorPlantel {
+    id_jugador: number;
+    nombre: string; // Nombre completo o solo nombre
+    dni: string;
+    posicion: PosicionJugadorSimple | PosicionJugador;
+    capitan: boolean;
+    estado_sancion: string;
+    es_eventual: boolean;
+    partidos_jugados: number;
+    img?: string | null;
+}
+
+// Tipo para jugador en búsqueda
+export interface JugadorBusqueda extends JugadorBase {
+    nombre: string;
+    apellido: string;
+    dni: string;
+    fecha_nacimiento: string | null;
+    img?: string | null;
+}
+
 export interface Jugador {
     id_jugador: number;
     nombre: string;
     apellido: string;
-    img: string;
-    posicion: PosicionJugador;
+    img?: string | null;
+    posicion?: PosicionJugador | PosicionJugadorSimple | null;
 }
 
 export interface ObtenerEquiposActualesDelJugadorResponse { 
@@ -72,7 +114,7 @@ export interface SearchJugadoresResponse {
     success: boolean;
     data: JugadorDestacadoDt[];
     total: number;
-    categira_edicion: number;
+    categoria_edicion: number;
     jornada: number;
     query: string;
     id_posicion: number | null;

@@ -59,7 +59,7 @@ export const EquipoTabs: React.FC<EquipoTabsProps> = ({
   }
 
   return (
-    <div className="border-b border-[#262626] bg-[var(--black-900)] rounded-b-xl">
+    <div className="bg-[var(--black-900)] rounded-xl border border-[#262626]">
       {/* Tabs scrollables */}
       <div
         ref={scrollContainerRef}

@@ -15,9 +15,9 @@ import { BsGoogle } from 'react-icons/bs';
 import { useLoginGoogle } from '@/app/hooks/auth/useLoginGoogle';
 import { Loader2 } from 'lucide-react';
 import { LoadingScreen } from '../LoadingScreen';
+import { proximoPasoARuta } from '@/app/utils/authRedirect';
 
 type LoginState = 'idle' | 'loading' | 'success' | 'error';
-
 
 export const LoginForm = () => {
     const router = useRouter();
@@ -44,26 +44,9 @@ export const LoginForm = () => {
                     setLoginState('success');
 
                     setTimeout(() => {
-                        const paso = data.proximoPaso;
-
-                        if (paso === 'VALIDAR_DNI') {
-                            router.push('/validar-dni');
-                            return;
-                        }
-
-                        if (paso === 'SELFIE') {
-                            router.push('/selfie');
-                            return;
-                        }
-
-                        // ✅ Login completo según rol
-                        if (data.usuario.rol === 'ADMIN') {
-                            router.push('/adm/dashboard');
-                        } else if (data.usuario.rol === 'PLANILLERO') {
-                            router.push('/planillero');
-                        } else {
-                            router.push('/home');
-                        }
+                        // Usar el proximoPaso del backend para determinar la ruta
+                        const ruta = proximoPasoARuta(data.proximoPaso, data.usuario?.rol);
+                        router.push(ruta);
                     }, 1200);
                 },
                 onError: (error) => {
@@ -82,26 +65,9 @@ export const LoginForm = () => {
                 setLoginState('success');
                 
                 setTimeout(() => {
-                    const paso = data.proximoPaso;
-
-                    if (paso === 'VALIDAR_DNI') {
-                        router.push('/validar-dni');
-                        return;
-                    }
-
-                    if (paso === 'SELFIE') {
-                        router.push('/selfie');
-                        return;
-                    }
-
-                    // ✅ Login completo según rol
-                    if (data.usuario.rol === 'ADMIN') {
-                        router.push('/admin/dashboard');
-                    } else if (data.usuario.rol === 'PLANILLERO') {
-                        router.push('/planillero');
-                    } else {
-                        router.push('/perfil');
-                    }
+                    // Usar el proximoPaso del backend para determinar la ruta
+                    const ruta = proximoPasoARuta(data.proximoPaso, data.usuario?.rol);
+                    router.push(ruta);
                 }, 1200);
             },
             onError: (error) => {
@@ -123,11 +89,11 @@ export const LoginForm = () => {
     }
 
     return (
-        <div className="flex flex-col gap-6 w-full">
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
-                <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 lg:gap-6 w-full">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 lg:gap-5 w-full flex-shrink-0">
+                <div className="flex flex-col gap-3 lg:gap-4">
                     <Input
-                        type="email"
+                        type="text"
                         placeholder="Email"
                         icon={<MdEmail size={20} />}
                         value={email}
@@ -149,7 +115,7 @@ export const LoginForm = () => {
                     <div className="flex justify-end">
                         <Link
                             href="/recuperar-password"
-                            className="text-sm text-[var(--gray-300)] hover:text-[var(--green)] transition-colors"
+                            className="text-xs lg:text-sm text-[var(--gray-300)] hover:text-[var(--green)] transition-colors"
                         >
                             ¿Olvidaste tu contraseña?
                         </Link>
@@ -173,9 +139,9 @@ export const LoginForm = () => {
                 </Button>
             </form>
 
-            <div className="flex items-center gap-4 w-full">
+            <div className="flex items-center gap-3 lg:gap-4 w-full">
                 <div className="flex-1 border-t border-[var(--gray-300)]"></div>
-                <span className="text-sm text-[var(--gray-300)] whitespace-nowrap">
+                <span className="text-xs lg:text-sm text-[var(--gray-300)] whitespace-nowrap">
                     O inicia con
                 </span>
                 <div className="flex-1 border-t border-[var(--gray-300)]"></div>
@@ -193,15 +159,15 @@ export const LoginForm = () => {
                 ) : (
                     <>
                         <BsGoogle size={18} />
-                        Continuar con Google
+                        {/* Continuar con Google */}
                     </>
                 )}
             </Button>
 
-            <div className="flex justify-center pt-2">
+            <div className="flex justify-center pt-1 lg:pt-2">
                 <Link
                     href="/registro"
-                    className="text-sm text-[var(--gray-200)] hover:text-[var(--green)] transition-colors"
+                    className="text-xs lg:text-sm text-[var(--gray-200)] hover:text-[var(--green)] transition-colors"
                 >
                     ¿No tenes cuenta? Regístrate
                 </Link>

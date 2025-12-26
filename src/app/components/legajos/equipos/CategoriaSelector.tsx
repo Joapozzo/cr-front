@@ -14,7 +14,7 @@ export const CategoriaSelector = ({ categorias, categoriaSeleccionada, onCategor
     return (
         <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-4">
             <label className="text-sm font-medium text-[var(--white)] mb-2 block">
-                Seleccionar Categoría-Edición
+                Seleccionar categoría-edición
             </label>
             <select
                 value={categoriaSeleccionada || ''}

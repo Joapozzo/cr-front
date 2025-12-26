@@ -3,14 +3,19 @@ import { api } from "../lib/api";
 import { EquipoPosicion } from "../types/posiciones";
 
 export interface TablaPosicionesResponse {
-    mensaje: string;
-    data: EquipoPosicion[];
+    mensaje?: string;
+    data?: EquipoPosicion[];
+    tabla?: EquipoPosicion[];
+    formatosPosicion?: FormatoPosicion[];
 }
+
+import { FormatoPosicion } from '../types/zonas';
 
 export interface TablaZona {
     id_zona: number;
     nombre_zona: string;
     tabla: EquipoPosicion[];
+    formatosPosicion?: FormatoPosicion[];
 }
 
 export interface TablasTodasZonasResponse {
@@ -29,6 +34,7 @@ export interface TablaPosicionEquipo {
     total_posiciones?: number;
     id_zona?: number;
     id_categoria_edicion?: number;
+    formatosPosicion?: FormatoPosicion[];
 }
 
 export interface IEquipoPosicion {
@@ -36,7 +42,9 @@ export interface IEquipoPosicion {
     id_equipo: number;
     nombre_equipo: string;
     img_equipo?: string | null;
-    puntos: number;
+    puntos: number; // Puntos base (sin descuento)
+    puntos_descontados?: number; // Descuento por apercibimientos
+    puntos_finales?: number; // Puntos finales (puntos - descuento)
     partidos_jugados: number;
     partidos_ganados: number;
     partidos_empatados: number;
@@ -44,6 +52,7 @@ export interface IEquipoPosicion {
     goles_favor: number;
     goles_contra: number;
     diferencia_goles: number;
+    apercibimientos?: number;
 }
 
 export interface TablasPosicionesPorEquiposResponse {

@@ -98,7 +98,7 @@ export default function PerfilAdminPage() {
     return (
         <div className="space-y-6">
             <PageHeader
-                title="Mi Perfil"
+                title="Mi perfil"
                 description="Gestiona tu información personal y foto de perfil"
             />
 

@@ -112,7 +112,7 @@ const JugadorDetallePage = () => {
 
     if (errorInfo || !jugadorInfo) {
         return (
-            <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-6 text-center">
+            <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-6 text-center flex flex-col items-center justify-center">
                 <AlertTriangle className="w-8 h-8 text-[var(--red)] mx-auto mb-3" />
                 <h3 className="text-[var(--red)] font-medium mb-2">Error al cargar el jugador</h3>
                 <p className="text-[var(--red)]/80 text-sm mb-4">
@@ -132,7 +132,7 @@ const JugadorDetallePage = () => {
             {categoriasUnicas.length > 0 && (
                 <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-4">
                     <label className="text-sm font-medium text-[var(--white)] mb-2 block">
-                        Seleccionar Categoría-Edición
+                        Seleccionar categoría
                     </label>
                     <select
                         value={categoriaSeleccionada || ''}

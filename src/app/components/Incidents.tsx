@@ -1,7 +1,7 @@
 import React from 'react';
 import { BaseCard, CardHeader } from './BaseCard';
 import { IncidenciaPartido, Partido } from '../types/partido';
-import ConfirmDeleteIncidentModal from './modals/ConfirmDeleteIncidentModal.';
+import { ConfirmDeleteIncidentModal } from './modals/ModalAdmin';
 import IncidentsSkeleton from './skeletons/CardIndicentsSkeleton';
 import SingleIncident from './SingleIncident';
 import IncidentsHeader from './IncidentsHeader';
@@ -107,6 +107,10 @@ const Incidents: React.FC<IncidentsProps> = ({
                                         showActions={permitirAcciones}
                                         onEdit={handleEditAction}
                                         onDelete={handleDeleteAction}
+                                        segundaAmarillaRelacionada={grupo.segundaAmarillaRelacionada}
+                                        rojaRelacionada={grupo.rojaRelacionada}
+                                        esDobleAmarilla={grupo.esDobleAmarilla}
+                                        dobleAmarillaData={grupo.dobleAmarillaData}
                                     />
                                 </div>
                             );
@@ -117,13 +121,15 @@ const Incidents: React.FC<IncidentsProps> = ({
                 {incidencias.length === 0 && <EmptyIncidents />}
             </div>
 
-            <ConfirmDeleteIncidentModal
-                isOpen={showDeleteModal}
-                onClose={handleCloseDeleteModal}
-                incidencia={incidenciaAEliminar}
-                onConfirm={confirmarEliminacion}
-                isLoading={isLoadingDelete}
-            />
+            {incidenciaAEliminar && (
+                <ConfirmDeleteIncidentModal
+                    isOpen={showDeleteModal}
+                    onClose={handleCloseDeleteModal}
+                    tipoIncidencia={incidenciaAEliminar.tipo}
+                    onConfirm={confirmarEliminacion}
+                    isLoading={isLoadingDelete}
+                />
+            )}
         </BaseCard>
     );
 };

@@ -5,11 +5,11 @@ import { Button } from '@/app/components/ui/Button';
 import { PageHeader } from '@/app/components/ui/PageHeader';
 import { DataTable } from '@/app/components/ui/DataTable';
 import { TableSkeleton } from '@/app/components/skeletons/TableSkeleton';
-import { Plus } from 'lucide-react';
+import { Plus, RefreshCcw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { getEdicionesColumns } from '@/app/components/columns/EdicionesColumns';
-import { FormField, FormModal, useModals } from '@/app/components/modals/ModalAdmin';
-import { CrearEdicion } from '@/app/types/edicion';
+import { FormField, FormModal, useModals, FormDataValue } from '@/app/components/modals/ModalAdmin';
+import { CrearEdicion, EdicionAdmin } from '@/app/types/edicion';
 import toast from 'react-hot-toast';
 import { crearEdicionSchema } from '@/app/schemas/edicion.schema';
 import { useEdicionStore } from '@/app/stores/edicionStore';
@@ -17,18 +17,35 @@ import { useEdicionStore } from '@/app/stores/edicionStore';
 const EdicionesPage = () => {
 
     const { modals, openModal, closeModal } = useModals();
-    const { data: ediciones, isLoading, error } = useTodasLasEdiciones();
+    const { data: ediciones, isLoading, error, refetch, isFetching } = useTodasLasEdiciones();
     const { mutate: crearEdicion } = useCrearEdicion();
     const { setEdicionSeleccionada } = useEdicionStore();
 
     const router = useRouter();
 
-    const handleCreate = async (data: CrearEdicion): Promise<void> => {
+    const handleRefresh = () => {
+        refetch();
+    };
+
+    const handleCreate = async (data: Record<string, FormDataValue>): Promise<void> => {
         return new Promise((resolve, reject) => {
-            crearEdicion(data, {
-                onSuccess: (nuevaEdicion) => {
+            // Convertir datos del formulario a CrearEdicion
+            // Si img es un File, lo omitimos del objeto ya que el tipo espera string | null
+            // El backend probablemente maneja el archivo por separado
+            const edicionData: CrearEdicion = {
+                nombre: String(data.nombre || ''),
+                temporada: Number(data.temporada || 0),
+                cantidad_eventuales: Number(data.cantidad_eventuales || 0),
+                partidos_eventuales: Number(data.partidos_eventuales || 0),
+                apercibimientos: Number(data.apercibimientos || 0),
+                puntos_descuento: Number(data.puntos_descuento || 0),
+                img: data.img instanceof File ? undefined : (data.img ? String(data.img) : undefined),
+            };
+
+            crearEdicion(edicionData, {
+                onSuccess: () => {
                     toast.success('Edición creada exitosamente');
-                    resolve(nuevaEdicion);
+                    resolve();
                 },
                 onError: (error) => {
                     toast.error(error.message || 'Error al crear la edición');
@@ -100,20 +117,31 @@ const EdicionesPage = () => {
                 title="Ediciones"
                 description="Gestiona todas las ediciones del torneo"
                 actions={
-                    <Button
-                        onClick={() => openModal('create')}
-                        variant='success'
-                        className='flex items-center'
-                    >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Agregar nueva edición
-                    </Button>
+                    <div className="flex items-center gap-3">
+                        <Button
+                            onClick={() => openModal('create')}
+                            variant='success'
+                            className='flex items-center'
+                        >
+                            <Plus className="w-4 h-4 mr-2" />
+                            Agregar nueva edición
+                        </Button>
+                        <Button
+                            onClick={handleRefresh}
+                            variant='more'
+                            className='flex items-center'
+                            disabled={isLoading || isFetching}
+                        >
+                            <RefreshCcw className={`w-4 h-4 mr-2 ${isLoading || isFetching ? 'animate-spin' : ''}`} />
+                            Refrescar
+                        </Button>
+                    </div>
                 }
             />
 
             {/* Contenido */}
-            {isLoading ? (
-                <TableSkeleton columns={7} rows={5} />
+            {(isLoading || isFetching) ? (
+                <TableSkeleton columns={8} rows={5} />
             ) : (
                 <div className="space-y-8">
                     {Object.entries(edicionesPorTemporada).map(
@@ -126,6 +154,12 @@ const EdicionesPage = () => {
                                     data={edicionesTemporada}
                                     columns={columns}
                                     emptyMessage="No hay ediciones disponibles"
+                                    onRowClick={(row) => {
+                                        const edicion = row as EdicionAdmin;
+                                        if (edicion.id_edicion) {
+                                            handleIngresarEdicion(edicion.id_edicion);
+                                        }
+                                    }}
                                 />
                             </div>
                         )
@@ -136,13 +170,13 @@ const EdicionesPage = () => {
                             <p className="text-gray-400 mb-4">
                                 No hay ediciones disponibles
                             </p>
-                            <Button
+                            {/* <Button
                                 onClick={() => openModal('create')}
                                 className="bg-green-500 hover:bg-green-600 text-white"
                             >
                                 <Plus className="w-4 h-4 mr-2" />
                                 Crear primera edición
-                            </Button>
+                            </Button> */}
                         </div>
                     )}
                 </div>
@@ -151,7 +185,7 @@ const EdicionesPage = () => {
             <FormModal
                 isOpen={modals.create}
                 onClose={() => closeModal('create')}
-                title="Crear Edición"
+                title="Crear edición"
                 fields={edicionFields}
                 onSubmit={handleCreate}
                 type="create"

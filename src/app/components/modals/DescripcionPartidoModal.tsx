@@ -1,11 +1,11 @@
-import { Partido } from "@/app/types/partido";
+import { PartidoResponse } from "@/app/schemas/partidos.schema";
 import { Button } from "../ui/Button";
 import { BaseModal } from "./ModalAdmin";
 
 interface DescriptionModalProps {
     isOpen: boolean;
     onClose: () => void;
-    partido: Partido | null;
+    partido: PartidoResponse | null;
 }
 
 const DescriptionModal = ({ isOpen, onClose, partido }: DescriptionModalProps) => {
@@ -15,7 +15,7 @@ const DescriptionModal = ({ isOpen, onClose, partido }: DescriptionModalProps) =
         <BaseModal
             isOpen={isOpen}
             onClose={onClose}
-            title="Descripción del Partido"
+            title="Descripción del partido"
             type="info"
             maxWidth="max-w-lg"
         >

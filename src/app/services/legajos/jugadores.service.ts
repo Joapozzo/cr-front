@@ -146,4 +146,18 @@ export const jugadoresLegajosService = {
             throw new Error('No se pudieron cargar las solicitudes');
         }
     },
+
+    /**
+     * Obtener URL de la imagen privada (selfie) de un jugador
+     * Solo accesible para ADMIN y PLANILLERO
+     */
+    obtenerSelfiePrivada: async (id_jugador: number): Promise<string | null> => {
+        try {
+            const response = await api.get<{ success: boolean; data: { selfieUrl: string | null } }>(`/legajos/jugador/${id_jugador}/selfie-privada`);
+            return response.data?.selfieUrl || null;
+        } catch (error) {
+            console.error('Error al obtener selfie privada del jugador:', error);
+            throw new Error('No se pudo cargar la imagen privada');
+        }
+    },
 };

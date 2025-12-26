@@ -168,7 +168,6 @@ const PrediosPage = () => {
 
     const handleActualizarCancha = async (data: Record<string, FormDataValue>): Promise<void> => {
         if (!canchaSeleccionada) return Promise.reject(new Error('No hay cancha seleccionada'));
-
         return new Promise((resolve, reject) => {
             const canchaData: ActualizarCanchaInput = {
                 id_predio: data.id_predio ? Number(data.id_predio) : undefined,
@@ -284,6 +283,24 @@ const PrediosPage = () => {
         }
     ];
 
+    // Memorizar initialData para el modal de edición de cancha
+    const canchaEditInitialData = useMemo(() => {
+        if (!canchaSeleccionada) {
+            return {
+                nombre: '',
+                id_predio: '',
+                tipo_futbol: '',
+                estado: 'A' as const
+            };
+        }
+        return {
+            nombre: canchaSeleccionada.nombre || '',
+            id_predio: canchaSeleccionada.id_predio ? canchaSeleccionada.id_predio.toString() : '',
+            tipo_futbol: canchaSeleccionada.tipo_futbol != null ? canchaSeleccionada.tipo_futbol.toString() : '',
+            estado: canchaSeleccionada.estado || 'A' as const
+        };
+    }, [canchaSeleccionada]);
+
     return (
         <div className="space-y-8">
             {/* Header */}
@@ -341,7 +358,7 @@ const PrediosPage = () => {
                         </div>
                     </SkeletonTheme>
                     <h3 className="text-sm font-semibold text-[var(--gray-100)] mb-4">
-                        Canchas Activas
+                        Canchas activas
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <CardCanchaSkeleton />
@@ -443,7 +460,7 @@ const PrediosPage = () => {
                     closeModal('delete');
                     setPredioSeleccionado(null);
                 }}
-                title="Eliminar Predio"
+                title="Eliminar predio"
                 message="¿Estás seguro de que deseas eliminar este predio?"
                 itemName={predioSeleccionado?.nombre || ''}
                 onConfirm={handleEliminarPredio}
@@ -476,13 +493,9 @@ const PrediosPage = () => {
                     closeModal('editCancha');
                     setCanchaSeleccionada(null);
                 }}
-                title="Editar Cancha"
+                title="Editar cancha"
                 fields={canchaFieldsConPredio}
-                initialData={{
-                    nombre: canchaSeleccionada?.nombre || '',
-                    id_predio: canchaSeleccionada?.id_predio || '',
-                    estado: canchaSeleccionada?.estado || 'A'
-                }}
+                initialData={canchaEditInitialData}
                 onSubmit={handleActualizarCancha}
                 type="edit"
                 validationSchema={actualizarCanchaSchema}

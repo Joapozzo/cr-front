@@ -6,8 +6,9 @@ import { Button } from '@/app/components/ui/Button';
 import Select, { SelectOption } from '@/app/components/ui/Select';
 import Switch from '@/app/components/ui/Switch';
 import { useCategoriaStore } from '@/app/stores/categoriaStore';
-import { useActualizarCategoriaEdicion } from '@/app/hooks/useCategorias';
+import { useActualizarCategoriaEdicion, useActualizarPublicadaCategoria, useCategoriaEdicionPorId } from '@/app/hooks/useCategorias';
 import toast from 'react-hot-toast';
+import { Eye, EyeOff } from 'lucide-react';
 import { convertDateToISO, formatISOToDateInput } from '@/app/utils/fechas';
 
 interface CategoriaEdicionConfig {
@@ -21,11 +22,21 @@ interface CategoriaEdicionConfig {
     fecha_fin_mercado?: string;
     limite_cambios?: number | null;
     recambio?: boolean | null;
+    color?: string | null;
 }
 
 const ConfiguracionCategoriaPage = () => {
-    const { categoriaSeleccionada } = useCategoriaStore();
+    const { categoriaSeleccionada, setCategoriaSeleccionada } = useCategoriaStore();
     const { mutate: actualizarCategoriaEdicion } = useActualizarCategoriaEdicion();
+    const { mutate: actualizarPublicada, isPending: isUpdatingPublicada } = useActualizarPublicadaCategoria();
+    
+    // Obtener datos completos de la categoría para asegurar que tenemos las fechas
+    const { data: categoriaCompleta } = useCategoriaEdicionPorId(
+        categoriaSeleccionada?.id_categoria_edicion || 0,
+        { enabled: !!categoriaSeleccionada?.id_categoria_edicion }
+    );
+    
+    const isPublicada = categoriaSeleccionada?.publicada === 'S';
 
     const [config, setConfig] = useState<CategoriaEdicionConfig>({
         tipo_futbol: 7,
@@ -34,8 +45,11 @@ const ConfiguracionCategoriaPage = () => {
         puntos_victoria: 3,
         puntos_empate: 1,
         puntos_derrota: 0,
+        fecha_inicio_mercado: '',
+        fecha_fin_mercado: '',
         limite_cambios: null,
         recambio: null,
+        color: null,
     });
 
     const [isLoading, setIsLoading] = useState(false);
@@ -71,7 +85,7 @@ const ConfiguracionCategoriaPage = () => {
 
         setIsLoading(true);
         try {
-            const datosActualizar: any = {};
+            const datosActualizar: Record<string, string | number | boolean | null | undefined> = {};
 
             if (config.tipo_futbol !== categoriaSeleccionada.tipo_futbol) {
                 datosActualizar.tipo_futbol = config.tipo_futbol;
@@ -109,6 +123,9 @@ const ConfiguracionCategoriaPage = () => {
             }
             if (config.recambio !== categoriaSeleccionada.recambio) {
                 datosActualizar.recambio = config.recambio;
+            }
+            if (config.color !== categoriaSeleccionada.color) {
+                datosActualizar.color = config.color;
             }
             if (Object.keys(datosActualizar).length === 0) {
                 toast.error('No hay cambios para guardar');
@@ -151,39 +168,134 @@ const ConfiguracionCategoriaPage = () => {
             newConfig.fecha_inicio_mercado !== categoriaSeleccionada.fecha_inicio_mercado ||
             newConfig.fecha_fin_mercado !== categoriaSeleccionada.fecha_fin_mercado ||
             newConfig.limite_cambios !== categoriaSeleccionada.limite_cambios ||
-            newConfig.recambio !== categoriaSeleccionada.recambio
+            newConfig.recambio !== categoriaSeleccionada.recambio ||
+            newConfig.color !== categoriaSeleccionada.color
         );
     };
 
+    // Actualizar el store cuando se carguen los datos completos de la categoría
     useEffect(() => {
-        if (categoriaSeleccionada) {
+        if (categoriaCompleta?.configuracion && categoriaSeleccionada) {
+            const configuracion = categoriaCompleta.configuracion;
+            
+            // Verificar si realmente hay cambios antes de actualizar para evitar loops
+            const hasChanges = 
+                categoriaSeleccionada.tipo_futbol !== configuracion.tipo_futbol ||
+                categoriaSeleccionada.duracion_tiempo !== configuracion.duracion_tiempo ||
+                categoriaSeleccionada.duracion_entretiempo !== configuracion.duracion_entretiempo ||
+                categoriaSeleccionada.puntos_victoria !== configuracion.puntos_victoria ||
+                categoriaSeleccionada.puntos_empate !== configuracion.puntos_empate ||
+                categoriaSeleccionada.puntos_derrota !== configuracion.puntos_derrota ||
+                categoriaSeleccionada.fecha_inicio_mercado !== (configuracion.fecha_inicio_mercado || undefined) ||
+                categoriaSeleccionada.fecha_fin_mercado !== (configuracion.fecha_fin_mercado || undefined) ||
+                categoriaSeleccionada.limite_cambios !== (configuracion.limite_cambios ?? null) ||
+                categoriaSeleccionada.recambio !== (configuracion.recambio ?? null) ||
+                categoriaSeleccionada.color !== (configuracion.color ?? null);
+            
+            if (hasChanges) {
+                setCategoriaSeleccionada({
+                    ...categoriaSeleccionada,
+                    tipo_futbol: configuracion.tipo_futbol,
+                    duracion_tiempo: configuracion.duracion_tiempo,
+                    duracion_entretiempo: configuracion.duracion_entretiempo,
+                    puntos_victoria: configuracion.puntos_victoria,
+                    puntos_empate: configuracion.puntos_empate,
+                    puntos_derrota: configuracion.puntos_derrota,
+                    fecha_inicio_mercado: configuracion.fecha_inicio_mercado || undefined,
+                    fecha_fin_mercado: configuracion.fecha_fin_mercado || undefined,
+                    limite_cambios: configuracion.limite_cambios ?? null,
+                    recambio: configuracion.recambio ?? null,
+                    color: configuracion.color ?? null,
+                });
+            }
+        }
+    }, [categoriaCompleta, setCategoriaSeleccionada]);
+
+    // Inicializar el formulario con los datos de la categoría
+    useEffect(() => {
+        // Usar datos completos si están disponibles, sino usar los del store
+        const configuracion = categoriaCompleta?.configuracion;
+        const datosCategoria = configuracion || categoriaSeleccionada;
+        
+        if (datosCategoria) {
             const newConfig = {
-                tipo_futbol: categoriaSeleccionada.tipo_futbol || 7,
-                duracion_tiempo: categoriaSeleccionada.duracion_tiempo || 25,
-                duracion_entretiempo: categoriaSeleccionada.duracion_entretiempo || 5,
-                puntos_victoria: categoriaSeleccionada.puntos_victoria || 3,
-                puntos_empate: categoriaSeleccionada.puntos_empate || 1,
-                puntos_derrota: categoriaSeleccionada.puntos_derrota || 0,
-                fecha_inicio_mercado: formatISOToDateInput(categoriaSeleccionada.fecha_inicio_mercado),
-                fecha_fin_mercado: formatISOToDateInput(categoriaSeleccionada.fecha_fin_mercado),
-                limite_cambios: categoriaSeleccionada.limite_cambios ?? null,
-                recambio: categoriaSeleccionada.recambio ?? null,
+                tipo_futbol: datosCategoria.tipo_futbol || 7,
+                duracion_tiempo: datosCategoria.duracion_tiempo || 25,
+                duracion_entretiempo: datosCategoria.duracion_entretiempo || 5,
+                puntos_victoria: datosCategoria.puntos_victoria || 3,
+                puntos_empate: datosCategoria.puntos_empate || 1,
+                puntos_derrota: datosCategoria.puntos_derrota || 0,
+                fecha_inicio_mercado: formatISOToDateInput(
+                    configuracion?.fecha_inicio_mercado || categoriaSeleccionada?.fecha_inicio_mercado
+                ),
+                fecha_fin_mercado: formatISOToDateInput(
+                    configuracion?.fecha_fin_mercado || categoriaSeleccionada?.fecha_fin_mercado
+                ),
+                limite_cambios: (configuracion?.limite_cambios ?? categoriaSeleccionada?.limite_cambios) ?? null,
+                recambio: (configuracion?.recambio ?? categoriaSeleccionada?.recambio) ?? null,
+                color: (configuracion?.color ?? categoriaSeleccionada?.color) ?? null,
             };
             setConfig(newConfig);
             setHasChanges(false);
         }
-    }, [categoriaSeleccionada]);
+    }, [categoriaCompleta, categoriaSeleccionada]);
+
+    const handleTogglePublicada = () => {
+        if (!categoriaSeleccionada?.id_categoria_edicion) return;
+        
+        const nuevoEstado: 'S' | 'N' = isPublicada ? 'N' : 'S';
+        
+        actualizarPublicada(
+            { id_categoria_edicion: categoriaSeleccionada.id_categoria_edicion, publicada: nuevoEstado },
+            {
+                onSuccess: () => {
+                    toast.success(nuevoEstado === 'S' ? 'Categoría publicada exitosamente' : 'Categoría despublicada exitosamente');
+                    // Actualizar el store
+                    if (categoriaSeleccionada) {
+                        const { setCategoriaSeleccionada } = useCategoriaStore.getState();
+                        setCategoriaSeleccionada({
+                            ...categoriaSeleccionada,
+                            publicada: nuevoEstado
+                        });
+                    }
+                },
+                onError: (error) => {
+                    toast.error(error.message || 'Error al actualizar el estado de publicación');
+                }
+            }
+        );
+    };
 
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div>
-                <h1 className="text-2xl font-bold text-[var(--white)] mb-2">
-                    Configuración de la categoría {categoriaSeleccionada?.nombre_completo || ""}
-                </h1>
-                <p className="text-[var(--gray-100)] text-sm">
-                    Configura los parámetros de la categoría
-                </p>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold text-[var(--white)] mb-2">
+                        Configuración de la categoría {categoriaSeleccionada?.nombre_completo || ""}
+                    </h1>
+                    <p className="text-[var(--gray-100)] text-sm">
+                        Configura los parámetros de la categoría
+                    </p>
+                </div>
+                <Button
+                    variant={isPublicada ? "default" : "success"}
+                    onClick={handleTogglePublicada}
+                    disabled={isUpdatingPublicada}
+                    className="flex items-center gap-2"
+                >
+                    {isPublicada ? (
+                        <>
+                            <EyeOff className="w-4 h-4" />
+                            <span>Despublicar</span>
+                        </>
+                    ) : (
+                        <>
+                            <Eye className="w-4 h-4" />
+                            <span>Publicar</span>
+                        </>
+                    )}
+                </Button>
             </div>
 
             {/* Formulario de configuración */}
@@ -262,7 +374,7 @@ const ConfiguracionCategoriaPage = () => {
                     {/* Fecha de inicio mercado */}
                     <Input
                         label="FECHA DE INICIO DEL MERCADO"
-                        value={config.fecha_inicio_mercado}
+                        value={config.fecha_inicio_mercado || ''}
                         onChange={(e) => handleInputChange('fecha_inicio_mercado', e.target.value)}
                         placeholder="Fecha de inicio del mercado"
                         type="date"
@@ -271,7 +383,7 @@ const ConfiguracionCategoriaPage = () => {
                     {/* Fecha de fin mercado */}
                     <Input
                         label="FECHA DE FIN DEL MERCADO"
-                        value={config.fecha_fin_mercado}
+                        value={config.fecha_fin_mercado || ''}
                         onChange={(e) => handleInputChange('fecha_fin_mercado', e.target.value)}
                         placeholder="Fecha de fin del mercado"
                         type="date"
@@ -301,6 +413,31 @@ const ConfiguracionCategoriaPage = () => {
                                 {config.recambio ? 'Permitido' : 'No permitido'}
                             </span>
                         </div>
+                    </div>
+
+                    {/* Color personalizado */}
+                    <div className="flex flex-col gap-1 w-full">
+                        <label className="text-sm font-medium text-[var(--white)] mb-1">
+                            COLOR PERSONALIZADO
+                        </label>
+                        <div className="flex items-center gap-3">
+                            <input
+                                type="color"
+                                value={config.color || '#2AD174'}
+                                onChange={(e) => handleInputChange('color', e.target.value)}
+                                className="w-16 h-10 rounded-lg cursor-pointer border border-[var(--gray-300)] bg-[var(--gray-400)]"
+                            />
+                            <Input
+                                value={config.color || ''}
+                                onChange={(e) => handleInputChange('color', e.target.value || null)}
+                                placeholder="#2AD174"
+                                type="text"
+                                className="flex-1"
+                            />
+                        </div>
+                        <p className="text-xs text-[var(--gray-100)] mt-1">
+                            Selecciona un color hexadecimal para personalizar la categoría
+                        </p>
                     </div>
                 </div>
 

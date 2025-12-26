@@ -30,10 +30,13 @@ export const UpdatePartidoSchema = z.object({
     arbitro: z.string().optional(),
     id_planillero: z.string().optional(),
     id_zona: z.number().optional(),
-    estado: z.enum(['P', 'S', 'A']).optional(),
+    estado: z.enum(['P', 'C1', 'E', 'C2', 'T', 'F', 'S', 'A', 'I'], {
+        message: 'El estado debe ser uno de: P (Programado), C1 (Primer tiempo), E (Entretiempo), C2 (Segundo tiempo), T (Terminado), F (Finalizado), S (Suspendido), A (Aplazado), I (Indefinido)'
+    }).optional(),
     interzonal: z.boolean().optional(),
     destacado: z.boolean().optional(),
     ventaja_deportiva: z.boolean().optional(),
+    id_equipo_ventaja_deportiva: z.number().optional(),
     descripcion: z.string().optional(),
     vacante_local: z.number().optional(),
     vacante_visita: z.number().optional(),
@@ -68,7 +71,7 @@ export const PartidoResponseSchema = z.object({
         apellido: z.string(),
     }).optional(),
     id_jugador_destacado: z.number().optional(),
-    estado: z.enum(['P', 'C', 'T', 'F', 'S', 'A', 'I']),
+    estado: z.enum(['P', 'C1', 'E', 'C2', 'T', 'F', 'S', 'A', 'I']),
     id_categoria_edicion: z.number().optional(),
     id_zona: z.number().optional(),
     vacante_local: z.number().optional(),
@@ -140,4 +143,4 @@ export type PartidosPorJornadaResponse = z.infer<typeof PartidosPorJornadaRespon
 export type CrearPartidoResponse = z.infer<typeof CrearPartidoResponseSchema>;
 export type ActualizarPartidoResponse = z.infer<typeof ActualizarPartidoResponseSchema>;
 export type EliminarPartidoResponse = z.infer<typeof EliminarPartidoResponseSchema>;
-export type EstadoPartido = 'P' | 'C' | 'T' | 'F' | 'S' | 'A' | 'I';
+export type EstadoPartido = 'P' | 'C1' | 'E' | 'C2' | 'T' | 'F' | 'S' | 'A' | 'I';

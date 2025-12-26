@@ -8,9 +8,10 @@ import { useFases } from "../hooks/useFases";
 import { useZonasPorFase, useCrearZona, useDatosParaCrearZona } from "../hooks/useZonas";
 import { FormField, FormModal, useModals, FormDataValue } from "./modals/ModalAdmin";
 import { Fase } from "../types/fase";
-import { CrearZonaInput } from "../types/zonas";
+import { CrearZonaInput, FormatoPosicion } from "../types/zonas";
 import { crearZonaSchema } from "../schemas/zona.schema";
 import { useState } from "react";
+import FormatosPosicionStep from "./FormatosPosicionStep";
 
 interface FaseSectionProps {
     fase: Fase;
@@ -20,6 +21,8 @@ interface FaseSectionProps {
 const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
     const { modals, openModal, closeModal } = useModals();
     const [tipoZonaSeleccionado, setTipoZonaSeleccionado] = useState<number | null>(null);
+    const [cantidadEquipos, setCantidadEquipos] = useState<number | null>(null);
+    const [formatosPosicion, setFormatosPosicion] = useState<FormatoPosicion[]>([]);
 
     const {
         data: zonas,
@@ -56,7 +59,36 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
                 numero_fase: fase.numero_fase,
                 data
             }, {
-                onSuccess: () => {
+                onSuccess: async (response) => {
+                    // Si es zona tipo "todos-contra-todos" y hay formatos, guardarlos
+                    const tipoZona = datosCrearZona?.data.tiposZona?.find(t => t.id === data.id_tipo_zona);
+                    if (tipoZona?.nombre === 'todos-contra-todos' && formatosPosicion.length > 0) {
+                        try {
+                            const { zonasService } = await import('../services/zonas.services');
+                            // La respuesta tiene estructura: { data: { zona: {...}, partidosCreados: [...] } }
+                            const idZona = response.data.zona?.id_zona || response.data.id_zona;
+
+                            // Crear todos los formatos nuevos
+                            for (const formato of formatosPosicion) {
+                                await zonasService.crearFormatoPosicion(idZona, {
+                                    posicion_desde: formato.posicion_desde,
+                                    posicion_hasta: formato.posicion_hasta,
+                                    descripcion: formato.descripcion,
+                                    color: formato.color,
+                                    orden: formato.orden,
+                                });
+                            }
+                        } catch (error) {
+                            console.error('Error al guardar formatos de posición:', error);
+                            toast.error('Zona creada, pero hubo un error al guardar los formatos de posición');
+                        }
+                    }
+
+                    // Resetear estados
+                    setFormatosPosicion([]);
+                    setCantidadEquipos(null);
+                    setTipoZonaSeleccionado(null);
+
                     toast.success('Zona creada exitosamente');
                     resolve();
                 },
@@ -72,6 +104,9 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
     const handleTipoZonaChange = (name: string, value: FormDataValue) => {
         if (name === 'id_tipo_zona') {
             setTipoZonaSeleccionado(value ? Number(value) : null);
+        }
+        if (name === 'cantidad_equipos') {
+            setCantidadEquipos(value ? Number(value) : null);
         }
     };
 
@@ -220,6 +255,8 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
                 onClose={() => {
                     closeModal('create');
                     setTipoZonaSeleccionado(null);
+                    setCantidadEquipos(null);
+                    setFormatosPosicion([]);
                 }}
                 title={`Crear zona - Fase ${fase.numero_fase}`}
                 fields={zonaFields}
@@ -228,7 +265,20 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
                 validationSchema={crearZonaSchema}
                 submitText="Crear zona"
                 onFieldChange={handleTipoZonaChange}
-            />
+                maxWidth="max-w-4xl"
+            >
+                {/* Mostrar step de formatos de posición solo si es tipo "todos-contra-todos" y hay cantidad de equipos */}
+                {tipoZonaSeleccionado !== null && 
+                 datosCrearZona?.data.tiposZona?.find(t => t.id === tipoZonaSeleccionado)?.nombre === 'todos-contra-todos' &&
+                 cantidadEquipos !== null && cantidadEquipos > 0 && (
+                    <div className="mb-6">
+                        <FormatosPosicionStep
+                            cantidadEquipos={cantidadEquipos}
+                            onFormatosChange={setFormatosPosicion}
+                        />
+                    </div>
+                )}
+            </FormModal>
 
             <div className="border-t border-[var(--gray-300)] my-8"></div>
         </div>

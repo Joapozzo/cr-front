@@ -1,35 +1,39 @@
 "use client";
 
-import { Mail, Check, X, User, Shield } from "lucide-react";
+import { Mail, Check, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/Button";
 import ConfirmModal from "./modals/ConfirModal";
 import SlideCard from "./SlideCard";
-import { SolicitudEstado, SolicitudRecibida } from "../types/solicitudes";
+import { SolicitudRecibida } from "../types/solicitudes";
 import toast from "react-hot-toast";
 // import { useConfirmarSolicitud, useRechazarSolicitud } from "../hooks/useSolicitudes";
 import { useConfirmarSolicitud, useObtenerSolicitudesEquipo, useRechazarSolicitud } from "../hooks/useSolicitudesCapitan";
 import SolicitudesSkeleton from "./skeletons/CardSolicitudesSkeleton";
+import UserAvatar from "./ui/UserAvatar";
 
 interface SolicitudesCapitanProps {
     id_equipo: number;
+    id_categoria_edicion: number;
     onAcceptSolicitud: (id_solicitud: number) => void;
     onRejectSolicitud: (id_solicitud: number) => void;
 }
 
 const SolicitudesCapitan: React.FC<SolicitudesCapitanProps> = ({
     id_equipo,
+    id_categoria_edicion,
     onAcceptSolicitud,
     onRejectSolicitud,
 }) => {
 
     // Obtener solicitudes recibidas de jugadores
-    const { data: solicitudesData, isLoading: isSolicitudesLoading } = useObtenerSolicitudesEquipo(id_equipo);
+    const { data: solicitudesData, isLoading: isSolicitudesLoading } = useObtenerSolicitudesEquipo(id_equipo, id_categoria_edicion);
     const { mutateAsync: aceptarSolicitud, isPending: isAceptando } = useConfirmarSolicitud(id_equipo);
     const { mutateAsync: rechazarSolicitud, isPending: isRechazando } = useRechazarSolicitud(id_equipo);
-    
+    // (id_equipo, id_categoria_edicion);
     // Filtrar solo solicitudes de jugadores pendientes
-    const solicitudesPendientes = solicitudesData?.filter(s => s.tipo_solicitud === 'J' && s.estado === 'E') || [];
+    // El backend retorna 'E' como estado pendiente
+    const solicitudesPendientes = solicitudesData?.data?.filter(s => s.tipo_solicitud === 'J' && String(s.estado) === 'E') || [];
     const [showAcceptModal, setShowAcceptModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
     const [selectedSolicitud, setSelectedSolicitud] = useState<SolicitudRecibida | null>(null);
@@ -56,9 +60,10 @@ const SolicitudesCapitan: React.FC<SolicitudesCapitanProps> = ({
             onAcceptSolicitud?.(selectedSolicitud.id_solicitud);
             setShowAcceptModal(false);
             setSelectedSolicitud(null);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error completo:', error);
-            toast.error(error.message || 'Error al aceptar la solicitud');
+            const errorMessage = error instanceof Error ? error.message : 'Error al aceptar la solicitud';
+            toast.error(errorMessage);
         }
     };
 
@@ -75,9 +80,10 @@ const SolicitudesCapitan: React.FC<SolicitudesCapitanProps> = ({
             onRejectSolicitud?.(selectedSolicitud.id_solicitud);
             setShowRejectModal(false);
             setSelectedSolicitud(null);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error:', error);
-            toast.error(error.message || 'Error al rechazar la solicitud');
+            const errorMessage = error instanceof Error ? error.message : 'Error al rechazar la solicitud';
+            toast.error(errorMessage);
         }
     };
 
@@ -85,17 +91,12 @@ const SolicitudesCapitan: React.FC<SolicitudesCapitanProps> = ({
         <div className="bg-[var(--background)] rounded-lg border border-[var(--gray-300)] p-4">
             <div className="flex items-start gap-3">
                 {/* Avatar del jugador */}
-                <div className="w-12 h-12 rounded-full bg-[var(--black-800)] flex items-center justify-center flex-shrink-0">
-                    {solicitud.img_jugador ? (
-                        <img
-                            src={solicitud.img_jugador}
-                            alt={`${solicitud.nombre_jugador}`}
-                            className="w-10 h-10 rounded-full object-cover"
-                        />
-                    ) : (
-                        <User className="text-[var(--gray-100)]" size={24} />
-                    )}
-                </div>
+                <UserAvatar
+                    img={solicitud.img_jugador}
+                    alt={solicitud.nombre_jugador}
+                    size="lg"
+                    rounded="full"
+                />
 
                 <div className="flex-1">
                     {/* Nombre del jugador */}
@@ -113,19 +114,32 @@ const SolicitudesCapitan: React.FC<SolicitudesCapitanProps> = ({
                         <div className="bg-[var(--black-800)] rounded-lg p-3 mb-3 border border-[var(--gray-300)]">
                             <p className="text-[#8C8C8C]  text-xs mb-1">Mensaje:</p>
                             <p className="text-[var(--white)] text-sm italic">
-                                "{solicitud.mensaje_jugador}"
+                                &ldquo;{solicitud.mensaje_jugador}&rdquo;
                             </p>
                         </div>
                     )}
 
                     {/* Fecha */}
-                    <p className="text-[#8C8C8C] text-xs mb-3">
+                    <p className="text-[#8C8C8C] text-xs mb-2">
                         Enviada: {new Date(solicitud.fecha_solicitud).toLocaleDateString('es-AR', {
                             day: '2-digit',
                             month: 'short',
                             year: 'numeric'
                         })}
                     </p>
+
+                    {/* Información de respuesta */}
+                    {solicitud.respondido_por_username && (
+                        <p className="text-[#8C8C8C] text-xs mb-2">
+                            Respondida por: <span className="text-[var(--white)] font-medium">{solicitud.respondido_por_username}</span>
+                        </p>
+                    )}
+
+                    {solicitud.agregado_por && solicitud.estado === 'A' && (
+                        <p className="text-[#8C8C8C] text-xs mb-3">
+                            Agregado por: <span className="text-[var(--white)] font-medium">{solicitud.agregado_por}</span>
+                        </p>
+                    )}
 
                     {/* Botones de acción */}
                     <div className="flex gap-2">
@@ -164,7 +178,7 @@ const SolicitudesCapitan: React.FC<SolicitudesCapitanProps> = ({
             <SlideCard
                 items={solicitudesPendientes}
                 icon={<Mail className="text-[var(--green)]" size={16} />}
-                title="Solicitudes de Jugadores"
+                title="Solicitudes de jugadores"
                 renderItem={renderSolicitud}
                 autoSlideInterval={6000}
             />

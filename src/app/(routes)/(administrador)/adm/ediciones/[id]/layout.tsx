@@ -18,6 +18,7 @@ export default function EdicionLayout({
     const pathname = usePathname();
     const edicionId = params.id as string;
     const idCategoria = params.id_categoria as string;
+    const idEquipo = params.id_equipo as string;
 
     const { edicionSeleccionada, isEdicionSelected } = useEdicionStore();
     const { categoriaSeleccionada, isCategoriaSelected } = useCategoriaStore();
@@ -28,6 +29,12 @@ export default function EdicionLayout({
     const { data: equiposResponse, isLoading: loadingEquipos } = useEquiposPorCategoriaEdicion(idCategoriaEdicion);
 
     const isInCategoria = !!idCategoria;
+    const isInEquipo = !!idEquipo;
+
+    // Buscar el equipo actual si estamos en la ruta de un equipo
+    const equipoActual = isInEquipo && equiposResponse?.equipos
+        ? equiposResponse.equipos.find(eq => eq.id_equipo === Number(idEquipo))
+        : null;
 
     const equiposTotales = equiposResponse?.total || 0;
 
@@ -125,7 +132,20 @@ export default function EdicionLayout({
                             {edicionSeleccionada?.nombre} - {edicionSeleccionada?.temporada}
                         </Link>
                         <span className="text-[var(--gray-100)]">/</span>
-                        <span className="text-[var(--white)]">{categoriaSeleccionada?.nombre_completo}</span>
+                        {isInEquipo ? (
+                            <>
+                                <Link
+                                    href={`/adm/ediciones/${edicionId}/${idCategoria}/equipos`}
+                                    className="text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
+                                >
+                                    {categoriaSeleccionada?.nombre_completo}
+                                </Link>
+                                <span className="text-[var(--gray-100)]">/</span>
+                                <span className="text-[var(--white)]">{equipoActual?.nombre || 'Equipo'}</span>
+                            </>
+                        ) : (
+                            <span className="text-[var(--white)]">{categoriaSeleccionada?.nombre_completo}</span>
+                        )}
                     </>
                 ) : (
                     <span className="text-[var(--white)]">{edicionSeleccionada?.nombre} - {edicionSeleccionada?.temporada}</span>

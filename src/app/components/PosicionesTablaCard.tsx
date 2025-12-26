@@ -1,6 +1,6 @@
 import { TrendingUp } from "lucide-react";
 import StatsCardTemplate from "./TemplateCardStats";
-import Image from "next/image";
+import { EscudoEquipo } from "./common/EscudoEquipo";
 
 interface PosicionTablaCardProps {
     position?: number;
@@ -13,7 +13,7 @@ interface PosicionTablaCardProps {
 
 export const PosicionTablaCard: React.FC<PosicionTablaCardProps> = ({
     position = 3,
-    teamName = 'Mi Equipo',
+    teamName = 'Mi equipo',
     points = 24,
     matchesPlayed = 10,
     teamImage
@@ -52,21 +52,12 @@ export const PosicionTablaCard: React.FC<PosicionTablaCardProps> = ({
                                 {equipo.pos}°
                             </span>
 
-                            <div className="w-6 h-6 rounded-full overflow-hidden bg-[var(--gray-300)] flex items-center justify-center flex-shrink-0">
-                                {equipo.img ? (
-                                    <Image
-                                        src={equipo.img}
-                                        alt={equipo.nombre}
-                                        width={24}
-                                        height={24}
-                                        className="object-cover"
-                                    />
-                                ) : (
-                                    <span className="text-xs text-[var(--gray-100)]">
-                                        {equipo.nombre.charAt(0)}
-                                    </span>
-                                )}
-                            </div>
+                            <EscudoEquipo
+                                src={equipo.img}
+                                alt={equipo.nombre}
+                                size={24}
+                                className="flex-shrink-0"
+                            />
 
                             <span className={`
                                 text-xs md:text-sm truncate

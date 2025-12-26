@@ -6,9 +6,11 @@ import { EdicionLayout } from '@/app/components/layouts/EdicionLayout';
 import { FiltrosFixture } from '@/app/components/fixture/FiltrosFixture';
 import { ListaPartidos } from '@/app/components/fixture/ListaPartidos';
 import { FixtureSkeleton } from '@/app/components/skeletons/FixtureSkeleton';
+import { SelectorEdicionCategoria } from '@/app/components/estadisticas/SelectorEdicionCategoria';
 import { Partido } from '@/app/types/partido';
 import { formatearFechaCompleta } from '@/app/utils/fechas';
 import { usePartidosUsuario } from '@/app/hooks/usePartidos';
+import { useEdicionCategoria } from '@/app/contexts/EdicionCategoriaContext';
 
 type VistaType = 'fecha' | 'jornada';
 
@@ -20,6 +22,13 @@ export default function PartidosPage() {
   const observerTarget = useRef<HTMLDivElement>(null);
   const limit = 20;
 
+  // Usar el contexto de edición y categoría
+  const { 
+    categoriaSeleccionada, 
+    edicionActual, 
+    isLoading: loadingCategorias 
+  } = useEdicionCategoria();
+
   // Hook para obtener partidos
   const { 
     data: partidosData, 
@@ -27,10 +36,11 @@ export default function PartidosPage() {
     error
   } = usePartidosUsuario(
     vistaActiva,
-    undefined, // id_categoria_edicion - se puede agregar después
+    categoriaSeleccionada?.id, // id_categoria_edicion desde el contexto
     vistaActiva === 'jornada' ? jornadaSeleccionada : undefined,
     limit,
-    page
+    page,
+    { enabled: !!categoriaSeleccionada } // Solo cargar si hay categoría seleccionada
   );
 
   // Actualizar lista acumulada de partidos cuando cambian los datos
@@ -48,11 +58,11 @@ export default function PartidosPage() {
   const hasNextPage = partidosData ? (partidosData.offset + partidosData.limit) < partidosData.total : false;
   const isFetchingNextPage = isLoading && page > 1;
 
-  // Resetear cuando cambia la vista o jornada
+  // Resetear cuando cambia la vista, jornada o categoría
   useEffect(() => {
     setPage(1);
     setAllPartidos([]);
-  }, [vistaActiva, jornadaSeleccionada]);
+  }, [vistaActiva, jornadaSeleccionada, categoriaSeleccionada?.id]);
 
   // Infinite scroll
   useEffect(() => {
@@ -126,12 +136,16 @@ export default function PartidosPage() {
   return (
     <UserPageWrapper>
       <EdicionLayout
-        nombreEdicion="Copa Relámpago"
-        temporada="Clausura 2025"
-        nombreCategoria="Primera - Masculino"
-        loading={isLoading}
+        nombreEdicion={edicionActual?.nombre || 'Copa Relámpago'}
+        temporada={edicionActual?.temporada?.toString() || '2025'}
+        nombreCategoria={categoriaSeleccionada?.nombre}
+        logoEdicion={edicionActual?.img || undefined}
+        loading={loadingCategorias || isLoading}
       >
         <div className="space-y-4">
+          {/* Selector de edición y categoría */}
+          <SelectorEdicionCategoria />
+
           {/* Tabs y Filtros */}
           <div className="flex items-center justify-between gap-4">
             {/* Tabs */}
@@ -183,7 +197,13 @@ export default function PartidosPage() {
 
           {/* Contenido */}
           <div>
-            {isLoading && page === 1 ? (
+            {!categoriaSeleccionada && !loadingCategorias ? (
+              <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center">
+                <p className="text-[#737373] text-sm">
+                  Selecciona una categoría para ver los partidos
+                </p>
+              </div>
+            ) : isLoading && page === 1 ? (
               <FixtureSkeleton />
             ) : error ? (
               <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center">

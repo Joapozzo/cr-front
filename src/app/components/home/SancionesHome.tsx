@@ -6,6 +6,7 @@ import { BaseCardTableSkeleton } from '../skeletons/BaseCardTableSkeleton';
 import Link from 'next/link';
 import { useSancionesHome } from '@/app/hooks/useSancionesHome';
 import { ISancion } from '@/app/hooks/useSanciones';
+import { ImagenPublica } from '../common/ImagenPublica';
 
 interface SancionesHomeProps {
   sanciones?: ISancion[];
@@ -36,7 +37,7 @@ export const SancionesHome = ({
       <BaseCard>
         <CardHeader 
           icon={<AlertTriangle size={18} className="text-yellow-500" />}
-          title="Sanciones Activas"
+          title="Sanciones activas"
           subtitle="Error al cargar"
         />
         <div className="flex flex-col items-center justify-center py-12 px-6">
@@ -52,7 +53,7 @@ export const SancionesHome = ({
       <BaseCard>
         <CardHeader 
           icon={<AlertTriangle size={18} className="text-yellow-500" />}
-          title="Sanciones Activas"
+          title="Sanciones activas"
         />
         <div className="flex flex-col items-center justify-center py-12 px-6">
           <div className="w-16 h-16 bg-[#262626] rounded-full flex items-center justify-center mb-4">
@@ -72,7 +73,7 @@ export const SancionesHome = ({
       <BaseCard>
         <CardHeader 
           icon={<AlertTriangle size={18} className="text-yellow-500" />}
-          title="Sanciones Activas"
+          title="Sanciones activas"
           subtitle="Cargando..."
         />
         <BaseCardTableSkeleton 
@@ -89,7 +90,7 @@ export const SancionesHome = ({
       <div className="rounded-t-2xl overflow-hidden">
         <CardHeader 
           icon={<AlertTriangle size={18} className="text-yellow-500" />}
-          title="Sanciones Activas"
+          title="Sanciones activas"
           actions={
             totalPaginas > 1 && (
               <div className="flex items-center gap-2">
@@ -166,15 +167,7 @@ export const SancionesHome = ({
                       <div className="flex items-center gap-2">
                         {/* Foto de perfil */}
                         <div className="w-10 h-10 bg-[#262626] rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
-                          {sancion.foto_jugador ? (
-                            <img 
-                              src={sancion.foto_jugador} 
-                              alt={sancion.nombre_jugador}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <User className="text-[#737373]" size={18} />
-                          )}
+                          <ImagenPublica src={sancion.foto_jugador} alt={sancion.nombre_jugador} className="w-full h-full object-cover" />
                         </div>
                         {/* Info del jugador */}
                         <div className="flex flex-col min-w-0">

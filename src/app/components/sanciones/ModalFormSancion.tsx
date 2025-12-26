@@ -6,6 +6,7 @@ import { Search, User, X } from 'lucide-react';
 import { useJugadoresPorCategoria } from '@/app/hooks/useJugadoresPorCategoria';
 import { useDebounce } from '@/app/hooks/useDebounce';
 import { JugadorCategoria } from '@/app/types/jugador';
+import { ImagenPublica } from '../common/ImagenPublica';
 
 interface ModalFormSancionProps {
     sancion?: Sancion | null;
@@ -223,7 +224,7 @@ export default function ModalFormSancion({
         <FormModal
             isOpen={true}
             onClose={onClose}
-            title={esEdicion ? 'Editar Sanción' : 'Nueva Sanción'}
+            title={esEdicion ? 'Editar sanción' : 'Nueva sanción'}
             fields={fields}
             initialData={initialData}
             onSubmit={handleFormSubmit}
@@ -241,17 +242,7 @@ export default function ModalFormSancion({
                         // Jugador seleccionado
                         <div className="bg-[var(--gray-300)] rounded-lg p-4 border-2 border-[var(--green)] flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                {selectedJugador.img ? (
-                                    <img
-                                        src={selectedJugador.img}
-                                        alt={selectedJugador.nombre}
-                                        className="w-10 h-10 rounded-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="w-10 h-10 rounded-full bg-[var(--gray-200)] flex items-center justify-center">
-                                        <User className="w-5 h-5 text-[var(--gray-100)]" />
-                                    </div>
-                                )}
+                                <ImagenPublica src={selectedJugador.img} alt={`${selectedJugador.nombre} ${selectedJugador.apellido}`} width={40} height={40} />
                                 <div>
                                     <p className="text-[var(--white)] font-medium">
                                         {selectedJugador.nombre} {selectedJugador.apellido}
@@ -297,17 +288,7 @@ export default function ModalFormSancion({
                                                 onClick={() => handleSelectJugador(jugador)}
                                                 className="w-full p-3 flex items-center gap-3 hover:bg-[var(--gray-200)] transition-colors text-left"
                                             >
-                                                {jugador.img ? (
-                                                    <img
-                                                        src={jugador.img}
-                                                        alt={jugador.nombre}
-                                                        className="w-10 h-10 rounded-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="w-10 h-10 rounded-full bg-[var(--gray-400)] flex items-center justify-center">
-                                                        <User className="w-5 h-5 text-[var(--gray-100)]" />
-                                                    </div>
-                                                )}
+                                                <ImagenPublica src={jugador.img} alt={`${jugador.nombre} ${jugador.apellido}`} width={40} height={40} />
                                                 <div className="flex-1">
                                                     <p className="text-[var(--white)] font-medium">
                                                         {jugador.nombre} {jugador.apellido}

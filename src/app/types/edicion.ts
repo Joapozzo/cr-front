@@ -4,6 +4,7 @@ export interface EdicionConCategorias {
     id_edicion: number;
     nombre: string;
     temporada: number;
+    img: string | null;
     categorias: Categoria[];
 }
 

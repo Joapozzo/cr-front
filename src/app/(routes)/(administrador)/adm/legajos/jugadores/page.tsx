@@ -107,6 +107,7 @@ const JugadoresPage = () => {
                                 options={[
                                     { value: 'A', label: 'Activo' },
                                     { value: 'I', label: 'Inactivo' },
+                                    { value: 'E', label: 'Expulsado' },
                                 ]}
                                 placeholder="Todos los estados"
                             />

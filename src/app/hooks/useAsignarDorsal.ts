@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { planilleroService } from '../services/planillero.services'; 
+import { planilleroService } from '../services/planillero.services';
+import { useAuthStore } from '../stores/authStore';
 
 interface AsignarDorsalData {
     idCategoriaEdicion: number;
@@ -11,9 +12,13 @@ interface AsignarDorsalData {
 
 export const useAsignarDorsal = () => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
 
     return useMutation({
         mutationFn: async ({ idCategoriaEdicion, idPartido, idEquipo, idJugador, dorsal }: AsignarDorsalData) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
             return await planilleroService.asignarDorsal(idCategoriaEdicion, idPartido, idEquipo, idJugador, dorsal);
         },
         onSuccess: (data, variables) => {

@@ -1,11 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
 import { authService } from '../../services/auth.services';
-import { API_BASE_URL } from '../../lib/api';
+import { api } from '../../lib/api';
 import { useAuthStore } from '../../stores/authStore';
-import { jugadorService } from '../../services/jugador.services';
+// Removido import de jugadorService - los equipos se cargarán cuando se necesiten
+import { determinarRutaRedireccion } from '../../utils/authRedirect';
 
 export const useLoginGoogle = () => {
-  const { login: setAuthState, setEquipos } = useAuthStore();
+  const { login: setAuthState } = useAuthStore();
 
   return useMutation({
     mutationFn: async () => {
@@ -20,71 +21,71 @@ export const useLoginGoogle = () => {
 
       // 2. Obtener token de Firebase
       const token = await user.getIdToken();
+      
+      // Pequeño delay para asegurar que el usuario esté establecido en Firebase
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       // 3. Intentar login en backend (con token explícito)
       try {
-        const loginResponse = await fetch(`${API_BASE_URL}/auth/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify({ uid: user.uid }),
-        });
-
-        // Si el login es exitoso, retornar los datos
-        if (loginResponse.ok) {
-          const loginData = await loginResponse.json();
-          return loginData;
-        }
-
-        // Si no existe el usuario (401/404), registrarlo primero
-        if (loginResponse.status === 401 || loginResponse.status === 404) {
-          console.log('Usuario no existe en backend, registrando...');
-          
-          // Registrar usuario en backend (con email)
-          const registerResponse = await fetch(`${API_BASE_URL}/auth/register`, {
-            method: 'POST',
+        // Intentar login primero usando api.post que maneja mejor los errores
+        try {
+          const loginData = await api.post<{
+            success: boolean;
+            usuario: any;
+            proximoPaso: 'VERIFICAR_EMAIL' | 'VALIDAR_DNI' | 'SELFIE' | 'COMPLETO';
+          }>('/auth/login', { uid: user.uid }, {
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ 
+          });
+          
+          return loginData;
+        } catch (loginError: any) {
+          // Si el error es 401/404, el usuario no existe, registrarlo
+          const errorMessage = loginError.message || String(loginError);
+          const isUserNotFound = 
+            errorMessage.includes('401') || 
+            errorMessage.includes('404') ||
+            errorMessage.includes('Usuario no encontrado') ||
+            errorMessage.includes('No autorizado') ||
+            errorMessage.includes('Unauthorized');
+          
+          if (isUserNotFound) {
+            ('Usuario no existe en backend, registrando...');
+            
+            // Registrar usuario en backend (con email)
+            await api.post('/auth/register', { 
               uid: user.uid,
               email: user.email 
-            }),
-          });
+            }, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
 
-          if (!registerResponse.ok) {
-            const errorData = await registerResponse.json();
-            throw new Error(errorData.error || 'Error al registrar usuario');
+            // Ahora intentar login nuevamente
+            const loginData = await api.post<{
+              success: boolean;
+              usuario: any;
+              proximoPaso: 'VERIFICAR_EMAIL' | 'VALIDAR_DNI' | 'SELFIE' | 'COMPLETO';
+            }>('/auth/login', { uid: user.uid }, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            
+            return loginData;
           }
-
-          // Ahora intentar login nuevamente
-          const retryLoginResponse = await fetch(`${API_BASE_URL}/auth/login`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify({ uid: user.uid }),
-          });
-
-          if (!retryLoginResponse.ok) {
-            const errorData = await retryLoginResponse.json();
-            throw new Error(errorData.error || 'Error al iniciar sesión después del registro');
-          }
-
-          const loginData = await retryLoginResponse.json();
-          return loginData;
+          
+          // Si es otro error, relanzarlo
+          throw loginError;
         }
-
-        // Si es otro error, lanzar excepción
-        const errorData = await loginResponse.json();
-        throw new Error(errorData.error || 'Error al iniciar sesión');
-        
       } catch (error: any) {
         console.error('Error en login con Google:', error);
+        // Mejorar el mensaje de error para el usuario
+        if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError')) {
+          throw new Error('Error de conexión. Verifica que el servidor esté corriendo y tu conexión a internet.');
+        }
         throw error;
       }
     },
@@ -92,24 +93,14 @@ export const useLoginGoogle = () => {
       // Obtener el token de Firebase actualizado
       const user = authService.obtenerUsuarioActual();
       if (user) {
-        const token = await user.getIdToken();
-        // Guardar en authStore (Zustand con persistencia)
+        // Obtener token actualizado
+        const token = await user.getIdToken(true);
+        
+        // Guardar en authStore con los datos que ya recibimos del login (sin hacer otra llamada)
         setAuthState(token, data.usuario);
 
-        // Obtener y guardar equipos del usuario (si es jugador)
-        try {
-          const equipos = await jugadorService.obtenerEquiposUsuario();
-          // Solo guardar si tiene equipos
-          if (equipos && equipos.length > 0) {
-            setEquipos(equipos);
-          } else {
-            setEquipos([]);
-          }
-        } catch (error) {
-          // Si falla (usuario no es jugador o no tiene equipos), guardar array vacío
-          console.log('Usuario no tiene equipos o no es jugador');
-          setEquipos([]);
-        }
+        // Los equipos se cargarán cuando se necesiten (en home o páginas que los requieran)
+        // No cargar aquí para evitar llamadas innecesarias
       }
     },
     onError: (error: Error) => {

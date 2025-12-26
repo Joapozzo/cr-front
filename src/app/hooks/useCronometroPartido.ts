@@ -4,8 +4,9 @@ import usePartidoStore from '../stores/partidoStore';
 interface CronometroData {
     tiempoFormateado: string;
     tiempoAdicional: number;
-    fase: 'PT' | 'HT' | 'ST';
+    fase: 'PT' | 'HT' | 'ST' | 'ET';
     shouldShowAdicional: boolean;
+    minuto: number; // Minuto actual del partido
 }
 
 export const useCronometroPartido = () => {
@@ -21,7 +22,8 @@ export const useCronometroPartido = () => {
         tiempoFormateado: '00:00',
         tiempoAdicional: 0,
         fase: 'PT',
-        shouldShowAdicional: false
+        shouldShowAdicional: false,
+        minuto: 0
     });
 
     // Formatear tiempo en MM:SS
@@ -42,7 +44,7 @@ export const useCronometroPartido = () => {
         // Cambiar esta función para que calcule segundos correctamente
         const actualizarCronometro = () => {
             let minutosTranscurridos = 0;
-            let fase: 'PT' | 'HT' | 'ST' = 'PT';
+            let fase: 'PT' | 'HT' | 'ST' | 'ET' = 'PT';
 
             // Determinar qué tiempo mostrar según el estado
             switch (estadoPartido) {
@@ -58,6 +60,11 @@ export const useCronometroPartido = () => {
                     minutosTranscurridos = getTiempoTranscurridoSegundoTiempo();
                     fase = 'ST';
                     break;
+                case 'T':
+                    // Tiempo extra: usar el tiempo transcurrido del segundo tiempo
+                    minutosTranscurridos = getTiempoTranscurridoSegundoTiempo();
+                    fase = 'ET';
+                    break;
                 case 'F':
                     minutosTranscurridos = getTiempoTranscurridoSegundoTiempo();
                     fase = 'ST';
@@ -71,12 +78,15 @@ export const useCronometroPartido = () => {
             const segundosTranscurridos = Math.floor(minutosTranscurridos * 60);
             const segundosPermitidos = minutosPorTiempo * 60;
 
+            const minutoActual = Math.floor(minutosTranscurridos);
+            
             if (segundosTranscurridos <= segundosPermitidos) {
                 setCronometro({
                     tiempoFormateado: formatearTiempo(segundosTranscurridos),
                     tiempoAdicional: 0,
                     fase: fase,
-                    shouldShowAdicional: false
+                    shouldShowAdicional: false,
+                    minuto: minutoActual
                 });
             } else {
                 const minutosAdicionales = Math.floor((segundosTranscurridos - segundosPermitidos) / 60);
@@ -84,7 +94,8 @@ export const useCronometroPartido = () => {
                     tiempoFormateado: formatearTiempo(segundosPermitidos),
                     tiempoAdicional: minutosAdicionales,
                     fase: fase,
-                    shouldShowAdicional: true
+                    shouldShowAdicional: true,
+                    minuto: minutosPorTiempo + minutosAdicionales
                 });
             }
         };
@@ -92,8 +103,8 @@ export const useCronometroPartido = () => {
         // Actualizar inmediatamente
         actualizarCronometro();
 
-        // Solo crear intervalo si el partido está corriendo
-        if (estadoPartido === 'C1' || estadoPartido === 'C2') {
+        // Solo crear intervalo si el partido está corriendo (incluyendo tiempo extra)
+        if (estadoPartido === 'C1' || estadoPartido === 'C2' || estadoPartido === 'T') {
             interval = setInterval(actualizarCronometro, 1000);
         }
 

@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient, UseMutationOptions } from '@tanstack/react-query';
-import { planilleroService } from '../services/planillero.services'; 
+import { planilleroService } from '../services/planillero.services';
 import { planilleroKeys } from './usePartidoPlanillero';
+import { useAuthStore } from '../stores/authStore';
 
 interface MutationError {
     message: string;
@@ -11,8 +12,14 @@ export const useComenzarPartido = (
     options?: Omit<UseMutationOptions<any, MutationError, number>, 'mutationFn'>
 ) => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
     return useMutation({
-        mutationFn: (idPartido: number) => planilleroService.comenzarPartido(idPartido),
+        mutationFn: (idPartido: number) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
+            return planilleroService.comenzarPartido(idPartido);
+        },
         onSuccess: (data, idPartido) => {
             // Invalidar todas las queries del planillero para refrescar los datos
             queryClient.invalidateQueries({
@@ -39,8 +46,14 @@ export const useTerminarPrimerTiempo = (
     options?: Omit<UseMutationOptions<any, MutationError, number>, 'mutationFn'>
 ) => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
     return useMutation({
-        mutationFn: (idPartido: number) => planilleroService.terminarPrimerTiempo(idPartido),
+        mutationFn: (idPartido: number) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
+            return planilleroService.terminarPrimerTiempo(idPartido);
+        },
         onSuccess: (data, idPartido) => {
             queryClient.invalidateQueries({
                 queryKey: planilleroKeys.all
@@ -65,8 +78,14 @@ export const useComenzarSegundoTiempo = (
     options?: Omit<UseMutationOptions<any, MutationError, number>, 'mutationFn'>
 ) => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
     return useMutation({
-        mutationFn: (idPartido: number) => planilleroService.comenzarSegundoTiempo(idPartido),
+        mutationFn: (idPartido: number) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
+            return planilleroService.comenzarSegundoTiempo(idPartido);
+        },
         onSuccess: (data, idPartido) => {
             queryClient.invalidateQueries({
                 queryKey: planilleroKeys.all
@@ -87,12 +106,23 @@ export const useComenzarSegundoTiempo = (
     });
 };
 
+interface TerminarPartidoParams {
+    idPartido: number;
+    observaciones?: string;
+}
+
 export const useTerminarPartido = (
-    options?: Omit<UseMutationOptions<any, MutationError, number>, 'mutationFn'>
+    options?: Omit<UseMutationOptions<any, MutationError, TerminarPartidoParams>, 'mutationFn'>
 ) => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
     return useMutation({
-        mutationFn: (idPartido: number) => planilleroService.terminarPartido(idPartido),
+        mutationFn: ({ idPartido, observaciones }: TerminarPartidoParams) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
+            return planilleroService.terminarPartido(idPartido, observaciones);
+        },
         onSuccess: (data, idPartido) => {
             queryClient.invalidateQueries({
                 queryKey: planilleroKeys.all
@@ -117,8 +147,14 @@ export const useFinalizarPartido = (
     options?: Omit<UseMutationOptions<any, MutationError, number>, 'mutationFn'>
 ) => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
     return useMutation({
-        mutationFn: (idPartido: number) => planilleroService.finalizarPartido(idPartido),
+        mutationFn: (idPartido: number) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
+            return planilleroService.finalizarPartido(idPartido);
+        },
         onSuccess: (data, idPartido) => {
             queryClient.invalidateQueries({
                 queryKey: planilleroKeys.all
@@ -148,9 +184,14 @@ export const useSuspenderPartido = (
     options?: Omit<UseMutationOptions<any, MutationError, SuspenderPartidoParams>, 'mutationFn'>
 ) => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
     return useMutation({
-        mutationFn: ({ idPartido, motivo }: SuspenderPartidoParams) => 
-            planilleroService.suspenderPartido(idPartido, motivo),
+        mutationFn: ({ idPartido, motivo }: SuspenderPartidoParams) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
+            return planilleroService.suspenderPartido(idPartido, motivo);
+        },
         onSuccess: (data, { idPartido }) => {
             queryClient.invalidateQueries({
                 queryKey: planilleroKeys.all

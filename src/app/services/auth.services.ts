@@ -10,7 +10,7 @@ import {
   User,
 } from 'firebase/auth';
 import { auth } from '../lib/firebase.config';
-import { api, API_BASE_URL } from '../lib/api';
+import { api, getApiBaseUrl } from '../lib/api';
 
 // Tipos
 export interface UsuarioAuth {
@@ -23,9 +23,11 @@ export interface UsuarioAuth {
   telefono?: string | null;
   nacimiento?: Date | string | null;
   id_rol: number;
-  rol: 'ADMIN' | 'PLANILLERO' | 'USER';
+  rol: 'ADMIN' | 'PLANILLERO' | 'USER' | 'CAJERO';
   estado: string;
   cuenta_activada: boolean;
+  dni_validado?: boolean;
+  email_verificado?: boolean;
   img: string;
   ultimo_login: Date | null;
 }
@@ -33,7 +35,7 @@ export interface UsuarioAuth {
 export interface LoginResponse {
   success: boolean;
   usuario: UsuarioAuth;
-  proximo_paso: 'VALIDAR_DNI' | 'SELFIE' | 'COMPLETO';
+  proximoPaso: 'VERIFICAR_EMAIL' | 'VALIDAR_DNI' | 'SELFIE' | 'COMPLETO';
 }
 
 export interface ValidarDniYDatosInput {
@@ -67,14 +69,17 @@ export const obtenerToken = async (forceRefresh = false): Promise<string | null>
     // Obtener el token con información de expiración
     const tokenResult = await user.getIdTokenResult();
     
-    // Verificar si el token está por expirar (menos de 5 minutos)
+    // Verificar si el token está por expirar (menos de 5 minutos) o YA expiró
     const expTime = tokenResult.expirationTime ? new Date(tokenResult.expirationTime).getTime() : 0;
     const now = Date.now();
     const timeUntilExpiry = expTime - now;
     const fiveMinutes = 5 * 60 * 1000; // 5 minutos en milisegundos
     
-    // Si el token está por expirar en menos de 5 minutos o forceRefresh es true, renovar
-    const shouldRefresh = forceRefresh || (timeUntilExpiry > 0 && timeUntilExpiry < fiveMinutes);
+    // Renovar si:
+    // - forceRefresh es true, O
+    // - el token ya expiró (timeUntilExpiry <= 0), O
+    // - el token está por expirar en menos de 5 minutos
+    const shouldRefresh = forceRefresh || timeUntilExpiry <= 0 || timeUntilExpiry < fiveMinutes;
     
     const token = await user.getIdToken(shouldRefresh);
     return token;
@@ -92,8 +97,64 @@ export const authService = {
    */
   registrarseConEmail: async (email: string, password: string) => {
     try {
-      // 1. Crear usuario en Firebase
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // 1. Intentar crear usuario en Firebase
+      let userCredential;
+      try {
+        userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      } catch (firebaseError: any) {
+        // Si el email ya existe, verificar si es un eventual
+        if (firebaseError.code === 'auth/email-already-in-use') {
+          // Verificar si es un eventual
+          const apiBaseUrl = getApiBaseUrl();
+          const verificarResponse = await fetch(
+            `${apiBaseUrl}/auth/verificar-email-eventual?email=${encodeURIComponent(email)}`
+          );
+
+          if (verificarResponse.ok) {
+            const verificarData = await verificarResponse.json();
+            
+            if (verificarData.esEventual) {
+              // Es un eventual, intentar hacer login para obtener el UID
+              // Luego actualizar la contraseña
+              try {
+                // Intentar login con una contraseña incorrecta para obtener el usuario
+                // (Firebase no permite obtener usuario sin autenticación)
+                // En su lugar, usaremos el UID del backend
+                const uid = verificarData.usuario.uid;
+                
+                // Obtener token usando signInWithEmailAndPassword con contraseña temporal
+                // Pero como no conocemos la contraseña, necesitamos otro enfoque
+                // Mejor: usar el endpoint de registro con el UID del eventual
+                
+                // Obtener token de Firebase usando el email (necesitamos autenticarnos primero)
+                // Alternativa: crear un custom token desde el backend
+                // Por ahora, retornar un error especial que el frontend manejará
+                return {
+                  success: false,
+                  error: 'EVENTUAL_NEEDS_PASSWORD',
+                  esEventual: true,
+                  usuario: verificarData.usuario,
+                };
+              } catch (error) {
+                return {
+                  success: false,
+                  error: 'Tu cuenta ya existe. Por favor, establece tu contraseña.',
+                  esEventual: true,
+                };
+              }
+            }
+          }
+          
+          // No es eventual o no se pudo verificar
+          return {
+            success: false,
+            error: 'El email ya está registrado. Si eres un jugador eventual, contacta al administrador.',
+          };
+        }
+        
+        // Otro error de Firebase
+        throw firebaseError;
+      }
 
       // 2. Obtener token de Firebase para el nuevo usuario
       const token = await userCredential.user.getIdToken();
@@ -103,7 +164,8 @@ export const authService = {
 
       // 4. Crear usuario básico en backend (con token explícito)
       try {
-        const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        const apiBaseUrl = getApiBaseUrl();
+        const response = await fetch(`${apiBaseUrl}/auth/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -137,6 +199,55 @@ export const authService = {
       }
 
       return { success: false, error: mensaje };
+    }
+  },
+
+  /**
+   * Establecer contraseña para usuario eventual
+   */
+  establecerPasswordEventual: async (email: string, password: string) => {
+    try {
+      const apiBaseUrl = getApiBaseUrl();
+      
+      // Llamar al endpoint para establecer contraseña
+      const response = await fetch(`${apiBaseUrl}/auth/establecer-password-eventual`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al establecer contraseña');
+      }
+
+      const data = await response.json();
+
+      // Autenticarse en Firebase usando el custom token
+      const { signInWithCustomToken, sendEmailVerification } = await import('firebase/auth');
+      const userCredential = await signInWithCustomToken(auth, data.customToken);
+
+      // Enviar email de verificación (TODOS los usuarios, incluyendo eventuales)
+      try {
+        await sendEmailVerification(userCredential.user);
+      } catch (error) {
+        console.error('Error al enviar email de verificación:', error);
+        // No fallar si hay error, pero loguear para debugging
+      }
+
+      return {
+        success: true,
+        user: userCredential.user,
+        mensaje: data.mensaje,
+      };
+    } catch (error: any) {
+      console.error('Error al establecer contraseña eventual:', error);
+      return {
+        success: false,
+        error: error.message || 'Error al establecer contraseña',
+      };
     }
   },
 
@@ -383,6 +494,19 @@ export const authService = {
     } catch (error: any) {
       console.error('Error al obtener perfil:', error);
       throw new Error(error.response?.data?.error || 'Error al obtener perfil');
+    }
+  },
+
+  /**
+   * Obtener posiciones de jugador (para registro)
+   */
+  obtenerPosicionesJugador: async (): Promise<{ id_posicion: number; codigo: string; nombre: string }[]> => {
+    try {
+      const response = await api.get<{ success: boolean; data: { id_posicion: number; codigo: string; nombre: string }[] }>('/auth/posiciones-jugador');
+      return response.data;
+    } catch (error: any) {
+      console.error('Error al obtener posiciones:', error);
+      throw new Error(error.response?.data?.error || 'Error al obtener posiciones');
     }
   },
 };

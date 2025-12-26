@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast, Toaster } from 'react-hot-toast';
@@ -13,15 +13,23 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRegistroEmail } from '@/app/hooks/auth/useRegistroEmail';
 import { useVerificarEmail, useReenviarEmailVerificacion } from '@/app/hooks/auth/useVerificarEmail';
 import { useAuth } from '@/app/hooks/auth/useAuth';
+import { useLoginGoogle } from '@/app/hooks/auth/useLoginGoogle';
 import { Button } from '@/app/components/ui/Button';
 import { Input } from '@/app/components/ui/Input';
+import { BsGoogle } from 'react-icons/bs';
 import { registroEmailSchema, type RegistroEmailFormData } from '@/app/lib/auth.validation';
+import { proximoPasoARuta } from '@/app/utils/authRedirect';
+import { useAuthStore } from '@/app/stores/authStore';
 
 export const RegisterForm = () => {
     const router = useRouter();
+    const usuario = useAuthStore((state) => state.usuario);
     
-    // 🔒 Redirigir si ya está autenticado
-    useAuth({ redirectIfAuthenticated: true });
+    // 🔒 Redirigir si ya está autenticado Y tiene cuenta activada (no durante registro)
+    // Si está en proceso de registro (sin cuenta activada), permitir quedarse en /registro
+    useAuth({ 
+        redirectIfAuthenticated: usuario?.cuenta_activada === true 
+    });
     
     const [registroExitoso, setRegistroExitoso] = useState(false);
     const [emailRegistrado, setEmailRegistrado] = useState('');
@@ -29,6 +37,7 @@ export const RegisterForm = () => {
     const { mutate: registrarse, isPending } = useRegistroEmail();
     const { mutate: verificarEmail, isPending: isPendingVerificacion } = useVerificarEmail();
     const { mutate: reenviarEmail, isPending: isPendingReenvio } = useReenviarEmailVerificacion();
+    const { mutate: loginGoogle, isPending: isPendingGoogle } = useLoginGoogle();
 
     const {
         register,
@@ -42,6 +51,22 @@ export const RegisterForm = () => {
     const password = watch('password');
     const email = watch('email');
 
+    // Si el usuario está autenticado pero no tiene email verificado y estamos en /registro,
+    // mostrar pantalla de verificación automáticamente
+    useEffect(() => {
+        if (usuario && !usuario.email_verificado && !usuario.cuenta_activada && !registroExitoso) {
+            // Usuario autenticado pero sin email verificado - mostrar pantalla de verificación
+            setEmailRegistrado(usuario.email);
+            setRegistroExitoso(true);
+        }
+        // Si el usuario ya tiene email verificado, no mostrar pantalla de verificación
+        // (puede estar en proceso de redirección)
+        if (usuario && usuario.email_verificado && registroExitoso) {
+            // El email ya está verificado, no mostrar pantalla de verificación
+            // El componente se redirigirá en handleVerificarEmail
+        }
+    }, [usuario, registroExitoso]);
+
     // Validaciones visuales de password
     const hasMinLength = password?.length >= 8;
     const hasLowerCase = /[a-z]/.test(password || '');
@@ -53,9 +78,13 @@ export const RegisterForm = () => {
         registrarse(
             { email: data.email, password: data.password },
             {
-                onSuccess: () => {
+                onSuccess: (result: any) => {
+                    // TODOS los usuarios (incluyendo eventuales) deben verificar email primero
+                    // Obtener email del resultado o del usuario en store
+                    const emailParaMostrar = result?.usuario?.email || result?.user?.email || data.email;
+                    
                     toast.success('¡Registro exitoso! Revisa tu email para verificar tu cuenta.');
-                    setEmailRegistrado(data.email);
+                    setEmailRegistrado(emailParaMostrar);
                     setRegistroExitoso(true);
                 },
                 onError: (error) => {
@@ -67,13 +96,14 @@ export const RegisterForm = () => {
 
     const handleVerificarEmail = () => {
         verificarEmail(undefined, {
-            onSuccess: () => {
-                toast.success('¡Email verificado exitosamente!');
-
-                // Redirigir al siguiente paso (validar DNI)
-                setTimeout(() => {
-                    router.push('/validar-dni');
-                }, 1500);
+            onSuccess: (result) => {
+                // Usar el proximoPaso del backend para redirigir correctamente
+                const proximoPaso = result?.proximoPaso || 'VALIDAR_DNI';
+                const ruta = proximoPasoARuta(proximoPaso, usuario?.rol);
+                
+                startTransition(() => {
+                    router.replace(ruta);
+                });
             },
             onError: (error) => {
                 toast.error(error.message);
@@ -92,8 +122,35 @@ export const RegisterForm = () => {
         });
     };
 
+    const handleRegistroGoogle = () => {
+        loginGoogle(undefined, {
+            onSuccess: (data) => {
+                // Usar función centralizada para determinar ruta según el estado del usuario
+                startTransition(() => {
+                    const { ruta } = determinarRutaRedireccion(data.usuario);
+                    router.replace(ruta);
+                });
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            },
+        });
+    };
+
+    // Si el usuario ya tiene email verificado, redirigir directamente
+    useEffect(() => {
+        if (usuario && usuario.email_verificado && !usuario.cuenta_activada) {
+            // El email ya está verificado, redirigir al siguiente paso
+            const { ruta } = determinarRutaRedireccion(usuario);
+            if (ruta !== '/registro') {
+                router.replace(ruta);
+            }
+        }
+    }, [usuario, router]);
+
     // Si el registro fue exitoso, mostrar la pantalla de verificación
-    if (registroExitoso) {
+    // PERO solo si el email aún no está verificado
+    if (registroExitoso && usuario && !usuario.email_verificado) {
         return (
             <div className="flex flex-col gap-6 w-full">
                 {/* Icono y mensaje */}
@@ -173,8 +230,8 @@ export const RegisterForm = () => {
 
     // Formulario de registro normal
     return (
-        <>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 w-full">
+        <div className="flex flex-col gap-4 lg:gap-5 w-full">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 lg:gap-5 w-full">
                 {/* Inputs */}
                 <div className="flex flex-col gap-4">
                     <Input
@@ -211,7 +268,7 @@ export const RegisterForm = () => {
                         <p className="text-xs font-medium text-[var(--gray-200)] mb-2">
                             Tu contraseña debe contener:
                         </p>
-                        <div className="space-y-1">
+                        <div className="space-y-1.5">
                             <PasswordRequirement met={hasMinLength} text="Al menos 8 caracteres" />
                             <PasswordRequirement met={hasLowerCase} text="Una letra minúscula" />
                             <PasswordRequirement met={hasUpperCase} text="Una letra mayúscula" />
@@ -225,7 +282,7 @@ export const RegisterForm = () => {
                 <Button
                     type="submit"
                     disabled={isPending}
-                    className="flex items-center justify-center gap-2"
+                    className="flex items-center justify-center gap-2 w-full"
                 >
                     {isPending ? (
                         <>
@@ -239,18 +296,43 @@ export const RegisterForm = () => {
                 </Button>
             </form>
 
+            <div className="flex items-center gap-3 lg:gap-4 w-full py-2">
+                <div className="flex-1 border-t border-[var(--gray-300)]"></div>
+                <span className="text-xs lg:text-sm text-[var(--gray-300)] whitespace-nowrap">
+                    O regístrate con
+                </span>
+                <div className="flex-1 border-t border-[var(--gray-300)]"></div>
+            </div>
+
+            <Button
+                onClick={handleRegistroGoogle}
+                disabled={isPendingGoogle}
+                className="flex items-center justify-center gap-2 w-full"
+            >
+                {isPendingGoogle ? (
+                    <>
+                        Registrando <Loader2 className="animate-spin w-4 h-4" />
+                    </>
+                ) : (
+                    <>
+                        <BsGoogle size={18} />
+                        Continuar con Google
+                    </>
+                )}
+            </Button>
+
             {/* Link a login */}
-            <div className="flex justify-center">
+            <div className="flex justify-center pt-2 lg:pt-4">
                 <Link
                     href="/login"
-                    className="text-sm text-[var(--gray-200)] hover:text-[var(--green)] transition-colors"
+                    className="text-xs lg:text-sm text-[var(--gray-200)] hover:text-[var(--green)] transition-colors"
                 >
                     ¿Ya tienes cuenta? Inicia sesión
                 </Link>
             </div>
 
             <Toaster position="top-center" />
-        </>
+        </div>
     );
 };
 

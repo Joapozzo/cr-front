@@ -353,7 +353,7 @@ const PartidoTabs: React.FC<PartidoTabsProps> = ({
                             {incidenciasOrdenadas.length > 0 ? (
                                 incidenciasOrdenadas.map((incidencia, index) => (
                                     <IncidenciaRow
-                                        key={`${activeTab}-${incidencia.id}`}
+                                        key={`${activeTab}-${incidencia.tipo}-${incidencia.id}-${index}`}
                                         incidencia={incidencia}
                                         equipoLocalId={equipoLocal.jugadores[0]?.id_equipo || 0}
                                         index={index}

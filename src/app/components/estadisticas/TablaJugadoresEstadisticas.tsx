@@ -115,11 +115,10 @@ export const TablaJugadoresEstadisticas: React.FC<TablaJugadoresEstadisticasProp
                   <div className="flex items-center gap-2">
                     <div className="w-9 h-9 rounded-full overflow-hidden bg-[var(--black-800)] flex-shrink-0">
                       <ImagenPublica
-                        src={jugador.img || '/img/default-avatar.png'}
+                        src={jugador.img}
                         alt={`${jugador.nombre} ${jugador.apellido}`}
                         width={36}
                         height={36}
-                        fallbackIcon="User"
                       />
                     </div>
                     <div className="flex flex-col min-w-0">

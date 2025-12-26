@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Button } from '@/app/components/ui/Button';
 import {
     ChevronLeft,
@@ -21,7 +21,7 @@ import { useCategoriaStore } from '@/app/stores/categoriaStore';
 import { useModals, DeleteModal } from "@/app/components/modals/ModalAdmin";
 import toast from 'react-hot-toast';
 import DescriptionModal from '@/app/components/modals/DescripcionPartidoModal';
-import { Partido } from '@/app/types/partido';
+import { PartidoResponse } from '@/app/schemas/partidos.schema';
 import { useDreamteamCategoriaJornada, usePublicarDreamteam, useVaciarFormacionDreamteam } from '@/app/hooks/useDreamteam';
 import DreamTeamSkeleton from '@/app/components/skeletons/DreamTeamSkeleton';
 
@@ -73,14 +73,12 @@ export default function FixtureDreamTeamPage() {
         }
     });
 
-    const EstadosPermitidosActualizar = ['P', 'S', 'A'];
-
     const [vistaActual, setVistaActual] = useState<'fixture' | 'dreamteam'>('fixture');
     const [isRefetch, setIsRefetch] = useState(false);
     const [isModalGenerarFixtureOpen, setIsModalGenerarFixtureOpen] = useState(false);
-    const [partidoAEliminar, setPartidoAEliminar] = useState<Partido | null>(null);
-    const [partidoAEditar, setPartidoAEditar] = useState<Partido | null>(null);
-    const [partidoDescripcion, setPartidoDescripcion] = useState<Partido | null>(null);
+    const [partidoAEliminar, setPartidoAEliminar] = useState<PartidoResponse | null>(null);
+    const [partidoAEditar, setPartidoAEditar] = useState<PartidoResponse | null>(null);
+    const [partidoDescripcion, setPartidoDescripcion] = useState<PartidoResponse | null>(null);
 
     // ✅ Estado para manejar resolvers como en crear partido
     const [promiseResolvers, setPromiseResolvers] = useState<{
@@ -99,21 +97,17 @@ export default function FixtureDreamTeamPage() {
     } = useEliminarPartido();
 
     // Función para manejar eliminar partido
-    const handleEliminarPartido = (partido: Partido) => {
+    const handleEliminarPartido = (partido: PartidoResponse) => {
         setPartidoAEliminar(partido);
         openModal('delete');
     };
 
-    const handleEditarPartido = (partido: Partido) => {
-        if (!EstadosPermitidosActualizar.includes(partido.estado)) {
-            toast.error("No se puede editar un partido que ya está comenzado, terminado o finalizado");
-            return;
-        }
+    const handleEditarPartido = (partido: PartidoResponse) => {
         setPartidoAEditar(partido);
         openModal('edit');
     };
 
-    const handleVerDescripcion = (partido: Partido) => {
+    const handleVerDescripcion = (partido: PartidoResponse) => {
         setPartidoDescripcion(partido);
         openModal('info');
     };
@@ -154,14 +148,14 @@ export default function FixtureDreamTeamPage() {
         setPartidoAEditar(null);
     };
 
-    const handleRefresh = () => {
+    const handleRefresh = useCallback(() => {
         setIsRefetch(true);
         refetch().finally(() => {
             setTimeout(() => {
                 setIsRefetch(false);
             }, 500);
         });
-    };
+    }, [refetch]);
 
     useEffect(() => {
         if (deleteSuccess) {
@@ -177,7 +171,7 @@ export default function FixtureDreamTeamPage() {
                 setPromiseResolvers(null);
             }
         }
-    }, [deleteSuccess, promiseResolvers]);
+    }, [deleteSuccess, promiseResolvers, closeModal, resetDeleteMutation, handleRefresh]);
 
     useEffect(() => {
         if (deleteError && !toastShownRef.current) {

@@ -1,18 +1,20 @@
-import { SelfieForm } from '@/app/components/auth/SelfieForm';
-import { Metadata } from 'next';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Verificación de Selfie | Copa Relámpago',
-  description: 'Completa tu registro subiendo una selfie para verificación',
-};
+import { AuthLayout } from '@/app/components/auth/AuthLayout';
+import { SelfieForm } from '@/app/components/auth/SelfieForm';
 
 export default function SelfiePage() {
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl">
-        <SelfieForm />
-      </div>
-    </div>
+    <AuthLayout
+      title="Verificación de Identidad 👤"
+      subtitle="Vamos a tomar una foto de tu rostro para verificar tu identidad"
+      infoTitle="seguridad"
+      infoDescription="Validamos tu identidad con una selfie para garantizar la seguridad de todos los usuarios"
+      infoPosition="right"
+      showBackButton={true}
+    >
+      <SelfieForm />
+    </AuthLayout>
   );
 }
 

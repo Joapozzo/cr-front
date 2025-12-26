@@ -24,7 +24,7 @@ export default function EstadisticasPage() {
     const { data: zonasPlayoff, isLoading: isLoadingZonasPlayoff } = useZonasPlayoffCategoria(idCategoriaEdicion);
     const { data: zonas } = useObtenerTodasLasZonas(idCategoriaEdicion);
     const zonasLiguilla = zonas?.filter(z => z.tipoZona?.id === 1) as Zona[] | undefined;
-    
+
     return (
         <div className="space-y-6">
             {/* Header */}

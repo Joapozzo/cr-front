@@ -5,10 +5,11 @@ import { Input } from '@/app/components/ui/Input';
 import { Button } from '@/app/components/ui/Button';
 import Select, { SelectOption } from '@/app/components/ui/Select';
 import { useEdicionStore } from '@/app/stores/edicionStore';
-import { useActualizarEdicion } from '@/app/hooks/useEdiciones';
+import { useActualizarEdicion, useTodasLasEdiciones, useCambiarEstadoEdicion } from '@/app/hooks/useEdiciones';
 import { convertirABase64 } from '@/app/services/upload.service';
-import { AlertTriangle, X } from 'lucide-react';
+import { AlertTriangle, X, Flag } from 'lucide-react';
 import toast from 'react-hot-toast';
+import ConfirmActionModal from '@/app/components/modals/ConfirmActionModal';
 
 interface EdicionConfig {
     nombre: string;
@@ -24,6 +25,14 @@ interface EdicionConfig {
 const ConfiguracionPage = () => {
     const { edicionSeleccionada } = useEdicionStore();
     const { mutate: actualizarEdicion } = useActualizarEdicion();
+    const { data: todasLasEdiciones } = useTodasLasEdiciones();
+    const { mutate: cambiarEstado, isPending: isChangingEstado } = useCambiarEstadoEdicion();
+    
+    // Obtener el estado actual de la edición
+    const edicionActual = todasLasEdiciones?.find(e => e.id_edicion === edicionSeleccionada?.id_edicion);
+    const estadoActual = edicionActual?.estado || 'I';
+    
+    const [isTerminarModalOpen, setIsTerminarModalOpen] = useState(false);
 
     const [config, setConfig] = useState<EdicionConfig>({
         nombre: 'Apertura',
@@ -146,6 +155,12 @@ const ConfiguracionPage = () => {
             return;
         }
 
+        // Validar que la edición no esté terminada
+        if (estadoActual === 'T') {
+            toast.error('No se pueden realizar cambios en una edición terminada');
+            return;
+        }
+
         setIsLoading(true);
         try {
             // Preparar datos - solo enviar lo que cambió
@@ -196,20 +211,18 @@ const ConfiguracionPage = () => {
             actualizarEdicion(
                 { id: edicionSeleccionada.id_edicion, data: datosActualizar },
                 {
-                    onSuccess: () => {
-                        toast.success('Edición actualizada exitosamente');
+                    onSuccess: (response) => {
+                        toast.success(response.message || 'Edición actualizada exitosamente');
                         setHasChanges(false); // ← RESETEAR CAMBIOS
                         setImagenFile(null);
                         setImagenPreview(null);
                         if (fileInputRef.current) {
                             fileInputRef.current.value = '';
                         }
+                        setIsLoading(false);
                     },
                     onError: (error) => {
                         toast.error(error.message || 'Error al actualizar la edición');
-                        setIsLoading(false);
-                    },
-                    onSettled: () => {
                         setIsLoading(false);
                     }
                 }
@@ -257,17 +270,64 @@ const ConfiguracionPage = () => {
         }
     }, [edicionSeleccionada]);
 
+    const handleTerminarEdicion = () => {
+        if (!edicionSeleccionada?.id_edicion) return;
+        
+        cambiarEstado(
+            { id: edicionSeleccionada.id_edicion, estado: 'T' },
+            {
+                onSuccess: (data) => {
+                    toast.success(data.message || 'Edición terminada exitosamente');
+                    setIsTerminarModalOpen(false);
+                },
+                onError: (error: Error) => {
+                    toast.error(error.message || 'Error al terminar la edición');
+                },
+            }
+        );
+    };
+
     return (
         <div className="space-y-8">
             {/* Header */}
-            <div>
-                <h1 className="text-2xl font-bold text-[var(--white)] mb-2">
-                    Configuración de la edición {edicionSeleccionada?.nombre || ""}
-                </h1>
-                <p className="text-[var(--gray-100)] text-sm">
-                    Configura los parámetros generales de la edición
-                </p>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold text-[var(--white)] mb-2">
+                        Configuración de la edición {edicionSeleccionada?.nombre || ""}
+                    </h1>
+                    <p className="text-[var(--gray-100)] text-sm">
+                        Configura los parámetros generales de la edición
+                    </p>
+                </div>
+                {estadoActual !== 'T' && (
+                    <Button
+                        variant="danger"
+                        onClick={() => setIsTerminarModalOpen(true)}
+                        className="flex items-center gap-2"
+                        disabled={isChangingEstado}
+                    >
+                        <Flag className="w-4 h-4" />
+                        Terminar edición
+                    </Button>
+                )}
             </div>
+
+            {/* Mensaje si la edición está terminada */}
+            {estadoActual === 'T' && (
+                <div className="p-4 bg-[var(--blue)]/10 border border-[var(--blue)]/30 rounded-lg">
+                    <div className="flex items-start gap-3">
+                        <AlertTriangle className="w-5 h-5 text-[var(--blue)] flex-shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                            <h4 className="text-sm font-medium text-[var(--blue)] mb-1">
+                                Edición terminada
+                            </h4>
+                            <p className="text-xs text-[var(--gray-100)]">
+                                Esta edición ha sido terminada. No se pueden realizar cambios en la configuración.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Formulario de configuración */}
             <div className="rounded-lg w-[70%]">
@@ -279,6 +339,7 @@ const ConfiguracionPage = () => {
                         onChange={(e) => handleInputChange("nombre", e.target.value)}
                         placeholder="Nombre de la edición"
                         className="text-[var(--white)] py-3"
+                        disabled={estadoActual === 'T' || isLoading}
                     />
 
                     {/* Temporada */}
@@ -293,6 +354,7 @@ const ConfiguracionPage = () => {
                                 handleInputChange("temporada", value as number)
                             }
                             placeholder="Seleccionar temporada"
+                            disabled={estadoActual === 'T' || isLoading}
                         />
                     </div>
 
@@ -314,6 +376,7 @@ const ConfiguracionPage = () => {
                                 handleInputChange("cantidad_eventuales", value as number)
                             }
                             placeholder="Seleccionar cantidad"
+                            disabled={estadoActual === 'T' || isLoading}
                         />
                     </div>
 
@@ -329,6 +392,7 @@ const ConfiguracionPage = () => {
                                 handleInputChange("partidos_eventuales", value as number)
                             }
                             placeholder="Seleccionar límite"
+                            disabled={estadoActual === 'T' || isLoading}
                         />
                     </div>
 
@@ -344,6 +408,7 @@ const ConfiguracionPage = () => {
                                 handleInputChange("apercibimientos", value as number)
                             }
                             placeholder="Seleccionar apercibimientos"
+                            disabled={estadoActual === 'T' || isLoading}
                         />
                     </div>
 
@@ -359,6 +424,7 @@ const ConfiguracionPage = () => {
                                 handleInputChange("puntos_descuento", value as number)
                             }
                             placeholder="Seleccionar puntos"
+                            disabled={estadoActual === 'T' || isLoading}
                         />
                     </div>
 
@@ -424,7 +490,7 @@ const ConfiguracionPage = () => {
                                     onChange={handleImageChange}
                                     className="hidden"
                                     id="imagen-upload"
-                                    disabled={isLoading}
+                                    disabled={estadoActual === 'T' || isLoading}
                                 />
                                 <label
                                     htmlFor="imagen-upload"
@@ -447,16 +513,46 @@ const ConfiguracionPage = () => {
                 <div className="mt-8 flex justify-end">
                     <Button
                         onClick={handleSubmit}
-                        disabled={!hasChanges || isLoading} // ← Deshabilitar si no hay cambios
-                        className={`px-8 transition-colors ${hasChanges
+                        disabled={!hasChanges || isLoading || estadoActual === 'T'} // ← Deshabilitar si no hay cambios, está cargando o está terminada
+                        className={`px-8 transition-colors ${hasChanges && estadoActual !== 'T'
                                 ? "bg-[var(--green)] hover:bg-[var(--green-win)] text-white"
                                 : "bg-[var(--gray-300)] text-[var(--gray-100)] cursor-not-allowed"
                             }`}
                     >
-                        {isLoading ? "Actualizando..." : "Actualizar edición"}
+                        {estadoActual === 'T' 
+                            ? "Edición terminada" 
+                            : isLoading 
+                            ? "Actualizando..." 
+                            : "Actualizar edición"}
                     </Button>
                 </div>
             </div>
+
+            {/* Modal Terminar Edición */}
+            <ConfirmActionModal
+                isOpen={isTerminarModalOpen}
+                onClose={() => setIsTerminarModalOpen(false)}
+                onConfirm={handleTerminarEdicion}
+                title="Terminar edición"
+                message={`¿Estás seguro de que deseas terminar la edición "${edicionSeleccionada?.nombre}"?`}
+                confirmText="Terminar"
+                cancelText="Cancelar"
+                variant="danger"
+                isLoading={isChangingEstado}
+                details={
+                    <div className="text-left space-y-1 text-sm">
+                        <p className="text-[var(--gray-200)]">
+                            <span className="font-medium text-[var(--white)]">Edición:</span> {edicionSeleccionada?.nombre}
+                        </p>
+                        <p className="text-[var(--gray-200)]">
+                            <span className="font-medium text-[var(--white)]">Temporada:</span> {edicionSeleccionada?.temporada}
+                        </p>
+                        <p className="text-[var(--yellow)] text-xs mt-2">
+                            ⚠️ Una vez terminada, la edición no podrá ser reactivada.
+                        </p>
+                    </div>
+                }
+            />
         </div>
     );
 };

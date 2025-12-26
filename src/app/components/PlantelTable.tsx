@@ -64,7 +64,7 @@ export default function SquadTable({ id_categoria_edicion, esCapitan, esEdicionA
     };
 
     const handleConfirmarBaja = (motivo: string, observaciones: string) => {
-        // console.log('🚀 handleConfirmarBaja', motivo, observaciones);
+        // ('🚀 handleConfirmarBaja', motivo, observaciones);
         
         if (!jugadorSeleccionado) return;
 

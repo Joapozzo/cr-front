@@ -8,6 +8,7 @@ import { useEdicionesConCategorias } from '../hooks/useEdiciones';
 import { useTablasTodasLasZonas } from '../hooks/useTablas';
 import TablaPosicionesContentSkeleton from './skeletons/TablePosicionesHomeSkeleton';
 import TablaPosicionesHeaderSkeleton from './skeletons/TablaPosicionesHeaderSkeleton';
+import { FormatoPosicionBadge, FormatoPosicionLeyenda } from './posiciones/FormatoPosicionBadge';
 
 interface TablaPosicionesProps {
     className?: string;
@@ -30,6 +31,8 @@ export const TablaPosiciones: React.FC<TablaPosicionesProps> = ({
         Number(categoriaSeleccionada),
         { enabled: !!categoriaSeleccionada }
     );
+
+    (tablasData);
 
     // Configurar categoría por defecto cuando cargan los datos
     useEffect(() => {
@@ -57,16 +60,19 @@ export const TablaPosiciones: React.FC<TablaPosicionesProps> = ({
         return opciones;
     }, [edicionesConCategorias]);
 
-    const tablaPosiciones = React.useMemo(() => {
-        if (!tablasData) return [];
+    const { tablaPosiciones, formatosPosicion } = React.useMemo(() => {
+        if (!tablasData) return { tablaPosiciones: [], formatosPosicion: [] };
 
         // Obtener la primera zona disponible
         const primeraZona = Object.values(tablasData)[0];
-        return primeraZona?.tabla || [];
+        return {
+            tablaPosiciones: primeraZona?.tabla || [],
+            formatosPosicion: primeraZona?.formatosPosicion || []
+        };
     }, [tablasData]);
 
     if (loadingCategorias) {
-        return <TablaPosicionesHeaderSkeleton className={className}/>;
+        return <TablaPosicionesHeaderSkeleton className={className} />;
     }
     const handleCategoriaChange = (value: string | number) => {
         setCategoriaSeleccionada(value);
@@ -130,6 +136,9 @@ export const TablaPosiciones: React.FC<TablaPosicionesProps> = ({
                                     <th className="text-center px-4 py-3 text-xs font-semibold text-[var(--black-300)] uppercase tracking-wider">
                                         Pts
                                     </th>
+                                    <th className="text-center px-4 py-3 text-xs font-semibold text-[var(--black-300)] uppercase tracking-wider">
+                                        Aperc.
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -142,9 +151,15 @@ export const TablaPosiciones: React.FC<TablaPosicionesProps> = ({
                                         >
                                             {/* Posición */}
                                             <td className="px-4 py-3">
-                                                <span className={`font-semibold`}>
-                                                    {posicion}
-                                                </span>
+                                                <div className="flex items-center">
+                                                    <FormatoPosicionBadge
+                                                        posicion={posicion}
+                                                        formatosPosicion={formatosPosicion}
+                                                    />
+                                                    <span className={`font-semibold`}>
+                                                        {posicion}
+                                                    </span>
+                                                </div>
                                             </td>
 
                                             {/* Equipo */}
@@ -192,9 +207,23 @@ export const TablaPosiciones: React.FC<TablaPosicionesProps> = ({
                                             </td>
 
                                             {/* Puntos */}
+                                            <td className="text-center py-3 px-2">
+                                                <div className="flex flex-col items-center">
+                                                    <span className={'text-sm font-bold  text-white'}>
+                                                        {equipo.puntos || 0}
+                                                    </span>
+                                                    {equipo.puntos_descontados > 0 && equipo.apercibimientos > 0 && (
+                                                        <span className="text-[10px] text-[var(--yellow)] mt-0.5">
+                                                            -{equipo.puntos_descontados}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </td>
+
+                                            {/* Apercibimientos */}
                                             <td className="px-4 py-3 text-center">
-                                                <span className="text-white font-bold text-base">
-                                                    {equipo.puntos}
+                                                <span className={`text-sm font-light ${equipo.apercibimientos && equipo.apercibimientos > 0 ? 'text-yellow-400' : 'text-[var(--black-100)]'}`}>
+                                                    {equipo.apercibimientos || 0}
                                                 </span>
                                             </td>
                                         </tr>
@@ -205,22 +234,7 @@ export const TablaPosiciones: React.FC<TablaPosicionesProps> = ({
                     </div>
 
                     {/* Leyenda */}
-                    {/* <div className="px-6 py-4 bg-[var(--black-850)] border-t border-[var(--black-800)]">
-                        <div className="flex items-center gap-6 text-xs">
-                            <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 bg-green-500 rounded"></div>
-                                <span className="text-[var(--black-300)]">Clasificación directa</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                                <span className="text-[var(--black-300)]">Playoffs</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 bg-red-500 rounded"></div>
-                                <span className="text-[var(--black-300)]">Descenso</span>
-                            </div>
-                        </div>
-                    </div> */}
+                    <FormatoPosicionLeyenda formatosPosicion={formatosPosicion} />
                 </>
             )}
         </div>

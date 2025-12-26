@@ -6,32 +6,44 @@ export enum SolicitudEstado {
 
 export interface SolicitudEnviada {
     id_solicitud: number;
+    id_jugador: number;
+    nombre_jugador: string;
+    img_jugador?: string | null;
     id_equipo: number;
     nombre_equipo: string;
-    img_equipo?: string;
+    img_equipo?: string | null;
     nombre_categoria: string;
     id_categoria_edicion: number;
-    estado: SolicitudEstado;
-    tipo_solicitud: 'J' | 'E';
+    edicion?: string;
+    estado: SolicitudEstado | 'P' | 'A' | 'R';
+    tipo_solicitud: 'J' | 'E' | 'B'; // 'B' para Baja
     mensaje_jugador?: string;
     mensaje_capitan?: string;
+    motivo?: string;
+    observaciones?: string;
+    motivo_rechazo?: string | null;
     fecha_solicitud: string;
-    fecha_respuesta: string;
+    fecha_respuesta: string | null;
+    agregado_por?: string | null;
+    respondido_por_username?: string | null;
 }
 
 export interface SolicitudRecibida {
     id_solicitud: number;
     id_jugador: number;
     nombre_jugador: string;
-    img_jugador?: string;
+    img_jugador?: string | null;
     nombre_categoria: string;
     id_categoria_edicion: number;
+    edicion?: string;
     estado: SolicitudEstado;
     tipo_solicitud: 'J' | 'E';
-    mensaje_jugador?: string;
-    mensaje_capitan?: string;
+    mensaje_jugador?: string | null;
+    mensaje_capitan?: string | null;
     fecha_solicitud: string;
-    fecha_respuesta: string;
+    fecha_respuesta: string | null;
+    agregado_por?: string | null;
+    respondido_por_username?: string | null;
 }
 
 
@@ -44,29 +56,32 @@ export interface EnviarSolicitudData {
 
 export interface SolicitudResponse {
     message: string;
-    data: any;
+    data?: SolicitudRecibida | SolicitudEnviada;
 }
 
 export interface SolicitudesJugadorResponse {
     message: string;
-    data: any[];
+    data: SolicitudEnviada[];
     total: number;
 }
 
 export interface ConfirmarSolicitudParams {
     id_solicitud: number;
     id_jugador: number;
+    id_equipo: number;
+    id_categoria_edicion: number;
 }
 
 export interface RechazarSolicitudParams {
     id_solicitud: number;
     id_jugador: number;
+    id_equipo: number;
+    id_categoria_edicion: number;
 }
 
 export interface CancelarInvitacionParams {
     id_solicitud: number;
     id_equipo: number;
-    id_jugador: number;
     id_categoria_edicion: number;
 }
 
@@ -85,7 +100,6 @@ export interface ObtenerSolicitudesEquipoResponse {
     data: SolicitudRecibida[];
     total: number;
 }
-
 
 export interface SolicitudBajaResponse {
     solicitudes: SolicitudBaja[];
@@ -121,4 +135,13 @@ export interface EquipoSolicitud {
     id_equipo: number;
     nombre: string;
     img: string | null;
+}
+
+export interface SolicitarBajaParams {
+    id_equipo: number;
+    id_jugador_capitan: number;
+    id_categoria_edicion: number;
+    id_jugador_baja: number;
+    motivo?: string;
+    observaciones?: string;
 }

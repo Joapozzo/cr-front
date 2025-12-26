@@ -1,11 +1,13 @@
 'use client';
 
-import { ImagenPublica } from '../common/ImagenPublica';
+import { EscudoEquipo } from '../common/EscudoEquipo';
+import { EnVivoBadge } from '../common/EnVivoBadge';
+import { TiempoPartido } from '../common/TiempoPartido';
 import { Partido } from '@/app/types/partido';
 import Link from 'next/link';
 import { GiSoccerField } from "react-icons/gi";
-import { Shield } from 'lucide-react';
 import { getEstadoConfig } from '@/app/utils/partido.helper';
+import { estaEnVivo } from '@/app/utils/tiempoPartido.helper';
 
 interface ListaPartidosProps {
   partidos: Partido[];
@@ -51,15 +53,12 @@ export const ListaPartidos: React.FC<ListaPartidosProps> = ({
                 <div className="flex items-center justify-between gap-3">
                   {/* Equipo Local */}
                   <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <div className="w-6 h-6 rounded-full overflow-hidden bg-[var(--black-800)] flex-shrink-0">
-                      <ImagenPublica
-                        src={partido.equipoLocal.img || '/img/default-team.png'}
-                        alt={partido.equipoLocal.nombre}
-                        width={24}
-                        height={24}
-                        fallbackIcon={<Shield className="w-3 h-3 text-[#737373]" />}
-                      />
-                    </div>
+                    <EscudoEquipo
+                      src={partido.equipoLocal.img}
+                      alt={partido.equipoLocal.nombre}
+                      size={24}
+                      className="flex-shrink-0"
+                    />
                     <span className="text-white text-xs font-medium truncate">
                       {partido.equipoLocal.nombre}
                     </span>
@@ -67,12 +66,15 @@ export const ListaPartidos: React.FC<ListaPartidosProps> = ({
 
                   {/* Centro: Marcador, Hora, Cancha o En Vivo */}
                   <div className="flex flex-col items-center gap-0.5 flex-shrink-0">
-                    {estadoConfig.showLive && (
-                      <div className="flex items-center gap-1">
-                        <div className="w-1.5 h-1.5 bg-[var(--green)] rounded-full animate-pulse" />
-                        <span className="text-[var(--green)] text-[9px] font-medium">
-                          En Vivo
-                        </span>
+                    {estaEnVivo(partido.estado) && (
+                      <div className="flex flex-col items-center gap-1">
+                        <EnVivoBadge size="sm" />
+                        <TiempoPartido
+                          estado={partido.estado}
+                          partidoId={partido.id_partido}
+                          showCronometro={false}
+                          size="sm"
+                        />
                       </div>
                     )}
 
@@ -88,7 +90,11 @@ export const ListaPartidos: React.FC<ListaPartidosProps> = ({
                         {estadoConfig.showCancha && (
                           <div className="flex items-center gap-1">
                             <GiSoccerField />
-                            <span className="text-[#737373] text-[10px]">{partido.cancha}</span>
+                            <span className="text-[#737373] text-[10px]">
+                              {typeof partido.cancha === 'object' && partido.cancha !== null
+                                ? (partido.cancha as any).nombre
+                                : partido.cancha}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -100,15 +106,12 @@ export const ListaPartidos: React.FC<ListaPartidosProps> = ({
                     <span className="text-white text-xs font-medium truncate text-right">
                       {partido.equipoVisita.nombre}
                     </span>
-                    <div className="w-6 h-6 rounded-full overflow-hidden bg-[var(--black-800)] flex-shrink-0">
-                      <ImagenPublica
-                        src={partido.equipoVisita.img || '/img/default-team.png'}
-                        alt={partido.equipoVisita.nombre}
-                        width={24}
-                        height={24}
-                        fallbackIcon={<Shield className="w-3 h-3 text-[#737373]" />}
-                      />
-                    </div>
+                    <EscudoEquipo
+                      src={partido.equipoVisita.img}
+                      alt={partido.equipoVisita.nombre}
+                      size={24}
+                      className="flex-shrink-0"
+                    />
                   </div>
                 </div>
               </div>

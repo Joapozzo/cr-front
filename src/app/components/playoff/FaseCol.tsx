@@ -27,7 +27,7 @@ const FaseColumna = ({ titulo, partidos, numeroFase, isPlaceholder }: FaseColumn
                 partidos.map((partido) => (
                     <PartidoLlave key={partido.id_partido} partido={partido} />
                 ))
-            ) : (
+            ) : (       // Sin partidos
                 <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-8 min-w-[280px]">
                     <p className="text-[var(--gray-200)] text-center text-sm italic">
                         Sin partidos

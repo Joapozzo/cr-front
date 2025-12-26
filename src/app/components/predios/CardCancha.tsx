@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Shield, Edit2, Trash2, MoreVertical, Loader2 } from 'lucide-react';
+import { Edit2, Trash2, MoreVertical, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { CanchaConPredio } from '@/app/types/predios';
 import { usePartidosPorCanchaYFecha } from '@/app/hooks/useCanchas';
 import { formatearHora } from '@/app/utils/formated';
+import { EscudoEquipo } from '@/app/components/common/EscudoEquipo';
 
 interface PartidoOcupado {
     id_partido: number;
@@ -41,7 +42,6 @@ interface CardCanchaProps {
     fechaVisualizacion?: string; // Fecha para mostrar ocupación
 }
 
-const URI_IMG = process.env.NEXT_PUBLIC_URI_IMG || 'http://localhost:3001';
 
 // Función para formatear tipo_futbol a string
 const formatearTipoFutbol = (tipoFutbol?: number | null): string => {
@@ -280,17 +280,12 @@ const CardCancha: React.FC<CardCanchaProps> = ({
                                     }`}
                                 >
                                     {/* Escudo Local */}
-                                    {partido.equipoLocal?.img ? (
-                                        <img
-                                            src={`${URI_IMG}${partido.equipoLocal.img}`}
-                                            alt={partido.equipoLocal.nombre}
-                                            className="w-5 h-5 rounded object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-5 h-5 rounded-full bg-[var(--gray-300)] flex items-center justify-center">
-                                            <Shield className="w-2.5 h-2.5 text-[var(--gray-100)]" />
-                                        </div>
-                                    )}
+                                    <EscudoEquipo
+                                        src={partido.equipoLocal?.img}
+                                        alt={partido.equipoLocal?.nombre || 'Equipo Local'}
+                                        size={20}
+                                        className="flex-shrink-0"
+                                    />
                                     
                                     {/* Hora */}
                                     <span className="text-xs font-medium text-[var(--white)] min-w-[40px] text-center">
@@ -298,17 +293,12 @@ const CardCancha: React.FC<CardCanchaProps> = ({
                                     </span>
                                     
                                     {/* Escudo Visitante */}
-                                    {partido.equipoVisita?.img ? (
-                                        <img
-                                            src={`${URI_IMG}${partido.equipoVisita.img}`}
-                                            alt={partido.equipoVisita.nombre}
-                                            className="w-5 h-5 rounded object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-5 h-5 rounded-full bg-[var(--gray-300)] flex items-center justify-center">
-                                            <Shield className="w-2.5 h-2.5 text-[var(--gray-100)]" />
-                                        </div>
-                                    )}
+                                    <EscudoEquipo
+                                        src={partido.equipoVisita?.img}
+                                        alt={partido.equipoVisita?.nombre || 'Equipo Visitante'}
+                                        size={20}
+                                        className="flex-shrink-0"
+                                    />
                                 </div>
                             );
 

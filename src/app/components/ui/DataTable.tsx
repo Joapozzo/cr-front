@@ -1,13 +1,13 @@
 import React from 'react';
 
-interface Column<T = any> {
+interface Column<T extends Record<string, unknown> = Record<string, unknown>> {
     key: string;
     label: React.ReactNode;
-    render?: (value: any, row: T, index: number) => React.ReactNode;
+    render?: (value: unknown, row: T, index: number) => React.ReactNode;
     className?: string;
 }
 
-interface DataTableProps<T = any> {
+interface DataTableProps<T extends Record<string, unknown> = Record<string, unknown>> {
     data: T[];
     columns: Column<T>[];
     emptyMessage?: string;
@@ -17,7 +17,7 @@ interface DataTableProps<T = any> {
 }
 
 // Componente de Skeleton para las filas de carga
-const TableRowSkeleton = ({ columns }: { columns: Column[] }) => (
+const TableRowSkeleton = <T extends Record<string, unknown>>({ columns }: { columns: Column<T>[] }) => (
     <tr className="animate-pulse">
         {columns.map((column, index) => (
             <td key={index} className="px-6 py-4 whitespace-nowrap">
@@ -27,7 +27,7 @@ const TableRowSkeleton = ({ columns }: { columns: Column[] }) => (
     </tr>
 );
 
-export const DataTable = <T extends Record<string, any>>({
+export const DataTable = <T extends Record<string, unknown>>({
     data,
     columns,
     emptyMessage = "No hay datos disponibles",
@@ -130,7 +130,7 @@ export const DataTable = <T extends Record<string, any>>({
                     <tbody className="divide-y divide-[var(--gray-300)]">
                         {data.map((row, index) => (
                             <tr
-                                key={row.id || index}
+                                key={(row as { id?: string | number }).id || index}
                                 onClick={() => onRowClick?.(row, index)}
                                 className={`transition-colors ${
                                     onRowClick 
@@ -142,11 +142,18 @@ export const DataTable = <T extends Record<string, any>>({
                                     const value = row[column.key];
                                     const cellContent = column.render
                                         ? column.render(value, row, index)
-                                        : value;
+                                        : (value as React.ReactNode);
 
                                     return (
                                         <td
                                             key={column.key}
+                                            onClick={(e) => {
+                                                // Prevenir propagación si se hace click en un botón o elemento interactivo
+                                                const target = e.target as HTMLElement;
+                                                if (target.tagName === 'BUTTON' || target.closest('button') || target.closest('a')) {
+                                                    e.stopPropagation();
+                                                }
+                                            }}
                                             className={`px-6 py-4 whitespace-nowrap text-sm ${
                                                 column.className || 'text-[var(--gray-100)]'
                                             }`}

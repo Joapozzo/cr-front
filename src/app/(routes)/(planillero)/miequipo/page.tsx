@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { UserPageWrapper } from '@/app/components/layouts/UserPageWrapper';
-import { EquipoLayout } from '@/app/components/equipo/EquipoLayout';
 import { EquipoTabs, TabEquipo } from '@/app/components/equipo/EquipoTabs';
 import { ResumenTab } from '@/app/components/equipo/resumen/ResumenTab';
 import { PlantelTab } from '@/app/components/equipo/plantel/PlantelTab';
@@ -13,36 +12,16 @@ import { useEquipoResumen } from '@/app/hooks/useEquipoResumen';
 import { useEquiposUsuario } from '@/app/hooks/useEquiposUsuario';
 import { useEquipoPlantel } from '@/app/hooks/useEquipoPlantel';
 import { useEquipoParticipaciones } from '@/app/hooks/useEquipoParticipaciones';
-import {
-  usePosicionesPorCategoriaEdicion,
-  useGoleadoresPorCategoriaEdicion,
-  useAsistenciasPorCategoriaEdicion,
-  useAmarillasPorCategoriaEdicion,
-  useRojasPorCategoriaEdicion,
-  useMVPsPorCategoriaEdicion
-} from '@/app/hooks/useEstadisticas';
-import { useZonasPlayoffCategoria } from '@/app/hooks/useCategoriaDashboard';
-// Los partidos ahora se obtienen dentro del componente PartidosTab
-import { ObtenerEquiposActualesDelJugadorResponse } from '@/app/types/jugador';
-import { Partido } from '@/app/types/partido';
-import { IEquipoPosicion, EquipoPosicion } from '@/app/types/posiciones';
-import { ParticipacionEquipo } from '@/app/types/participacionEquipo';
+import { useEquipoSeleccionado } from './EquipoContext';
 import { useRouter } from 'next/navigation';
 
 export default function MiEquipoPage() {
   const router = useRouter();
-  const [equipoSeleccionado, setEquipoSeleccionado] = useState<ObtenerEquiposActualesDelJugadorResponse | null>(null);
   const [tabActiva, setTabActiva] = useState<TabEquipo>('resumen');
+  const { equipoSeleccionado } = useEquipoSeleccionado();
 
   // Obtener equipos del usuario con información completa
   const { data: equiposUsuario, isLoading: loadingEquipos } = useEquiposUsuario();
-
-  // Inicializar equipo seleccionado
-  useEffect(() => {
-    if (!equipoSeleccionado && equiposUsuario && equiposUsuario.length > 0) {
-      setEquipoSeleccionado(equiposUsuario[0]);
-    }
-  }, [equiposUsuario, equipoSeleccionado]);
 
   // Obtener resumen del equipo seleccionado
   const { data: resumen, isLoading: loadingResumen } = useEquipoResumen(
@@ -56,81 +35,8 @@ export default function MiEquipoPage() {
     equipoSeleccionado?.id_categoria_edicion || null
   );
 
-  // Obtener estadísticas de la categoría edición
-  const { data: posicionesData, isLoading: loadingPosiciones } = usePosicionesPorCategoriaEdicion(
-    equipoSeleccionado?.id_categoria_edicion || null
-  );
-  const { data: goleadores, isLoading: loadingGoleadores } = useGoleadoresPorCategoriaEdicion(
-    equipoSeleccionado?.id_categoria_edicion || null
-  );
-  const { data: asistencias, isLoading: loadingAsistencias } = useAsistenciasPorCategoriaEdicion(
-    equipoSeleccionado?.id_categoria_edicion || null
-  );
-  const { data: amarillas, isLoading: loadingAmarillas } = useAmarillasPorCategoriaEdicion(
-    equipoSeleccionado?.id_categoria_edicion || null
-  );
-  const { data: rojas, isLoading: loadingRojas } = useRojasPorCategoriaEdicion(
-    equipoSeleccionado?.id_categoria_edicion || null
-  );
-  const { data: mvps, isLoading: loadingMVPs } = useMVPsPorCategoriaEdicion(
-    equipoSeleccionado?.id_categoria_edicion || null
-  );
-
-  // Procesar posiciones: aplanar si hay múltiples zonas y mapear a EquipoPosicion
-  const posicionesAplanadas = useMemo(() => {
-    if (!posicionesData || posicionesData.length === 0) return [];
-    
-    // Mapear IEquipoPosicion a EquipoPosicion
-    const mapearPosicion = (pos: IEquipoPosicion): EquipoPosicion => ({
-      id_equipo: pos.id_equipo,
-      nombre_equipo: pos.nombre_equipo,
-      partidos_jugados: pos.partidos_jugados,
-      ganados: pos.partidos_ganados,
-      empatados: pos.partidos_empatados,
-      perdidos: pos.partidos_perdidos,
-      goles_favor: pos.goles_favor,
-      goles_contra: pos.goles_contra,
-      diferencia_goles: pos.diferencia_goles,
-      puntos: pos.puntos,
-      ultima_actualizacion: new Date().toISOString().split('T')[0],
-      img_equipo: pos.img_equipo || undefined
-    });
-    
-    // Si hay una sola zona, devolver sus posiciones mapeadas
-    if (posicionesData.length === 1) {
-      return posicionesData[0].posiciones.map(mapearPosicion);
-    }
-    
-    // Si hay múltiples zonas, aplanar todas las posiciones
-    const todasPosiciones: EquipoPosicion[] = [];
-    posicionesData.forEach(zona => {
-      todasPosiciones.push(...zona.posiciones.map(mapearPosicion));
-    });
-    return todasPosiciones;
-  }, [posicionesData]);
-
-  // Obtener zonas de playoff
-  const { data: zonasPlayoffData, isLoading: loadingZonasPlayoff } = useZonasPlayoffCategoria(
-    equipoSeleccionado?.id_categoria_edicion || 0
-  );
-  
-  // Preparar datos de stats para StatsTab
-  const stats = useMemo(() => {
-    const zonasPlayoff = zonasPlayoffData?.data || [];
-    return {
-      posiciones: posicionesAplanadas,
-      zonasPlayoff: zonasPlayoff,
-      goleadores: goleadores || [],
-      asistencias: asistencias || [],
-      amarillas: amarillas || [],
-      rojas: rojas || [],
-      mvps: mvps || []
-    };
-  }, [posicionesAplanadas, zonasPlayoffData, goleadores, asistencias, amarillas, rojas, mvps]);
-
-  const loadingStats = loadingPosiciones || loadingGoleadores || loadingAsistencias || loadingAmarillas || loadingRojas || loadingMVPs || loadingZonasPlayoff;
-
   // Los partidos ahora se obtienen dentro del componente PartidosTab usando usePartidosUsuarioPorEquipo
+  // Las estadísticas se obtienen dentro del componente StatsTab
 
   // Obtener participaciones del equipo
   const { data: participaciones, isLoading: loadingParticipaciones } = useEquipoParticipaciones(
@@ -145,36 +51,12 @@ export default function MiEquipoPage() {
 
   const esCapitan = equipoSeleccionado?.es_capitan || false;
 
-  // Handler para cambiar de equipo desde el selector
-  const handleCambiarEquipo = (nuevoIdEquipo: number) => {
-    const nuevoEquipo = equiposUsuario?.find(eq => eq.id_equipo === nuevoIdEquipo);
-    if (nuevoEquipo) {
-      setEquipoSeleccionado(nuevoEquipo);
-    }
-  };
-
   // Handler para ver todos los stats
   const handleVerTodosStats = (tipo: string) => {
     if (equipoSeleccionado) {
       router.push(`/equipos/${equipoSeleccionado.id_equipo}/stats?tipo=${tipo}`);
     }
   };
-
-  // Mapear equipos para el EquipoLayout
-  const equiposParaLayout = useMemo(() => {
-    if (!equiposUsuario) return [];
-    return equiposUsuario.map(eq => ({
-      id_equipo: eq.id_equipo,
-      nombre_equipo: eq.nombre_equipo,
-      img_equipo: eq.img_equipo,
-      id_categoria_edicion: eq.id_categoria_edicion,
-      nombre_categoria: eq.nombre_categoria,
-      id_edicion: eq.id_edicion,
-      nombre_torneo: eq.nombre_torneo,
-      temporada: eq.temporada,
-      es_capitan: eq.es_capitan
-    }));
-  }, [equiposUsuario]);
 
   if (loadingEquipos) {
     return (
@@ -193,17 +75,17 @@ export default function MiEquipoPage() {
           <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-12 text-center w-full max-w-md">
             <div className="flex flex-col items-center justify-center gap-4">
               <div className="w-16 h-16 rounded-full bg-[#1a1a1a] border border-[#262626] flex items-center justify-center">
-                <svg 
-                  className="w-8 h-8 text-[#737373]" 
-                  fill="none" 
-                  stroke="currentColor" 
+                <svg
+                  className="w-8 h-8 text-[#737373]"
+                  fill="none"
+                  stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" 
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
               </div>
@@ -246,7 +128,6 @@ export default function MiEquipoPage() {
         return (
           <PlantelTab
             idEquipo={equipoSeleccionado.id_equipo}
-            idEdicion={equipoSeleccionado.id_edicion}
             plantel={plantel || null}
             perteneceAlEquipo={perteneceAlEquipo}
             esCapitan={esCapitan}
@@ -257,20 +138,14 @@ export default function MiEquipoPage() {
         return (
           <StatsTab
             idEquipo={equipoSeleccionado.id_equipo}
-            posiciones={stats.posiciones}
-            zonasPlayoff={stats.zonasPlayoff}
-            goleadores={stats.goleadores}
-            asistencias={stats.asistencias}
-            amarillas={stats.amarillas}
-            rojas={stats.rojas}
-            mvps={stats.mvps}
-            loading={loadingStats}
+            idCategoriaEdicion={equipoSeleccionado.id_categoria_edicion}
           />
         );
       case 'partidos':
         return (
           <PartidosTab
             idEquipo={equipoSeleccionado.id_equipo}
+            idCategoriaEdicion={equipoSeleccionado.id_categoria_edicion}
           />
         );
       case 'participaciones':
@@ -286,25 +161,16 @@ export default function MiEquipoPage() {
     }
   };
 
+
   return (
-    <UserPageWrapper>
-      <EquipoLayout
-        idEquipo={equipoSeleccionado.id_equipo}
-        nombreEquipo={equipoSeleccionado.nombre_equipo}
-        imgEquipo={equipoSeleccionado.img_equipo}
-        perteneceAlEquipo={perteneceAlEquipo}
-        esCapitan={esCapitan}
-        equiposDelUsuario={equiposParaLayout}
-        onCambiarEquipo={handleCambiarEquipo}
+    <div className="space-y-6">
+      {/* Tabs */}
+      <EquipoTabs
+        tabActiva={tabActiva}
+        onTabChange={setTabActiva}
         loading={isLoading}
-      >
-        <EquipoTabs
-          tabActiva={tabActiva}
-          onTabChange={setTabActiva}
-          loading={isLoading}
-        />
-        {renderTabContent()}
-      </EquipoLayout>
-    </UserPageWrapper>
+      />
+      {renderTabContent()}
+    </div>
   );
 }

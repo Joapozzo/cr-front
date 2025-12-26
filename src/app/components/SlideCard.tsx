@@ -40,16 +40,16 @@ const SlideCard: React.FC<SlideCardProps> = ({
     if (items.length === 0) {
         return (
             <div className={`bg-[var(--black-950)] rounded-2xl overflow-hidden border border-[var(--black-700)] ${className}`}>
-                {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 bg-[var(--black-900)]">
-                    <div className="flex items-center gap-2 text-sm">
-                        {icon}
-                        <span className="text-white font-bold">{title}</span>
-                    </div>
+            {/* Header */}
+            <div className="flex items-center justify-between px-3 sm:px-4 md:px-6 py-3 sm:py-4 bg-[var(--black-900)]">
+                <div className="flex items-center gap-2 text-sm">
+                    {icon}
+                    <span className="text-white font-bold">{title}</span>
                 </div>
+            </div>
 
-                {/* Empty state */}
-                <div className="px-6 py-8 text-center">
+            {/* Empty state */}
+            <div className="px-3 sm:px-4 md:px-6 py-6 sm:py-8 text-center">
                     <p className="text-[var(--black-400)] text-sm">
                         Aún no tienes {title.toLowerCase()}
                     </p>
@@ -63,12 +63,12 @@ const SlideCard: React.FC<SlideCardProps> = ({
     return (
         <div className={`bg-[var(--black-950)] rounded-2xl overflow-hidden border border-[var(--black-700)] ${className}`}>
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 bg-[var(--black-900)]">
+            <div className="flex items-center justify-between px-3 sm:px-4 md:px-6 py-3 sm:py-4 bg-[var(--black-900)]">
                 <div className="flex items-center gap-2 text-sm">
                     {icon}
                     <span className="text-white font-bold">{title}</span>
                     {hasMultipleItems && (
-                        <span className="text-[var(--black-400)]">
+                        <span className="text-[var(--black-400)] hidden sm:inline">
                             | {currentIndex + 1} de {items.length}
                         </span>
                     )}
@@ -116,7 +116,7 @@ const SlideCard: React.FC<SlideCardProps> = ({
             </div>
 
             {/* Content */}
-            <div className="px-6 py-4 relative overflow-hidden">
+            <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 relative overflow-hidden">
                 {renderItem(items[currentIndex], currentIndex)}
 
                 {/* Progress bar para auto-slide */}

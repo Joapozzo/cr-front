@@ -49,7 +49,9 @@ export const getEstadoColor = (estado: EstadoPartido) => {
 };
 
 export const formatNombreJugador = (nombre: string, apellido: string): string => {
-    return `${nombre.charAt(0).toLowerCase()}.${apellido.toLowerCase()}`;
+    const primeraLetraNombre = nombre.charAt(0).toUpperCase();
+    const apellidoCapitalizado = apellido.charAt(0).toUpperCase() + apellido.slice(1).toLowerCase();
+    return `${primeraLetraNombre}.${apellidoCapitalizado}`;
 };
 
 export const getNombreCategoria = (categoriaEdicion: any): string => {

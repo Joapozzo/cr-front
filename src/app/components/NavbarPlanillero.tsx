@@ -1,8 +1,13 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { User, Menu, Bell } from "lucide-react";
+import { Menu, Bell } from "lucide-react";
+import { MobileMenuPlanillero } from './navbar/MobileMenuPlanillero';
 
 const NavbarPlanillero: React.FC = () => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
     const navItems = [
         { label: 'Inicio', href: '/planillero/home', isExternal: false },
         { label: 'Partidos', href: '/planillero/partidos', isExternal: false },
@@ -10,13 +15,17 @@ const NavbarPlanillero: React.FC = () => {
     ];
 
     return (
-        <header className="w-full h-[80px] md:h-[80px] bg-[var(--gray-500)] flex justify-center sticky top-0 select-none z-[101]">
+        <header className="w-full h-[80px] md:h-[80px] bg-[var(--gray-500)] flex justify-center sticky top-0 select-none z-[102]">
             <div className="flex justify-between items-center w-full h-full relative max-w-[1300px] mx-auto px-6">
 
                 {/* Mobile Layout */}
                 <div className="flex md:hidden items-center justify-between w-full">
                     {/* Left - Menu Button */}
-                    <button className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--green)] transition-colors duration-300">
+                    <button 
+                        onClick={() => setIsMenuOpen(true)}
+                        className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--green)] transition-colors duration-300"
+                        aria-label="Abrir menú"
+                    >
                         <Menu className="text-white w-5 h-5" />
                     </button>
 
@@ -68,6 +77,12 @@ const NavbarPlanillero: React.FC = () => {
                     </ul>
                 </div>
             </div>
+
+            {/* Mobile Menu */}
+            <MobileMenuPlanillero 
+                isOpen={isMenuOpen} 
+                onClose={() => setIsMenuOpen(false)} 
+            />
         </header>
     );
 };

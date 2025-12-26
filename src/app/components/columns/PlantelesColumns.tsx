@@ -1,6 +1,13 @@
-import { Edit3, Trash2, User } from "lucide-react";
+import { Edit3, Trash2, User, LogOut, Ban } from "lucide-react";
+import { ImagenPublica } from "../common/ImagenPublica";
+import { Button } from "../ui/Button";
 
-const getPlantelColumns = () => {
+interface PlantelActions {
+    onDarBaja?: (id_jugador: number, nombre: string) => void;
+    onExpulsar?: (id_jugador: number, nombre: string) => void;
+}
+
+const getPlantelColumns = (actions?: PlantelActions) => {
 
     const EstadoBadge = ({ sancionado }: {
         sancionado: string;
@@ -51,7 +58,7 @@ const getPlantelColumns = () => {
         //             <button
         //                 onClick={(e) => {
         //                     e.stopPropagation();
-        //                     console.log('Editar jugador', row.id_jugador);
+        //                     ('Editar jugador', row.id_jugador);
         //                 }}
         //                 className="p-2 rounded-md bg-[var(--import)] text-white hover:opacity-70 transition"
         //                 title="Editar jugador"
@@ -61,7 +68,7 @@ const getPlantelColumns = () => {
         //             <button
         //                 onClick={(e) => {
         //                     e.stopPropagation();
-        //                     console.log('Eliminar jugador', row.id_jugador);
+        //                     ('Eliminar jugador', row.id_jugador);
         //                 }}
         //                 className="p-2 rounded-md bg-[var(--red)] text-white hover:opacity-70 transition"
         //                 title="Eliminar jugador"
@@ -74,25 +81,35 @@ const getPlantelColumns = () => {
         {
             key: "dni",
             label: "DNI",
-            render: (value: string) => (
-                <span className={`font-mono text-sm ${value === 'Sin DNI'
-                    ? 'text-[var(--red)] font-medium'
-                    : 'text-[var(--white)]'
-                    }`}>
-                    {value}
-                </span>
-            ),
+            render: (value: unknown, _row: any, _index: number) => {
+                const dniValue = String(value);
+                return (
+                    <span className={`font-mono text-sm ${dniValue === 'Sin DNI'
+                        ? 'text-[var(--red)] font-medium'
+                        : 'text-[var(--white)]'
+                        }`}>
+                        {dniValue}
+                    </span>
+                );
+            },
         },
         {
             key: "nombre",
             label: "JUGADOR",
-            render: (value: string) => (
+            render: (value: unknown, row: any, _index: number) => (
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-[var(--gray-200)] rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-[var(--gray-100)]" />
+                    <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                        <ImagenPublica
+                            src={row.img}
+                            alt={String(value)}
+                            width={32}
+                            height={32}
+                            className="w-8 h-8 object-cover"
+                            fallbackIcon={<User className="w-4 h-4 text-[var(--gray-100)]" />}
+                        />
                     </div>
                     <span className="text-[var(--white)] font-medium">
-                        {value}
+                        {String(value)}
                     </span>
                 </div>
             ),
@@ -100,34 +117,34 @@ const getPlantelColumns = () => {
         {
             key: "posicion",
             label: "POSICIÓN",
-            render: (value: any) => (
+            render: (value: unknown, _row: any, _index: number) => (
                 <span className="text-[var(--gray-100)]">
-                    {value?.codigo || '-'}
+                    {(value as any)?.codigo || '-'}
                 </span>
             ),
         },
         {
             key: "estado_sancion",
             label: "ESTADO",
-            render: (value: string, row: any) => (
+            render: (value: unknown, _row: any, _index: number) => (
                 <EstadoBadge
-                    sancionado={value}
+                    sancionado={String(value)}
                 />
             ),
         },
         {
             key: "partidos_jugados",
             label: "PJ",
-            render: (value: number) => (
+            render: (value: unknown, _row: any, _index: number) => (
                 <span className="text-[var(--white)] font-semibold">
-                    {value}
+                    {String(value)}
                 </span>
             ),
         },
         {
             key: "es_eventual",
             label: "EVENTUAL",
-            render: (value: boolean) => (
+            render: (value: unknown, _row: any, _index: number) => (
                 <span className={`text-sm font-medium ${value ? 'text-[var(--yellow)]' : 'text-[var(--gray-100)]'
                     }`}>
                     {value ? 'Sí' : 'No'}
@@ -137,10 +154,52 @@ const getPlantelColumns = () => {
         {
             key: "Capitan",
             label: "Rol",
-            render: (value: boolean, row: any) => (
-                <CapitanBadge capitan={row.capitan} />
+            render: (_value: unknown, row: any, _index: number) => (
+                <CapitanBadge capitan={Boolean(row.capitan)} />
             ),
         },
+        // Acciones (solo si se proporcionan)
+        ...(actions ? [{
+            key: "actions",
+            label: "ACCIONES",
+            render: (_value: unknown, row: any, _index: number) => {
+                const nombreCompleto = `${row.nombre || ''}`.trim();
+                return (
+                    <div className="flex items-center gap-2">
+                        {actions.onDarBaja && (
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    actions.onDarBaja?.(row.id_jugador, nombreCompleto);
+                                }}
+                                className="flex items-center gap-1"
+                                title="Dar de baja del plantel"
+                            >
+                                <LogOut className="w-4 h-4" />
+                                Dar de baja
+                            </Button>
+                        )}
+                        {actions.onExpulsar && (
+                            <Button
+                                variant="danger"
+                                size="sm"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    actions.onExpulsar?.(row.id_jugador, nombreCompleto);
+                                }}
+                                className="flex items-center gap-1"
+                                title="Expulsar del torneo"
+                            >
+                                <Ban className="w-4 h-4" />
+                                Expulsar
+                            </Button>
+                        )}
+                    </div>
+                );
+            },
+        }] : []),
     ];
 }
 

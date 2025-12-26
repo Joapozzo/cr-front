@@ -118,7 +118,7 @@ export default function NoticiasPage() {
     <div className="space-y-6">
       {/* Header */}
       <PageHeader
-        title="Gestión de Noticias"
+        title="Gestión de noticias"
         description="Administra el contenido y noticias del portal"
         actions={
           <Button
@@ -130,7 +130,7 @@ export default function NoticiasPage() {
             className="flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
-            Nueva Noticia
+            Nueva noticia
           </Button>
         }
       />
@@ -201,6 +201,7 @@ export default function NoticiasPage() {
             <Button
               variant="success"
               onClick={() => openModal('create')}
+              className="w-full mx-auto"
             >
               Crear primera noticia
             </Button>
@@ -218,7 +219,7 @@ export default function NoticiasPage() {
       <FormModal
         isOpen={modals.create}
         onClose={() => closeModal('create')}
-        title="Nueva Noticia"
+        title="Nueva noticia"
         type="create"
       >
         <NoticiaForm

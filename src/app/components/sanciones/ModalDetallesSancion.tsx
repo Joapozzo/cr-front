@@ -14,14 +14,16 @@ export default function ModalDetallesSancion({ sancion, onClose }: ModalDetalles
     if (!sancion) return null;
 
     const getEstadoIcon = () => {
-        if (sancion.estado === 'R') return <XCircle className="w-5 h-5 text-[var(--gray-100)]" />;
-        if ((sancion.fechas_restantes || 0) > 0) return <AlertTriangle className="w-5 h-5 text-red-400" />;
+        if (sancion.estado === 'I' || sancion.estado === 'R') return <XCircle className="w-5 h-5 text-[var(--gray-100)]" />;
+        if (sancion.estado === 'C' || (sancion.fechas_restantes || 0) === 0) return <CheckCircle className="w-5 h-5 text-[var(--green)]" />;
+        if (sancion.estado === 'A' && (sancion.fechas_restantes || 0) > 0) return <AlertTriangle className="w-5 h-5 text-red-400" />;
         return <CheckCircle className="w-5 h-5 text-[var(--green)]" />;
     };
 
     const getEstadoText = () => {
-        if (sancion.estado === 'R') return 'Revocada';
-        if ((sancion.fechas_restantes || 0) > 0) return 'Activa';
+        if (sancion.estado === 'I' || sancion.estado === 'R') return 'Revocada';
+        if (sancion.estado === 'C' || (sancion.fechas_restantes || 0) === 0) return 'Cumplida';
+        if (sancion.estado === 'A' && (sancion.fechas_restantes || 0) > 0) return 'Activa';
         return 'Cumplida';
     };
 
@@ -29,7 +31,7 @@ export default function ModalDetallesSancion({ sancion, onClose }: ModalDetalles
         <BaseModal
             isOpen={!!sancion}
             onClose={onClose}
-            title="Detalles de Sanción"
+            title="Detalles de sanción"
             type="info"
             maxWidth="max-w-4xl"
         >
@@ -42,11 +44,14 @@ export default function ModalDetallesSancion({ sancion, onClose }: ModalDetalles
                         <p className="text-[var(--white)] font-semibold text-lg">{getEstadoText()}</p>
                     </div>
                     <div className="text-right">
-                        <p className="text-xs text-[var(--gray-100)]">Fechas Restantes</p>
+                        <p className="text-xs text-[var(--gray-100)]">Fechas</p>
                         <p className={`text-2xl font-bold ${
                             (sancion.fechas_restantes || 0) > 0 ? 'text-red-400' : 'text-[var(--green)]'
                         }`}>
                             {sancion.fechas_restantes || 0}/{sancion.fechas || 0}
+                        </p>
+                        <p className="text-xs text-[var(--gray-100)] mt-1">
+                            Cumplidas: {(sancion.fechas || 0) - (sancion.fechas_restantes || 0)}
                         </p>
                     </div>
                 </div>

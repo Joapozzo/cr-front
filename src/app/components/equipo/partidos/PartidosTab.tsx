@@ -10,19 +10,27 @@ import { usePartidosUsuarioPorEquipo } from '@/app/hooks/usePartidos';
 
 interface PartidosTabProps {
   idEquipo: number;
+  idCategoriaEdicion?: number | null;
 }
 
 type VistaType = 'fecha' | 'jornada';
 
 export const PartidosTab: React.FC<PartidosTabProps> = ({
   idEquipo,
+  idCategoriaEdicion,
 }) => {
   const [vistaActiva, setVistaActiva] = useState<VistaType>('jornada');
   const [jornadaSeleccionada, setJornadaSeleccionada] = useState<number | undefined>(undefined);
   const [page, setPage] = useState(1);
   const [allPartidos, setAllPartidos] = useState<Partido[]>([]);
   const observerTarget = useRef<HTMLDivElement>(null);
+  const queryKeyRef = useRef<string>('');
   const limit = 20;
+
+  // Generar clave única para la query actual
+  const currentQueryKey = useMemo(() => {
+    return `${idEquipo}-${vistaActiva}-${idCategoriaEdicion}-${vistaActiva === 'jornada' ? jornadaSeleccionada : 'all'}`;
+  }, [idEquipo, vistaActiva, idCategoriaEdicion, jornadaSeleccionada]);
 
   // Hook para obtener partidos del equipo
   const { 
@@ -32,31 +40,47 @@ export const PartidosTab: React.FC<PartidosTabProps> = ({
   } = usePartidosUsuarioPorEquipo(
     idEquipo,
     vistaActiva,
+    idCategoriaEdicion ?? null,
     vistaActiva === 'jornada' ? jornadaSeleccionada : undefined,
     limit,
     page
   );
 
+  // Resetear cuando cambia la query (vista, jornada, equipo, etc.)
+  useEffect(() => {
+    if (queryKeyRef.current !== currentQueryKey) {
+      queryKeyRef.current = currentQueryKey;
+      setPage(1);
+      setAllPartidos([]);
+    }
+  }, [currentQueryKey]);
+
   // Actualizar lista acumulada de partidos cuando cambian los datos
   useEffect(() => {
-    if (partidosData?.partidos) {
+    // Solo procesar si la query key coincide (evitar procesar datos de queries anteriores)
+    if (!partidosData || queryKeyRef.current !== currentQueryKey) {
+      return;
+    }
+
+    if (partidosData.partidos) {
       if (page === 1) {
+        // Si es la primera página, reemplazar todo
         setAllPartidos(partidosData.partidos);
       } else {
-        setAllPartidos(prev => [...prev, ...partidosData.partidos]);
+        // Si es una página posterior, agregar a los existentes
+        setAllPartidos(prev => {
+          // Evitar duplicados comparando id_partido
+          const existingIds = new Set(prev.map(p => p.id_partido));
+          const newPartidos = partidosData.partidos.filter(p => !existingIds.has(p.id_partido));
+          return [...prev, ...newPartidos];
+        });
       }
     }
-  }, [partidosData, page]);
+  }, [partidosData, page, currentQueryKey]);
 
   // Calcular si hay más páginas
   const hasNextPage = partidosData ? (partidosData.offset + partidosData.limit) < partidosData.total : false;
   const isFetchingNextPage = isLoading && page > 1;
-
-  // Resetear cuando cambia la vista o jornada
-  useEffect(() => {
-    setPage(1);
-    setAllPartidos([]);
-  }, [vistaActiva, jornadaSeleccionada]);
 
   // Infinite scroll
   useEffect(() => {
@@ -81,19 +105,8 @@ export const PartidosTab: React.FC<PartidosTabProps> = ({
     };
   }, [hasNextPage, isFetchingNextPage, isLoading]);
 
-  // Agrupar partidos por jornada
-  const partidosPorJornada = useMemo(() => {
-    return allPartidos.reduce((acc, partido) => {
-      if (!acc[partido.jornada]) {
-        acc[partido.jornada] = [];
-      }
-      acc[partido.jornada].push(partido);
-      return acc;
-    }, {} as Record<number, Partido[]>);
-  }, [allPartidos]);
-
-  // Obtener partidos de la jornada seleccionada
-  const partidosJornadaActual = jornadaSeleccionada ? (partidosPorJornada[jornadaSeleccionada] || []) : [];
+  // Para vista por jornada: usar directamente los partidos acumulados (la API ya filtra por jornada)
+  const partidosJornadaActual = vistaActiva === 'jornada' ? allPartidos : [];
 
   // Agrupar partidos por fecha (día)
   const partidosPorDia = useMemo(() => {
@@ -218,7 +231,9 @@ export const PartidosTab: React.FC<PartidosTabProps> = ({
               </p>
             </div>
           ) : jornadaSeleccionada ? (
-            partidosJornadaActual.length > 0 ? (
+            isLoading && page === 1 ? (
+              <FixtureSkeleton />
+            ) : partidosJornadaActual.length > 0 ? (
               <>
                 <ListaPartidos
                   partidos={partidosJornadaActual}
@@ -233,13 +248,13 @@ export const PartidosTab: React.FC<PartidosTabProps> = ({
                   </div>
                 )}
               </>
-            ) : (
+            ) : !isLoading ? (
               <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center">
                 <p className="text-[#737373] text-sm">
                   No hay partidos programados para esta jornada
                 </p>
               </div>
-            )
+            ) : null
           ) : (
             <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center">
               <p className="text-[#737373] text-sm">

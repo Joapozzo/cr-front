@@ -9,6 +9,7 @@ import { useDreamteamCategoriaJornada } from '../hooks/useDreamteam';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import DreamTeamSkeleton from './skeletons/DreamTeamSkeleton';
 import { JugadorDreamTeam } from '../types/dreamteam';
+import { EscudoEquipo } from './common/EscudoEquipo';
 
 interface DreamTeamProps {
     className?: string;
@@ -138,13 +139,13 @@ export const DreamTeam: React.FC<DreamTeamProps> = ({
                 />
                 {/* Escudo del equipo */}
                 {jugador.equipo?.img && (
-                    <Image
-                        src={`${URI_IMG}${jugador.equipo.img}`}
-                        alt={jugador.equipo.nombre}
-                        width={24}
-                        height={24}
-                        className="absolute -bottom-2 -right-2 object-cover"
-                    />
+                    <div className="absolute -bottom-2 -right-2">
+                        <EscudoEquipo
+                            src={jugador.equipo.img}
+                            alt={jugador.equipo.nombre}
+                            size={24}
+                        />
+                    </div>
                 )}
             </div>
 

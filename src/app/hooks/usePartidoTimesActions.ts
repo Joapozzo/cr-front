@@ -10,7 +10,7 @@ import {
 } from '@/app/hooks/usePartidoTimes';
 
 export const usePartidoTimesActions = (idPartido: number) => {
-    const { setEstadoPartido, setHoraInicio, setHoraInicioSegundoTiempo } = usePartidoStore();
+    const { setEstadoPartido, setHoraInicio, setHoraInicioSegundoTiempo, observaciones } = usePartidoStore();
     
     const { mutateAsync: comenzarPartido, isPending: isComenzando } = useComenzarPartido();
     const { mutateAsync: terminarPrimerTiempo, isPending: isTerminandoPT } = useTerminarPrimerTiempo();
@@ -58,7 +58,8 @@ export const usePartidoTimesActions = (idPartido: number) => {
 
     const handleTerminarPartido = async () => {
         try {
-            await terminarPartido(idPartido);
+            // Siempre enviar observaciones, incluso si están vacías
+            await terminarPartido({ idPartido, observaciones: observaciones || '' });
             toast.success('Partido terminado correctamente');
         } catch (error: any) {
             const errorMessage = error?.response?.data?.error || error?.message || 'Error al terminar partido';

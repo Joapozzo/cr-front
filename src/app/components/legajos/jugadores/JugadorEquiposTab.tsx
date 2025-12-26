@@ -4,7 +4,7 @@ import { HistorialEquiposJugador } from '@/app/types/legajos';
 import { Trophy, Users, Calendar } from 'lucide-react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import Image from 'next/image';
+import { EscudoEquipo } from '@/app/components/common/EscudoEquipo';
 
 interface JugadorEquiposTabProps {
     equipos: HistorialEquiposJugador[] | undefined;
@@ -51,20 +51,12 @@ export const JugadorEquiposTab = ({ equipos, isLoading }: JugadorEquiposTabProps
                                         className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-4 hover:border-[var(--green)] transition-colors"
                                     >
                                         <div className="flex items-start gap-4">
-                                            {plantel.equipo.img ? (
-                                                <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[var(--gray-300)] flex-shrink-0">
-                                                    <Image
-                                                        src={plantel.equipo.img}
-                                                        alt={plantel.equipo.nombre}
-                                                        fill
-                                                        className="object-cover"
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <div className="w-16 h-16 rounded-lg bg-[var(--gray-300)] flex items-center justify-center flex-shrink-0">
-                                                    <Users className="w-8 h-8 text-[var(--gray-100)]" />
-                                                </div>
-                                            )}
+                                            <EscudoEquipo
+                                                src={plantel.equipo.img}
+                                                alt={plantel.equipo.nombre}
+                                                size={64}
+                                                className="rounded-lg flex-shrink-0"
+                                            />
                                             <div className="flex-1">
                                                 <h5 className="text-[var(--white)] font-semibold mb-2">{plantel.equipo.nombre}</h5>
                                                 <div className="flex flex-wrap gap-3 text-sm">

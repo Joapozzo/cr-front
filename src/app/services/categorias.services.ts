@@ -23,9 +23,10 @@ export const categoriasService = {
         }
     },
 
-    obtenerCategoriaEdicionPorId: async (id_categoria_edicion: number): Promise<CategoriaEdicionResponse> => {
+    obtenerCategoriaEdicionPorId: async (id_categoria_edicion: number): Promise<CategoriaEdicionDto> => {
         try {
-            return await api.get<CategoriaEdicionResponse>(`/admin/categorias/${id_categoria_edicion}`);
+            const response = await api.get<{ message: string; data: CategoriaEdicionDto }>(`/admin/categorias/${id_categoria_edicion}`);
+            return response.data;
         } catch (error) {
             console.error('Error al obtener categoria edición por ID:', error);
             throw new Error('No se pudo cargar la categoria edición');
@@ -78,6 +79,16 @@ export const categoriasService = {
         }
     },
 
+    actualizarPublicadaCategoria: async (id_categoria_edicion: number, publicada: 'S' | 'N'): Promise<any> => {
+        try {
+            return await api.patch(`/admin/categorias/${id_categoria_edicion}/publicada`, { publicada });
+        } catch (error: any) {
+            const errorData = error.response?.data;
+            const message = errorData?.message || errorData?.error || error.message || 'No se pudo actualizar el estado de publicación';
+            throw new Error(message);
+        }
+    },
+
     actualizarCategoriaEdicion: async (id_categoria_edicion: number, data: ActualizarCategoriaInput): Promise<CategoriaResponse> => {
         try {
             return await api.put<CategoriaResponse>(`/admin/categorias/${id_categoria_edicion}`, data);
@@ -111,8 +122,16 @@ export const categoriasService = {
 
     obtenerPosicionesZonaCategoria: async (id_zona: number, id_categoria_edicion: number): Promise<TablaPosicionesResponse> => {
         try {
-            const res = await api.get<TablaPosicionesResponse>(`/admin/categorias/dash/posiciones/${id_zona}/${id_categoria_edicion}`);
-            return res;
+            const res = await api.get<{ tabla: TablaPosicionesResponse } | TablaPosicionesResponse>(`/admin/categorias/dash/posiciones/${id_zona}/${id_categoria_edicion}`);
+            // La API puede devolver { tabla: [...] } o directamente [...]
+            if (res && typeof res === 'object' && 'tabla' in res && Array.isArray(res.tabla)) {
+                return res.tabla;
+            }
+            // Si ya es un array, devolverlo directamente
+            if (Array.isArray(res)) {
+                return res;
+            }
+            return [];
         } catch (error) {
             console.error('Error al obtener posiciones de la categoría:', error);
             throw new Error('No se pudieron obtener las posiciones de la categoría');
@@ -170,6 +189,31 @@ export const categoriasService = {
         } catch (error) {
             console.error('Error al obtener últimos partidos jugados:', error);
             throw new Error('No se pudieron cargar los últimos partidos jugados');
+        }
+    },
+
+    crearNombreCategoria: async (nombre: string, descripcion?: string): Promise<any> => {
+        try {
+            return await api.post<any>('/admin/categorias/nombre-categoria', { nombre, descripcion });
+        } catch (error: any) {
+            const errorData = error.response?.data;
+            
+            // Manejar errores de validación (400)
+            if (error.response?.status === 400) {
+                const message = errorData?.message || errorData?.error || 'Datos inválidos';
+                throw new Error(message);
+            }
+
+            // Manejar error 409 (conflicto - nombre duplicado)
+            if (error.response?.status === 409) {
+                const message = errorData?.message || errorData?.error || 'Ya existe un nombre de categoría con ese nombre';
+                throw new Error(message);
+            }
+
+            // Para otros errores
+            console.error('Error al crear nombre de categoría:', error);
+            const message = errorData?.message || errorData?.error || error.message || 'No se pudo crear el nombre de categoría';
+            throw new Error(message);
         }
     },
 }

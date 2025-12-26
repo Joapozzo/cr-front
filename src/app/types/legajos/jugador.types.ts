@@ -18,6 +18,7 @@ export interface JugadorBusqueda {
     equipos_actuales: Array<{
         id_equipo: number;
         nombre: string;
+        img?: string;
     }>;
     link_legajo: string;
 }
@@ -37,6 +38,7 @@ export interface BusquedaJugadoresResponse {
 
 export interface JugadorInformacionBasica {
     id_jugador: number;
+    estado?: 'A' | 'I' | 'E'; // Estado del jugador: A=Activo, I=Inactivo, E=Expulsado
     usuario: {
         uid: string;
         nombre: string;
@@ -269,6 +271,7 @@ export interface HistorialDisciplinarioJugador {
         total_rojas: number;
         sanciones_vigentes: number;
         apercibimientos: number;
+        nombre_categoria?: string | null;
     }>;
 }
 

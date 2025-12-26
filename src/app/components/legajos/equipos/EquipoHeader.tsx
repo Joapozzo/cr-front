@@ -2,8 +2,8 @@
 
 import { ArrowLeft, Trophy, Users, Calendar } from 'lucide-react';
 import { Button } from '@/app/components/ui/Button';
-import Image from 'next/image';
 import { EquipoInformacionBasica } from '@/app/types/legajos';
+import { EscudoEquipo } from '@/app/components/common/EscudoEquipo';
 
 interface EquipoHeaderProps {
     equipoInfo: EquipoInformacionBasica;
@@ -27,20 +27,12 @@ export const EquipoHeader = ({ equipoInfo, onBack }: EquipoHeaderProps) => {
 
             <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-6">
                 <div className="flex items-start gap-6">
-                    {equipoInfo.img ? (
-                        <div className="relative w-24 h-24 rounded-lg overflow-hidden bg-[var(--gray-300)] flex-shrink-0">
-                            <Image
-                                src={equipoInfo.img}
-                                alt={equipoInfo.nombre}
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
-                    ) : (
-                        <div className="w-24 h-24 rounded-lg bg-[var(--gray-300)] flex items-center justify-center flex-shrink-0">
-                            <Users className="w-12 h-12 text-[var(--gray-100)]" />
-                        </div>
-                    )}
+                    <EscudoEquipo
+                        src={equipoInfo.img}
+                        alt={equipoInfo.nombre}
+                        size={96}
+                        className="rounded-lg flex-shrink-0"
+                    />
                     <div className="flex-1">
                         <h1 className="text-3xl font-bold text-[var(--white)] mb-2">{equipoInfo.nombre}</h1>
                         {equipoInfo.descripcion && (

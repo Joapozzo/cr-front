@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Shield, Edit3, AlertTriangle, User, Loader2, Plus } from 'lucide-react';
+import { Edit3, AlertTriangle, User, Loader2, Plus } from 'lucide-react';
 import { Button } from '@/app/components/ui/Button';
 import { DataTable } from '@/app/components/ui/DataTable';
 import { useParams } from 'next/navigation';
@@ -12,14 +12,24 @@ import CapitanesManager from '@/app/components/CapitanesManager';
 import AgregarJugadorModal from '@/app/components/modals/ModalAgregarJugador';
 import PanelSolicitudesAdmin from '@/app/components/PanelSolicitudesAdmin';
 import ModalEditarEquipo from '@/app/components/modals/ModalEditarEquipo';
+import { ModalDarBajaJugador } from '@/app/components/modals/ModalDarBajaJugador';
+import { ModalExpulsarJugador } from '@/app/components/modals/ModalExpulsarJugador';
+import { equiposService } from '@/app/services/equipos.services';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 import {
     useSolicitudesEquipo,
     useInvitacionesEnviadas,
     useConfirmarSolicitud,
     useRechazarSolicitud,
     useConfirmarInvitacion,
-    useRechazarInvitacion
+    useRechazarInvitacion,
+    useSolicitudesBajaEquipo,
+    useConfirmarBajaJugador,
+    useRechazarBajaJugador
 } from '@/app/hooks/useSolicitudesAdmin';
+import { EscudoEquipo } from '@/app/components/common/EscudoEquipo';
+import ModalApercibimientos from '@/app/components/modals/ModalApercibimientos';
 
 const LoadingState = () => (
     <div className="flex items-center justify-center min-h-[400px]">
@@ -31,7 +41,7 @@ const LoadingState = () => (
 );
 
 const ErrorState = ({ message, onRetry }: { message: string; onRetry: () => void }) => (
-    <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-6 text-center">
+    <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-6 text-center flex flex-col items-center justify-center">
         <AlertTriangle className="w-8 h-8 text-[var(--red)] mx-auto mb-3" />
         <h3 className="text-[var(--red)] font-medium mb-2">Error al cargar los datos</h3>
         <p className="text-[var(--red)]/80 text-sm mb-4">{message}</p>
@@ -48,6 +58,56 @@ export default function EquipoPlantelPage() {
     // Estado para los modales
     const [isAgregarJugadorModalOpen, setIsAgregarJugadorModalOpen] = useState(false);
     const [isEditarEquipoModalOpen, setIsEditarEquipoModalOpen] = useState(false);
+    const [isDarBajaModalOpen, setIsDarBajaModalOpen] = useState(false);
+    const [isExpulsarModalOpen, setIsExpulsarModalOpen] = useState(false);
+    const [isApercibimientosModalOpen, setIsApercibimientosModalOpen] = useState(false);
+    const [jugadorSeleccionado, setJugadorSeleccionado] = useState<{ id: number; nombre: string } | null>(null);
+
+    // Estado para forzar actualización de imagen (evitar caché)
+    const [imageTimestamp, setImageTimestamp] = useState(Date.now());
+
+    const queryClient = useQueryClient();
+
+    // Mutaciones para dar de baja y expulsar
+    const darBajaMutation = useMutation({
+        mutationFn: async ({ id_jugador }: { id_jugador: number }) => {
+            return await equiposService.darBajaJugadorPlantel(idEquipo, id_jugador, idCategoriaEdicion);
+        },
+        onSuccess: async () => {
+            toast.success('Jugador dado de baja exitosamente');
+            // Invalidar y refrescar inmediatamente el plantel
+            await queryClient.invalidateQueries({
+                queryKey: ['equipos', 'detail', idEquipo, 'plantel', idCategoriaEdicion]
+            });
+            // Forzar refetch inmediato
+            await refetch();
+            setIsDarBajaModalOpen(false);
+            setJugadorSeleccionado(null);
+        },
+        onError: (error: Error) => {
+            toast.error(error.message || 'Error al dar de baja al jugador');
+        }
+    });
+
+    const expulsarMutation = useMutation({
+        mutationFn: async ({ id_jugador, motivo }: { id_jugador: number; motivo?: string }) => {
+            return await equiposService.expulsarJugadorTorneo(id_jugador, motivo);
+        },
+        onSuccess: async () => {
+            toast.success('Jugador expulsado exitosamente');
+            // Invalidar y refrescar inmediatamente el plantel
+            await queryClient.invalidateQueries({
+                queryKey: ['equipos', 'detail', idEquipo, 'plantel', idCategoriaEdicion]
+            });
+            // Forzar refetch inmediato
+            await refetch();
+            setIsExpulsarModalOpen(false);
+            setJugadorSeleccionado(null);
+        },
+        onError: (error: Error) => {
+            toast.error(error.message || 'Error al expulsar al jugador');
+        }
+    });
 
     const idCategoriaEdicion = Number(categoriaSeleccionada?.id_categoria_edicion);
     const idEquipo = Number(params.id_equipo);
@@ -64,20 +124,40 @@ export default function EquipoPlantelPage() {
     // --- Hooks de Mercado de Pases (Nuevos) ---
     const { data: solicitudes, isLoading: isLoadingSolicitudes } = useSolicitudesEquipo(idEquipo, idCategoriaEdicion);
     const { data: invitaciones, isLoading: isLoadingInvitaciones } = useInvitacionesEnviadas(idEquipo, idCategoriaEdicion);
-    console.log(invitaciones);
-    
+    const { data: solicitudesBaja, isLoading: isLoadingSolicitudesBaja } = useSolicitudesBajaEquipo(idEquipo, idCategoriaEdicion);
+
     // --- Hooks de Mutación de Mercado de Pases (Nuevos) ---
     const confirmarSolicitudMutation = useConfirmarSolicitud();
     const rechazarSolicitudMutation = useRechazarSolicitud();
     const confirmarInvitacionMutation = useConfirmarInvitacion();
     const rechazarInvitacionMutation = useRechazarInvitacion();
+    const confirmarBajaMutation = useConfirmarBajaJugador();
+    const rechazarBajaMutation = useRechazarBajaJugador();
+
+    // Combinar solicitudes de equipo y solicitudes de baja
+    const solicitudesCombinadas = [
+        ...(solicitudes || []),
+        ...(solicitudesBaja || [])
+    ];
 
     // Lógica de Mutación Unificada para pasar al componente hijo
     const handleAceptarSolicitud = async (id_solicitud: number, id_jugador: number) => {
-        await confirmarSolicitudMutation.mutateAsync({ id_solicitud, id_jugador });
+        // Verificar si es una solicitud de baja
+        const solicitudBaja = solicitudesBaja?.find(s => s.id_solicitud === id_solicitud);
+        if (solicitudBaja && solicitudBaja.tipo_solicitud === 'B') {
+            await confirmarBajaMutation.mutateAsync(id_solicitud);
+        } else {
+            await confirmarSolicitudMutation.mutateAsync({ id_solicitud, id_jugador });
+        }
     };
     const handleRechazarSolicitud = async (id: number) => {
-        await rechazarSolicitudMutation.mutateAsync(id);
+        // Verificar si es una solicitud de baja
+        const solicitudBaja = solicitudesBaja?.find(s => s.id_solicitud === id);
+        if (solicitudBaja && solicitudBaja.tipo_solicitud === 'B') {
+            await rechazarBajaMutation.mutateAsync({ id_solicitud: id });
+        } else {
+            await rechazarSolicitudMutation.mutateAsync(id);
+        }
     };
     const handleAceptarInvitacion = async (id_solicitud: number, id_jugador: number) => {
         await confirmarInvitacionMutation.mutateAsync({ id_solicitud, id_jugador });
@@ -89,11 +169,13 @@ export default function EquipoPlantelPage() {
     // Estados de Carga de Mutación
     const isAccepting =
         confirmarSolicitudMutation.isPending ? confirmarSolicitudMutation.variables?.id_solicitud :
-            confirmarInvitacionMutation.isPending ? confirmarInvitacionMutation.variables?.id_solicitud : null;
+            confirmarInvitacionMutation.isPending ? confirmarInvitacionMutation.variables?.id_solicitud :
+                confirmarBajaMutation.isPending ? confirmarBajaMutation.variables : null;
 
     const isRejecting =
         rechazarSolicitudMutation.isPending ? rechazarSolicitudMutation.variables :
-            rechazarInvitacionMutation.isPending ? rechazarInvitacionMutation.variables : null;
+            rechazarInvitacionMutation.isPending ? rechazarInvitacionMutation.variables :
+                rechazarBajaMutation.isPending ? rechazarBajaMutation.variables?.id_solicitud : null;
 
     // Validaciones tempranas
     if (!idCategoriaEdicion) {
@@ -125,8 +207,23 @@ export default function EquipoPlantelPage() {
         />;
     }
 
-    const { equipo, plantel, estadisticas } = response.data;
-    const plantelColumns = getPlantelColumns();
+    const { equipo, plantel, estadisticas, id_zona } = response.data;
+
+    // Handlers para acciones del plantel
+    const handleDarBaja = (id_jugador: number, nombre: string) => {
+        setJugadorSeleccionado({ id: id_jugador, nombre });
+        setIsDarBajaModalOpen(true);
+    };
+
+    const handleExpulsar = (id_jugador: number, nombre: string) => {
+        setJugadorSeleccionado({ id: id_jugador, nombre });
+        setIsExpulsarModalOpen(true);
+    };
+
+    const plantelColumns = getPlantelColumns({
+        onDarBaja: handleDarBaja,
+        onExpulsar: handleExpulsar
+    });
 
     return (
         <div className="space-y-6">
@@ -134,17 +231,12 @@ export default function EquipoPlantelPage() {
             <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-6">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 bg-[var(--gray-200)] rounded-full flex items-center justify-center">
-                            {equipo.img ? (
-                                <img
-                                    src={equipo.img}
-                                    alt={equipo.nombre}
-                                    className="w-16 h-16 rounded-full object-cover"
-                                />
-                            ) : (
-                                <Shield className="w-8 h-8 text-[var(--gray-100)]" />
-                            )}
-                        </div>
+                        <EscudoEquipo
+                            src={equipo.img}
+                            alt={equipo.nombre}
+                            width={64}
+                            height={64}
+                        />
                         <div>
                             <h1 className="text-2xl font-bold text-[var(--white)]">
                                 {equipo.nombre}
@@ -157,14 +249,24 @@ export default function EquipoPlantelPage() {
                         </div>
                     </div>
 
-                    <Button
-                        variant="success"
-                        onClick={() => setIsEditarEquipoModalOpen(true)}
-                        className="flex items-center gap-2"
-                    >
-                        <Edit3 className="w-4 h-4" />
-                        Editar equipo
-                    </Button>
+                    <div className="flex items-center gap-3">
+                        <Button
+                            variant="success"
+                            onClick={() => setIsApercibimientosModalOpen(true)}
+                            className="flex items-center gap-2"
+                        >
+                            <AlertTriangle className="w-4 h-4" />
+                            Apercibimientos ({estadisticas.apercibimientos || 0})
+                        </Button>
+                        <Button
+                            variant="success"
+                            onClick={() => setIsEditarEquipoModalOpen(true)}
+                            className="flex items-center gap-2"
+                        >
+                            <Edit3 className="w-4 h-4" />
+                            Editar equipo
+                        </Button>
+                    </div>
                 </div>
             </div>
 
@@ -176,7 +278,7 @@ export default function EquipoPlantelPage() {
                             <User className="w-5 h-5 text-[var(--green)]" />
                         </div>
                         <div>
-                            <p className="text-[var(--gray-100)] text-sm">Total Jugadores</p>
+                            <p className="text-[var(--gray-100)] text-sm">Total jugadores</p>
                             <p className="text-[var(--white)] text-xl font-bold">
                                 {estadisticas.total_jugadores}
                             </p>
@@ -225,6 +327,7 @@ export default function EquipoPlantelPage() {
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -240,9 +343,9 @@ export default function EquipoPlantelPage() {
 
                 <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-6">
                     <PanelSolicitudesAdmin
-                        solicitudes={solicitudes}
+                        solicitudes={solicitudesCombinadas}
                         invitaciones={invitaciones}
-                        isLoadingSolicitudes={isLoadingSolicitudes}
+                        isLoadingSolicitudes={isLoadingSolicitudes || isLoadingSolicitudesBaja}
                         isLoadingInvitaciones={isLoadingInvitaciones}
                         onAceptarSolicitud={handleAceptarSolicitud}
                         onRechazarSolicitud={handleRechazarSolicitud}
@@ -259,7 +362,7 @@ export default function EquipoPlantelPage() {
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="text-xl font-semibold text-[var(--white)] mb-1">
-                        Lista de buena fe ({estadisticas.total_jugadores} jugadores)
+                        Lista de buena fé ({estadisticas.total_jugadores}) {estadisticas.total_jugadores > 1 ? 'jugadores' : 'jugador'}
                     </h2>
                     <p className="text-[var(--gray-100)] text-sm">
                         Gestiona los jugadores del plantel
@@ -296,6 +399,7 @@ export default function EquipoPlantelPage() {
 
             {/* Modal para editar equipo */}
             <ModalEditarEquipo
+                key={`equipo-${equipo.id_equipo}-${equipo.img || 'no-img'}`} // Forzar re-render cuando cambia la imagen
                 isOpen={isEditarEquipoModalOpen}
                 onClose={() => setIsEditarEquipoModalOpen(false)}
                 equipo={{
@@ -304,10 +408,59 @@ export default function EquipoPlantelPage() {
                     descripcion: equipo.descripcion,
                     img: equipo.img,
                 }}
-                onSuccess={() => {
-                    refetch(); // Recargar datos del equipo
+                onSuccess={async () => {
+                    // Recargar datos del equipo para obtener la imagen actualizada
+                    await refetch();
+                    // Forzar actualización de imagen evitando caché
+                    setImageTimestamp(Date.now());
                 }}
             />
+
+            {/* Modal para dar de baja jugador */}
+            <ModalDarBajaJugador
+                isOpen={isDarBajaModalOpen}
+                onClose={() => {
+                    setIsDarBajaModalOpen(false);
+                    setJugadorSeleccionado(null);
+                }}
+                onConfirm={async () => {
+                    if (jugadorSeleccionado) {
+                        await darBajaMutation.mutateAsync({ id_jugador: jugadorSeleccionado.id });
+                    }
+                }}
+                jugadorNombre={jugadorSeleccionado?.nombre || ''}
+                isLoading={darBajaMutation.isPending}
+            />
+
+            {/* Modal para expulsar jugador */}
+            <ModalExpulsarJugador
+                isOpen={isExpulsarModalOpen}
+                onClose={() => {
+                    setIsExpulsarModalOpen(false);
+                    setJugadorSeleccionado(null);
+                }}
+                onConfirm={async (motivo) => {
+                    if (jugadorSeleccionado) {
+                        await expulsarMutation.mutateAsync({ id_jugador: jugadorSeleccionado.id, motivo });
+                    }
+                }}
+                jugadorNombre={jugadorSeleccionado?.nombre || ''}
+                isLoading={expulsarMutation.isPending}
+                esExpulsado={false}
+            />
+
+            {/* Modal para gestionar apercibimientos */}
+            {id_zona && (
+                <ModalApercibimientos
+                    isOpen={isApercibimientosModalOpen}
+                    onClose={() => setIsApercibimientosModalOpen(false)}
+                    idEquipo={idEquipo}
+                    idCategoriaEdicion={idCategoriaEdicion}
+                    idZona={id_zona}
+                    apercibimientosActuales={estadisticas.apercibimientos || 0}
+                    equipoNombre={equipo.nombre}
+                />
+            )}
         </div>
     );
 }

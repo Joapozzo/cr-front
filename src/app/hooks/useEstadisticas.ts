@@ -5,6 +5,7 @@ import { JugadorEstadistica } from '../types/estadisticas';
 export const estadisticasKeys = {
     all: ['estadisticas'] as const,
     posiciones: (id_categoria_edicion: number) => [...estadisticasKeys.all, 'posiciones', id_categoria_edicion] as const,
+    playoff: (id_categoria_edicion: number) => [...estadisticasKeys.all, 'playoff', id_categoria_edicion] as const,
     goleadores: (id_categoria_edicion: number) => [...estadisticasKeys.all, 'goleadores', id_categoria_edicion] as const,
     asistencias: (id_categoria_edicion: number) => [...estadisticasKeys.all, 'asistencias', id_categoria_edicion] as const,
     amarillas: (id_categoria_edicion: number) => [...estadisticasKeys.all, 'amarillas', id_categoria_edicion] as const,
@@ -22,6 +23,25 @@ export const usePosicionesPorCategoriaEdicion = (
     return useQuery({
         queryKey: estadisticasKeys.posiciones(id_categoria_edicion || 0),
         queryFn: () => estadisticasService.obtenerPosicionesPorCategoriaEdicion(id_categoria_edicion!),
+        staleTime: 3 * 60 * 1000, // 3 minutos
+        gcTime: 10 * 60 * 1000, // 10 minutos
+        retry: 2,
+        refetchOnWindowFocus: false,
+        enabled: !!id_categoria_edicion,
+        ...options,
+    });
+};
+
+/**
+ * Hook para obtener zonas de playoff por categoría edición
+ */
+export const useZonasPlayoffPorCategoriaEdicion = (
+    id_categoria_edicion: number | null,
+    options?: Omit<UseQueryOptions<any[], Error>, 'queryKey' | 'queryFn'>
+) => {
+    return useQuery({
+        queryKey: estadisticasKeys.playoff(id_categoria_edicion || 0),
+        queryFn: () => estadisticasService.obtenerZonasPlayoffPorCategoriaEdicion(id_categoria_edicion!),
         staleTime: 3 * 60 * 1000, // 3 minutos
         gcTime: 10 * 60 * 1000, // 10 minutos
         retry: 2,

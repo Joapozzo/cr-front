@@ -35,7 +35,7 @@ export const UltimosPartidosResumen: React.FC<UltimosPartidosResumenProps> = ({
   if (!partidos || partidos.length === 0) {
     return (
       <div className="space-y-2">
-        <h3 className="text-white font-semibold text-xs sm:text-sm px-1">Últimos partidos</h3>
+        <h3 className="text-white font-semibold text-sm px-1">Últimos partidos</h3>
         <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-4 sm:p-6 text-center">
           <p className="text-[#737373] text-xs sm:text-sm">No hay partidos recientes</p>
         </div>
@@ -61,16 +61,20 @@ export const UltimosPartidosResumen: React.FC<UltimosPartidosResumenProps> = ({
               {partido.goles_equipo}-{partido.goles_rival}
             </div>
             {/* Escudo del rival */}
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-[var(--black-800)] border border-[#262626] flex items-center justify-center">
+            {partido.img_equipo_rival ? (
               <ImagenPublica
-                src={partido.img_equipo_rival || '/img/default-team.png'}
+                src={partido.img_equipo_rival}
                 alt={partido.nombre_equipo_rival}
                 width={48}
                 height={48}
-                className="w-full h-full object-cover"
+                className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
                 fallbackIcon={<Shield size={16} className="text-[#737373]" />}
               />
-            </div>
+            ) : (
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-[var(--black-800)] border border-[#262626] flex items-center justify-center">
+                <Shield size={16} className="text-[#737373]" />
+              </div>
+            )}
           </div>
         ))}
       </div>

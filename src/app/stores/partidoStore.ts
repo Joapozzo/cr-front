@@ -13,12 +13,16 @@ interface PartidoState {
     minutosAcumuladosPT: number;  // Tiempo ya jugado del PT (cuando se pausa)
     minutosAcumuladosST: number;  // Tiempo ya jugado del ST (cuando se pausa)
 
+    // Observaciones del partido (solo local, se guarda al finalizar)
+    observaciones: string;
+
     // Setters existentes
     setEstadoPartido: (estado: EstadoPartido) => void;
     setHoraInicio: (hora: Date) => void;
     setHoraInicioSegundoTiempo: (hora: Date) => void;
     setMinutosPorTiempo: (minutos: number) => void;
     setMinutosEntretiempo: (minutos: number) => void;
+    setObservaciones: (observaciones: string, idPartido?: number) => void;
 
     // Getters/computed existentes - ahora mejorados
     getTiempoTranscurridoPrimerTiempo: () => number;
@@ -49,6 +53,7 @@ const usePartidoStore = create<PartidoState>((set, get) => ({
     minutosEntretiempo: 5,
     minutosAcumuladosPT: 0,
     minutosAcumuladosST: 0,
+    observaciones: '',
 
     // Setters con persistencia
     setHoraInicio: (hora: Date) => {
@@ -69,6 +74,11 @@ const usePartidoStore = create<PartidoState>((set, get) => ({
     setMinutosEntretiempo: (minutos: number) => {
         set({ minutosEntretiempo: minutos });
         get().persistirEstado();
+    },
+
+    setObservaciones: (observaciones: string, idPartido?: number) => {
+        set({ observaciones });
+        get().persistirObservaciones(idPartido);
     },
 
     setEstadoPartido: (estado: EstadoPartido) => {
@@ -193,6 +203,17 @@ const usePartidoStore = create<PartidoState>((set, get) => ({
         }
     },
 
+    persistirObservaciones: (idPartido?: number) => {
+        const estado = get();
+        try {
+            if (typeof window !== 'undefined' && idPartido) {
+                localStorage.setItem(`partidoObservaciones_${idPartido}`, estado.observaciones);
+            }
+        } catch (error) {
+            console.warn('No se pudo guardar las observaciones:', error);
+        }
+    },
+
     restaurarEstado: () => {
         try {
             const estadoGuardado = localStorage.getItem('partidoEstado');
@@ -213,6 +234,9 @@ const usePartidoStore = create<PartidoState>((set, get) => ({
                 }
             }
 
+            // Restaurar observaciones desde localStorage (se restaurará desde el componente con idPartido)
+            let observacionesGuardadas = '';
+
             // Restaurar estado
             set({
                 estadoPartido: estado.estadoPartido || 'P',
@@ -221,7 +245,8 @@ const usePartidoStore = create<PartidoState>((set, get) => ({
                 minutosPorTiempo: estado.minutosPorTiempo || 25,
                 minutosEntretiempo: estado.minutosEntretiempo || 5,
                 minutosAcumuladosPT: estado.minutosAcumuladosPT || 0,
-                minutosAcumuladosST: estado.minutosAcumuladosST || 0
+                minutosAcumuladosST: estado.minutosAcumuladosST || 0,
+                observaciones: observacionesGuardadas
             });
 
         } catch (error) {
@@ -230,9 +255,12 @@ const usePartidoStore = create<PartidoState>((set, get) => ({
         }
     },
 
-    limpiarEstadoPersistido: () => {
+    limpiarEstadoPersistido: (idPartido?: number) => {
         try {
             localStorage.removeItem('partidoEstado');
+            if (idPartido && typeof window !== 'undefined') {
+                localStorage.removeItem(`partidoObservaciones_${idPartido}`);
+            }
         } catch (error) {
             console.warn('No se pudo limpiar el estado persistido:', error);
         }
@@ -247,7 +275,8 @@ const usePartidoStore = create<PartidoState>((set, get) => ({
             minutosPorTiempo: 25,
             minutosEntretiempo: 5,
             minutosAcumuladosPT: 0,
-            minutosAcumuladosST: 0
+            minutosAcumuladosST: 0,
+            observaciones: ''
         });
         get().limpiarEstadoPersistido();
     }

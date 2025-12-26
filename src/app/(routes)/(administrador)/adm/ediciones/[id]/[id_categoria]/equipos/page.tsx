@@ -222,7 +222,7 @@ export default function EquiposPage() {
                             <Users className="w-5 h-5 text-[var(--green)]" />
                         </div>
                         <div>
-                            <p className="text-[var(--gray-100)] text-sm">Total Jugadores</p>
+                            <p className="text-[var(--gray-100)] text-sm">Total jugadores</p>
                             <p className="text-[var(--white)] text-xl font-bold">
                                 {totalJugadores}
                             </p>
@@ -357,8 +357,8 @@ export default function EquiposPage() {
                 title={`Expulsar Equipo: ${equipoToExpulsar?.nombre || ''}`}
                 fields={expulsionFields}
                 onSubmit={handleConfirmarExpulsion}
-                submitText="Confirmar Expulsión"
-                type="delete"
+                submitText="Confirmar expulsión"
+                type="edit"
             >
                 {/* Contenido adicional del modal */}
                 <div className="mb-6 p-4 bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg">

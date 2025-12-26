@@ -1,14 +1,16 @@
 'use client';
 
 import React from 'react';
-import { UltimoPartidoEquipo } from '@/app/types/partidoDetalle';
+import { Partido } from '@/app/types/partido';
 import { UltimosPartidosEquipo } from './UltimosPartidosEquipo';
 
 interface PreviaTabProps {
-  ultimosPartidosLocal: UltimoPartidoEquipo[];
-  ultimosPartidosVisita: UltimoPartidoEquipo[];
+  ultimosPartidosLocal: Partido[];
+  ultimosPartidosVisita: Partido[];
   nombreEquipoLocal: string;
   nombreEquipoVisita: string;
+  idEquipoLocal?: number;
+  idEquipoVisita?: number;
   imgEquipoLocal?: string | null;
   imgEquipoVisita?: string | null;
   loading?: boolean;
@@ -19,6 +21,8 @@ export const PreviaTab: React.FC<PreviaTabProps> = ({
   ultimosPartidosVisita,
   nombreEquipoLocal,
   nombreEquipoVisita,
+  idEquipoLocal,
+  idEquipoVisita,
   imgEquipoLocal = null,
   imgEquipoVisita = null,
   loading = false
@@ -30,6 +34,7 @@ export const PreviaTab: React.FC<PreviaTabProps> = ({
         {/* Últimos partidos Local */}
         <UltimosPartidosEquipo
           partidos={ultimosPartidosLocal}
+          idEquipoPrincipal={idEquipoLocal}
           titulo={nombreEquipoLocal}
           imgEquipo={imgEquipoLocal}
           loading={loading}
@@ -38,6 +43,7 @@ export const PreviaTab: React.FC<PreviaTabProps> = ({
         {/* Últimos partidos Visita */}
         <UltimosPartidosEquipo
           partidos={ultimosPartidosVisita}
+          idEquipoPrincipal={idEquipoVisita}
           titulo={nombreEquipoVisita}
           imgEquipo={imgEquipoVisita}
           loading={loading}

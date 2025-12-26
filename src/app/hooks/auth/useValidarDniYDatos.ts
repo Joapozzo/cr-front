@@ -10,6 +10,7 @@ export interface ValidarDniYDatosInput {
   fechaNacimiento: string; // DD/MM/YYYY
   username: string;
   telefono: string;
+  id_posicion?: number; // Posición del jugador (opcional)
 }
 
 export const useValidarDniYDatos = () => {

@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { zonasService } from '../services/zonas.services';
-import { Zona, DatosCrearZonaResponse, CrearZonaInput, EditarZonaInput, ZonasList2Response } from '../types/zonas';
+import { Zona, DatosCrearZonaResponse, CrearZonaInput, EditarZonaInput, ZonasList2Response, CrearFormatoPosicionInput, ActualizarFormatoPosicionInput, FormatoPosicion } from '../types/zonas';
 
 export const zonasKeys = {
     all: ['zonas'] as const,
     porFase: (id_categoria_edicion: number, numero_fase: number) => [...zonasKeys.all, 'fase', id_categoria_edicion, numero_fase] as const,
-    datosCrear: () => [...zonasKeys.all, 'datos-crear'] as const,
+    datosCrear: (id_zona?: number) => [...zonasKeys.all, 'datos-crear', id_zona] as const,
 };
 
 export const useZonasPorFase = (
@@ -26,11 +26,12 @@ export const useZonasPorFase = (
 };
 
 export const useDatosParaCrearZona = (
+    id_zona?: number,
     options?: Omit<UseQueryOptions<DatosCrearZonaResponse, Error>, 'queryKey' | 'queryFn'>
 ) => {
     return useQuery({
-        queryKey: zonasKeys.datosCrear(),
-        queryFn: () => zonasService.obtenerDatosParaCrearZona(),
+        queryKey: zonasKeys.datosCrear(id_zona),
+        queryFn: () => zonasService.obtenerDatosParaCrearZona(id_zona),
         staleTime: 10 * 60 * 1000, // 10 minutos (datos más estables)
         gcTime: 15 * 60 * 1000,
         retry: 2,
@@ -117,6 +118,82 @@ export const useObtenerTodasLasZonas = (
         retry: 2,
         refetchOnWindowFocus: false,
         enabled: !!id_categoria_edicion, // Solo ejecutar si hay valor válido
+        ...options,
+    });
+};
+
+// ============================================
+// HOOKS PARA FORMATOS DE POSICIÓN
+// ============================================
+
+export const useCrearFormatoPosicion = (id_zona: number) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data: CrearFormatoPosicionInput) =>
+            zonasService.crearFormatoPosicion(id_zona, data),
+        onSuccess: () => {
+            // Invalidar queries relacionadas
+            queryClient.invalidateQueries({ queryKey: zonasKeys.all });
+            queryClient.invalidateQueries({
+                queryKey: [...zonasKeys.all, 'formatos', id_zona]
+            });
+        },
+        onError: (error) => {
+            console.error('Error al crear formato de posición:', error);
+        },
+    });
+};
+
+export const useActualizarFormatoPosicion = (id_zona: number, id_formato: number) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data: ActualizarFormatoPosicionInput) =>
+            zonasService.actualizarFormatoPosicion(id_zona, id_formato, data),
+        onSuccess: () => {
+            // Invalidar queries relacionadas
+            queryClient.invalidateQueries({ queryKey: zonasKeys.all });
+            queryClient.invalidateQueries({
+                queryKey: [...zonasKeys.all, 'formatos', id_zona]
+            });
+        },
+        onError: (error) => {
+            console.error('Error al actualizar formato de posición:', error);
+        },
+    });
+};
+
+export const useEliminarFormatoPosicion = (id_zona: number, id_formato: number) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: () => zonasService.eliminarFormatoPosicion(id_zona, id_formato),
+        onSuccess: () => {
+            // Invalidar queries relacionadas
+            queryClient.invalidateQueries({ queryKey: zonasKeys.all });
+            queryClient.invalidateQueries({
+                queryKey: [...zonasKeys.all, 'formatos', id_zona]
+            });
+        },
+        onError: (error) => {
+            console.error('Error al eliminar formato de posición:', error);
+        },
+    });
+};
+
+export const useFormatosPosicion = (
+    id_zona: number,
+    options?: Omit<UseQueryOptions<FormatoPosicion[], Error>, 'queryKey' | 'queryFn'>
+) => {
+    return useQuery({
+        queryKey: [...zonasKeys.all, 'formatos', id_zona] as const,
+        queryFn: () => zonasService.obtenerFormatosPosicion(id_zona),
+        staleTime: 5 * 60 * 1000, // 5 minutos
+        gcTime: 10 * 60 * 1000, // 10 minutos
+        retry: 2,
+        refetchOnWindowFocus: false,
+        enabled: !!id_zona, // Solo ejecutar si hay valor válido
         ...options,
     });
 };

@@ -2,6 +2,7 @@ import { IncidenciaPartido, Partido } from '../types/partido';
 import { TbRectangleVerticalFilled } from "react-icons/tb";
 import { GiSoccerKick } from "react-icons/gi";
 import { PiSoccerBallFill } from "react-icons/pi";
+import { RefreshCw } from 'lucide-react';
 
 export const canShowActions = (showActions: boolean, partido?: Partido): boolean => {
     if (!showActions || !partido) return false;
@@ -20,6 +21,8 @@ export const getIcono = (incidencia: IncidenciaPartido) => {
             return <TbRectangleVerticalFilled className="w-4 h-4 text-yellow-500" />;
         case 'roja':
             return <TbRectangleVerticalFilled className="w-4 h-4 text-red-500" />;
+        case 'cambio':
+            return <RefreshCw className="w-4 h-4 text-gray-500" />;
         case 'doble_amarilla':
             return (
                 <div className= "flex gap-0.5" >

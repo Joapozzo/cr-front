@@ -68,7 +68,11 @@ const CardPartidoResult: React.FC<PartidoCardProps> = ({
                 </div>
                 <div className="flex items-center gap-2">
                     <GiSoccerField />
-                    <span>Cancha {partido.cancha || "Por definir"}</span>
+                    <span>Cancha {
+                        typeof partido.cancha === 'object' && partido.cancha !== null
+                            ? (partido.cancha as any).nombre || "Por definir"
+                            : partido.cancha || "Por definir"
+                    }</span>
                 </div>
             </div>
 

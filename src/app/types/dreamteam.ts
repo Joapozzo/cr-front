@@ -23,6 +23,7 @@ export interface DreamTeamJugadorBackend {
             id_jugador: number;
             id_posicion: number;
             usuario: {
+                img: string;
                 nombre: string;
                 apellido: string;
             };
@@ -126,7 +127,8 @@ export const convertirDreamTeamBackendAFrontend = (backend: DreamTeamResponse): 
         posicionEnFormacion: String(index + 1),
         posicion_index: dj.posicion_index,
         posicion_codigo: dj.posicion_codigo,
-        equipo: dj.formacion.equipo
+        equipo: dj.formacion.equipo,
+        usuario: dj.formacion.jugador.usuario
     }));
 
     return {

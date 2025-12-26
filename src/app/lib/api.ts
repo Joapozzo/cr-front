@@ -2,7 +2,19 @@ import { useAuthStore } from '@/app/stores/authStore';
 import { auth } from '../lib/firebase.config';
 import { obtenerToken } from '../services/auth.services';
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+/**
+ * Obtiene la URL base del API desde la variable de entorno
+ */
+export const getApiBaseUrl = (): string => {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!envUrl) {
+    throw new Error('NEXT_PUBLIC_API_URL no está definida en las variables de entorno');
+  }
+  return envUrl;
+};
+
+// Exportar alias para uso directo cuando sea necesario
+export const getApiUrl = () => getApiBaseUrl();
 
 export interface ApiOptions extends RequestInit {
     timeout?: number;
@@ -37,7 +49,9 @@ export const apiFetch = async <T>(
   }
 
   const { timeout = 10000, ...fetchOptions } = options;
-  const url = `${API_BASE_URL}${endpoint}`;
+  // Obtener la URL dinámicamente en cada request (por si cambió la ubicación)
+  const baseUrl = getApiBaseUrl();
+  const url = `${baseUrl}${endpoint}`;
 
   const defaultHeaders: HeadersInit = {
     'Content-Type': 'application/json',
@@ -59,14 +73,18 @@ export const apiFetch = async <T>(
 
     if (!response.ok) {
       let errorMessage;
+      let errorData: any = {};
       try {
-        const errorData = await response.json();
+        errorData = await response.json();
         errorMessage = errorData.error || errorData.message || `Error ${response.status}`;
       } catch {
         errorMessage = `Error ${response.status}: ${response.statusText}`;
       }
 
-      throw new Error(errorMessage);
+      const error = new Error(errorMessage);
+      (error as any).status = response.status;
+      (error as any).response = { status: response.status, data: errorData };
+      throw error;
     }
 
     return response.json();
@@ -77,6 +95,38 @@ export const apiFetch = async <T>(
       throw new Error('Request timeout');
     }
 
+    // Detectar error de certificado SSL o Mixed Content
+    // El error puede venir como TypeError con "Failed to fetch" o como un error de red
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorString = String(error);
+    
+    // Detectar Mixed Content (página HTTPS intentando cargar HTTP)
+    const isMixedContent = 
+      errorMessage.includes('Mixed Content') ||
+      errorString.includes('Mixed Content') ||
+      (errorMessage.includes('insecure resource') && url.startsWith('http://'));
+    
+    if (isMixedContent) {
+      console.error('Error de Mixed Content detectado. URL:', url);
+      throw new Error('Error de Mixed Content: La página está en HTTPS pero intenta cargar recursos HTTP. Asegúrate de que NEXT_PUBLIC_API_URL use HTTPS cuando el frontend esté en HTTPS.');
+    }
+    
+    // Detectar diferentes formas de error SSL
+    const isSSLError = 
+      errorMessage.includes('ERR_CERT_AUTHORITY_INVALID') ||
+      errorMessage.includes('ERR_CERT_INVALID') ||
+      errorMessage.includes('ERR_SSL_PROTOCOL_ERROR') ||
+      errorString.includes('ERR_CERT_AUTHORITY_INVALID') ||
+      errorString.includes('ERR_CERT_INVALID') ||
+      errorString.includes('ERR_SSL_PROTOCOL_ERROR') ||
+      (errorMessage.includes('Failed to fetch') && url.startsWith('https://') && !url.includes('localhost'));
+
+    if (isSSLError) {
+      console.error('Error de certificado SSL detectado. URL:', url);
+      throw new Error('Error de certificado SSL. Acepta el certificado en tu navegador o verifica que el certificado del backend sea válido.');
+    }
+
+    // Re-lanzar el error original si no es un error de SSL
     throw error;
   }
 };

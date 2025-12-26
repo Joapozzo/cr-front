@@ -1,7 +1,7 @@
 import { Equipo } from "./equipo";
 import { InfoVacante, TemporadaPartido } from "./temporada";
 
-export type EstadoPartido = 'P' | 'C1' | 'E' | 'C2' | 'T' | 'F' | 'S' | 'A';
+export type EstadoPartido = 'P' | 'C1' | 'E' | 'C2' | 'T' | 'F' | 'S' | 'A' | 'I';
 
 export interface EquipoPartido {
     id_equipo?: number;
@@ -42,6 +42,15 @@ export interface Partido {
     equipoVisita: EquipoPartido;
     planillero?: Planillero | null;
     nombre_categoria_completo?: string | null;
+    cancha_ref?: CanchaRef;
+    id_cancha?: number;
+}
+
+export interface CanchaRef {
+    nombre: string;
+    predio: {
+        nombre: string;
+    };
 }
 
 export interface Division {
@@ -65,6 +74,7 @@ export interface CategoriaEdicion {
 
 export interface Zona {
     nombre: string | null;
+    id_tipo_zona?: number | null;
 }
 
 export interface JugadorDestacado {
@@ -79,6 +89,9 @@ export interface PartidoCompleto {
     jornada: number;
     dia: string | null;
     cancha: number | null;
+    canchaData?: {
+        tipo_futbol: number | null;
+    } | null;
     arbitro: string | null;
     goles_local: number | null;
     goles_visita: number | null;
@@ -86,6 +99,7 @@ export interface PartidoCompleto {
     pen_visita: number | null;
     estado: string;
     id_jugador_destacado: number | null;
+    descripcion?: string | null;
     equipoLocal: Equipo | null;
     equipoVisita: Equipo | null;
     zona: Zona | null;
@@ -118,13 +132,24 @@ export interface JugadorPlantel {
     nacimiento: Date | null;
     capitan: boolean;
     dorsal: number | null;
+    // Campos de formación
+    en_cancha?: boolean;
+    minuto_entrada?: number | null;
+    minuto_salida?: number | null;
+    cantidad_cambios?: number | null;
+    // Campo para identificar si es titular original o entró después
+    es_titular_original?: boolean; // true = titular desde inicio, false = entró después
 }
 
 export interface FormacionJugador {
     id_jugador: number;
     dorsal: number | null;
     goles: number | null;
-    titular: boolean;
+    en_cancha: boolean;
+    titular: boolean; // Mantener por compatibilidad, pero usar en_cancha
+    minuto_entrada: number | null;
+    minuto_salida: number | null;
+    cantidad_cambios: number | null;
     registrado_en: Date;
     id_equipo: number;
     jugador: JugadorPlantel;
@@ -142,11 +167,12 @@ export interface JugadorDestacadoPartido {
 }
 
 export interface IncidenciaPartido {
-    tipo: 'gol' | 'asistencia' | 'amarilla' | 'roja' | 'doble_amarilla';
+    tipo: 'gol' | 'asistencia' | 'amarilla' | 'roja' | 'doble_amarilla' | 'cambio';
     id: number;
     id_jugador: number | null;
     id_equipo: number | null;
     minuto: number | null;
+    tiempo?: '1T' | '2T' | 'ET' | 'PEN';
     nombre: string;
     apellido: string;
     // Campos específicos por tipo
@@ -154,6 +180,12 @@ export interface IncidenciaPartido {
     en_contra?: 'S' | 'N';
     id_gol?: number | null;
     tipo_tarjeta?: string | null;
+    // Campos específicos para cambios
+    jugador_sale_id?: number | null;
+    jugador_sale_nombre?: string;
+    jugador_entra_id?: number | null;
+    jugador_entra_nombre?: string;
+    observaciones?: string | null;
 }
 
 export interface DatosCompletosPlanillero {

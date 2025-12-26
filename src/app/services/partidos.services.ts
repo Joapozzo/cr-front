@@ -136,8 +136,6 @@ export const partidosService = {
 
     actualizarPartido: async (id_categoria_edicion: number, id_partido: number, partidoData: UpdatePartido): Promise<ActualizarPartidoResponse> => {
         try {
-            console.log(partidoData);
-            
             const validatedData = UpdatePartidoSchema.parse(partidoData);
             const response = await api.put<ActualizarPartidoResponse>(`/admin/partidos/${id_categoria_edicion}/${id_partido}`, validatedData);
             return response;

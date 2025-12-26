@@ -1,6 +1,7 @@
 import { Equipo } from "@/app/types/equipo";
 import { InfoVacante } from "@/app/types/temporada";
 import { Shield } from "lucide-react";
+import { EscudoEquipo } from "../common/EscudoEquipo";
 
 interface EquipoCardProps {
     equipo?: Equipo;
@@ -22,9 +23,7 @@ const EquipoCard = ({ equipo, infoVacante, goles, penales, isWinner, isPending }
             <div className="flex items-center gap-3 flex-1">
                 {equipo ? (
                     <>
-                        <div className="w-8 h-8 bg-[var(--gray-300)] rounded-full flex items-center justify-center flex-shrink-0">
-                            <Shield className="w-5 h-5 text-[var(--gray-100)]" />
-                        </div>
+                        <EscudoEquipo src={equipo.img} alt={equipo.nombre} size={32} />
                         <span className="text-[var(--white)] font-medium text-sm">
                             {equipo.nombre}
                         </span>

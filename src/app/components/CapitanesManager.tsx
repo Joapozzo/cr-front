@@ -6,32 +6,11 @@ import { Button } from '@/app/components/ui/Button';
 import { DeleteModal } from './modals/ModalAdmin'; 
 import { useAgregarJugadorYAsignarCapitan, useAsignarCapitan, useDesactivarCapitan } from '@/app/hooks/useEquipos';
 import { toast } from 'react-hot-toast';
-import JugadorSelectionModal from './modals/ModalSeleccionJugadores'; 
-
-interface Jugador {
-    id_jugador: number;
-    dni: string;
-    nombre: string;
-    posicion: {
-        codigo: string;
-        nombre: string;
-    };
-    capitan: boolean;
-    estado_sancion: string;
-    es_eventual: boolean;
-    partidos_jugados: number;
-}
-
-interface JugadorBuscado {
-    id_jugador: number;
-    nombre: string;
-    apellido: string;
-    dni: string;
-    fecha_nacimiento: string | null;
-}
+import JugadorSelectionModal from './modals/ModalSeleccionJugadores';
+import { JugadorPlantel, JugadorBusqueda } from '@/app/types/jugador';
 
 interface CapitanesManagerProps {
-    plantel: Jugador[];
+    plantel: JugadorPlantel[];
     idEquipo: number;
     idCategoriaEdicion: number;
     equipoNombre: string;
@@ -44,7 +23,7 @@ export default function CapitanesManager({
     equipoNombre
 }: CapitanesManagerProps) {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [capitanAEliminar, setCapitanAEliminar] = useState<Jugador | null>(null);
+    const [capitanAEliminar, setCapitanAEliminar] = useState<JugadorPlantel | null>(null);
     const [showSelectionModal, setShowSelectionModal] = useState(false);
     const [modalType, setModalType] = useState<'primer_capitan' | 'asignar_capitan'>('primer_capitan');
 
@@ -55,7 +34,6 @@ export default function CapitanesManager({
 
     // Filtrar capitanes del plantel
     const capitanes = plantel.filter(jugador => jugador.capitan);
-    const jugadoresDisponibles = plantel.filter(jugador => !jugador.capitan);
 
     const hayJugadores = plantel.length > 0;
     const hayCapitanes = capitanes.length > 0;
@@ -71,7 +49,7 @@ export default function CapitanesManager({
         setShowSelectionModal(true);
     };
 
-    const handleSelectJugador = async (jugador: JugadorBuscado) => {
+    const handleSelectJugador = async (jugador: JugadorBusqueda) => {
         const toastId = toast.loading(
             modalType === 'primer_capitan' 
                 ? "Agregando primer capitán..." 
@@ -102,13 +80,14 @@ export default function CapitanesManager({
                     { id: toastId }
                 );
             }
-        } catch (error: any) {
-            toast.error(error.message || "Error al procesar la solicitud", { id: toastId });
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : "Error al procesar la solicitud";
+            toast.error(errorMessage, { id: toastId });
             throw error; // Re-lanzar para que el modal maneje el error
         }
     };
 
-    const handleDesactivarCapitan = (capitan: Jugador) => {
+    const handleDesactivarCapitan = (capitan: JugadorPlantel) => {
         setCapitanAEliminar(capitan);
         setShowDeleteModal(true);
     };
@@ -128,8 +107,9 @@ export default function CapitanesManager({
             toast.success(`${capitanAEliminar.nombre} ya no es capitán`, { id: toastId });
             setShowDeleteModal(false);
             setCapitanAEliminar(null);
-        } catch (error: any) {
-            toast.error(error.message || "Error al desactivar capitán", { id: toastId });
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : "Error al desactivar capitán";
+            toast.error(errorMessage, { id: toastId });
         }
     };
 
@@ -143,7 +123,7 @@ export default function CapitanesManager({
                     </div>
                     <div>
                         <h3 className="text-lg font-semibold text-[var(--white)]">
-                            Capitanes del Equipo
+                            Capitanes del equipo
                         </h3>
                         <p className="text-[var(--gray-100)] text-sm">
                             {capitanes.length}/2 capitanes activos
@@ -223,31 +203,9 @@ export default function CapitanesManager({
                                     <h5 className="text-[var(--white)] font-medium mb-1">
                                         {capitan.nombre}
                                     </h5>
-                                    <div className="space-y-1">
-                                        <p className="text-[var(--gray-100)] text-sm">
-                                            DNI: {capitan.dni}
-                                        </p>
-                                        <p className="text-[var(--gray-100)] text-sm">
-                                            Posición: {capitan.posicion.nombre}
-                                        </p>
-                                        <p className="text-[var(--gray-100)] text-sm">
-                                            Partidos: {capitan.partidos_jugados}
-                                        </p>
-                                    </div>
-
-                                    {/* Estados */}
-                                    <div className="flex items-center gap-2 mt-2">
-                                        {capitan.es_eventual && (
-                                            <span className="bg-[var(--blue)]/20 text-[var(--blue)] text-xs px-2 py-1 rounded-full">
-                                                Eventual
-                                            </span>
-                                        )}
-                                        {capitan.estado_sancion === 'Sancionado' && (
-                                            <span className="bg-[var(--red)]/20 text-[var(--red)] text-xs px-2 py-1 rounded-full">
-                                                Sancionado
-                                            </span>
-                                        )}
-                                    </div>
+                                    <p className="text-[var(--gray-100)] text-sm">
+                                        DNI: {capitan.dni}
+                                    </p>
                                 </div>
 
                                 {/* Botón para dar de baja */}
@@ -275,7 +233,7 @@ export default function CapitanesManager({
             <JugadorSelectionModal
                 isOpen={showSelectionModal}
                 onClose={() => setShowSelectionModal(false)}
-                title={modalType === 'primer_capitan' ? 'Agregar Primer Capitán' : 'Asignar Capitán'}
+                title={modalType === 'primer_capitan' ? 'Agregar Primer Capitán' : 'Asignar capitán'}
                 actionText={modalType === 'primer_capitan' ? 'Agregar primer capitán' : 'Asignar capitán'}
                 onSelectJugador={handleSelectJugador}
                 isLoading={agregarCapitanMutation.isPending || asignarCapitanMutation.isPending}
@@ -292,6 +250,7 @@ export default function CapitanesManager({
                 message="¿Estás seguro de que quieres dar de baja a este capitán?"
                 itemName={capitanAEliminar?.nombre}
                 onConfirm={confirmarDesactivarCapitan}
+                error={null}
             />
         </div>
     );

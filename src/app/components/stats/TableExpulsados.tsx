@@ -44,7 +44,7 @@ const TablaExpulsados = ({ expulsados }: TablaExpulsadosProps) => {
             <div className="p-4 border-b border-[var(--gray-300)]">
                 <h3 className="text-[var(--white)] font-semibold text-lg flex items-center gap-2">
                     <UserX className="w-5 h-5 text-[var(--red)]" />
-                    Jugadores Sancionados
+                    Jugadores sancionados
                 </h3>
             </div>
 
@@ -75,7 +75,7 @@ const TablaExpulsados = ({ expulsados }: TablaExpulsadosProps) => {
                                             </div>
                                             <div className="flex flex-col">
                                                 <span className="text-[var(--white)] font-medium">
-                                                    {expulsado.jugador.nombre}
+                                                    {expulsado.jugador.nombre} {expulsado.jugador.apellido}
                                                 </span>
                                                 <span className="text-xs text-[var(--gray-100)]">
                                                     {expulsado.equipo.nombre}

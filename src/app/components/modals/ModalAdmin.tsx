@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X, Check, Trash2, AlertTriangle, Plus, Edit3, Upload, FileText, Loader2 } from 'lucide-react';
 import { z } from 'zod';
+import { toast } from 'react-hot-toast';
 import { Input, DateInput, TimeInput } from '../ui/Input';
 import Select from '../ui/Select';
 import { Button } from '../ui/Button';
@@ -42,6 +43,10 @@ interface FormModalProps {
     validationSchema?: z.ZodTypeAny;
     children?: React.ReactNode;
     onFieldChange?: (name: string, value: FormDataValue) => void;
+    isLoading?: boolean; // Estado de loading externo (ej: de una mutación)
+    autoClose?: boolean; // Si debe cerrar automáticamente después de submit exitoso (default: true)
+    maxWidth?: string; // Ancho máximo del modal
+    submitDisabled?: boolean; // Si el botón de submit debe estar deshabilitado
 }
 
 interface DeleteModalProps {
@@ -62,6 +67,14 @@ interface ImportModalProps {
     acceptedFormats: string[];
     onFileSelect: (file: File) => Promise<void>;
     templateUrl?: string;
+}
+
+interface ConfirmDeleteIncidentModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    tipoIncidencia: 'gol' | 'amarilla' | 'roja' | 'doble_amarilla' | 'cambio' | 'asistencia' | string;
+    onConfirm: () => Promise<void>;
+    isLoading?: boolean;
 }
 
 const BaseModal = ({ isOpen, onClose, title, children, type = 'info', maxWidth = 'max-w-md' }: ModalProps) => {
@@ -164,18 +177,28 @@ const FormModal = ({
     validationSchema,
     children,
     onFieldChange,
-}: FormModalProps & { children?: React.ReactNode }) => {
+    isLoading: externalIsLoading,
+    autoClose = true,
+    maxWidth,
+    submitDisabled = false,
+}: FormModalProps) => {
     const [formData, setFormData] = useState<Record<string, FormDataValue>>(initialData);
-    const [isLoading, setIsLoading] = useState(false);
+    const [internalIsLoading, setInternalIsLoading] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const prevIsOpenRef = useRef(isOpen);
+    
+    // Usar loading externo si está disponible, sino usar el interno
+    const isLoading = externalIsLoading !== undefined ? externalIsLoading : internalIsLoading;
 
+    // Solo resetear el formulario cuando el modal se abre (transición de false a true)
     useEffect(() => {
-        if (isOpen) {
+        if (isOpen && !prevIsOpenRef.current) {
+            // El modal acaba de abrirse
             setFormData(initialData);
             setErrors({});
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOpen]);
+        prevIsOpenRef.current = isOpen;
+    }, [isOpen, initialData]);
 
     const handleChange = (name: string, value: FormDataValue) => {
         const field = fields?.find(f => f.name === name);
@@ -192,6 +215,16 @@ const FormModal = ({
                 processedValue = ''; // Mantener vacío para mostrar placeholder
             } else {
                 processedValue = Number(value); // Convertir a número (incluso 0)
+            }
+        }
+        // Para selects que deben ser numéricos (campos que empiezan con "id_" y no son strings)
+        else if (field?.type === 'select' && name.startsWith('id_') && name !== 'id_planillero') {
+            if (value === '' || value === null || value === undefined) {
+                processedValue = '';
+            } else {
+                // Convertir a número si el valor es numérico
+                const numValue = Number(value);
+                processedValue = isNaN(numValue) ? value : numValue;
             }
         }
 
@@ -283,24 +316,46 @@ const FormModal = ({
         // Si no hay onSubmit, el formulario se maneja en children
         if (!onSubmit) return;
 
-        setIsLoading(true);
+        // Solo usar loading interno si no hay loading externo
+        if (externalIsLoading === undefined) {
+            setInternalIsLoading(true);
+        }
         setErrors({});
 
         try {
             await onSubmit(formData);
-            // Si llega aquí, cerrar modal
-            onClose();
+            // Solo cerrar automáticamente si autoClose es true
+            if (autoClose) {
+                onClose();
+            }
         } catch (error: unknown) {
             console.error('Error en el formulario:', error);
 
             // Manejar diferentes tipos de errores
             if (error && typeof error === 'object' && 'response' in error) {
-                const apiError = error as { response?: { status?: number; data?: { errors?: Array<{ field?: string; message?: string }> } } };
+                const apiError = error as { 
+                    response?: { 
+                        status?: number; 
+                        data?: { 
+                            error?: string;
+                            errors?: Array<{ field?: string; message?: string }> 
+                        } 
+                    } 
+                };
+                
+                // Mostrar error general si existe
+                if (apiError.response?.data?.error) {
+                    toast.error(apiError.response.data.error);
+                }
+                
+                // Manejar errores por campo
                 if (apiError.response?.status === 400 && apiError.response.data?.errors) {
                     const backendErrors: Record<string, string> = {};
                     apiError.response.data.errors.forEach((err) => {
                         if (err.field && err.message) {
                             backendErrors[err.field] = err.message;
+                            // Mostrar toast para cada error
+                            toast.error(err.message);
                         }
                     });
                     setErrors(backendErrors);
@@ -310,9 +365,13 @@ const FormModal = ({
             // Si es un Error estándar, mostrar el mensaje
             if (error instanceof Error && error.message && error.message !== 'Procesando...') {
                 setErrors({ general: error.message });
+                toast.error(error.message);
             }
         } finally {
-            setIsLoading(false);
+            // Solo resetear loading interno si no hay loading externo
+            if (externalIsLoading === undefined) {
+                setInternalIsLoading(false);
+            }
         }
     };
 
@@ -417,7 +476,7 @@ const FormModal = ({
             onClose={onClose}
             title={title}
             type={type}
-            maxWidth="max-w-3xl"
+            maxWidth={maxWidth || "max-w-3xl"}
         >
             {/* Mostrar children SIEMPRE, no solo cuando hay fields */}
             {children}
@@ -462,7 +521,7 @@ const FormModal = ({
                     </Button>
                     <Button
                         onClick={handleSubmit}
-                        disabled={isLoading}
+                        disabled={isLoading || submitDisabled}
                         className="flex items-center px-15 gap-2"
                         variant="success"
                     >
@@ -559,6 +618,83 @@ const DeleteModal = ({ isOpen, onClose, title, message, itemName, onConfirm, err
                         </>
                     )}
                 </button>
+            </div>
+        </BaseModal>
+    );
+};
+
+const ConfirmDeleteIncidentModal = ({ 
+    isOpen, 
+    onClose, 
+    tipoIncidencia, 
+    onConfirm, 
+    isLoading = false 
+}: ConfirmDeleteIncidentModalProps) => {
+    const getTipoTexto = () => {
+        switch (tipoIncidencia) {
+            case 'gol':
+                return 'el gol';
+            case 'amarilla':
+                return 'la tarjeta amarilla';
+            case 'roja':
+                return 'la tarjeta roja';
+            case 'doble_amarilla':
+                return 'la doble amarilla';
+            case 'cambio':
+                return 'el cambio';
+            case 'asistencia':
+                return 'la asistencia';
+            default:
+                return 'la incidencia';
+        }
+    };
+
+    const handleConfirm = async () => {
+        try {
+            await onConfirm();
+            // Cerrar solo si la operación fue exitosa
+            onClose();
+        } catch (error) {
+            console.error('Error al eliminar:', error);
+            // No cerrar si hay error, dejar que el usuario vea el error
+        }
+    };
+
+    return (
+        <BaseModal 
+            isOpen={isOpen} 
+            onClose={onClose} 
+            title="Eliminar Incidencia" 
+            type="delete"
+        >
+            <div className="space-y-4">
+                <p className="text-[var(--white)] text-center">
+                    ¿Estás seguro que quieres eliminar {getTipoTexto()}?
+                </p>
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[var(--gray-300)]">
+                <Button onClick={onClose} className="" disabled={isLoading}>
+                    Cancelar
+                </Button>
+                <Button
+                    onClick={handleConfirm}
+                    disabled={isLoading}
+                    className="flex items-center px-15 gap-2"
+                    variant="danger"
+                >
+                    {isLoading ? (
+                        <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Eliminando...
+                        </>
+                    ) : (
+                        <>
+                            <Trash2 className="w-4 h-4" />
+                            Eliminar
+                        </>
+                    )}
+                </Button>
             </div>
         </BaseModal>
     );
@@ -698,7 +834,8 @@ export {
     FormModal,
     DeleteModal,
     ImportModal,
+    ConfirmDeleteIncidentModal,
     useModals,
 };
 
-export type { FormField, FormModalProps, DeleteModalProps, ImportModalProps };
+export type { FormField, FormModalProps, DeleteModalProps, ImportModalProps, ConfirmDeleteIncidentModalProps };

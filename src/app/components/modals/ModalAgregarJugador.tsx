@@ -48,40 +48,33 @@ export default function AgregarJugadorModal({
 
         setErrorMessage(''); // Limpiar errores previos
 
+        const toastId = toast.loading('Agregando jugador al plantel...');
+
         try {
-            await agregarJugadorMutation.mutateAsync({
+            const response = await agregarJugadorMutation.mutateAsync({
                 id_equipo: idEquipo,
                 id_categoria_edicion: idCategoriaEdicion,
                 id_jugador: selectedJugador.id_jugador
             });
 
-            toast.success(`${selectedJugador.nombre} ${selectedJugador.apellido} agregado al plantel`);
+            // Usar el mensaje del backend si está disponible
+            const successMessage = response?.data?.message || 
+                `${selectedJugador.nombre} ${selectedJugador.apellido} agregado al plantel`;
+            
+            toast.success(successMessage, { id: toastId });
             handleClose();
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error al agregar jugador:', error);
             
-            // Extraer mensaje de error específico
+            // Extraer mensaje de error del backend
             let errorMsg = 'Error al agregar el jugador al plantel';
             
-            if (error?.message) {
-                // Si el error contiene mensaje específico del servidor
-                if (error.message.includes('ya pertenece a otro equipo')) {
-                    errorMsg = 'El jugador ya pertenece a otro equipo en esta categoría';
-                } else if (error.message.includes('plantel completo') || error.message.includes('límite de jugadores')) {
-                    errorMsg = 'El plantel ya está completo';
-                } else if (error.message.includes('ya está en el plantel')) {
-                    errorMsg = 'Este jugador ya está en el plantel';
-                } else {
-                    errorMsg = error.message;
-                }
-            } else if (error.response?.status === 409) {
-                errorMsg = 'Este jugador ya está en el plantel';
-            } else if (error.response?.status === 400) {
-                errorMsg = 'El plantel ya está completo';
+            if (error instanceof Error) {
+                errorMsg = error.message;
             }
             
             setErrorMessage(errorMsg);
-            toast.error(errorMsg)
+            toast.error(errorMsg, { id: toastId });
         }
     };
 
@@ -152,7 +145,6 @@ export default function AgregarJugadorModal({
                             Buscar jugador por DNI
                         </label>
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--gray-100)]" />
                             <Input
                                 type="text"
                                 placeholder="Ingresa el DNI del jugador..."
@@ -160,6 +152,7 @@ export default function AgregarJugadorModal({
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="pl-10"
                                 autoFocus
+                                icon={<Search/>}
                             />
                         </div>
                         <p className="text-sm text-[var(--gray-100)]">

@@ -1,9 +1,10 @@
-import { Calendar, ChevronRight, Clock, Pause, Shield, Calendar1 } from "lucide-react";
+import { Calendar, ChevronRight, Clock, Pause, Calendar1 } from "lucide-react";
 import { Partido } from "../types/partido";
 import { TbSoccerField } from "react-icons/tb";
-import { useCronometroSimple } from "../hooks/useCronometroSimple";
+// import { useCronometroSimple } from "../hooks/useCronometroSimple";
 import { deberMostrarResultado, getEstadoInfo } from "../utils/partido.helper";
 import { formatearFecha, formatearHora } from "../utils/formated";
+import { EscudoEquipo } from "./common/EscudoEquipo";
 
 interface PartidoItemProps {
     partido: Partido;
@@ -18,7 +19,7 @@ const PartidoItem: React.FC<PartidoItemProps> = ({ partido, isPendiente = false,
     const nombreLocal = partido.equipoLocal?.nombre || `Equipo ${partido.id_equipolocal || 'Local'}`;
     const nombreVisita = partido.equipoVisita?.nombre || `Equipo ${partido.id_equipovisita || 'Visita'}`;
     const estadoInfo = getEstadoInfo(partido.estado);
-
+    (partido);
     return (
         <div
             className={`flex flex-col gap-4 bg-[#171717] rounded-lg border border-[#262626] p-4 transition-all duration-200 ${onClick
@@ -52,16 +53,16 @@ const PartidoItem: React.FC<PartidoItemProps> = ({ partido, isPendiente = false,
                     {partido.nombre_categoria_completo} - Jornada {partido.jornada}
                 </p>
                 <div className="flex items-center gap-2">
-                    {partido.cancha && (
-                        <div className="flex items-center gap-1 mb-1">
-                            <TbSoccerField color="#737373" size={20} />
-                            <p className="text-[#737373] text-xs">Cancha {partido.cancha}</p>
-                        </div>
-                    )}
                     {partido.dia && (
                         <div className="flex items-center gap-1 mb-1">
                             <Calendar1 color="#737373" size={20} />
                             <p className="text-[#737373] text-xs">{formatearFecha(partido.dia)}</p>
+                        </div>
+                    )}
+                    {partido.cancha_ref && (
+                        <div className="flex items-center gap-1 mb-1">
+                            <TbSoccerField color="#737373" size={20} />
+                            <p className="text-[#737373] text-xs">{partido.cancha_ref.nombre}</p>
                         </div>
                     )}
                 </div>
@@ -72,9 +73,7 @@ const PartidoItem: React.FC<PartidoItemProps> = ({ partido, isPendiente = false,
                 <div className="flex items-start gap-3 flex-col">
                     {/* Equipo Local */}
                     <div className="flex items-center gap-3 flex-1">
-                        <div className="rounded-full flex items-center justify-center flex-shrink-0">
-                            <Shield className="text-[#737373]" size={16} />
-                        </div>
+                        <EscudoEquipo src={partido.equipoLocal.img} alt={nombreLocal} width={20} height={20} />
                         <span className="text-white text-sm font-medium truncate">
                             {nombreLocal}
                         </span>
@@ -82,9 +81,7 @@ const PartidoItem: React.FC<PartidoItemProps> = ({ partido, isPendiente = false,
 
                     {/* Equipo Visita */}
                     <div className="flex items-center gap-3 flex-1 justify-end">
-                        <div className="rounded-full flex items-center justify-center flex-shrink-0">
-                            <Shield className="text-[#737373]" size={16} />
-                        </div>
+                        <EscudoEquipo src={partido.equipoVisita.img} alt={nombreVisita} width={20} height={20} />
                         <span className="text-white text-sm font-medium truncate text-right">
                             {nombreVisita}
                         </span>
@@ -108,13 +105,20 @@ const PartidoItem: React.FC<PartidoItemProps> = ({ partido, isPendiente = false,
                             )} */}
 
                             {/* Resultado */}
-                            <div className="flex items-center flex-col">
+                            <div className="flex items-center gap-2">
+                                {partido.pen_local !== null && partido.pen_local !== undefined && (
+                                    <span className="text-[#737373] text-xs">({partido.pen_local})</span>
+                                )}
                                 <span className="text-white font-bold text-lg">
                                     {partido.goles_local ?? 0}
                                 </span>
+                                <span className="text-[#525252]">-</span>
                                 <span className="text-white font-bold text-lg">
                                     {partido.goles_visita ?? 0}
                                 </span>
+                                {partido.pen_visita !== null && partido.pen_visita !== undefined && (
+                                    <span className="text-[#737373] text-xs">({partido.pen_visita})</span>
+                                )}
                             </div>
                         </div>
                     ) : partido.estado === "S" ? (

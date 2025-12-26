@@ -18,7 +18,7 @@ export default function PerfilLayout({
     const perfilTabs = [
         {
             id: 'mis-datos',
-            label: 'Mis Datos',
+            label: 'Mis datos',
             icon: User,
             href: '/perfil',
         },
@@ -49,8 +49,8 @@ export default function PerfilLayout({
     return (
         <div className="min-h-screen bg-[var(--background)] pb-20">
             {/* Header con breadcrumb */}
-            <div className="bg-[var(--card-background)] border-b border-[var(--gray-300)] py-4">
-                <div className="flex items-center space-x-2 max-w-[1400px] mx-auto px-10">
+            <div className="bg-[var(--card-background)] border-b border-[var(--gray-300)] py-3 sm:py-4">
+                <div className="flex items-center space-x-2 max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 lg:px-10">
                     <Link
                         href="/"
                         className="flex items-center text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
@@ -59,13 +59,13 @@ export default function PerfilLayout({
                         Inicio
                     </Link>
                     <span className="text-[var(--gray-100)]">/</span>
-                    <span className="text-[var(--white)]">Mi Perfil</span>
+                    <span className="text-[var(--white)]">Mi perfil</span>
                 </div>
             </div>
 
             {/* Información del usuario */}
-            <div className="bg-[var(--card-background)] border-b border-[var(--gray-300)] py-6">
-                <div className="flex items-center space-x-4 max-w-[1400px] mx-auto px-10">
+            <div className="bg-[var(--card-background)] border-b border-[var(--gray-300)] py-4 sm:py-6">
+                <div className="flex items-center space-x-3 sm:space-x-4 max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 lg:px-10">
                     {/* Avatar editable */}
                     <AvatarPerfil
                         imagenUrl={usuario?.img}
@@ -88,7 +88,7 @@ export default function PerfilLayout({
 
             {/* Navegación - Optimizada para mobile */}
             <div className="bg-[var(--card-background)] border-b border-[var(--gray-300)] z-10">
-                <nav className="flex overflow-x-auto scrollbar-hide max-w-[1400px] mx-auto px-11">
+                <nav className="flex overflow-x-auto scrollbar-hide max-w-[1400px] mx-auto px-2 sm:px-4 md:px-6 lg:px-11">
                     {perfilTabs.map((tab) => {
                         const IconComponent = tab.icon;
                         return (
@@ -96,7 +96,7 @@ export default function PerfilLayout({
                                 key={tab.id}
                                 href={tab.href}
                                 className={`
-                                    flex-1 min-w-0 py-3 px-2 flex flex-col items-center space-y-1 
+                                    flex-1 min-w-0 py-2.5 sm:py-3 px-1.5 sm:px-2 flex flex-col items-center space-y-1 
                                     transition-colors border-b-2 text-xs font-medium
                                     ${isActiveTab(tab.href)
                                         ? 'border-[var(--green)] text-[var(--green)]'
@@ -104,8 +104,8 @@ export default function PerfilLayout({
                                     }
                                 `}
                             >
-                                <IconComponent className="w-5 h-5" />
-                                <span className="truncate text-center leading-tight">
+                                <IconComponent className="w-4 h-4 sm:w-5 sm:h-5" />
+                                <span className="truncate text-center leading-tight text-[10px] sm:text-xs">
                                     {tab.label}
                                 </span>
                             </Link>
@@ -115,7 +115,7 @@ export default function PerfilLayout({
             </div>
 
             {/* Content */}
-            <div className="p-4 max-w-[1400px] mx-auto">
+            <div className="p-2 sm:p-3 md:p-4 max-w-[1400px] mx-auto">
                 {children}
             </div>
 

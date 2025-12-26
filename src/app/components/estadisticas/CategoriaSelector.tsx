@@ -7,6 +7,7 @@ export interface CategoriaOption {
   id: number;
   nombre: string;
   edicion: string;
+  [key: string]: any; // Permitir campos adicionales
 }
 
 interface CategoriaSelectorProps {

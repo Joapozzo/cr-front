@@ -1,16 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Send, Check, X, Inbox, Loader2 } from "lucide-react";
+import { Mail, Send, Check, X, Inbox, Loader2, Shield } from "lucide-react";
 import { Button } from '@/app/components/ui/Button';
 import { SolicitudResponse, InvitacionEnviadaResponse } from '../services/solicitudes.services';
 import { EstadoBadge } from "../utils/solicitudesHelper";
-import { PlayerAvatar, TeamAvatar } from "./AvatarsSolicitudesAdmin";
+import { ImagenPublica } from "./common/ImagenPublica";
 import { Equipo } from "../types/equipo";
 import ConfirmActionModal from "./modals/ConfirmActionModal";
 import { toast } from 'react-hot-toast';
+import { User } from "lucide-react";
 
-type MercadoPaseItem = SolicitudResponse | InvitacionEnviadaResponse;
+interface SolicitudBajaResponse extends SolicitudResponse {
+    tipo_solicitud: 'B';
+    motivo?: string | null;
+    observaciones?: string | null;
+    motivo_rechazo?: string | null;
+}
+
+type MercadoPaseItem = SolicitudResponse | InvitacionEnviadaResponse | SolicitudBajaResponse;
 
 interface PanelSolicitudesAdminProps {
     // Queries
@@ -59,9 +67,8 @@ export default function PanelSolicitudesAdmin({
     // Obtenemos los datos a mostrar según la pestaña
     const displayedData: MercadoPaseItem[] = tab === 'solicitudes' ? solicitudes : invitaciones;
     const isLoading = tab === 'solicitudes' ? isLoadingSolicitudes : isLoadingInvitaciones;
-
-    // Conteo de pendientes
-    const solicitudesPendientes = solicitudes.filter(s => s.estado === 'E').length;
+    // Conteo de pendientes (incluyendo solicitudes de baja con estado 'P')
+    const solicitudesPendientes = solicitudes.filter(s => s.estado === 'E' || s.estado === 'P').length;
     const invitacionesPendientes = invitaciones.filter(i => i.estado === 'E').length;
     const totalPendientes = solicitudesPendientes + invitacionesPendientes;
 
@@ -85,11 +92,14 @@ export default function PanelSolicitudesAdmin({
         if (!modalState.solicitud || !modalState.action) return;
 
         const { id_solicitud, id_jugador, tipo_solicitud, nombre_jugador } = modalState.solicitud;
-        const tipo = tipo_solicitud as 'J' | 'E';
+        const tipo = tipo_solicitud as 'J' | 'E' | 'B';
 
         try {
             if (modalState.action === 'aceptar') {
-                if (tipo === 'J') {
+                if (tipo === 'B') {
+                    await onAceptarSolicitud(id_solicitud, id_jugador);
+                    toast.success(`Solicitud de baja de ${nombre_jugador} aceptada exitosamente`);
+                } else if (tipo === 'J') {
                     await onAceptarSolicitud(id_solicitud, id_jugador);
                     toast.success(`Solicitud de ${nombre_jugador} aceptada exitosamente`);
                 } else {
@@ -97,7 +107,10 @@ export default function PanelSolicitudesAdmin({
                     toast.success(`Invitación a ${nombre_jugador} aceptada exitosamente`);
                 }
             } else {
-                if (tipo === 'J') {
+                if (tipo === 'B') {
+                    await onRechazarSolicitud(id_solicitud);
+                    toast.success(`Solicitud de baja de ${nombre_jugador} rechazada`);
+                } else if (tipo === 'J') {
                     await onRechazarSolicitud(id_solicitud);
                     toast.success(`Solicitud de ${nombre_jugador} rechazada`);
                 } else {
@@ -123,7 +136,7 @@ export default function PanelSolicitudesAdmin({
                     </div>
                     <div>
                         <h3 className="text-lg font-semibold text-[var(--white)]">
-                            Gestión de Solicitudes
+                            Gestión de solicitudes
                         </h3>
                         <p className="text-[var(--gray-100)] text-sm">
                             {totalPendientes} pendientes
@@ -144,7 +157,7 @@ export default function PanelSolicitudesAdmin({
                         }
                     `}
                 >
-                    Solicitudes de Jugadores 
+                    Solicitudes de jugadores 
                     <span className="ml-2 bg-[var(--gray-300)] text-[var(--white)] text-xs px-2 py-0.5 rounded-full">
                         {solicitudesPendientes}
                     </span>
@@ -159,7 +172,7 @@ export default function PanelSolicitudesAdmin({
                         }
                     `}
                 >
-                    Invitaciones de Equipos
+                    Invitaciones de equipos
                     <span className="ml-2 bg-[var(--gray-300)] text-[var(--white)] text-xs px-2 py-0.5 rounded-full">
                         {invitacionesPendientes}
                     </span>
@@ -195,42 +208,104 @@ export default function PanelSolicitudesAdmin({
                         {/* 1. Información del Jugador */}
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <PlayerAvatar img={sol.img_jugador} nombre={sol.nombre_jugador} />
+                                <ImagenPublica
+                                    src={sol.img_jugador}
+                                    alt={sol.nombre_jugador}
+                                    className="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-[var(--gray-300)]"
+                                    width={40}
+                                    height={40}
+                                    fallbackIcon={<User className="text-[var(--gray-100)]" size={20} />}
+                                />
                                 <div>
                                     <p className="text-[var(--white)] font-semibold text-sm">{sol.nombre_jugador}</p>
-                                    {/* Nota: DNI no está en el tipo, lo he quitado para ser consistente */}
-                                    <p className="text-[var(--gray-100)] text-xs">{sol.tipo_solicitud === 'J' ? 'Solicitud' : 'Invitación'} N° {sol.id_solicitud}</p> 
+                                    <p className="text-[var(--gray-100)] text-xs">
+                                        {sol.tipo_solicitud === 'B' ? 'Solicitud de baja' : 
+                                         sol.tipo_solicitud === 'J' ? 'Solicitud' : 'Invitación'} N° {sol.id_solicitud}
+                                    </p> 
                                 </div>
                             </div>
                             {/* Mostrar estado solo si NO está pendiente */}
-                            {sol.estado !== 'E' && (
+                            {(sol.estado !== 'E' && sol.estado !== 'P') && (
                                 <EstadoBadge estado={sol.estado} />
                             )}
                         </div>
 
                         {/* 2. Tipo de Solicitud */}
                         <div className="flex items-center gap-2 text-sm text-[var(--gray-100)] pl-12"> 
-                            {sol.tipo_solicitud === 'J' 
-                                ? <Send size={14} className="text-[var(--green)]" /> 
-                                : <Mail size={14} className="text-[var(--blue)]" />}
-                            <span>
-                                {sol.tipo_solicitud === 'J' ? 'Solicita unirse a:' : 'Invitado por:'}
-                            </span>
+                            {sol.tipo_solicitud === 'B' ? (
+                                <>
+                                    <X size={14} className="text-[var(--red)]" />
+                                    <span>Solicita darse de baja de:</span>
+                                </>
+                            ) : sol.tipo_solicitud === 'J' ? (
+                                <>
+                                    <Send size={14} className="text-[var(--green)]" />
+                                    <span>Solicita unirse a:</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Mail size={14} className="text-[var(--blue)]" />
+                                    <span>Invitado por:</span>
+                                </>
+                            )}
                         </div>
 
-                        {/* 3. Información del Equipo (FALTA NOMBRE E IMAGEN DEL EQUIPO EN EL TIPO BASE. USARÉ MOCKS PROVISIONALES) */}
+                        {/* 3. Información del Equipo */}
                         <div className="flex items-center gap-3 pl-12">
-                            <TeamAvatar img={null} nombre={equipo.nombre} /> 
+                            <ImagenPublica
+                                src={equipo.img}
+                                alt={equipo.nombre}
+                                className="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-[var(--gray-300)]"
+                                width={40}
+                                height={40}
+                                fallbackIcon={<Shield className="text-[var(--gray-100)]" size={20} />}
+                            />
                             <div>
                                 <p className="text-[var(--white)] font-semibold text-sm">{equipo.nombre}</p>
                                 <p className="text-[var(--gray-100)] text-xs">
                                     {sol.nombre_categoria} • {sol.edicion}
                                 </p>
+                                {sol.respondido_por_username && (
+                                    <p className="text-[var(--gray-100)] text-xs mt-1">
+                                        Respondida por: <span className="text-[var(--white)] font-medium">{sol.respondido_por_username}</span>
+                                    </p>
+                                )}
+                                {sol.agregado_por && sol.estado === 'A' && sol.tipo_solicitud !== 'B' && (
+                                    <p className="text-[var(--gray-100)] text-xs mt-1">
+                                        Agregado por: <span className="text-[var(--white)] font-medium">{sol.agregado_por}</span>
+                                    </p>
+                                )}
+                                {/* Mostrar motivo y observaciones para solicitudes de baja */}
+                                {sol.tipo_solicitud === 'B' && (sol as SolicitudBajaResponse).motivo && (
+                                    <div className="mt-2 p-2 bg-[var(--black-900)] rounded border border-[var(--gray-300)]">
+                                        <p className="text-[var(--gray-100)] text-xs mb-1">Motivo:</p>
+                                        <p className="text-[var(--white)] text-xs">
+                                            {(sol as SolicitudBajaResponse).motivo}
+                                        </p>
+                                        {(sol as SolicitudBajaResponse).observaciones && (
+                                            <>
+                                                <p className="text-[var(--gray-100)] text-xs mb-1 mt-2">Observaciones:</p>
+                                                <p className="text-[var(--white)] text-xs">
+                                                    {(sol as SolicitudBajaResponse).observaciones}
+                                                </p>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
+                                {/* Mostrar motivo de rechazo si fue rechazada */}
+                                {sol.tipo_solicitud === 'B' && (sol as SolicitudBajaResponse).motivo_rechazo && sol.estado === 'R' && (
+                                    <div className="mt-2 p-2 bg-red-500/10 rounded border border-red-500/30">
+                                        <p className="text-red-400 text-xs mb-1">Motivo de rechazo:</p>
+                                        <p className="text-red-300 text-xs">
+                                            {(sol as SolicitudBajaResponse).motivo_rechazo}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
                         {/* 4. Acciones (Solo si está pendiente) */}
-                        {sol.estado === 'E' && (
+                        {(sol.estado === 'E' || sol.estado === 'P') && (
                             <div className="pt-3 mt-3 border-t border-[var(--gray-300)] flex gap-2">
                                 <Button
                                     variant="danger"
@@ -274,17 +349,25 @@ export default function PanelSolicitudesAdmin({
                     onConfirm={handleConfirmAction}
                     title={
                         modalState.action === 'aceptar'
-                            ? modalState.solicitud.tipo_solicitud === 'J'
-                                ? 'Aceptar Solicitud'
-                                : 'Aceptar Invitación'
-                            : modalState.solicitud.tipo_solicitud === 'J'
-                                ? 'Rechazar Solicitud'
-                                : 'Rechazar Invitación'
+                            ? modalState.solicitud.tipo_solicitud === 'B'
+                                ? 'Aceptar solicitud de baja'
+                                : modalState.solicitud.tipo_solicitud === 'J'
+                                    ? 'Aceptar solicitud'
+                                    : 'Aceptar invitación'
+                            : modalState.solicitud.tipo_solicitud === 'B'
+                                ? 'Rechazar solicitud de baja'
+                                : modalState.solicitud.tipo_solicitud === 'J'
+                                    ? 'Rechazar solicitud'
+                                    : 'Rechazar invitación'
                     }
                     message={
                         modalState.action === 'aceptar'
-                            ? `¿Estás seguro de que deseas aceptar ${modalState.solicitud.tipo_solicitud === 'J' ? 'la solicitud de' : 'la invitación a'} ${modalState.solicitud.nombre_jugador}?`
-                            : `¿Estás seguro de que deseas rechazar ${modalState.solicitud.tipo_solicitud === 'J' ? 'la solicitud de' : 'la invitación a'} ${modalState.solicitud.nombre_jugador}?`
+                            ? modalState.solicitud.tipo_solicitud === 'B'
+                                ? `¿Estás seguro de que deseas aceptar la solicitud de baja de ${modalState.solicitud.nombre_jugador}? El jugador será removido del plantel.`
+                                : `¿Estás seguro de que deseas aceptar ${modalState.solicitud.tipo_solicitud === 'J' ? 'la solicitud de' : 'la invitación a'} ${modalState.solicitud.nombre_jugador}?`
+                            : modalState.solicitud.tipo_solicitud === 'B'
+                                ? `¿Estás seguro de que deseas rechazar la solicitud de baja de ${modalState.solicitud.nombre_jugador}?`
+                                : `¿Estás seguro de que deseas rechazar ${modalState.solicitud.tipo_solicitud === 'J' ? 'la solicitud de' : 'la invitación a'} ${modalState.solicitud.nombre_jugador}?`
                     }
                     confirmText={modalState.action === 'aceptar' ? 'Aceptar' : 'Rechazar'}
                     cancelText="Cancelar"
@@ -308,7 +391,21 @@ export default function PanelSolicitudesAdmin({
                                 <span className="text-[var(--white)] font-semibold">Categoría:</span>{' '}
                                 {modalState.solicitud.nombre_categoria} • {modalState.solicitud.edicion}
                             </p>
-                            {modalState.solicitud.mensaje_jugador && (
+                            {modalState.solicitud.tipo_solicitud === 'B' && (modalState.solicitud as SolicitudBajaResponse).motivo && (
+                                <>
+                                    <p className="text-[var(--gray-100)] text-sm">
+                                        <span className="text-[var(--white)] font-semibold">Motivo:</span>{' '}
+                                        {(modalState.solicitud as SolicitudBajaResponse).motivo}
+                                    </p>
+                                    {(modalState.solicitud as SolicitudBajaResponse).observaciones && (
+                                        <p className="text-[var(--gray-100)] text-sm">
+                                            <span className="text-[var(--white)] font-semibold">Observaciones:</span>{' '}
+                                            {(modalState.solicitud as SolicitudBajaResponse).observaciones}
+                                        </p>
+                                    )}
+                                </>
+                            )}
+                            {modalState.solicitud.mensaje_jugador && modalState.solicitud.tipo_solicitud !== 'B' && (
                                 <p className="text-[var(--gray-100)] text-sm">
                                     <span className="text-[var(--white)] font-semibold">Mensaje:</span>{' '}
                                     {modalState.solicitud.mensaje_jugador}

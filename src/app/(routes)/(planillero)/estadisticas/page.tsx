@@ -1,16 +1,16 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { UserPageWrapper } from '@/app/components/layouts/UserPageWrapper';
 import { EdicionLayout } from '@/app/components/layouts/EdicionLayout';
-import { CategoriaSelector, CategoriaOption } from '@/app/components/estadisticas/CategoriaSelector';
+import { SelectorEdicionCategoria } from '@/app/components/estadisticas/SelectorEdicionCategoria';
 import { EstadisticasTabs, EstadisticaTab } from '@/app/components/estadisticas/EstadisticasTabs';
 import { TablaPosicionesCompleta } from '@/app/components/estadisticas/TablaPosicionesCompleta';
 import { TablaJugadoresEstadisticas } from '@/app/components/estadisticas/TablaJugadoresEstadisticas';
 import { EquipoPosicion } from '@/app/types/posiciones';
-import { useEdicionesConCategorias } from '@/app/hooks/useEdiciones';
 import {
   usePosicionesPorCategoriaEdicion,
+  useZonasPlayoffPorCategoriaEdicion,
   useGoleadoresPorCategoriaEdicion,
   useAsistenciasPorCategoriaEdicion,
   useAmarillasPorCategoriaEdicion,
@@ -18,59 +18,48 @@ import {
   useMVPsPorCategoriaEdicion
 } from '@/app/hooks/useEstadisticas';
 import { useAuthStore } from '@/app/stores/authStore';
+import { useEdicionCategoria } from '@/app/contexts/EdicionCategoriaContext';
 
 export default function EstadisticasPage() {
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<CategoriaOption | null>(null);
   const [activeTab, setActiveTab] = useState<EstadisticaTab>('posiciones');
   const equipos = useAuthStore((state) => state.equipos || []);
   const userTeamIds = useMemo(() => equipos.map(e => e.id), [equipos]);
 
-  // Obtener ediciones con categorías
-  const { data: edicionesConCategorias, isLoading: loadingCategorias } = useEdicionesConCategorias();
+  // Usar el contexto de edición y categoría
+  const { 
+    categoriaSeleccionada, 
+    edicionActual, 
+    isLoading: loadingCategorias 
+  } = useEdicionCategoria();
 
-  // Mapear categorías al formato esperado
-  const categoriasOptions = useMemo(() => {
-    if (!edicionesConCategorias) return [];
-    
-    const categorias: CategoriaOption[] = [];
-    edicionesConCategorias.forEach(edicion => {
-      edicion.categorias.forEach(categoria => {
-        categorias.push({
-          id: categoria.id_categoria_edicion,
-          nombre: categoria.nombre,
-          edicion: `${edicion.nombre} ${edicion.temporada}`
-        });
-      });
-    });
-    
-    return categorias;
-  }, [edicionesConCategorias]);
-
-  // Inicializar categoría seleccionada
-  useEffect(() => {
-    if (!categoriaSeleccionada && categoriasOptions.length > 0) {
-      setCategoriaSeleccionada(categoriasOptions[0]);
-    }
-  }, [categoriasOptions, categoriaSeleccionada]);
-
-  // Hooks para estadísticas
-  const { data: posicionesData, isLoading: loadingPosiciones } = usePosicionesPorCategoriaEdicion(
-    categoriaSeleccionada?.id || null
+  // Hooks para estadísticas (solo si hay categoría seleccionada)
+  const { data: posicionesData, isLoading: loadingPosiciones, error: errorPosiciones } = usePosicionesPorCategoriaEdicion(
+    categoriaSeleccionada?.id || null,
+    { enabled: !!categoriaSeleccionada }
   );
-  const { data: goleadores, isLoading: loadingGoleadores } = useGoleadoresPorCategoriaEdicion(
-    categoriaSeleccionada?.id || null
+  const { data: zonasPlayoffData, isLoading: loadingPlayoff, error: errorPlayoff } = useZonasPlayoffPorCategoriaEdicion(
+    categoriaSeleccionada?.id || null,
+    { enabled: !!categoriaSeleccionada }
   );
-  const { data: asistencias, isLoading: loadingAsistencias } = useAsistenciasPorCategoriaEdicion(
-    categoriaSeleccionada?.id || null
+  const { data: goleadores, isLoading: loadingGoleadores, error: errorGoleadores } = useGoleadoresPorCategoriaEdicion(
+    categoriaSeleccionada?.id || null,
+    { enabled: !!categoriaSeleccionada }
   );
-  const { data: amarillas, isLoading: loadingAmarillas } = useAmarillasPorCategoriaEdicion(
-    categoriaSeleccionada?.id || null
+  const { data: asistencias, isLoading: loadingAsistencias, error: errorAsistencias } = useAsistenciasPorCategoriaEdicion(
+    categoriaSeleccionada?.id || null,
+    { enabled: !!categoriaSeleccionada }
   );
-  const { data: rojas, isLoading: loadingRojas } = useRojasPorCategoriaEdicion(
-    categoriaSeleccionada?.id || null
+  const { data: amarillas, isLoading: loadingAmarillas, error: errorAmarillas } = useAmarillasPorCategoriaEdicion(
+    categoriaSeleccionada?.id || null,
+    { enabled: !!categoriaSeleccionada }
   );
-  const { data: mvps, isLoading: loadingMVPs } = useMVPsPorCategoriaEdicion(
-    categoriaSeleccionada?.id || null
+  const { data: rojas, isLoading: loadingRojas, error: errorRojas } = useRojasPorCategoriaEdicion(
+    categoriaSeleccionada?.id || null,
+    { enabled: !!categoriaSeleccionada }
+  );
+  const { data: mvps, isLoading: loadingMVPs, error: errorMVPs } = useMVPsPorCategoriaEdicion(
+    categoriaSeleccionada?.id || null,
+    { enabled: !!categoriaSeleccionada }
   );
 
   // Procesar posiciones: si hay múltiples zonas, aplanarlas o mostrar por zona
@@ -90,6 +79,9 @@ export default function EstadisticasPage() {
         goles_contra: pos.goles_contra,
         diferencia_goles: pos.diferencia_goles,
         puntos: pos.puntos,
+        puntos_descontados: pos.puntos_descontados,
+        puntos_finales: pos.puntos_finales,
+        apercibimientos: pos.apercibimientos,
         ultima_actualizacion: new Date().toISOString().split('T')[0],
         img_equipo: pos.img_equipo || undefined
       }));
@@ -108,10 +100,13 @@ export default function EstadisticasPage() {
           perdidos: pos.partidos_perdidos,
           goles_favor: pos.goles_favor,
           goles_contra: pos.goles_contra,
-        diferencia_goles: pos.diferencia_goles,
-        puntos: pos.puntos,
-        ultima_actualizacion: new Date().toISOString().split('T')[0],
-        img_equipo: pos.img_equipo || undefined
+          diferencia_goles: pos.diferencia_goles,
+          puntos: pos.puntos,
+          puntos_descontados: pos.puntos_descontados,
+          puntos_finales: pos.puntos_finales,
+          apercibimientos: pos.apercibimientos,
+          ultima_actualizacion: new Date().toISOString().split('T')[0],
+          img_equipo: pos.img_equipo || undefined
         });
       });
     });
@@ -124,13 +119,15 @@ export default function EstadisticasPage() {
     });
   }, [posicionesData]);
 
-  // Obtener información de la edición seleccionada
-  const edicionActual = useMemo(() => {
-    if (!categoriaSeleccionada || !edicionesConCategorias) return null;
-    return edicionesConCategorias.find(e => 
-      e.categorias.some(c => c.id_categoria_edicion === categoriaSeleccionada.id)
-    );
-  }, [categoriaSeleccionada, edicionesConCategorias]);
+  // Obtener zonas de todos contra todos desde zonasPlayoffData
+  // const zonasTodosContraTodos = useMemo(() => {
+  //   if (!zonasPlayoffData) return [];
+  //   return zonasPlayoffData.filter(z => 
+  //     z.tipoZona?.nombre === 'todos-contra-todos' || 
+  //     z.tipoZona?.nombre === 'todos-contra-todos-ida-vuelta'
+  //   );
+  // }, [zonasPlayoffData]);
+
 
   return (
     <UserPageWrapper>
@@ -138,25 +135,15 @@ export default function EstadisticasPage() {
         nombreEdicion={edicionActual?.nombre || 'Copa Relámpago'}
         temporada={edicionActual?.temporada?.toString() || '2025'}
         nombreCategoria={categoriaSeleccionada?.nombre}
+        logoEdicion={edicionActual?.img || undefined}
         loading={loadingCategorias}
       >
         <div className="w-full space-y-6">
-          {/* Selector de categorías */}
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-white font-semibold text-sm">Seleccionar Categoría</h2>
-            </div>
-            
-            <CategoriaSelector 
-              categorias={categoriasOptions}
-              categoriaSeleccionada={categoriaSeleccionada}
-              onSeleccionar={setCategoriaSeleccionada}
-              loading={loadingCategorias}
-            />
-          </div>
+          {/* Selector de edición y categoría */}
+          <SelectorEdicionCategoria />
 
-        {/* Tabs de estadísticas */}
-        {categoriaSeleccionada && (
+        {/* Tabs de estadísticas - Solo mostrar si hay categoría seleccionada */}
+        {categoriaSeleccionada ? (
           <div className="space-y-6">
             <EstadisticasTabs 
               activeTab={activeTab}
@@ -167,8 +154,14 @@ export default function EstadisticasPage() {
             <div className="min-h-[300px]">
               {activeTab === 'posiciones' && (
                 <>
-                  {posicionesData && posicionesData.length > 1 ? (
-                    // Si hay múltiples zonas, mostrar cada una
+                  {(errorPosiciones || errorPlayoff) ? (
+                    <div className="bg-[var(--black-900)] border border-red-500/20 rounded-xl p-8">
+                      <p className="text-red-400 text-center text-sm">
+                        {(errorPosiciones || errorPlayoff)?.message || 'Error al cargar las posiciones'}
+                      </p>
+                    </div>
+                  ) : posicionesData && posicionesData.length > 1 ? (
+                    // Si hay múltiples zonas, mostrar cada una por separado
                     <div className="space-y-6">
                       {posicionesData.map((zona) => (
                         <div key={zona.id_zona} className="space-y-2">
@@ -187,97 +180,145 @@ export default function EstadisticasPage() {
                               goles_contra: pos.goles_contra,
                               diferencia_goles: pos.diferencia_goles,
                               puntos: pos.puntos,
+                              puntos_descontados: pos.puntos_descontados,
+                              puntos_finales: pos.puntos_finales,
+                              apercibimientos: pos.apercibimientos,
                               ultima_actualizacion: new Date().toISOString().split('T')[0],
                               img_equipo: pos.img_equipo || undefined
                             }))}
-                            zonasPlayoff={[]}
-                            isLoading={loadingPosiciones}
+                            zonasPlayoff={zonasPlayoffData || []}
+                            isLoading={loadingPosiciones || loadingPlayoff}
                             userTeamIds={userTeamIds}
+                            formatosPosicion={zona.formatosPosicion}
                           />
                         </div>
                       ))}
                     </div>
                   ) : (
+                    // Si hay una sola zona o ninguna, mostrar directamente
                     <TablaPosicionesCompleta
                       posiciones={posicionesAplanadas}
-                      zonasPlayoff={[]}
-                      isLoading={loadingPosiciones}
+                      zonasPlayoff={zonasPlayoffData || []}
+                      isLoading={loadingPosiciones || loadingPlayoff}
                       userTeamIds={userTeamIds}
+                      formatosPosicion={posicionesData && posicionesData.length === 1 ? posicionesData[0].formatosPosicion : undefined}
                     />
                   )}
                 </>
               )}
 
               {activeTab === 'goleadores' && (
-                <TablaJugadoresEstadisticas
-                  jugadores={goleadores || []}
-                  tipo="goleadores"
-                  isLoading={loadingGoleadores}
-                  onRowClick={(jugador) => {
-                    console.log('Jugador seleccionado:', jugador);
-                    // TODO: Abrir modal con filtros o detalles del jugador
-                  }}
-                />
+                errorGoleadores ? (
+                  <div className="bg-[var(--black-900)] border border-red-500/20 rounded-xl p-8">
+                    <p className="text-red-400 text-center text-sm">
+                      {errorGoleadores.message || 'Error al cargar los goleadores'}
+                    </p>
+                  </div>
+                ) : (
+                  <TablaJugadoresEstadisticas
+                    jugadores={goleadores || []}
+                    tipo="goleadores"
+                    isLoading={loadingGoleadores}
+                    // onRowClick={(jugador) => {
+                    //   ('Jugador seleccionado:', jugador);
+                    //   // TODO: Abrir modal con filtros o detalles del jugador
+                    // }}
+                  />
+                )
               )}
 
               {activeTab === 'asistencias' && (
-                <TablaJugadoresEstadisticas
-                  jugadores={asistencias || []}
-                  tipo="asistencias"
-                  isLoading={loadingAsistencias}
-                  onRowClick={(jugador) => {
-                    console.log('Jugador seleccionado:', jugador);
-                  }}
-                />
+                errorAsistencias ? (
+                  <div className="bg-[var(--black-900)] border border-red-500/20 rounded-xl p-8">
+                    <p className="text-red-400 text-center text-sm">
+                      {errorAsistencias.message || 'Error al cargar las asistencias'}
+                    </p>
+                  </div>
+                ) : (
+                  <TablaJugadoresEstadisticas
+                    jugadores={asistencias || []}
+                    tipo="asistencias"
+                    isLoading={loadingAsistencias}
+                    // onRowClick={(jugador) => {
+                    //   ('Jugador seleccionado:', jugador);
+                    // }}
+                  />
+                )
               )}
 
               {activeTab === 'amarillas' && (
-                <TablaJugadoresEstadisticas
-                  jugadores={amarillas || []}
-                  tipo="amarillas"
-                  isLoading={loadingAmarillas}
-                  onRowClick={(jugador) => {
-                    console.log('Jugador seleccionado:', jugador);
-                  }}
-                />
+                errorAmarillas ? (
+                  <div className="bg-[var(--black-900)] border border-red-500/20 rounded-xl p-8">
+                    <p className="text-red-400 text-center text-sm">
+                      {errorAmarillas.message || 'Error al cargar las tarjetas amarillas'}
+                    </p>
+                  </div>
+                ) : (
+                  <TablaJugadoresEstadisticas
+                    jugadores={amarillas || []}
+                    tipo="amarillas"
+                    isLoading={loadingAmarillas}
+                    // onRowClick={(jugador) => {
+                    //   ('Jugador seleccionado:', jugador);
+                    // }}
+                  />
+                )
               )}
 
               {activeTab === 'rojas' && (
-                <TablaJugadoresEstadisticas
-                  jugadores={rojas || []}
-                  tipo="rojas"
-                  isLoading={loadingRojas}
-                  onRowClick={(jugador) => {
-                    console.log('Jugador seleccionado:', jugador);
-                  }}
-                />
+                errorRojas ? (
+                  <div className="bg-[var(--black-900)] border border-red-500/20 rounded-xl p-8">
+                    <p className="text-red-400 text-center text-sm">
+                      {errorRojas.message || 'Error al cargar las tarjetas rojas'}
+                    </p>
+                  </div>
+                ) : (
+                  <TablaJugadoresEstadisticas
+                    jugadores={rojas || []}
+                    tipo="rojas"
+                    isLoading={loadingRojas}
+                    // onRowClick={(jugador) => {
+                    //   ('Jugador seleccionado:', jugador);
+                    // }}
+                  />
+                )
               )}
 
               {activeTab === 'mvps' && (
-                <TablaJugadoresEstadisticas
-                  jugadores={mvps || []}
-                  tipo="mvps"
-                  isLoading={loadingMVPs}
-                  onRowClick={(jugador) => {
-                    console.log('Jugador seleccionado:', jugador);
-                  }}
-                />
+                errorMVPs ? (
+                  <div className="bg-[var(--black-900)] border border-red-500/20 rounded-xl p-8">
+                    <p className="text-red-400 text-center text-sm">
+                      {errorMVPs.message || 'Error al cargar los MVPs'}
+                    </p>
+                  </div>
+                ) : (
+                  <TablaJugadoresEstadisticas
+                    jugadores={mvps || []}
+                    tipo="mvps"
+                    isLoading={loadingMVPs}
+                    // onRowClick={(jugador) => {
+                    //   ('Jugador seleccionado:', jugador);
+                    // }}
+                  />
+                )
               )}
             </div>
           </div>
-        )}
-
-          {/* Mensaje si no hay categoría seleccionada */}
-          {!categoriaSeleccionada && !loadingCategorias && (
-            <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-12">
-              <p className="text-[#737373] text-center text-sm">
-                {categoriasOptions.length === 0 
-                  ? 'No hay categorías disponibles'
-                  : 'Selecciona una categoría para ver las estadísticas'
-                }
-              </p>
-            </div>
-          )}
+        ) : edicionActual && !loadingCategorias ? (
+          // Si hay edición pero no categorías, mostrar mensaje
+          <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-12">
+            <p className="text-[#737373] text-center text-sm">
+              Esta edición no tiene categorías disponibles
+            </p>
+          </div>
+        ) : !edicionActual && !loadingCategorias ? (
+          // Si no hay edición disponible
+          <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-12">
+            <p className="text-[#737373] text-center text-sm">
+              No hay ediciones disponibles
+            </p>
+          </div>
+        ) : null}
         </div>
       </EdicionLayout>
     </UserPageWrapper>

@@ -74,7 +74,6 @@ const AccionModal: React.FC<AccionModalProps> = ({
                 // Configurar modal para edición
                 const tipoAccion = accionToEdit.tipo === 'doble_amarilla' ? 'roja' : accionToEdit.tipo as 'gol' | 'amarilla' | 'roja';
                 setSelectedAction(tipoAccion);
-                console.log(accionToEdit);
 
                 switch (accionToEdit.tipo) {
                     case 'gol':
@@ -82,14 +81,14 @@ const AccionModal: React.FC<AccionModalProps> = ({
                         setGolData({
                             penal: accionToEdit.penal || "N",
                             en_contra: accionToEdit.en_contra || "N",
-                            asistencia: accionToEdit.id_jugador_asistencia ? "S" : "N",
-                            id_jugador_asistencia: accionToEdit.id_jugador_asistencia
+                            asistencia: "N",
+                            id_jugador_asistencia: undefined
                         });
                         break;
                     case 'roja':
                     case 'doble_amarilla':
                         setCurrentStep('expulsion-opciones');
-                        setMotivoExpulsion(accionToEdit.motivo || '');
+                        setMotivoExpulsion(accionToEdit.observaciones || accionToEdit.tipo_tarjeta || '');
                         break;
                     case 'amarilla':
                         setCurrentStep('minuto');
@@ -150,8 +149,8 @@ const AccionModal: React.FC<AccionModalProps> = ({
                             idPartido,
                             golData: {
                                 id_categoria_edicion: idCategoriaEdicion,
-                                id_equipo: accionToEdit.id_equipo,
-                                id_jugador: accionToEdit.id_jugador,
+                                id_equipo: accionToEdit.id_equipo || 0,
+                                id_jugador: accionToEdit.id_jugador || 0,
                                 minuto,
                                 ...golData
                             }
@@ -163,8 +162,8 @@ const AccionModal: React.FC<AccionModalProps> = ({
                             idPartido,
                             amonestacionData: {
                                 id_categoria_edicion: idCategoriaEdicion,
-                                id_equipo: accionToEdit.id_equipo,
-                                id_jugador: accionToEdit.id_jugador,
+                                id_equipo: accionToEdit.id_equipo || 0,
+                                id_jugador: accionToEdit.id_jugador || 0,
                                 minuto
                             }
                         });
@@ -175,8 +174,8 @@ const AccionModal: React.FC<AccionModalProps> = ({
                             idPartido,
                             expulsionData: {
                                 id_categoria_edicion: idCategoriaEdicion,
-                                id_equipo: accionToEdit.id_equipo,
-                                id_jugador: accionToEdit.id_jugador,
+                                id_equipo: accionToEdit.id_equipo || 0,
+                                id_jugador: accionToEdit.id_jugador || 0,
                                 minuto,
                                 motivo: motivoExpulsion
                             }
@@ -185,7 +184,10 @@ const AccionModal: React.FC<AccionModalProps> = ({
                 }
 
                 if (response) {
-                    toast.success((response as any)?.message || `${getActionLabel(selectedAction)} editado correctamente`);
+                    const responseMessage = typeof response === 'object' && response !== null && 'message' in response 
+                        ? (response as { message?: string }).message 
+                        : undefined;
+                    toast.success(responseMessage || `${getActionLabel(selectedAction!)} editado correctamente`);
                 }
             } else {
                 // Lógica original para crear
@@ -233,14 +235,18 @@ const AccionModal: React.FC<AccionModalProps> = ({
                 }
 
                 if (response) {
-                    toast.success((response as any)?.message || `${getActionLabel(selectedAction)} registrado correctamente`);
+                    const responseMessage = typeof response === 'object' && response !== null && 'message' in response 
+                        ? (response as { message?: string }).message 
+                        : undefined;
+                    toast.success(responseMessage || `${getActionLabel(selectedAction!)} registrado correctamente`);
                 }
             }
 
             handleClose();
 
-        } catch (error: any) {
-            const errorMessage = error?.response?.data?.error || error?.message || 'Error al procesar la acción';
+        } catch (error) {
+            const errorObj = error as { response?: { data?: { error?: string } }; message?: string };
+            const errorMessage = errorObj?.response?.data?.error || errorObj?.message || 'Error al procesar la acción';
             toast.error(errorMessage);
         }
     };
@@ -263,40 +269,11 @@ const AccionModal: React.FC<AccionModalProps> = ({
         }
     };
 
-    const handleBackFromMinuto = () => {
-        if (isEditing) {
-            // Si estamos editando, ir directamente al modal específico según el tipo
-            switch (selectedAction) {
-                case 'gol':
-                    setCurrentStep('gol-opciones');
-                    break;
-                case 'roja':
-                    setCurrentStep('expulsion-opciones');
-                    break;
-                case 'amarilla':
-                    handleClose(); // Para amarilla, cerrar directamente
-                    break;
-            }
-        } else {
-            // Lógica original para creación
-            switch (selectedAction) {
-                case 'gol':
-                    setCurrentStep('gol-opciones');
-                    break;
-                case 'roja':
-                    setCurrentStep('expulsion-opciones');
-                    break;
-                case 'amarilla':
-                    setCurrentStep('accion');
-                    break;
-            }
-        }
-    };
 
     const getActionLabel = (action: 'gol' | 'amarilla' | 'roja') => {
         const labels = {
             gol: 'Gol',
-            amarilla: 'Tarjeta Amarilla',
+            amarilla: 'Tarjeta amarilla',
             roja: 'Expulsión'
         };
         return labels[action];
@@ -312,7 +289,7 @@ const AccionModal: React.FC<AccionModalProps> = ({
             id: accionToEdit?.id_jugador || 0,
             nombre: accionToEdit?.nombre || '',
             apellido: accionToEdit?.apellido || '',
-            dorsal: accionToEdit?.dorsal || null
+            dorsal: null
         };
     };
 
@@ -324,12 +301,12 @@ const AccionModal: React.FC<AccionModalProps> = ({
         },
         {
             id: 'amarilla',
-            label: 'Tarjeta Amarilla',
+            label: 'Tarjeta amarilla',
             icon: <TbRectangleVerticalFilled className="w-5 h-5 text-yellow-400" />
         },
         {
             id: 'roja',
-            label: 'Tarjeta Roja',
+            label: 'Tarjeta roja',
             icon: <TbRectangleVerticalFilled className="w-5 h-5 text-red-400" />
         }
     ] as const;
@@ -342,7 +319,7 @@ const AccionModal: React.FC<AccionModalProps> = ({
                 onClose={handleClose}
                 title={
                     <div className="flex items-center justify-between w-full">
-                        <span>Registrar Acción</span>
+                        <span>Registrar acción</span>
                         {/* Indicador de pasos */}
                         <div className="ml-3 flex items-center gap-2 text-xs text-[#737373]">
                             <div className="flex items-center gap-1">
@@ -396,7 +373,7 @@ const AccionModal: React.FC<AccionModalProps> = ({
                             {getCurrentJugador().dorsal && ` (#${getCurrentJugador().dorsal})`}
                         </label>
                         <div className="text-xs text-[#737373] mb-4">
-                            Minuto del partido: {getMinutoActual()}'
+                            Minuto del partido: {getMinutoActual()}&apos;
                         </div>
                         <label className="block text-sm font-medium text-[#737373] mb-3">
                             Selecciona una acción:
@@ -451,8 +428,6 @@ const AccionModal: React.FC<AccionModalProps> = ({
                 onSubmit={handleGolOptionsSubmit}
                 idEquipo={idEquipo}
                 onBack={handleBackToAction}
-                // Pasar datos existentes si estamos editando
-                initialData={isEditing ? golData : undefined}
             />
 
             <ExpulsionModal
@@ -461,8 +436,6 @@ const AccionModal: React.FC<AccionModalProps> = ({
                 jugador={getCurrentJugador()}
                 onSubmit={handleExpulsionOptionsSubmit}
                 onBack={handleBackToAction}
-                // Pasar motivo existente si estamos editando
-                initialMotivo={isEditing ? motivoExpulsion : undefined}
             />
 
             <MinutoModal

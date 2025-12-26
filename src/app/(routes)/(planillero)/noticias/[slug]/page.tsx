@@ -1,12 +1,13 @@
 'use client';
 
-import { use } from 'react';
+import { use, useMemo, useEffect, useState } from 'react';
 import { useNoticiaPorSlug } from '@/app/hooks/useNoticias';
 import { UserPageWrapper } from '@/app/components/layouts/UserPageWrapper';
 import { Clock, Eye, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { formatearFechaNoticia } from '@/app/utils/fechas';
 import { NoticiaCardSkeleton2 } from '@/app/components/skeletons/NoticiaCardSkeleton';
+import { tiptapJsonToHtml, sanitizeHtml } from '@/app/utils/tiptapToHtml';
 
 interface NoticiaPageProps {
     params: Promise<{ slug: string }>;
@@ -15,6 +16,36 @@ interface NoticiaPageProps {
 export default function NoticiaPage({ params }: NoticiaPageProps) {
     const { slug } = use(params);
     const { data: noticia, isLoading, error } = useNoticiaPorSlug(slug);
+
+    // Convertir contenido JSON de Tiptap a HTML sanitizado
+    const [contenidoHtml, setContenidoHtml] = useState<string>('');
+
+    useEffect(() => {
+        if (!noticia?.contenido) {
+            setContenidoHtml('');
+            return;
+        }
+        
+        try {
+            // Intentar parsear como JSON (formato Tiptap)
+            const parsed = typeof noticia.contenido === 'string' 
+                ? JSON.parse(noticia.contenido) 
+                : noticia.contenido;
+            
+            // Si es un objeto con estructura de Tiptap, convertir a HTML
+            if (parsed && typeof parsed === 'object' && parsed.type === 'doc') {
+                const html = tiptapJsonToHtml(parsed);
+                // Re-sanitizar en el cliente para asegurar seguridad
+                setContenidoHtml(sanitizeHtml(html));
+            } else {
+                // Si ya es HTML, solo sanitizar
+                setContenidoHtml(sanitizeHtml(noticia.contenido));
+            }
+        } catch {
+            // Si no es JSON válido, asumir que es HTML y sanitizar
+            setContenidoHtml(sanitizeHtml(noticia.contenido));
+        }
+    }, [noticia?.contenido]);
 
     if (isLoading) {
         return (
@@ -109,8 +140,8 @@ export default function NoticiaPage({ params }: NoticiaPageProps) {
 
                         {/* Contenido */}
                         <div 
-                            className="prose prose-invert max-w-none text-white"
-                            dangerouslySetInnerHTML={{ __html: noticia.contenido }}
+                            className="prose prose-invert max-w-none text-white prose-headings:text-white prose-p:text-[#e5e5e5] prose-strong:text-white prose-a:text-[var(--green)] prose-a:hover:text-[var(--green)]/80"
+                            dangerouslySetInnerHTML={{ __html: contenidoHtml }}
                         />
                     </div>
                 </article>

@@ -131,7 +131,11 @@ export const useActualizarEquipo = () => {
             equiposService.actualizarEquipo(id_equipo, data),
         onSuccess: (response, variables) => {
             // Invalidar queries relacionadas con el equipo
-            queryClient.invalidateQueries({ queryKey: equiposKeys.detail(variables.id_equipo) });
+            // Invalidar todas las queries que empiecen con el detalle del equipo (incluye plantel)
+            queryClient.invalidateQueries({ 
+                queryKey: equiposKeys.detail(variables.id_equipo),
+                exact: false // Invalida todas las queries que empiecen con esta key
+            });
             queryClient.invalidateQueries({ queryKey: equiposKeys.all });
         },
         onError: (error) => {

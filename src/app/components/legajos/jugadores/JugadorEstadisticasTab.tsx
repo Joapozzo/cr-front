@@ -1,8 +1,8 @@
 'use client';
 
 import { EstadisticasJugador } from '@/app/types/legajos';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { BarChart3, TrendingUp, Target, Award } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart3, TrendingUp } from 'lucide-react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -53,26 +53,20 @@ export const JugadorEstadisticasTab = ({
         { name: 'Suplente', value: estadisticas.partidos_suplente },
     ];
 
-    // Datos para gráfico de disciplina
-    const datosDisciplina = [
-        { name: 'Amarillas', value: estadisticas.amarillas, color: '#f59e0b' },
-        { name: 'Rojas', value: estadisticas.rojas, color: '#ef4444' },
-    ];
-
     return (
         <div className="space-y-6">
             <div className="bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] p-6">
                 <div className="flex items-center gap-2 mb-4">
                     <BarChart3 className="w-5 h-5 text-[var(--green)]" />
-                    <h2 className="text-xl font-bold text-[var(--white)]">Estadísticas Detalladas</h2>
+                    <h2 className="text-xl font-bold text-[var(--white)]">Estadísticas detalladas</h2>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--gray-300)]">
-                        <p className="text-xs text-[var(--gray-100)] mb-1">Partidos Jugados</p>
+                        <p className="text-xs text-[var(--gray-100)] mb-1">Partidos jugados</p>
                         <p className="text-2xl font-bold text-[var(--white)]">{estadisticas.partidos_jugados}</p>
                     </div>
                     <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--gray-300)]">
-                        <p className="text-xs text-[var(--gray-100)] mb-1">Goles Totales</p>
+                        <p className="text-xs text-[var(--gray-100)] mb-1">Goles totales</p>
                         <p className="text-2xl font-bold text-[var(--green)]">{estadisticas.goles_totales}</p>
                     </div>
                     <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--gray-300)]">
@@ -80,7 +74,7 @@ export const JugadorEstadisticasTab = ({
                         <p className="text-2xl font-bold text-[var(--yellow)]">{estadisticas.asistencias}</p>
                     </div>
                     <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--gray-300)]">
-                        <p className="text-xs text-[var(--gray-100)] mb-1">Promedio Goles/Partido</p>
+                        <p className="text-xs text-[var(--gray-100)] mb-1">Promedio goles/partido</p>
                         <p className="text-2xl font-bold text-[var(--white)]">{estadisticas.promedio_goles_por_partido.toFixed(2)}</p>
                     </div>
                 </div>
@@ -94,7 +88,7 @@ export const JugadorEstadisticasTab = ({
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {datosGoles.length > 0 && (
                         <div>
-                            <h3 className="text-lg font-semibold text-[var(--white)] mb-4">Goles por Tipo</h3>
+                            <h3 className="text-lg font-semibold text-[var(--white)] mb-4">Goles por tipo</h3>
                             <ResponsiveContainer width="100%" height={300}>
                                 <BarChart data={datosGoles}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -114,7 +108,7 @@ export const JugadorEstadisticasTab = ({
                     )}
                     {datosPartidos.length > 0 && (
                         <div>
-                            <h3 className="text-lg font-semibold text-[var(--white)] mb-4">Partidos (Titular vs Suplente)</h3>
+                            <h3 className="text-lg font-semibold text-[var(--white)] mb-4">Partidos (titular vs suplente)</h3>
                             <ResponsiveContainer width="100%" height={300}>
                                 <BarChart data={datosPartidos}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />

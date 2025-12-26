@@ -1,20 +1,29 @@
 import { Partido } from '@/app/types/partido';
+import { PartidoResponse } from '@/app/schemas/partidos.schema';
 import {
     Edit3,
     Trash2,
     MessageSquare,
     Shield,
 } from 'lucide-react';
+import { EscudoEquipo } from '../common/EscudoEquipo';
 
-const GetPartidosColumns = (onEliminarPartido?: (partido: any) => void, onEditar?: (partido: any) => void, onVerDescripcion?: (partido: Partido) => void) => {
+type PartidoRow = PartidoResponse;
+
+const GetPartidosColumns = (onEliminarPartido?: (partido: PartidoRow) => void, onEditar?: (partido: PartidoRow) => void, onVerDescripcion?: (partido: PartidoRow) => void) => {
 
     const EstadoBadge = ({ estado }: { estado: string }) => {
         const estados = {
             'F': { label: 'FINALIZADO', color: 'bg-[var(--green)] text-white' },
             'P': { label: 'PROGRAMADO', color: 'bg-[var(--yellow)] text-white' },
+            'C1': { label: 'EN VIVO', color: 'bg-[var(--green)] text-white animate-pulse' },
+            'E': { label: 'EN VIVO', color: 'bg-[var(--green)] text-white animate-pulse' },
+            'C2': { label: 'EN VIVO', color: 'bg-[var(--green)] text-white animate-pulse' },
             'C': { label: 'EN CURSO', color: 'bg-[var(--blue)] text-white' },
             'S': { label: 'SUSPENDIDO', color: 'bg-red-600 text-white' },
+            'A': { label: 'APLAZADO', color: 'bg-orange-600 text-white' },
             'T': { label: 'FALTA SUBIR', color: 'bg-yellow-600 text-white' },
+            'I': { label: 'INDEFINIDO', color: 'bg-gray-600 text-white' },
         };
 
         const estadoInfo = estados[estado as keyof typeof estados] || estados['P'];
@@ -30,21 +39,24 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: any) => void, onEditar
         {
             key: "equipo_local",
             label: <div className="w-full text-right">LOCAL</div>,
-            render: (value: string, row: any) => (
+            render: (value: unknown, row: PartidoRow, index: number) => (
                 <div className="flex items-center justify-end gap-2">
                     <span className="text-[var(--white)] font-medium text-right">
                         {row.equipoLocal?.nombre || 'Sin definir'}
                     </span>
-                    <div className="w-8 h-8 bg-[var(--gray-200)] rounded-full flex items-center justify-center">
-                        <Shield className="w-4 h-4 text-[var(--gray-100)]" />
-                    </div>
+                    <EscudoEquipo
+                        src={row.equipoLocal?.img}
+                        alt={row.equipoLocal?.nombre || 'Sin definir'}
+                        width={20}
+                        height={20}
+                    />
                 </div>
             ),
         },
         {
             key: "resultado",
             label: "",
-            render: (value: string, row: any) =>
+            render: (value: unknown, row: PartidoRow, index: number) =>
                 row.estado === "F" &&
                     row.goles_local !== null &&
                     row.goles_visita !== null ? (
@@ -66,11 +78,14 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: any) => void, onEditar
         {
             key: "equipo_visita",
             label: "VISITANTE",
-            render: (value: string, row: any) => (
+            render: (value: unknown, row: PartidoRow, index: number) => (
                 <div className="flex items-center justify-start gap-2">
-                    <div className="w-8 h-8 bg-[var(--gray-200)] rounded-full flex items-center justify-center">
-                        <Shield className="w-4 h-4 text-[var(--gray-100)]" />
-                    </div>
+                    <EscudoEquipo
+                        src={row.equipoVisita?.img}
+                        alt={row.equipoVisita?.nombre || 'Sin definir'}
+                        width={20}
+                        height={20}
+                    />
                     <span className="text-[var(--white)] font-medium text-left">
                         {row.equipoVisita?.nombre || 'Sin definir'}
                     </span>
@@ -80,28 +95,32 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: any) => void, onEditar
         {
             key: "dia",
             label: "DÍA",
-            render: (value: string, row: any) => (
-                <span className="text-[var(--gray-100)]">
-                    {new Date(value).toLocaleDateString("es-ES")}
-                </span>
-            ),
+            render: (value: unknown, row: PartidoRow, index: number) => {
+                if (!value) return <span className="text-[var(--gray-100)]">-</span>;
+                const dateValue = value instanceof Date ? value : new Date(String(value));
+                return (
+                    <span className="text-[var(--gray-100)]">
+                        {dateValue.toLocaleDateString("es-ES")}
+                    </span>
+                );
+            },
         },
         {
             key: "estado",
             label: "ESTADO",
-            render: (value: string, row: any) => <EstadoBadge estado={value} />,
+            render: (value: unknown, row: PartidoRow, index: number) => <EstadoBadge estado={String(value)} />,
         },
         {
             key: "hora",
             label: "HORA",
-            render: (value: string, row: any) => (
-                <span className="text-[var(--gray-100)]">{value}</span>
+            render: (value: unknown, row: PartidoRow, index: number) => (
+                <span className="text-[var(--gray-100)]">{String(value || '-')}</span>
             ),
         },
         {
             key: "planillero",
             label: "PLANILLERO",
-            render: (value: string, row: any) => (
+            render: (value: unknown, row: PartidoRow, index: number) => (
                 <span className="text-[var(--gray-100)]">
                     {row.planillero?.nombre} {row.planillero?.apellido}
                 </span>
@@ -110,8 +129,8 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: any) => void, onEditar
         {
             key: "cancha",
             label: "CANCHA",
-            render: (value: any, row: any) => {
-                const canchaNombre = row.cancha?.nombre || value || 'Sin cancha';
+            render: (value: unknown, row: PartidoRow, index: number) => {
+                const canchaNombre = row.cancha?.nombre || (typeof value === 'string' ? value : 'Sin cancha');
                 return (
                     <span className="text-[var(--gray-100)]">{canchaNombre}</span>
                 );
@@ -120,7 +139,7 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: any) => void, onEditar
         {
             key: "actions",
             label: "",
-            render: (value: string, row: any) => (
+            render: (value: unknown, row: PartidoRow, index: number) => (
                 <div className="flex items-center gap-1">
                     <button
                         onClick={() => onEditar?.(row)}

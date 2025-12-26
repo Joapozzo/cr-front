@@ -1,5 +1,5 @@
 import { api } from "../lib/api";
-import { ZonasListResponse, ZonaResponse, CrearZonaInput, EditarZonaInput, DatosCrearZonaResponse, ZonaResponseDelete, ZonasList2Response, Zona } from "../types/zonas";
+import { ZonasListResponse, ZonaResponse, CrearZonaInput, EditarZonaInput, DatosCrearZonaResponse, ZonaResponseDelete, ZonasList2Response, Zona, CrearFormatoPosicionInput, ActualizarFormatoPosicionInput, FormatoPosicionResponse, FormatosPosicionListResponse, FormatoPosicion } from "../types/zonas";
 
 export const zonasService = {
     obtenerZonasPorFase: async (id_categoria_edicion: number, numero_fase: number): Promise<Zona[]> => {
@@ -15,9 +15,10 @@ export const zonasService = {
         }
     },
 
-    obtenerDatosParaCrearZona: async (): Promise<DatosCrearZonaResponse> => {
+    obtenerDatosParaCrearZona: async (id_zona?: number): Promise<DatosCrearZonaResponse> => {
         try {
-            return await api.get<DatosCrearZonaResponse>('/admin/zonas/obtener-datos');
+            const params = id_zona ? `?id_zona=${id_zona}` : '';
+            return await api.get<DatosCrearZonaResponse>(`/admin/zonas/obtener-datos${params}`);
         } catch (error: unknown) {
             if (error instanceof Error && error.message) {
                 throw error;
@@ -139,6 +140,71 @@ export const zonasService = {
         } catch (error) {
             console.error('Error al obtener las zonas:', error);
             throw new Error('No se pudieron cargar las zonas');
+        }
+    },
+
+    // Servicios para formatos de posición
+    crearFormatoPosicion: async (id_zona: number, data: CrearFormatoPosicionInput): Promise<FormatoPosicionResponse> => {
+        try {
+            return await api.post<FormatoPosicionResponse>(`/admin/zonas/${id_zona}/formatos-posicion`, data);
+        } catch (error: unknown) {
+            if (error instanceof Error && error.message) {
+                throw error;
+            }
+            const errorObj = error as { response?: { status?: number; data?: { error?: string; message?: string } } };
+            console.error('Error al crear formato de posición:', error);
+            const errorMessage = error instanceof Error ? error.message :
+                errorObj.response?.data?.error ||
+                errorObj.response?.data?.message ||
+                'No se pudo crear el formato de posición';
+            throw new Error(errorMessage);
+        }
+    },
+
+    actualizarFormatoPosicion: async (id_zona: number, id_formato: number, data: ActualizarFormatoPosicionInput): Promise<FormatoPosicionResponse> => {
+        try {
+            return await api.put<FormatoPosicionResponse>(`/admin/zonas/${id_zona}/formatos-posicion/${id_formato}`, data);
+        } catch (error: unknown) {
+            if (error instanceof Error && error.message) {
+                throw error;
+            }
+            const errorObj = error as { response?: { status?: number; data?: { error?: string; message?: string } } };
+            console.error('Error al actualizar formato de posición:', error);
+            const errorMessage = error instanceof Error ? error.message :
+                errorObj.response?.data?.error ||
+                errorObj.response?.data?.message ||
+                'No se pudo actualizar el formato de posición';
+            throw new Error(errorMessage);
+        }
+    },
+
+    eliminarFormatoPosicion: async (id_zona: number, id_formato: number): Promise<void> => {
+        try {
+            await api.delete(`/admin/zonas/${id_zona}/formatos-posicion/${id_formato}`);
+        } catch (error: unknown) {
+            if (error instanceof Error && error.message) {
+                throw error;
+            }
+            const errorObj = error as { response?: { status?: number; data?: { error?: string; message?: string } } };
+            console.error('Error al eliminar formato de posición:', error);
+            const errorMessage = error instanceof Error ? error.message :
+                errorObj.response?.data?.error ||
+                errorObj.response?.data?.message ||
+                'No se pudo eliminar el formato de posición';
+            throw new Error(errorMessage);
+        }
+    },
+
+    obtenerFormatosPosicion: async (id_zona: number): Promise<FormatoPosicion[]> => {
+        try {
+            const response = await api.get<FormatosPosicionListResponse>(`/admin/zonas/${id_zona}/formatos-posicion`);
+            return response.data;
+        } catch (error: unknown) {
+            if (error instanceof Error && error.message) {
+                throw error;
+            }
+            console.error('Error al obtener formatos de posición:', error);
+            throw new Error('No se pudieron cargar los formatos de posición');
         }
     },
 }

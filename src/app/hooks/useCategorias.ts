@@ -140,3 +140,41 @@ export const useActualizarCategoriaEdicion = () => {
         },
     });
 };
+
+export const useActualizarPublicadaCategoria = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id_categoria_edicion, publicada }: { id_categoria_edicion: number; publicada: 'S' | 'N' }) =>
+            categoriasService.actualizarPublicadaCategoria(id_categoria_edicion, publicada),
+        onSuccess: (_, { id_categoria_edicion }) => {
+            // Invalidar las queries relacionadas
+            queryClient.invalidateQueries({ queryKey: categoriasKeys.all });
+            queryClient.invalidateQueries({ queryKey: categoriasKeys.porId(id_categoria_edicion) });
+        },
+        onError: (error) => {
+            console.error('Error al actualizar estado de publicación:', error);
+        },
+    });
+};
+
+export const useCrearNombreCategoria = (options?: {
+    onSuccess?: () => void;
+    onError?: (error: Error) => void;
+}) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ nombre, descripcion }: { nombre: string; descripcion?: string }) =>
+            categoriasService.crearNombreCategoria(nombre, descripcion),
+        onSuccess: () => {
+            // Invalidar las queries relacionadas para refrescar los datos disponibles
+            queryClient.invalidateQueries({ queryKey: categoriasKeys.datosCrear() });
+            options?.onSuccess?.();
+        },
+        onError: (error: Error) => {
+            console.error('Error al crear nombre de categoría:', error);
+            options?.onError?.(error);
+        },
+    });
+};

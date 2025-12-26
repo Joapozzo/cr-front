@@ -1,6 +1,7 @@
 // useEditarGol.ts
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { planilleroService } from '../services/planillero.services';
+import { useAuthStore } from '../stores/authStore';
 
 interface EditarGolData {
     idGol: number;
@@ -19,9 +20,13 @@ interface EditarGolData {
 
 export const useEditarGol = () => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
 
     return useMutation({
         mutationFn: async ({ idGol, idPartido, golData }: EditarGolData) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
             return await planilleroService.editarGol(idGol, idPartido, golData);
         },
         onSuccess: (data, variables) => {
@@ -43,9 +48,13 @@ interface EliminarGolData {
 
 export const useEliminarGol = () => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
 
     return useMutation({
         mutationFn: async ({ idGol, idPartido }: EliminarGolData) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
             return await planilleroService.eliminarGol(idGol, idPartido);
         },
         onSuccess: (data, variables) => {
@@ -73,9 +82,13 @@ interface EditarAmonestacionData {
 
 export const useEditarAmonestacion = () => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
 
     return useMutation({
         mutationFn: async ({ idAmonestacion, idPartido, amonestacionData }: EditarAmonestacionData) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
             return await planilleroService.editarAmonestacion(idAmonestacion, idPartido, amonestacionData);
         },
         onSuccess: (data, variables) => {
@@ -97,9 +110,13 @@ interface EliminarAmonestacionData {
 
 export const useEliminarAmonestacion = () => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
 
     return useMutation({
         mutationFn: async ({ idAmonestacion, idPartido }: EliminarAmonestacionData) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
             return await planilleroService.eliminarAmonestacion(idAmonestacion, idPartido);
         },
         onSuccess: (data, variables) => {
@@ -128,9 +145,13 @@ interface EditarExpulsionData {
 
 export const useEditarExpulsion = () => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
 
     return useMutation({
         mutationFn: async ({ idExpulsion, idPartido, expulsionData }: EditarExpulsionData) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
             return await planilleroService.editarExpulsion(idExpulsion, idPartido, expulsionData);
         },
         onSuccess: (data, variables) => {
@@ -152,9 +173,13 @@ interface EliminarExpulsionData {
 
 export const useEliminarExpulsion = () => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
 
     return useMutation({
         mutationFn: async ({ idExpulsion, idPartido }: EliminarExpulsionData) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
             return await planilleroService.eliminarExpulsion(idExpulsion, idPartido);
         },
         onSuccess: (data, variables) => {

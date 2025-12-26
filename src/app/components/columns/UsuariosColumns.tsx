@@ -1,107 +1,100 @@
 'use client';
 
-import { User, Mail, Calendar, Shield, Image as ImageIcon, Eye, ExternalLink } from "lucide-react";
+import { User, Mail, Calendar, Shield, Image as ImageIcon, ExternalLink, KeyRound, UserX, UserCheck } from "lucide-react";
 import { UsuarioAdmin } from "@/app/types/user";
-import { useState } from "react";
-import { ImageViewerModal } from "@/app/components/ui/ImageViewerModal";
-import { Button } from "@/app/components/ui/Button";
 import Link from "next/link";
+import { Button } from "../ui/Button";
+import { ImagenPublica } from "../common/ImagenPublica";
 
 type Column = {
     key: string;
     label: string;
-    render: (value: any, row?: any) => React.ReactNode;
+    render: (value: unknown, row: UsuarioAdmin, index: number) => React.ReactNode;
 };
 
 const UsuarioImageCell = ({ row }: { row: UsuarioAdmin }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const hasImages = row.img || row.foto_selfie_url;
-
+    const nombreCompleto = `${row.nombre} ${row.apellido}`;
+    
     return (
-        <>
-            <div className="flex items-center gap-2">
-                {row.foto_selfie_url ? (
-                    <img
-                        src={row.foto_selfie_url}
-                        alt={`${row.nombre} ${row.apellido}`}
-                        className="w-10 h-10 rounded-full object-cover border-2 border-[var(--green)]"
-                        title="Foto de verificación"
-                    />
-                ) : row.img ? (
-                    <img
-                        src={row.img}
-                        alt={`${row.nombre} ${row.apellido}`}
-                        className="w-10 h-10 rounded-full object-cover"
-                    />
-                ) : (
-                    <div className="w-10 h-10 rounded-full bg-[var(--gray-300)] flex items-center justify-center">
-                        <ImageIcon className="w-5 h-5 text-[var(--gray-100)]" />
-                    </div>
-                )}
-                {hasImages && (
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setIsModalOpen(true)}
-                        className="p-1 h-8 w-8"
-                        title="Ver imágenes"
-                    >
-                        <Eye className="w-4 h-4" />
-                    </Button>
-                )}
-            </div>
-            <ImageViewerModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                imgPublica={row.img}
-                imgSelfie={row.foto_selfie_url}
-                nombre={`${row.nombre} ${row.apellido}`}
-            />
-        </>
+        <div className="flex items-center">
+            {row.foto_selfie_url ? (
+                <ImagenPublica
+                    src={row.foto_selfie_url}
+                    alt={nombreCompleto}
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 rounded-full object-cover border-2 border-[var(--green)]"
+                    fallbackIcon={<ImageIcon className="w-5 h-5 text-[var(--gray-100)]" />}
+                />
+            ) : row.img ? (
+                <ImagenPublica
+                    src={row.img}
+                    alt={nombreCompleto}
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 rounded-full object-cover"
+                    fallbackIcon={<ImageIcon className="w-5 h-5 text-[var(--gray-100)]" />}
+                />
+            ) : (
+                <div className="w-10 h-10 rounded-full bg-[var(--gray-300)] flex items-center justify-center">
+                    <ImageIcon className="w-5 h-5 text-[var(--gray-100)]" />
+                </div>
+            )}
+        </div>
     );
 };
 
-export const getUsuariosColumns = (): Column[] => [
+export const getUsuariosColumns = (
+    onResetPassword?: (usuario: UsuarioAdmin) => void,
+    onCambiarEstado?: (usuario: UsuarioAdmin) => void
+): Column[] => [
     {
         key: "img",
         label: "IMAGEN",
-        render: (_: any, row: UsuarioAdmin) => <UsuarioImageCell row={row} />,
+        render: (_: unknown, row: UsuarioAdmin) => {
+            return <UsuarioImageCell row={row} />;
+        },
     },
     {
         key: "nombre_completo",
         label: "NOMBRE COMPLETO",
-        render: (_: any, row: UsuarioAdmin) => (
-            <div className="flex items-center space-x-2">
-                <User className="w-4 h-4 text-[var(--green)]" />
-                <span className="font-medium text-[var(--white)]">
-                    {`${row.nombre} ${row.apellido}`}
-                </span>
-                {row.es_jugador && row.id_jugador && (
-                    <Link
-                        href={`/adm/legajos/jugadores/${row.id_jugador}`}
-                        className="ml-2 p-1 hover:bg-[var(--gray-300)] rounded transition-colors"
-                        title="Ver perfil en legajos"
-                    >
-                        <ExternalLink className="w-4 h-4 text-[var(--green)]" />
-                    </Link>
-                )}
-            </div>
-        ),
+        render: (_: unknown, row: UsuarioAdmin) => {
+            return (
+                <div className="flex items-center space-x-2">
+                    <User className="w-4 h-4 text-[var(--green)]" />
+                    <span className="font-medium text-[var(--white)]">
+                        {`${row.nombre} ${row.apellido}`}
+                    </span>
+                    {row.es_jugador && row.id_jugador && (
+                        <Link
+                            href={`/adm/legajos/jugadores/${row.id_jugador}`}
+                            className="ml-2 p-1 hover:bg-[var(--gray-300)] rounded transition-colors"
+                            title="Ver perfil en legajos"
+                        >
+                            <ExternalLink className="w-4 h-4 text-[var(--green)]" />
+                        </Link>
+                    )}
+                </div>
+            );
+        },
     },
     {
         key: "email",
         label: "EMAIL",
-        render: (value: string) => (
-            <div className="flex items-center space-x-2">
-                <Mail className="w-4 h-4 text-[var(--gray-100)]" />
-                <span className="text-[var(--gray-100)]">{value}</span>
-            </div>
-        ),
+        render: (value: unknown) => {
+            const email = typeof value === 'string' ? value : '';
+            return (
+                <div className="flex items-center space-x-2">
+                    <Mail className="w-4 h-4 text-[var(--gray-100)]" />
+                    <span className="text-[var(--gray-100)]">{email}</span>
+                </div>
+            );
+        },
     },
     {
         key: "rol",
         label: "ROL",
-        render: (_: any, row: UsuarioAdmin) => {
+        render: (_: unknown, row: UsuarioAdmin) => {
             const rolNombre = row.rol.nombre.toUpperCase();
             const rolConfig: Record<string, { bg: string; text: string }> = {
                 'PLANILLERO': { bg: 'bg-blue-500', text: 'text-white' },
@@ -122,13 +115,14 @@ export const getUsuariosColumns = (): Column[] => [
     {
         key: "estado",
         label: "ESTADO",
-        render: (value: 'I' | 'O' | 'A') => {
+        render: (value: unknown) => {
+            const estado = value as 'I' | 'O' | 'A';
             const estadoConfig = {
                 'A': { label: 'ACTIVO', bg: 'bg-[var(--import)]', text: 'text-white' },
                 'I': { label: 'INACTIVO', bg: 'bg-gray-500', text: 'text-white' },
                 'O': { label: 'OCULTO', bg: 'bg-red-500', text: 'text-white' },
             };
-            const config = estadoConfig[value] || estadoConfig['I'];
+            const config = estadoConfig[estado] || estadoConfig['I'];
             
             return (
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${config.bg} ${config.text}`}>
@@ -140,34 +134,93 @@ export const getUsuariosColumns = (): Column[] => [
     {
         key: "creado_en",
         label: "FECHA CREACIÓN",
-        render: (value: string) => (
-            <div className="flex items-center space-x-2">
-                <Calendar className="w-4 h-4 text-[var(--gray-100)]" />
-                <span className="text-[var(--gray-100)]">
-                    {new Date(value).toLocaleDateString('es-AR', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                    })}
-                </span>
-            </div>
-        ),
+        render: (value: unknown) => {
+            const fecha = typeof value === 'string' ? value : '';
+            return (
+                <div className="flex items-center space-x-2">
+                    <Calendar className="w-4 h-4 text-[var(--gray-100)]" />
+                    <span className="text-[var(--gray-100)]">
+                        {fecha ? new Date(fecha).toLocaleDateString('es-AR', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        }) : '-'}
+                    </span>
+                </div>
+            );
+        },
     },
     {
         key: "actualizado_en",
         label: "ÚLTIMA ACTUALIZACIÓN",
-        render: (value: string) => (
-            <div className="flex items-center space-x-2">
-                <Calendar className="w-4 h-4 text-[var(--gray-100)]" />
-                <span className="text-[var(--gray-100)]">
-                    {new Date(value).toLocaleDateString('es-AR', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                    })}
-                </span>
-            </div>
-        ),
+        render: (value: unknown) => {
+            const fecha = typeof value === 'string' ? value : '';
+            return (
+                <div className="flex items-center space-x-2">
+                    <Calendar className="w-4 h-4 text-[var(--gray-100)]" />
+                    <span className="text-[var(--gray-100)]">
+                        {fecha ? new Date(fecha).toLocaleDateString('es-AR', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        }) : '-'}
+                    </span>
+                </div>
+            );
+        },
+    },
+    {
+        key: "actions",
+        label: "ACCIONES",
+        render: (_: unknown, row: UsuarioAdmin) => {
+            // Solo mostrar acciones para usuarios administrativos (ADMIN, PLANILLERO, CAJERO)
+            const rolesAdministrativos = [1, 2, 5]; // ADMIN, PLANILLERO, CAJERO
+            const esAdministrativo = rolesAdministrativos.includes(row.rol.id_rol);
+
+            if (!esAdministrativo) {
+                return null;
+            }
+
+            const estaActivo = row.estado === 'A';
+
+            return (
+                <div className="flex items-center gap-2">
+                    {onResetPassword && (
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => onResetPassword(row)}
+                            className="flex items-center gap-2"
+                            title="Regenerar contraseña"
+                        >
+                            <KeyRound className="w-4 h-4" />
+                            Resetear Contraseña
+                        </Button>
+                    )}
+                    {onCambiarEstado && (
+                        <Button
+                            variant={estaActivo ? "danger" : "success"}
+                            size="sm"
+                            onClick={() => onCambiarEstado(row)}
+                            className="flex items-center gap-2"
+                            title={estaActivo ? "Dar de baja" : "Activar usuario"}
+                        >
+                            {estaActivo ? (
+                                <>
+                                    <UserX className="w-4 h-4" />
+                                    Dar de Baja
+                                </>
+                            ) : (
+                                <>
+                                    <UserCheck className="w-4 h-4" />
+                                    Activar
+                                </>
+                            )}
+                        </Button>
+                    )}
+                </div>
+            );
+        },
     },
 ];
 

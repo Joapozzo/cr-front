@@ -4,11 +4,8 @@ import { useParams } from "next/navigation";
 import toast from "react-hot-toast";
 
 // Components
-import CardPartidoResult from "@/app/components/CardPartidoResult";
 import JugadoresTabsUnified from "@/app/components/partido/JugadoresTabsUnified";
-import IncidentsUnified from "@/app/components/partido/Incidents";
 import MVPComponent from "@/app/components/MvpCard";
-import PartidoControl from "@/app/components/ButtonContainer";
 import BackButton from "@/app/components/ui/BackButton";
 import PartidoModals from "@/app/components/PartidoModals";
 import JugadorEventualModal from "@/app/components/modals/CrearJugadorEventualModal";
@@ -21,11 +18,13 @@ import { usePartidoTimesActions } from "@/app/hooks/usePartidoTimesActions";
 import { useIncidenciasActions } from "@/app/hooks/useIncidenciasActions";
 import { useEliminarDorsal } from "@/app/hooks/useEliminarDorsal";
 import { useGestionarJugadorDestacado } from "@/app/hooks/useJugadoresDestacados";
+import { useCronometroPartido } from "@/app/hooks/useCronometroPartido";
 
 // Store y tipos
 import usePartidoStore from "@/app/stores/partidoStore";
 import { EstadoPartido, IncidenciaGol, PartidoCompleto } from "@/app/types/partido";
 import PartidoHeaderSticky from "@/app/components/partido/CardPartidoHeader";
+import ObservacionesPlanillero from "@/app/components/ObservacionesPlanillero";
 
 const PartidoPagePlanillero = () => {
     const idPartido = useParams().id_partido;
@@ -45,21 +44,21 @@ const PartidoPagePlanillero = () => {
         setMinutosEntretiempo
     } = usePartidoStore();
 
-    // Custom hooks
-    const modals = usePartidoModals();
-    const partidoTimesActions = usePartidoTimesActions(id_partido);
-    const { marcar, desmarcar, isLoading: isLoadingDestacado } = useGestionarJugadorDestacado();
-    const incidenciasActions = useIncidenciasActions(id_partido, [
-        ...(datosPartido?.plantel_local || []),
-        ...(datosPartido?.plantel_visita || [])
-    ]);
-
-    // Estados locales
-    const [mvpSeleccionado, setMvpSeleccionado] = useState<number | undefined>(1);
+    // Estados locales (declarar antes de usar en hooks)
     const [jugadorCargando, setJugadorCargando] = useState<number | null>(null);
     const [showEventualModal, setShowEventualModal] = useState(false);
     const [equipoEventual, setEquipoEventual] = useState<'local' | 'visita'>('local');
     const [estrellasRotando, setEstrellasRotando] = useState<Set<number>>(new Set());
+
+    // Custom hooks
+    const modals = usePartidoModals();
+    const partidoTimesActions = usePartidoTimesActions(id_partido);
+    const { marcar, desmarcar, isLoading: isLoadingDestacado } = useGestionarJugadorDestacado();
+    const cronometro = useCronometroPartido();
+    const incidenciasActions = useIncidenciasActions(id_partido, [
+        ...(datosPartido?.plantel_local || []),
+        ...(datosPartido?.plantel_visita || [])
+    ]);
 
     // Derivados
     const permitirAcciones = ['C1', 'E', 'C2', 'T'].includes(estadoPartido);
@@ -109,20 +108,30 @@ const PartidoPagePlanillero = () => {
                 idJugador: jugadorId,
                 idEquipo: modals.selectedJugador?.id_equipo || 0
             });
-            toast.success(response.message);
+            const message = (response as { message?: string })?.message || 'Dorsal eliminado correctamente';
+            toast.success(message);
             modals.closeAllModals();
-        } catch (error: any) {
-            const errorMessage = error?.response?.data?.error || error?.message || 'Error desconocido';
+        } catch (error: unknown) {
+            const errorMessage = 
+                (error as { response?: { data?: { error?: string } } })?.response?.data?.error ||
+                (error as { message?: string })?.message ||
+                'Error desconocido';
             toast.error(errorMessage);
         }
     };
 
     const handleMVPChange = (jugadorId: number) => {
-        setMvpSeleccionado(jugadorId);
         const jugador = todosLosJugadores.find(j => j.id_jugador === jugadorId);
         if (jugador) {
             toast.success(`${jugador.apellido}, ${jugador.nombre} seleccionado como MVP`);
         }
+    };
+
+    const handleToggleDestacadoWrapper = (jugadorId: number, equipo: 'local' | 'visita') => {
+        const equipoId = equipo === 'local' 
+            ? (datosPartido?.partido.equipoLocal?.id_equipo || 0)
+            : (datosPartido?.partido.equipoVisita?.id_equipo || 0);
+        handleToggleDestacado(jugadorId, equipoId);
     };
 
     const handleToggleDestacado = async (jugadorId: number, equipoId: number) => {
@@ -141,8 +150,14 @@ const PartidoPagePlanillero = () => {
         setEstrellasRotando(prev => new Set(prev).add(jugadorId));
 
         try {
+            const idCategoriaEdicion = datosPartido?.partido.id_categoria_edicion;
+            if (!idCategoriaEdicion) {
+                toast.error('No se pudo obtener la categoría de edición');
+                return;
+            }
+
             const jugadorData = {
-                id_categoria_edicion: datosPartido?.partido.id_categoria_edicion!,
+                id_categoria_edicion: idCategoriaEdicion,
                 id_equipo: equipoId,
                 id_jugador: jugadorId
             };
@@ -193,10 +208,10 @@ const PartidoPagePlanillero = () => {
             if (partidoBackend.categoriaEdicion?.duracion_entretiempo) {
                 setMinutosEntretiempo(partidoBackend.categoriaEdicion.duracion_entretiempo);
             }
-            if (['C1', 'C2'].includes(partidoBackend.estado) && partidoBackend.hora_inicio) {
+            if (['C1', 'C2', 'T'].includes(partidoBackend.estado) && partidoBackend.hora_inicio) {
                 setHoraInicio(new Date(partidoBackend.hora_inicio));
             }
-            if (partidoBackend.estado === 'C2' && partidoBackend.hora_inicio_segundo_tiempo) {
+            if (['C2', 'T'].includes(partidoBackend.estado) && partidoBackend.hora_inicio_segundo_tiempo) {
                 setHoraInicioSegundoTiempo(new Date(partidoBackend.hora_inicio_segundo_tiempo));
             }
         }
@@ -219,6 +234,7 @@ const PartidoPagePlanillero = () => {
                 onFinalizarPartido={partidoTimesActions.handlers.handleFinalizarPartido}
                 onSuspenderPartido={partidoTimesActions.handlers.handleSuspenderPartido}
                 isLoading={isLoading}
+                cronometro={cronometro}
                 isLoadingButton={partidoTimesActions.isLoading}
             />
 
@@ -226,39 +242,40 @@ const PartidoPagePlanillero = () => {
                 mode="planillero"
                 estadoPartido={estadoPartido}
                 equipoLocal={{
-                    id_equipo: datosPartido?.partido.equipoLocal?.id_equipo!,
-                    nombre: datosPartido?.partido.equipoLocal?.nombre!,
+                    id_equipo: datosPartido?.partido.equipoLocal?.id_equipo || 0,
+                    nombre: datosPartido?.partido.equipoLocal?.nombre || '',
                     jugadores: datosPartido?.plantel_local || []
                 }}
                 equipoVisita={{
-                    id_equipo: datosPartido?.partido.equipoVisita?.id_equipo!,
-                    nombre: datosPartido?.partido.equipoVisita?.nombre!,
+                    id_equipo: datosPartido?.partido.equipoVisita?.id_equipo || 0,
+                    nombre: datosPartido?.partido.equipoVisita?.nombre || '',
                     jugadores: datosPartido?.plantel_visita || []
                 }}
                 incidencias={datosPartido?.incidencias || []}
-                destacados={datosPartido?.jugadores_destacados}
-                onJugadorClick={jugadorActions.handleJugadorClick}
+                destacados={datosPartido?.jugadores_destacados || []}
+                onJugadorClick={jugadorActions.handleJugadorClick as unknown as (jugadorId: number, equipo: 'local' | 'visita') => void}
                 onJugadorAction={jugadorActions.handleJugadorAction}
                 onDeleteDorsal={jugadorActions.handleDeleteDorsal}
                 onEditIncidencia={(inc) => incidenciasActions.handleEditAction(inc, modals.openAccionModal)}
                 onDeleteIncidencia={incidenciasActions.handleDeleteAction}
-                onToggleDestacado={handleToggleDestacado}
+                onToggleDestacado={handleToggleDestacadoWrapper as unknown as (jugadorId: number, equipoId: number) => void}
                 onAgregarEventual={handleAgregarEventual}
-                loading={isLoading}
+                loading={isLoading || !datosPartido?.partido.equipoLocal?.id_equipo || !datosPartido?.partido.equipoVisita?.id_equipo}
                 jugadorCargando={jugadorCargando}
                 estrellasRotando={estrellasRotando}
                 idCategoriaEdicion={datosPartido?.partido.id_categoria_edicion}
                 idPartido={id_partido}
-                jugadorDestacado={datosPartido?.partido.jugador_destacado}
+                jugadorDestacado={datosPartido?.partido.jugador_destacado || null}
+                tipoFutbol={datosPartido?.partido.canchaData?.tipo_futbol || 11}
             />
 
             <MVPComponent
-                jugadores={datosPartido?.jugadores_destacados}
-                partido={datosPartido?.partido}
+                jugadores={datosPartido?.jugadores_destacados || []}
+                partido={datosPartido?.partido as PartidoCompleto}
                 mvpActualId={datosPartido?.partido.jugador_destacado?.id_jugador}
                 onMVPChange={handleMVPChange}
                 permitirEdicion={permitirAcciones}
-                loading={isLoading}
+                loading={isLoading || !datosPartido?.partido}
             />
 
             <PartidoModals
@@ -269,16 +286,20 @@ const PartidoPagePlanillero = () => {
                 isDeleting={isDeleting}
             />
 
-            <JugadorEventualModal
-                isOpen={showEventualModal}
-                onClose={() => setShowEventualModal(false)}
-                idPartido={id_partido}
-                idCategoriaEdicion={datosPartido?.partido.id_categoria_edicion!}
-                idEquipo={equipoEventual === 'local'
-                    ? datosPartido?.partido.equipoLocal?.id_equipo!
-                    : datosPartido?.partido.equipoVisita?.id_equipo!
-                }
-            />
+            {datosPartido?.partido.id_categoria_edicion && datosPartido?.partido.equipoLocal?.id_equipo && datosPartido?.partido.equipoVisita?.id_equipo && (
+                <JugadorEventualModal
+                    isOpen={showEventualModal}
+                    onClose={() => setShowEventualModal(false)}
+                    idPartido={id_partido}
+                    idCategoriaEdicion={datosPartido.partido.id_categoria_edicion}
+                    idEquipo={equipoEventual === 'local'
+                        ? datosPartido.partido.equipoLocal.id_equipo
+                        : datosPartido.partido.equipoVisita.id_equipo
+                    }
+                />
+            )}
+            {/* Observaciones de partido */}
+            <ObservacionesPlanillero idPartido={id_partido} />
         </div>
     );
 };

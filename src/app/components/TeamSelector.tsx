@@ -1,7 +1,6 @@
 'use client';
 
 import Select, { SelectOption } from '@/app/components/ui/Select';
-
 import { Shield } from 'lucide-react';
 import { usePlayerStore } from '../stores/playerStore';
 
@@ -15,17 +14,23 @@ export default function TeamSelector() {
     if (equipos.length === 1) {
         const team = equipos[0];
         return (
-            <div className="w-full mb-6 px-6">
+            <div className="w-full mb-6 px-6 mt-4">
                 <div className="bg-[var(--gray-400)] text-white rounded-[20px] px-6 py-4 pointer-events-none">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                         {team.img_equipo ? (
-                            <img
-                                src={team.img_equipo}
-                                alt={team.nombre_equipo}
-                                className="w-5 h-5 rounded-full object-cover"
-                            />
+                            <div className="w-15 h-15 rounded-lg overflow-hidden flex-shrink-0 bg-[var(--gray-300)]">
+                                <img
+                                    src={team.img_equipo}
+                                    alt={team.nombre_equipo}
+                                    className="w-full h-full object-cover"
+                                    style={{ imageRendering: 'auto' }}
+                                    loading="eager"
+                                />
+                            </div>
                         ) : (
-                            <Shield size={30} className="text-[var(--green)]" />
+                            <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-[var(--gray-300)] flex-shrink-0">
+                                <Shield size={24} className="text-[var(--green)]" />
+                            </div>
                         )}
                         <div className="flex flex-col">
                             <span className="text-xs text-[var(--green)]">Equipo actual</span>
@@ -61,7 +66,7 @@ export default function TeamSelector() {
     };
 
     return (
-        <div className="w-full mb-6">
+        <div className="w-full mb-6 mt-4 px-4 mx-auto">
             <label className="block text-sm font-medium text-[var(--gray-100)] mb-2">
                 Seleccionar equipo
             </label>

@@ -1,10 +1,11 @@
 import React from 'react';
 import { JugadorPlantel } from "@/app/types/partido";
-import { Loader2, MoreVertical, Trash2 } from 'lucide-react';
+import { Loader2, MoreVertical, Trash2, RefreshCw, ArrowRight, ArrowLeft } from 'lucide-react';
 import { TbCircleLetterCFilled } from "react-icons/tb";
 import { GrStarOutline, GrStar } from 'react-icons/gr';
 import { IncidentsIcon } from '../IncidentIcon';
 import { calcularAccionesJugador } from '@/app/utils/formacion.helper';
+import SwipeableJugadorRow from './SwipeableJugadorRow';
 
 
 interface JugadorRowProps {
@@ -21,6 +22,12 @@ interface JugadorRowProps {
     permitirAcciones: boolean;
     estaCargando: boolean;
 
+    // Props para swipe y cambios
+    limiteEnCancha?: number;
+    jugadoresEnCanchaActuales?: number;
+    onToggleEnCancha?: (jugadorId: number, equipoId: number) => Promise<void>;
+    onSolicitarCambio?: (jugador: JugadorPlantel) => void;
+
     // Callbacks
     onJugadorClick?: () => void;
     onJugadorAction?: () => void;
@@ -31,12 +38,18 @@ interface JugadorRowProps {
 const JugadorRow: React.FC<JugadorRowProps> = ({
     jugador,
     acciones,
+    equipo,
+    equipoId,
     esDestacado,
     estaRotando,
     index,
     mode,
     permitirAcciones,
     estaCargando,
+    limiteEnCancha,
+    jugadoresEnCanchaActuales = 0,
+    onToggleEnCancha,
+    onSolicitarCambio,
     onJugadorClick,
     onJugadorAction,
     onDeleteDorsal,
@@ -47,27 +60,33 @@ const JugadorRow: React.FC<JugadorRowProps> = ({
     const esPlanillero = mode === 'planillero';
     const esInhabilitado = jugador.sancionado === 'S';
     const esEventual = jugador.eventual === 'S';
+    // en_cancha indica si está en cancha (titular o entró después)
+    // esTitularOriginal = true solo si está en cancha Y minuto_entrada es 0 o null (empezó desde el inicio)
+    const enCancha = jugador.en_cancha ?? false;
+    const esTitularOriginal = enCancha && (jugador.minuto_entrada === 0 || jugador.minuto_entrada === null);
+    const entroDespues = enCancha && jugador.minuto_entrada !== null && jugador.minuto_entrada !== 0 && jugador.minuto_entrada !== undefined;
 
-    return (
-        <>
-            <style jsx>{`
-                @keyframes rotateStar {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
+    const contenidoRow = (
+        <div
+            className={`
+                flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all relative
+                ${esInhabilitado ? 'opacity-50 bg-[#1a1a1a] pointer-events-none border-[#262626]' : 'hover:border-[#404040]'}
+                ${esPlanillero && permitirAcciones && !esInhabilitado ? 'cursor-pointer' : ''}
+                ${enCancha 
+                    ? (esTitularOriginal 
+                        ? 'border-green-500/60' 
+                        : 'border-orange-500/60'
+                    ) 
+                    : 'border-[#262626]'
                 }
-            `}</style>
-
-            <div
-                className={`
-                    flex items-center gap-3 px-3 py-2.5 rounded-lg border border-[#262626] 
-                    transition-colors
-                    ${esInhabilitado ? 'opacity-50 bg-[#1a1a1a] pointer-events-none' : 'hover:border-[#404040]'}
-                    ${esPlanillero && permitirAcciones && !esInhabilitado ? 'cursor-pointer' : ''}
-                    opacity-0 translate-y-4
-                `}
-                style={{ animation: `fadeSlideIn 0.3s ease-out ${index * 30}ms forwards` }}
-                onClick={() => esPlanillero && permitirAcciones && !esInhabilitado && onJugadorClick?.()}
-            >
+                opacity-0 translate-y-4
+            `}
+            style={{ 
+                animation: `fadeSlideIn 0.3s ease-out ${index * 30}ms forwards`,
+                marginBottom: '2px' // Espacio para evitar cortes
+            }}
+            onClick={() => esPlanillero && permitirAcciones && !esInhabilitado && onJugadorClick?.()}
+        >
                 {/* Dorsal */}
                 <div
                     className={`
@@ -81,6 +100,14 @@ const JugadorRow: React.FC<JugadorRowProps> = ({
                 {/* Nombre y acciones */}
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
+                        {/* Flecha si entró después */}
+                        {entroDespues && (
+                            <ArrowRight className="w-3.5 h-3.5 text-green-400 flex-shrink-0" />
+                        )}
+                        {/* Flecha si salió */}
+                        {!enCancha && jugador.minuto_salida !== null && jugador.minuto_salida !== undefined && (
+                            <ArrowLeft className="w-3.5 h-3.5 text-red-400 flex-shrink-0" />
+                        )}
                         <span className="text-sm font-medium text-white truncate">
                             {jugador.apellido.toUpperCase()}, {jugador.nombre}
                         </span>
@@ -115,17 +142,30 @@ const JugadorRow: React.FC<JugadorRowProps> = ({
                 {/* Acciones planillero */}
                 {esPlanillero && permitirAcciones && (
                     <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                        {/* Botón cambio (solo si está en cancha) */}
+                        {enCancha && jugador.dorsal && onSolicitarCambio && (
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onSolicitarCambio(jugador);
+                                }}
+                                className="w-8 h-8 flex items-center justify-center 
+                                           hover:bg-blue-500/20 rounded transition-colors
+                                           disabled:opacity-30 disabled:cursor-not-allowed"
+                                disabled={estaCargando || esInhabilitado}
+                                title="Realizar cambio"
+                            >
+                                <RefreshCw size={16} className="text-blue-500" />
+                            </button>
+                        )}
+
                         {/* Botón más opciones */}
                         <button
                             onClick={onJugadorAction}
                             className="w-8 h-8 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
                             disabled={estaCargando || esInhabilitado || !jugador.dorsal}
                         >
-                            {estaCargando ? (
-                                <Loader2 className="w-4 h-4 animate-spin text-[#737373]" />
-                            ) : (
-                                <MoreVertical className="w-4 h-4 text-[#737373]" />
-                            )}
+                            <MoreVertical className="w-4 h-4 text-[#737373]" />
                         </button>
 
                         {/* Estrella destacado con animación */}
@@ -155,6 +195,44 @@ const JugadorRow: React.FC<JugadorRowProps> = ({
                     </div>
                 )}
             </div>
+    );
+
+    // Si es planillero y permite acciones, envolver con SwipeableJugadorRow
+    if (esPlanillero && permitirAcciones && onToggleEnCancha && limiteEnCancha && jugador.dorsal) {
+        return (
+            <>
+                <style jsx>{`
+                    @keyframes rotateStar {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `}</style>
+                <SwipeableJugadorRow
+                    jugador={jugador}
+                    equipoId={equipoId}
+                    equipo={equipo}
+                    limiteEnCancha={limiteEnCancha}
+                    jugadoresEnCanchaActuales={jugadoresEnCanchaActuales}
+                    enCancha={enCancha}
+                    esTitularOriginal={esTitularOriginal}
+                    onToggleEnCancha={onToggleEnCancha}
+                    disabled={esInhabilitado || estaCargando}
+                >
+                    {contenidoRow}
+                </SwipeableJugadorRow>
+            </>
+        );
+    }
+
+    return (
+        <>
+            <style jsx>{`
+                @keyframes rotateStar {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `}</style>
+            {contenidoRow}
         </>
     );
 };

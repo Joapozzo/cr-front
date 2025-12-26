@@ -24,7 +24,6 @@ const MAX_HEIGHT = 1024;
 const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEquipoProps) => {
     const [nombre, setNombre] = useState(equipo.nombre || '');
     const [imagenFile, setImagenFile] = useState<File | null>(null);
-    const [imagenPreview, setImagenPreview] = useState<string | null>(equipo.img || null);
     const [imagenBase64, setImagenBase64] = useState<string | null>(null);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isProcessing, setIsProcessing] = useState(false);
@@ -32,16 +31,18 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { mutate: actualizarEquipo, isPending } = useActualizarEquipo();
 
-    // Resetear formulario cuando se abre o cambia el equipo
+    // Imagen preview: si hay una nueva seleccionada (base64), usar esa, sino usar la del equipo
+    const imagenPreview = imagenBase64 || equipo.img || null;
+
+    // Resetear formulario cuando se abre el modal
     useEffect(() => {
         if (isOpen) {
             setNombre(equipo.nombre || '');
-            setImagenPreview(equipo.img || null);
             setImagenFile(null);
             setImagenBase64(null);
             setErrors({});
         }
-    }, [isOpen, equipo]);
+    }, [isOpen, equipo.id_equipo]); // Solo cuando se abre o cambia el equipo
 
     const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
@@ -94,14 +95,12 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
             // Convertir a Base64 para preview
             const base64 = await convertirABase64(file);
             setImagenBase64(base64);
-            setImagenPreview(base64);
             setErrors(prev => ({ ...prev, imagen: '' }));
         } catch (error) {
             console.error('Error al procesar imagen:', error);
             toast.error('Error al procesar la imagen');
             setImagenFile(null);
             setImagenBase64(null);
-            setImagenPreview(null);
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
@@ -111,7 +110,6 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
     const handleRemoveImage = () => {
         setImagenFile(null);
         setImagenBase64(null);
-        setImagenPreview(equipo.img || null); // Volver a la imagen original
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
@@ -151,11 +149,21 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
                     data,
                 },
                 {
-                    onSuccess: () => {
+                    onSuccess: async () => {
+                        // Limpiar estados
+                        setImagenFile(null);
+                        setImagenBase64(null);
+                        setIsProcessing(false);
+                        
+                        // Mostrar toast
                         toast.success('Equipo actualizado exitosamente');
+                        
+                        // Actualizar datos en el componente padre
                         if (onSuccess) {
-                            onSuccess();
+                            await onSuccess();
                         }
+                        
+                        // Cerrar modal después de actualizar
                         onClose();
                     },
                     onError: (error: Error) => {
@@ -231,7 +239,7 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
                     {imagenPreview && (
                         <div className="relative inline-block">
                             <div className="w-32 h-32 rounded-full bg-[var(--gray-200)] flex items-center justify-center overflow-hidden border-2 border-[var(--gray-300)]">
-                                {imagenPreview.startsWith('data:') || imagenPreview.startsWith('http') ? (
+                                {imagenPreview && (imagenPreview.startsWith('data:') || imagenPreview.startsWith('http')) ? (
                                     // eslint-disable-next-line @next/next/no-img-element
                                     <img
                                         src={imagenPreview}

@@ -1,5 +1,6 @@
 "use client";
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { Plus, AlertCircle, Filter } from 'lucide-react';
 import { useCategoriasPorEdicionActivas } from '@/app/hooks/useCategorias';
 import {
@@ -29,6 +30,13 @@ export default function SancionesPage() {
     // Obtener categorías de la edición
     const { data: categoriasData, isLoading: isLoadingCategorias } = useCategoriasPorEdicionActivas();
     const categorias = categoriasData || [];
+
+    // Seleccionar automáticamente la primera categoría si hay categorías disponibles
+    useEffect(() => {
+        if (categoriasData && categoriasData.length > 0 && !categoriaSeleccionadaId) {
+            setCategoriaSeleccionadaId(categoriasData[0].id_categoria_edicion);
+        }
+    }, [categoriasData, categoriaSeleccionadaId]);
 
     // Queries y Mutations
     const { data: sancionesData, isLoading, isError, error, refetch } = useSancionesPorCategoria(
@@ -122,7 +130,7 @@ export default function SancionesPage() {
                     <div className="flex space-y-3 justify-between w-full">
                         <div>
                             <label className="block text-sm font-medium text-[var(--gray-100)] mb-2">
-                                Seleccionar Categoría
+                                Seleccionar categoría
                             </label>
                             <select
                                 value={categoriaSeleccionadaId || ''}
@@ -130,7 +138,6 @@ export default function SancionesPage() {
                                 className="w-full md:w-96 px-4 py-2 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] focus:outline-none focus:border-[var(--green)]"
                                 disabled={isLoadingCategorias}
                             >
-                                <option value="">Seleccionar categoría...</option>
                                 {categorias.map((cat: any) => (
                                     <option key={cat.id_categoria_edicion} value={cat.id_categoria_edicion}>
                                         {cat.nombre}

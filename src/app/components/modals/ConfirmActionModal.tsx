@@ -95,7 +95,7 @@ const ConfirmActionModal: React.FC<ConfirmActionModalProps> = ({
 
     return (
         <div
-            className={`fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 transition-opacity duration-200 ${
+            className={`fixed inset-0 bg-black/70 flex items-center justify-center z-1000 p-4 transition-opacity duration-200 ${
                 isAnimating ? 'opacity-100' : 'opacity-0'
             }`}
             onClick={handleOverlayClick}

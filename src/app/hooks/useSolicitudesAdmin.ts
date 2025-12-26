@@ -7,6 +7,7 @@ import {
     ConfirmarInvitacionResponse,
     solicitudesService
 } from '../services/solicitudes.services';
+import { equiposService } from '../services/equipos.services';
 import { equiposKeys } from './useEquipos';
 
 // ====================================================================
@@ -24,6 +25,10 @@ export const mercadopasesKeys = {
     // Lista de invitaciones enviadas por un equipo y categoría
     invitacionesEnviadas: (id_equipo: number, id_categoria_edicion: number) =>
         [...mercadopasesKeys.all, 'invitaciones-enviadas', id_equipo, id_categoria_edicion] as const,
+
+    // Lista de solicitudes de baja para un equipo y categoría
+    solicitudesBaja: (id_equipo: number, id_categoria_edicion: number) =>
+        [...mercadopasesKeys.all, 'solicitudes-baja', id_equipo, id_categoria_edicion] as const,
 };
 
 // ====================================================================
@@ -105,7 +110,7 @@ export const useConfirmarSolicitud = (
     return useMutation<ConfirmarSolicitudResponse, Error, { id_solicitud: number; id_jugador: number }>({
         mutationFn: ({ id_solicitud, id_jugador }) => solicitudesService.confirmarSolicitud(id_solicitud, id_jugador),
         onSuccess: (data, variables) => {
-            console.log(`Solicitud ${variables.id_solicitud} confirmada con éxito.`, data);
+            (`Solicitud ${variables.id_solicitud} confirmada con éxito.`, data);
         },
         onSettled: onSettled, // Invalida las queries tras el éxito o error
         onError: (error) => {
@@ -126,7 +131,7 @@ export const useRechazarSolicitud = (
     return useMutation<RechazarResponse, Error, number>({
         mutationFn: (id_solicitud) => solicitudesService.rechazarSolicitud(id_solicitud),
         onSuccess: (data, variables) => {
-            console.log(`Solicitud ${variables} rechazada con éxito.`, data);
+            (`Solicitud ${variables} rechazada con éxito.`, data);
         },
         onSettled: onSettled,
         onError: (error) => {
@@ -148,7 +153,7 @@ export const useConfirmarInvitacion = (
     return useMutation<ConfirmarInvitacionResponse, Error, { id_solicitud: number; id_jugador: number }>({
         mutationFn: ({ id_solicitud, id_jugador }) => solicitudesService.confirmarInvitacion(id_solicitud, id_jugador),
         onSuccess: (data, variables) => {
-            console.log(`Invitación ${variables.id_solicitud} confirmada con éxito.`, data);
+            (`Invitación ${variables.id_solicitud} confirmada con éxito.`, data);
         },
         onSettled: onSettled,
         onError: (error) => {
@@ -169,11 +174,78 @@ export const useRechazarInvitacion = (
     return useMutation<RechazarResponse, Error, number>({
         mutationFn: (id_solicitud) => solicitudesService.rechazarInvitacion(id_solicitud),
         onSuccess: (data, variables) => {
-            console.log(`Invitación ${variables} rechazada con éxito.`, data);
+            (`Invitación ${variables} rechazada con éxito.`, data);
         },
         onSettled: onSettled,
         onError: (error) => {
             console.error('Error al rechazar invitación:', error.message);
+        },
+        ...options,
+    });
+};
+
+/**
+ * Hook para obtener las solicitudes de baja de un equipo/categoría.
+ */
+export const useSolicitudesBajaEquipo = (
+    id_equipo: number,
+    id_categoria_edicion: number,
+    options?: Omit<UseQueryOptions<SolicitudResponse[], Error>, 'queryKey' | 'queryFn'>
+) => {
+    const enabled = !!id_equipo && !!id_categoria_edicion;
+
+    return useQuery<SolicitudResponse[]>({
+        queryKey: mercadopasesKeys.solicitudesBaja(id_equipo, id_categoria_edicion),
+        queryFn: async () => {
+            const response = await equiposService.obtenerSolicitudesBajaAdmin(id_equipo, id_categoria_edicion);
+            return response.solicitudes;
+        },
+        staleTime: 60 * 1000,
+        gcTime: 5 * 60 * 1000,
+        retry: 1,
+        refetchOnWindowFocus: false,
+        enabled,
+        ...options,
+    });
+};
+
+/**
+ * Hook para CONFIRMAR (aceptar) una solicitud de baja.
+ */
+export const useConfirmarBajaJugador = (
+    options?: Omit<UseMutationOptions<{ message: string }, Error, number>, 'mutationFn'>
+) => {
+    const { onSettled } = useMercadoPasesMutation();
+
+    return useMutation<{ message: string }, Error, number>({
+        mutationFn: (id_solicitud) => equiposService.confirmarBajaJugador(id_solicitud),
+        onSuccess: (data, variables) => {
+            (`Solicitud de baja ${variables} confirmada con éxito.`, data);
+        },
+        onSettled: onSettled,
+        onError: (error) => {
+            console.error('Error al confirmar solicitud de baja:', error.message);
+        },
+        ...options,
+    });
+};
+
+/**
+ * Hook para RECHAZAR una solicitud de baja.
+ */
+export const useRechazarBajaJugador = (
+    options?: Omit<UseMutationOptions<{ message: string }, Error, { id_solicitud: number; motivo_rechazo?: string }>, 'mutationFn'>
+) => {
+    const { onSettled } = useMercadoPasesMutation();
+
+    return useMutation<{ message: string }, Error, { id_solicitud: number; motivo_rechazo?: string }>({
+        mutationFn: ({ id_solicitud, motivo_rechazo }) => equiposService.rechazarBajaJugador(id_solicitud, motivo_rechazo),
+        onSuccess: (data, variables) => {
+            (`Solicitud de baja ${variables.id_solicitud} rechazada con éxito.`, data);
+        },
+        onSettled: onSettled,
+        onError: (error) => {
+            console.error('Error al rechazar solicitud de baja:', error.message);
         },
         ...options,
     });

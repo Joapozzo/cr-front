@@ -11,6 +11,10 @@ export interface Equipo {
     nombre: string;
     descripcion?: string;
     img?: string | null;
+    categorias?: Array<{
+        id_categoria_edicion: number;
+        nombre_completo: string;
+    }>;
 }
 
 export interface EquipoTemporada {
@@ -21,6 +25,7 @@ export interface EquipoTemporada {
     lista_de_buena_fe: number;
     zona: string | null;
     solicitudes_pendientes: number;
+    invitaciones_pendientes?: number;
     id_zona?: number | null;
 }
 

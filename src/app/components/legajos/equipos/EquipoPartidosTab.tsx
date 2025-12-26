@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { HistorialPartidosEquipoResponse, FixtureEquipo, PartidoEquipo } from '@/app/types/legajos';
+import { HistorialPartidosEquipoResponse, FixtureEquipo, PartidoEquipo as PartidoEquipoLegajo } from '@/app/types/legajos';
 import MatchCard from '@/app/components/CardPartidoGenerico';
+import { PartidoEquipo, EstadoPartido } from '@/app/types/partido';
 import { Pagination } from '@/app/components/legajos/shared/Pagination';
 import { FiltrosFixture } from '@/app/components/fixture/FiltrosFixture';
 import { ListaPartidos } from '@/app/components/fixture/ListaPartidos';
@@ -24,30 +25,31 @@ interface EquipoPartidosTabProps {
     idEquipo: number;
 }
 
-// Tipo para el partido convertido (formato del componente MatchCard)
-interface PartidoConvertido {
+// Tipo para partido simplificado (usado en ListaPartidos) - compatible con Partido
+interface PartidoSimplificado {
     id_partido: number;
     jornada: number;
     dia: string;
     hora: string;
-    estado: string;
+    estado: EstadoPartido;
     goles_local: number | null;
     goles_visita: number | null;
-    pen_local: number | null;
-    pen_visita: number | null;
-    cancha: number;
-    id_zona: number;
-    id_categoria_edicion: number;
     id_equipolocal: number;
     id_equipovisita: number;
+    arbitro: string | null;
     equipoLocal: {
         nombre: string;
-        img?: string;
+        img?: string | null;
     };
-    equipoVisita?: {
+    equipoVisita: {
         nombre: string;
-        img?: string;
+        img?: string | null;
     };
+    cancha: number;
+}
+
+// Tipo interno para MatchCard que extiende PartidoEquipo con expulsiones tipadas correctamente
+interface PartidoMatchCard extends Omit<PartidoEquipo, 'incidencias'> {
     incidencias: {
         goles: Array<{
             id_equipo: number;
@@ -67,59 +69,15 @@ interface PartidoConvertido {
     };
 }
 
-// Tipo para partido simplificado (usado en ListaPartidos)
-interface PartidoSimplificado {
-    id_partido: number;
-    jornada: number;
-    dia: string;
-    hora: string;
-    estado: string;
-    goles_local: number | null;
-    goles_visita: number | null;
-    equipoLocal: {
-        nombre: string;
-        img?: string;
-    };
-    equipoVisita?: {
-        nombre: string;
-        img?: string;
-    };
-    cancha: number;
-}
-
-// Función para convertir PartidoEquipo (legajos) a PartidoEquipo (formato del componente)
-const convertirPartido = (partido: PartidoEquipo | FixtureEquipo, idEquipo: number): PartidoConvertido => {
+// Función para convertir PartidoEquipo (legajos) a PartidoEquipo (formato del componente MatchCard)
+const convertirPartido = (partido: PartidoEquipoLegajo | FixtureEquipo, idEquipo: number): PartidoMatchCard => {
     // Si es un fixture, puede que solo tenga rival
     if ('rival' in partido) {
         const fixture = partido as FixtureEquipo;
-        if (!fixture.rival) {
-            // Si no hay rival, retornar estructura básica
-            return {
-                id_partido: fixture.id_partido,
-                jornada: fixture.jornada,
-                dia: fixture.fecha || '',
-                hora: fixture.hora || '',
-                estado: fixture.resultado ? 'F' : 'P',
-                goles_local: fixture.goles_local ?? null,
-                goles_visita: fixture.goles_visita ?? null,
-                pen_local: null,
-                pen_visita: null,
-                cancha: fixture.cancha?.id_cancha || 0,
-                id_zona: 0,
-                id_categoria_edicion: 0,
-                id_equipolocal: idEquipo,
-                id_equipovisita: 0,
-                equipoLocal: {
-                    nombre: 'Mi Equipo',
-                    img: undefined,
-                },
-                equipoVisita: undefined,
-                incidencias: {
-                    goles: [],
-                    expulsiones: [],
-                },
-            };
-        }
+        const rivalNombre = fixture.rival?.nombre || 'Por definir';
+        const rivalImg = fixture.rival?.img || undefined;
+        const rivalId = fixture.rival?.id_equipo || 0;
+        
         return {
             id_partido: fixture.id_partido,
             jornada: fixture.jornada,
@@ -134,14 +92,14 @@ const convertirPartido = (partido: PartidoEquipo | FixtureEquipo, idEquipo: numb
             id_zona: 0,
             id_categoria_edicion: 0,
             id_equipolocal: idEquipo,
-            id_equipovisita: fixture.rival.id_equipo,
+            id_equipovisita: rivalId,
             equipoLocal: {
-                nombre: 'Mi Equipo',
+                nombre: 'Mi equipo',
                 img: undefined,
             },
             equipoVisita: {
-                nombre: fixture.rival.nombre,
-                img: fixture.rival.img || undefined,
+                nombre: rivalNombre,
+                img: rivalImg,
             },
             incidencias: {
                 goles: [],
@@ -151,7 +109,7 @@ const convertirPartido = (partido: PartidoEquipo | FixtureEquipo, idEquipo: numb
     }
     
     // Si es un PartidoEquipo normal
-    const partidoNormal = partido as PartidoEquipo;
+    const partidoNormal = partido as PartidoEquipoLegajo;
     const esLocal = partidoNormal.equipo_local?.id_equipo === idEquipo;
     
     return {
@@ -173,10 +131,10 @@ const convertirPartido = (partido: PartidoEquipo | FixtureEquipo, idEquipo: numb
             nombre: partidoNormal.equipo_local?.nombre || 'TBD',
             img: partidoNormal.equipo_local?.img || undefined,
         },
-        equipoVisita: partidoNormal.equipo_visita ? {
-            nombre: partidoNormal.equipo_visita.nombre,
-            img: partidoNormal.equipo_visita.img || undefined,
-        } : undefined,
+        equipoVisita: {
+            nombre: partidoNormal.equipo_visita?.nombre || 'TBD',
+            img: partidoNormal.equipo_visita?.img || undefined,
+        },
         incidencias: {
             goles: partidoNormal.goles_equipo?.map(gol => ({
                 id_equipo: esLocal ? partidoNormal.equipo_local?.id_equipo || 0 : partidoNormal.equipo_visita?.id_equipo || 0,
@@ -205,7 +163,6 @@ export const EquipoPartidosTab = ({
     isLoadingProximos,
     isLoadingRecientes,
     categoriaSeleccionada,
-    page: _page,
     onPageChange,
     idEquipo,
 }: EquipoPartidosTabProps) => {
@@ -226,9 +183,12 @@ export const EquipoPartidosTab = ({
                 jornada: partidoConvertido.jornada,
                 dia: partidoConvertido.dia,
                 hora: partidoConvertido.hora,
-                estado: partidoConvertido.estado,
+                estado: partidoConvertido.estado as EstadoPartido,
                 goles_local: partidoConvertido.goles_local,
                 goles_visita: partidoConvertido.goles_visita,
+                id_equipolocal: partidoConvertido.id_equipolocal,
+                id_equipovisita: partidoConvertido.id_equipovisita,
+                arbitro: null,
                 equipoLocal: partidoConvertido.equipoLocal,
                 equipoVisita: partidoConvertido.equipoVisita,
                 cancha: partidoConvertido.cancha,
@@ -443,7 +403,7 @@ export const EquipoPartidosTab = ({
                                         const partidoConvertido = convertirPartido(fixture, idEquipo);
                                         return (
                                             <div key={fixture.id_partido} className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
-                                                <MatchCard partido={partidoConvertido} misEquiposIds={[idEquipo]} />
+                                                <MatchCard partido={partidoConvertido as unknown as PartidoEquipo} misEquiposIds={[idEquipo]} />
                                             </div>
                                         );
                                     })}
@@ -467,7 +427,7 @@ export const EquipoPartidosTab = ({
                                     const partidoConvertido = convertirPartido(partido, idEquipo);
                                     return (
                                         <div key={partido.id_partido} className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
-                                            <MatchCard partido={partidoConvertido} misEquiposIds={[idEquipo]} />
+                                            <MatchCard partido={partidoConvertido as unknown as PartidoEquipo} misEquiposIds={[idEquipo]} />
                                         </div>
                                     );
                                 })}

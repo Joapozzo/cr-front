@@ -36,7 +36,7 @@ export const PartidosEquipoCard = ({
       <BaseCard>
         <CardHeader
           icon={<Calendar size={18} className="text-[var(--green)]" />}
-          title="Mis Partidos"
+          title="Mis partidos"
           subtitle="Error al cargar"
         />
         <div className="flex flex-col items-center justify-center py-12 px-6">
@@ -46,13 +46,13 @@ export const PartidosEquipoCard = ({
     );
   }
 
-  // Estado vacío
-  if (!isLoading && partidosActivos.length === 0) {
+  // Estado vacío - solo mostrar si NO hay partidos en ninguna categoría
+  if (!isLoading && partidosPasados.length === 0 && partidosFuturos.length === 0) {
     return (
       <BaseCard>
         <CardHeader
           icon={<Calendar size={18} className="text-[var(--green)]" />}
-          title="Mis Partidos"
+          title="Mis partidos"
           subtitle="Últimos y Próximos"
         />
         <div className="flex flex-col items-center justify-center py-12 px-6">
@@ -76,7 +76,7 @@ export const PartidosEquipoCard = ({
       <BaseCard>
         <CardHeader
           icon={<Calendar size={18} className="text-[var(--green)]" />}
-          title="Mis Partidos"
+          title="Mis partidos"
           subtitle="Cargando..."
         />
         <MatchCardSkeleton />
@@ -90,7 +90,7 @@ export const PartidosEquipoCard = ({
       <div className="rounded-t-2xl overflow-hidden">
         <CardHeader
           icon={<Calendar size={18} className="text-[var(--green)]" />}
-          title="Mis Partidos"
+          title="Mis partidos"
         />
       </div>
 
@@ -101,22 +101,24 @@ export const PartidosEquipoCard = ({
           className={`flex-1 py-3 text-sm font-medium transition-colors ${
             activeTab === 'ultimos'
               ? 'text-[var(--green)] border-b-2 border-[var(--green)]'
+              : partidosPasados.length === 0
+              ? 'text-[#525252] cursor-pointer'
               : 'text-[#737373] hover:text-white'
           }`}
-          disabled={partidosPasados.length === 0}
         >
-          Últimos Partidos
+          Últimos partidos
         </button>
         <button
           onClick={() => handleTabChange('proximos')}
           className={`flex-1 py-3 text-sm font-medium transition-colors ${
             activeTab === 'proximos'
               ? 'text-[var(--green)] border-b-2 border-[var(--green)]'
+              : partidosFuturos.length === 0
+              ? 'text-[#525252] cursor-pointer'
               : 'text-[#737373] hover:text-white'
           }`}
-          disabled={partidosFuturos.length === 0}
         >
-          Próximos Partidos
+          Próximos partidos
         </button>
       </div>
 

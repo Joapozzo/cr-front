@@ -1,4 +1,5 @@
 import { PosicionTabla } from "./categoria";
+import { Equipo } from "./equipo";
 import { PartidoZona } from "./partido";
 import { Temporada } from "./temporada";
 
@@ -17,6 +18,16 @@ export interface Etapa {
     nombre: string;
 }
 
+export interface FormatoPosicion {
+    id_formato_posicion: number;
+    id_zona: number;
+    posicion_desde: number;
+    posicion_hasta: number;
+    descripcion: string;
+    color?: string | null;
+    orden: number;
+}
+
 export interface Zona {
     id_zona: number;
     nombre?: string;
@@ -26,11 +37,13 @@ export interface Zona {
     etapa: Etapa;
     campeon?: string;
     id_equipo_campeon?: number;
+    equipoCampeon?: Equipo | null;
     terminada?: string;
     id_categoria_edicion: number;
     temporadas: Temporada[];
     partidos?: PartidoZona[];
     posiciones?: PosicionTabla[];
+    formatosPosiciones?: FormatoPosicion[];
 }
 
 export interface ZonasList2Response {
@@ -59,6 +72,7 @@ export interface DatosCrearZonaResponse {
     data: {
         tiposZona: TipoZona[];
         etapas: Etapa[];
+        equipos: Equipo[];
     };
 }
 
@@ -77,6 +91,32 @@ export interface EditarZonaInput {
     id_equipo_campeon?: number;
     campeon?: string;
     terminada?: string;
+}
+
+export interface CrearFormatoPosicionInput {
+    posicion_desde: number;
+    posicion_hasta: number;
+    descripcion: string;
+    color?: string | null;
+    orden?: number;
+}
+
+export interface ActualizarFormatoPosicionInput {
+    posicion_desde?: number;
+    posicion_hasta?: number;
+    descripcion?: string;
+    color?: string | null;
+    orden?: number;
+}
+
+export interface FormatoPosicionResponse {
+    message: string;
+    data: FormatoPosicion;
+}
+
+export interface FormatosPosicionListResponse {
+    message: string;
+    data: FormatoPosicion[];
 }
 
 export interface ZonaResponseDelete {

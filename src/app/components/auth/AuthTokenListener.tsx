@@ -30,7 +30,7 @@ export const AuthTokenListener = () => {
             const { token: currentToken } = useAuthStore.getState();
             if (currentToken !== token) {
               setToken(token);
-              console.log('Token actualizado automáticamente por Firebase');
+              ('Token actualizado automáticamente por Firebase');
             }
           } catch (error) {
             console.error('Error al actualizar token:', error);
@@ -54,7 +54,7 @@ export const AuthTokenListener = () => {
           // Forzar renovación antes de que expire
           const token = await user.getIdToken(true); // Force refresh
           setToken(token);
-          console.log('Token renovado proactivamente');
+          ('Token renovado proactivamente');
         } catch (error) {
           console.error('Error al renovar token periódicamente:', error);
         }

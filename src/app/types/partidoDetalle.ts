@@ -8,6 +8,29 @@ export interface PartidoDetalleUsuario {
   plantel_local: JugadorPlantel[];
   plantel_visita: JugadorPlantel[];
   jugadores_destacados?: JugadorDestacado[];
+  cambios?: Array<{
+    id_cambio: number;
+    id_partido: number;
+    tipo_cambio: 'ENTRADA' | 'SALIDA';
+    minuto: number;
+    tiempo: string | null;
+    id_jugador_sale: number | null;
+    id_jugador_entra: number | null;
+    id_equipo: number | null;
+    jugadorSale?: {
+      id_jugador: number;
+      nombre: string;
+      apellido: string;
+    } | null;
+    jugadorEntra?: {
+      id_jugador: number;
+      nombre: string;
+      apellido: string;
+    } | null;
+  }>;
+  ultimos_partidos_local?: Partido[];
+  ultimos_partidos_visita?: Partido[];
+  historial?: HistorialPartidos;
 }
 
 // Último partido resumido de un equipo

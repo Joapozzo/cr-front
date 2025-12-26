@@ -68,8 +68,11 @@ export interface CategoriaEdicionDto {
     puntos_victoria: number;
     puntos_empate: number;
     puntos_derrota: number;
+    fecha_inicio_mercado?: string | null;
+    fecha_fin_mercado?: string | null;
     limite_cambios?: number | null;
     recambio?: boolean | null;
+    color?: string | null;
   };
   estadisticas: {
     partidos_jugados: string;
@@ -91,15 +94,26 @@ export interface CategoriaEdicionResponse {
   error: string | null;
 }
 
-export interface DatosCrearCategoriaResponse {
+export interface CategoriaDisponible {
   id_categoria: number;
   nombre_completo: string;
+}
+
+export interface NombreCategoriaDisponible {
+  id_nombre_cat: number;
+  nombre_categoria: string;
+  es_nombre: boolean;
+}
+
+export interface DatosCrearCategoriaData {
+  categorias: CategoriaDisponible[];
+  nombres_disponibles: NombreCategoriaDisponible[];
 }
 
 export interface DatosCrearCategoriaResponse {
   success: boolean;
   message: string;
-  data: DatosCrearCategoriaResponse[];
+  data: DatosCrearCategoriaData;
 }
 
 export interface CrearCategoriaInput {
@@ -113,6 +127,7 @@ export interface CrearCategoriaInput {
   puntos_derrota: number;
   limite_cambios?: number | null;
   recambio?: boolean | null;
+  color?: string | null;
 }
 
 export interface ActualizarCategoriaInput {
@@ -124,6 +139,7 @@ export interface ActualizarCategoriaInput {
   puntos_derrota?: number;
   limite_cambios?: number | null;
   recambio?: boolean | null;
+  color?: string | null;
 }
 
 export interface CategoriaResponse {
@@ -147,6 +163,7 @@ export interface CategoriaSeleccionada {
     fecha_fin_mercado?: string;
     limite_cambios?: number | null;
     recambio?: boolean | null;
+    color?: string | null;
 }
 
 export interface StatsCategoria {
@@ -193,7 +210,10 @@ export interface PosicionTabla {
   goles_favor: number;
   goles_contra: number;
   diferencia_goles: number;
-  puntos: number;
+  puntos: number; // Puntos base (sin descuento)
+  puntos_descontados?: number; // Descuento por apercibimientos
+  puntos_finales?: number; // Puntos finales (puntos - descuento)
+  apercibimientos?: number;
   ultima_actualizacion: string;
   equipo: Equipo;
 }

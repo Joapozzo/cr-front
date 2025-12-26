@@ -71,7 +71,10 @@ export const getCategoriasColumns = (
             <Button
                 variant="success"
                 size="sm"
-                onClick={() => handleIngresarCategoria(row.categoria.id_categoria)}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    handleIngresarCategoria(row.categoria.id_categoria);
+                }}
                 className="text-[var(--green)] hover:text-[var(--green)] hover:bg-[var(--green-opacity)]"
             >
                 Ingresar

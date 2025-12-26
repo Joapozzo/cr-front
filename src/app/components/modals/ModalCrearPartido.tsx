@@ -404,17 +404,20 @@ export default function ModalCrearPartido({
         }
     }, [isOpen, resetMutation]);
 
+    // Memoizar initialData para evitar reseteos innecesarios del formulario
+    const initialDataMemo = useMemo(() => ({
+        jornada,
+        destacado: false,
+        interzonal: false
+    }), [jornada]);
+
     return (
         <FormModal
             isOpen={isOpen}
             onClose={onClose}
             title="Crear nuevo partido"
             fields={fields}
-            initialData={{
-                jornada,
-                destacado: false,
-                interzonal: false
-            }}
+            initialData={initialDataMemo}
             onSubmit={handleSubmit}
             submitText="Crear Partido"
             type="create"

@@ -96,7 +96,7 @@ const SelectGeneral: React.FC<SelectProps> = ({
                 <div className="flex items-center gap-2">
                     {showImages && selectedOption?.image && (
                         <img
-                            src={URI_IMG + selectedOption.image}
+                            src={selectedOption.image.startsWith('http') ? selectedOption.image : URI_IMG + selectedOption.image}
                             alt={selectedOption.label}
                             className={`${imageSizeClasses[size]} rounded-full object-cover`}
                         />
@@ -137,7 +137,7 @@ const SelectGeneral: React.FC<SelectProps> = ({
                             >
                                 {showImages && option.image && (
                                     <img
-                                        src={URI_IMG + option.image}
+                                        src={option.image.startsWith('http') ? option.image : URI_IMG + option.image}
                                         alt={option.label}
                                         className={`${imageSizeClasses[size]} rounded-full object-cover`}
                                     />

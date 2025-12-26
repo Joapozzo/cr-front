@@ -1,9 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef } from 'react';
 import { Calendar, Clock, Eye, EyeOff } from 'lucide-react';
 
 // Función simple para combinar clases (reemplaza cn)
 function classNames(...classes: (string | undefined | null | boolean)[]): string {
     return classes.filter(Boolean).join(' ');
+}
+
+// Flag para asegurar que los estilos de autocompletado solo se agreguen una vez
+let autofillStylesAdded = false;
+
+// Función para agregar estilos globales de autocompletado
+function addAutofillStyles() {
+    if (autofillStylesAdded) return;
+    
+    const style = document.createElement('style');
+    style.id = 'input-autofill-styles';
+    style.textContent = `
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-text-fill-color: #fafafa !important;
+            transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s, -webkit-text-fill-color 5000s ease-in-out 0s;
+        }
+        textarea:-webkit-autofill,
+        textarea:-webkit-autofill:hover,
+        textarea:-webkit-autofill:focus,
+        textarea:-webkit-autofill:active {
+            -webkit-text-fill-color: #fafafa !important;
+            transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s, -webkit-text-fill-color 5000s ease-in-out 0s;
+        }
+        input::placeholder,
+        textarea::placeholder {
+            color: #555555 !important;
+            -webkit-text-fill-color: #555555 !important;
+            opacity: 1 !important;
+        }
+        input::-webkit-input-placeholder,
+        textarea::-webkit-input-placeholder {
+            color: #555555 !important;
+            -webkit-text-fill-color: #555555 !important;
+            opacity: 1 !important;
+        }
+        input::-moz-placeholder,
+        textarea::-moz-placeholder {
+            color: #555555 !important;
+            opacity: 1 !important;
+        }
+        input:-ms-input-placeholder,
+        textarea:-ms-input-placeholder {
+            color: #555555 !important;
+            opacity: 1 !important;
+        }
+        input:not(:placeholder-shown) {
+            -webkit-text-fill-color: #fafafa !important;
+        }
+        input:placeholder-shown {
+            -webkit-text-fill-color: #555555 !important;
+        }
+    `;
+    document.head.appendChild(style);
+    autofillStylesAdded = true;
 }
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -13,7 +70,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     fullWidth?: boolean;
 }
 
-export const Input: React.FC<InputProps> = ({
+export const Input = forwardRef<HTMLInputElement, InputProps>(({
     label,
     error,
     icon,
@@ -21,10 +78,15 @@ export const Input: React.FC<InputProps> = ({
     className,
     type,
     ...props
-}) => {
+}, ref) => {
     const [showPassword, setShowPassword] = useState(false);
     const isPassword = type === 'password';
     const inputType = isPassword && showPassword ? 'text' : type;
+    
+    // Agregar estilos globales para autocompletado (solo una vez)
+    React.useEffect(() => {
+        addAutofillStyles();
+    }, []);
     const baseClasses = `
     px-4 
     py-2.5 
@@ -33,7 +95,7 @@ export const Input: React.FC<InputProps> = ({
     rounded-[20px]
     bg-[#1A1A1A] 
     text-[#fafafa] 
-    placeholder-[#65656B] 
+    placeholder-[#555555] 
     focus:outline-none 
     focus:ring-2 
     focus:ring-[#2AD174] 
@@ -43,6 +105,21 @@ export const Input: React.FC<InputProps> = ({
     ease-in-out
     disabled:opacity-50 
     disabled:cursor-not-allowed
+    [&:-webkit-autofill]:bg-[#1A1A1A]
+    [&:-webkit-autofill]:text-[#fafafa]
+    [&:-webkit-autofill]:border-[#2D2F30]
+    [&:-webkit-autofill]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
+    [&:-webkit-autofill:hover]:bg-[#1A1A1A]
+    [&:-webkit-autofill:hover]:text-[#fafafa]
+    [&:-webkit-autofill:hover]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
+    [&:-webkit-autofill:focus]:bg-[#1A1A1A]
+    [&:-webkit-autofill:focus]:text-[#fafafa]
+    [&:-webkit-autofill:focus]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
+    [&:-webkit-autofill:focus]:border-transparent
+    [&:-webkit-autofill:focus]:ring-2
+    [&:-webkit-autofill:focus]:ring-[#2AD174]
+    [&:-webkit-autofill]:transition-[background-color,color,-webkit-text-fill-color]
+    [&:-webkit-autofill]:duration-[5000s]
   `;
 
     const widthClasses = fullWidth ? 'w-full' : '';
@@ -59,11 +136,12 @@ export const Input: React.FC<InputProps> = ({
             )}
             <div className="relative">
                 {icon && (
-                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#65656B]">
+                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--gray-100)]">
                         {icon}
                     </div>
                 )}
                 <input
+                    ref={ref}
                     type={inputType}
                     className={classNames(
                         baseClasses,
@@ -73,13 +151,17 @@ export const Input: React.FC<InputProps> = ({
                         errorClasses,
                         className
                     )}
+                    style={{
+                        color: '#fafafa',
+                        ...props.style,
+                    } as React.CSSProperties}
                     {...props}
                 />
                 {isPassword && (
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#65656B] hover:text-[#2AD174] transition-colors"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--gray-100)] hover:text-[#2AD174] transition-colors"
                         tabIndex={-1}
                     >
                         {showPassword ? (
@@ -97,7 +179,9 @@ export const Input: React.FC<InputProps> = ({
             )}
         </div>
     );
-};
+});
+
+Input.displayName = 'Input';
 
 // ==================== TEXTAREA COMPONENT ====================
 
@@ -122,7 +206,7 @@ export const Textarea: React.FC<TextareaProps> = ({
     rounded-lg 
     bg-[#1A1A1A] 
     text-[#fafafa] 
-    placeholder-[#65656B] 
+    placeholder-[#555555] 
     focus:outline-none 
     focus:ring-2 
     focus:ring-[#2AD174] 
@@ -134,6 +218,21 @@ export const Textarea: React.FC<TextareaProps> = ({
     disabled:cursor-not-allowed
     resize-vertical
     min-h-[100px]
+    [&:-webkit-autofill]:bg-[#1A1A1A]
+    [&:-webkit-autofill]:text-[#fafafa]
+    [&:-webkit-autofill]:border-[#2D2F30]
+    [&:-webkit-autofill]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
+    [&:-webkit-autofill:hover]:bg-[#1A1A1A]
+    [&:-webkit-autofill:hover]:text-[#fafafa]
+    [&:-webkit-autofill:hover]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
+    [&:-webkit-autofill:focus]:bg-[#1A1A1A]
+    [&:-webkit-autofill:focus]:text-[#fafafa]
+    [&:-webkit-autofill:focus]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
+    [&:-webkit-autofill:focus]:border-transparent
+    [&:-webkit-autofill:focus]:ring-2
+    [&:-webkit-autofill:focus]:ring-[#2AD174]
+    [&:-webkit-autofill]:transition-[background-color,color,-webkit-text-fill-color]
+    [&:-webkit-autofill]:duration-[5000s]
   `;
 
     const widthClasses = fullWidth ? 'w-full' : '';
@@ -153,6 +252,10 @@ export const Textarea: React.FC<TextareaProps> = ({
                     errorClasses,
                     className
                 )}
+                style={{
+                    color: '#fafafa',
+                    ...props.style,
+                } as React.CSSProperties}
                 {...props}
             />
             {error && (
@@ -187,7 +290,7 @@ export const DateInput: React.FC<DateInputProps> = ({
     rounded-[20px]
     bg-[#1A1A1A] 
     text-[#fafafa] 
-    placeholder-[#65656B] 
+    placeholder-[#555555] 
     focus:outline-none 
     focus:ring-2 
     focus:ring-[#2AD174] 
@@ -200,6 +303,21 @@ export const DateInput: React.FC<DateInputProps> = ({
     [&::-webkit-calendar-picker-indicator]:hidden
     [&::-webkit-inner-spin-button]:hidden
     [&::-webkit-outer-spin-button]:hidden
+    [&:-webkit-autofill]:bg-[#1A1A1A]
+    [&:-webkit-autofill]:text-[#fafafa]
+    [&:-webkit-autofill]:border-[#2D2F30]
+    [&:-webkit-autofill]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
+    [&:-webkit-autofill:hover]:bg-[#1A1A1A]
+    [&:-webkit-autofill:hover]:text-[#fafafa]
+    [&:-webkit-autofill:hover]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
+    [&:-webkit-autofill:focus]:bg-[#1A1A1A]
+    [&:-webkit-autofill:focus]:text-[#fafafa]
+    [&:-webkit-autofill:focus]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
+    [&:-webkit-autofill:focus]:border-transparent
+    [&:-webkit-autofill:focus]:ring-2
+    [&:-webkit-autofill:focus]:ring-[#2AD174]
+    [&:-webkit-autofill]:transition-[background-color,color,-webkit-text-fill-color]
+    [&:-webkit-autofill]:duration-[5000s]
   `;
 
     const widthClasses = fullWidth ? 'w-full' : '';
@@ -221,6 +339,10 @@ export const DateInput: React.FC<DateInputProps> = ({
                         errorClasses,
                         className
                     )}
+                    style={{
+                        color: '#fafafa',
+                        ...props.style,
+                    } as React.CSSProperties}
                     {...props}
                 />
                 <button
@@ -269,7 +391,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({
     rounded-[20px]
     bg-[#1A1A1A] 
     text-[#fafafa] 
-    placeholder-[#65656B] 
+    placeholder-[#555555] 
     focus:outline-none 
     focus:ring-2 
     focus:ring-[#2AD174] 
@@ -285,6 +407,21 @@ export const TimeInput: React.FC<TimeInputProps> = ({
     [&::-webkit-calendar-picker-indicator]:h-full
     [&::-webkit-calendar-picker-indicator]:left-0
     [&::-webkit-calendar-picker-indicator]:cursor-pointer
+    [&:-webkit-autofill]:bg-[#1A1A1A]
+    [&:-webkit-autofill]:text-[#fafafa]
+    [&:-webkit-autofill]:border-[#2D2F30]
+    [&:-webkit-autofill]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
+    [&:-webkit-autofill:hover]:bg-[#1A1A1A]
+    [&:-webkit-autofill:hover]:text-[#fafafa]
+    [&:-webkit-autofill:hover]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
+    [&:-webkit-autofill:focus]:bg-[#1A1A1A]
+    [&:-webkit-autofill:focus]:text-[#fafafa]
+    [&:-webkit-autofill:focus]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
+    [&:-webkit-autofill:focus]:border-transparent
+    [&:-webkit-autofill:focus]:ring-2
+    [&:-webkit-autofill:focus]:ring-[#2AD174]
+    [&:-webkit-autofill]:transition-[background-color,color,-webkit-text-fill-color]
+    [&:-webkit-autofill]:duration-[5000s]
   `;
 
     const widthClasses = fullWidth ? 'w-full' : '';
@@ -306,6 +443,10 @@ export const TimeInput: React.FC<TimeInputProps> = ({
                         errorClasses,
                         className
                     )}
+                    style={{
+                        color: '#fafafa',
+                        ...props.style,
+                    } as React.CSSProperties}
                     {...props}
                 />
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">

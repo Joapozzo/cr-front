@@ -13,8 +13,10 @@ import {
     Newspaper,
     Users,
     Trophy,
+    DollarSign,
     LogOut,
-    User
+    User,
+    Wallet
 } from 'lucide-react';
 import { useLogout } from '../hooks/auth/useLogout';
 import { MdStadium } from 'react-icons/md';
@@ -77,7 +79,21 @@ const menuItems: MenuItem[] = [
         icon: MdStadium,
         href: '/adm/predios',
         color: 'text-[var(--green)]'
-    }
+    },
+    {
+        id: 'caja',
+        label: 'Caja',
+        icon: Wallet,
+        href: '/cajero/caja',
+        color: 'text-[var(--green)]'
+    },
+    // {
+    //     id: 'configuracion-precios',
+    //     label: 'Configuración de Precios',
+    //     icon: DollarSign,
+    //     href: '/adm/configuracion/precios',
+    //     color: 'text-[var(--green)]'
+    // }
 ];
 
 export default function Sidebar() {

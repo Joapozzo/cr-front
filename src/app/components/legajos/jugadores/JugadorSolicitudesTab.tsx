@@ -4,7 +4,7 @@ import { SolicitudesJugador } from '@/app/types/legajos';
 import { Mail, CheckCircle, XCircle, Clock } from 'lucide-react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import Image from 'next/image';
+import { EscudoEquipo } from '@/app/components/common/EscudoEquipo';
 
 interface JugadorSolicitudesTabProps {
     solicitudes: SolicitudesJugador | undefined;
@@ -45,7 +45,7 @@ export const JugadorSolicitudesTab = ({ solicitudes, isLoading }: JugadorSolicit
                     <div className="flex items-center gap-2 mb-4">
                         <Mail className="w-5 h-5 text-[var(--green)]" />
                         <h2 className="text-xl font-bold text-[var(--white)]">
-                            Solicitudes de Entrada ({solicitudes.solicitudes_entrada.length})
+                            Solicitudes de entrada ({solicitudes.solicitudes_entrada.length})
                         </h2>
                     </div>
                     <div className="space-y-3">
@@ -55,20 +55,12 @@ export const JugadorSolicitudesTab = ({ solicitudes, isLoading }: JugadorSolicit
                                 className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-4"
                             >
                                 <div className="flex items-start gap-4">
-                                    {solicitud.equipo.img ? (
-                                        <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[var(--gray-300)] flex-shrink-0">
-                                            <Image
-                                                src={solicitud.equipo.img}
-                                                alt={solicitud.equipo.nombre}
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        </div>
-                                    ) : (
-                                        <div className="w-16 h-16 rounded-lg bg-[var(--gray-300)] flex items-center justify-center flex-shrink-0">
-                                            <Mail className="w-8 h-8 text-[var(--gray-100)]" />
-                                        </div>
-                                    )}
+                                    <EscudoEquipo
+                                        src={solicitud.equipo.img}
+                                        alt={solicitud.equipo.nombre}
+                                        size={64}
+                                        className="rounded-lg flex-shrink-0"
+                                    />
                                     <div className="flex-1">
                                         <div className="flex items-start justify-between mb-2">
                                             <div>
@@ -130,20 +122,12 @@ export const JugadorSolicitudesTab = ({ solicitudes, isLoading }: JugadorSolicit
                                 className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-4"
                             >
                                 <div className="flex items-start gap-4">
-                                    {solicitud.equipo.img ? (
-                                        <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[var(--gray-300)] flex-shrink-0">
-                                            <Image
-                                                src={solicitud.equipo.img}
-                                                alt={solicitud.equipo.nombre}
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        </div>
-                                    ) : (
-                                        <div className="w-16 h-16 rounded-lg bg-[var(--gray-300)] flex items-center justify-center flex-shrink-0">
-                                            <Mail className="w-8 h-8 text-[var(--gray-100)]" />
-                                        </div>
-                                    )}
+                                    <EscudoEquipo
+                                        src={solicitud.equipo.img}
+                                        alt={solicitud.equipo.nombre}
+                                        size={64}
+                                        className="rounded-lg flex-shrink-0"
+                                    />
                                     <div className="flex-1">
                                         <div className="flex items-start justify-between mb-2">
                                             <div>

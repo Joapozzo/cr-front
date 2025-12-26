@@ -97,7 +97,10 @@ export const noticiasService = {
             if (filtros.destacada !== undefined) params.append('destacada', filtros.destacada.toString());
             if (filtros.busqueda) params.append('busqueda', filtros.busqueda);
 
-            return await api.get<NoticiasPaginadas>(`/user/noticias?${params}`);
+            const queryString = params.toString();
+            const endpoint = `/admin/noticias${queryString ? `?${queryString}` : ''}`;
+            
+            return await api.get<NoticiasPaginadas>(endpoint);
         } catch (error) {
             console.error("Error al listar noticias:", error);
             throw new Error("No se pudieron cargar las noticias");

@@ -10,7 +10,7 @@ const CardPartidosSemanaSkeleton: React.FC = () => {
             <BaseCard>
                 <CardHeader
                     icon={<FileText className="text-green-400" size={16} />}
-                    title="Esta Semana"
+                    title="Esta semana"
                 />
                 <div className="px-6 py-4">
                     <div className="space-y-3">

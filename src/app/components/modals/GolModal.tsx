@@ -115,9 +115,9 @@ const GolModal: React.FC<GolModalProps> = ({
     };
 
     const tiposGol = [
-        { id: 'normal', label: 'Gol Normal' },
+        { id: 'normal', label: 'Gol normal' },
         { id: 'penal', label: 'Penal' },
-        { id: 'en_contra', label: 'Gol en Contra' }
+        { id: 'en_contra', label: 'Gol en contra' }
     ] as const;
 
     const puedeAgregarAsistencia = tipoGol === 'normal';
@@ -138,7 +138,7 @@ const GolModal: React.FC<GolModalProps> = ({
                                 <ArrowLeft size={18} className="text-[#737373]" />
                             </button>
                         )}
-                        <span>Registrar Gol</span>
+                        <span>Registrar gol</span>
                     </div>
                     {/* Indicador de pasos */}
                     <div className="ml-3 flex items-center gap-2 text-xs text-[#737373]">

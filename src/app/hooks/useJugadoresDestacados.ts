@@ -1,5 +1,6 @@
     import { useMutation, useQueryClient } from '@tanstack/react-query';
     import { planilleroService } from '../services/planillero.services';
+    import { useAuthStore } from '../stores/authStore';
 
     // Hook para marcar jugador como destacado
     interface MarcarJugadorDestacadoData {
@@ -13,9 +14,13 @@
 
     export const useMarcarJugadorDestacado = () => {
         const queryClient = useQueryClient();
+        const usuario = useAuthStore((state) => state.usuario);
 
         return useMutation({
             mutationFn: async ({ idPartido, jugadorData }: MarcarJugadorDestacadoData) => {
+                if (!usuario?.uid) {
+                    throw new Error('Usuario no autenticado');
+                }
                 return await planilleroService.marcarJugadorDestacado(idPartido, jugadorData);
             },
             onSuccess: (data, variables) => {
@@ -45,9 +50,13 @@
 
     export const useDesmarcarJugadorDestacado = () => {
         const queryClient = useQueryClient();
+        const usuario = useAuthStore((state) => state.usuario);
 
         return useMutation({
             mutationFn: async ({ idPartido, jugadorData }: DesmarcarJugadorDestacadoData) => {
+                if (!usuario?.uid) {
+                    throw new Error('Usuario no autenticado');
+                }
                 return await planilleroService.desmarcarJugadorDestacado(idPartido, jugadorData);
             },
             onSuccess: (data, variables) => {
@@ -77,9 +86,13 @@
 
     export const useSeleccionarMVP = () => {
         const queryClient = useQueryClient();
+        const usuario = useAuthStore((state) => state.usuario);
 
         return useMutation({
             mutationFn: async ({ idPartido, mvpData }: SeleccionarMVPData) => {
+                if (!usuario?.uid) {
+                    throw new Error('Usuario no autenticado');
+                }
                 return await planilleroService.seleccionarMVP(idPartido, mvpData);
             },
             onSuccess: (data, variables) => {

@@ -4,10 +4,11 @@ import { useAuthStore } from '@/app/stores/authStore';
 import { obtenerToken } from '@/app/services/auth.services';
 import { api } from '@/app/lib/api';
 import { toast } from 'react-hot-toast';
-import { jugadorService } from '@/app/services/jugador.services';
+// Removido import de jugadorService - los equipos se cargarán cuando se necesiten
+import { determinarRutaRedireccion } from '@/app/utils/authRedirect';
 
 export const useLogin = () => {
-  const { login, setEquipos } = useAuthStore();
+  const { login } = useAuthStore();
 
   return useMutation({
     mutationFn: async ({ email, password }: { email: string; password: string }) => {
@@ -19,55 +20,45 @@ export const useLogin = () => {
 
       const user = firebaseResult.user!;
 
-      // 2️⃣ Verificar email verificado
-      if (!user.emailVerified) {
-        throw new Error('Debe verificar su correo electrónico antes de iniciar sesión.');
-      }
-
-      // 3️⃣ Obtener token JWT de Firebase
+      // 2️⃣ Obtener token JWT de Firebase (antes de verificar email para poder consultar rol)
       const token = await obtenerToken();
       if (!token) {
         throw new Error('No se pudo obtener el token de autenticación.');
       }
 
-      // 4️⃣ Llamar al backend con el UID y el token
+      // 3️⃣ Llamar al backend con el UID y el token
       const response = await api.post('/auth/login', null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-
       const data = response as {
         success: boolean;
         usuario: any;
-        proximoPaso: 'VALIDAR_DNI' | 'SELFIE' | 'COMPLETO';
+        proximoPaso: 'VERIFICAR_EMAIL' | 'VALIDAR_DNI' | 'SELFIE' | 'COMPLETO';
       };
+
+      // 4️⃣ Verificar email si el proximoPaso requiere verificación
+      // Nota: El backend puede tener SKIP_EMAIL_VERIFICATION=true para desactivar en test
+      if (data.proximoPaso === 'VERIFICAR_EMAIL') {
+        if (!user.emailVerified) {
+          throw new Error('Debe verificar su correo electrónico antes de iniciar sesión.');
+        }
+      }
 
       // 5️⃣ Guardar datos en Zustand (persist maneja localStorage automáticamente)
       login(token, data.usuario);
 
-      // 6️⃣ Obtener y guardar equipos del usuario (si es jugador)
-      try {
-        const equipos = await jugadorService.obtenerEquiposUsuario();
-        // Solo guardar si tiene equipos
-        if (equipos && equipos.length > 0) {
-          setEquipos(equipos);
-        } else {
-          setEquipos([]);
-        }
-      } catch (error) {
-        // Si falla (usuario no es jugador o no tiene equipos), guardar array vacío
-        console.log('Usuario no tiene equipos o no es jugador');
-        setEquipos([]);
-      }
+      // Los equipos se cargarán cuando se necesiten (en home o páginas que los requieran)
+      // No cargar aquí para evitar llamadas innecesarias
 
       return data;
     },
 
     onSuccess: (data) => {
       toast.success('Inicio de sesión exitoso ✅');
-      console.log('Login exitoso →', data);
+      ('Login exitoso →', data);
     },
 
     onError: (error: any) => {

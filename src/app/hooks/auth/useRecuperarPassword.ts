@@ -13,7 +13,7 @@ export const useRecuperarPassword = () => {
       return result;
     },
     onSuccess: () => {
-      console.log('Email de recuperación enviado');
+      ('Email de recuperación enviado');
     },
     onError: (error: Error) => {
       console.error('Error al enviar email de recuperación:', error);

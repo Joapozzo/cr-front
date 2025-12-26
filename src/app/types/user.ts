@@ -31,7 +31,7 @@ export interface Usuario {
     apellido: string;
 }
 
-export interface UsuarioAdmin {
+export interface UsuarioAdmin extends Record<string, unknown> {
     uid: string;
     email: string;
     nombre: string;

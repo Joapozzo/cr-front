@@ -4,7 +4,7 @@ import React from 'react';
 import { ParticipacionEquipo } from '@/app/types/participacionEquipo';
 import { StatsParticipacionSlider } from './StatsParticipacionSlider';
 import { BaseCard } from '@/app/components/BaseCard';
-import { ImagenPublica } from '@/app/components/common/ImagenPublica';
+import { EscudoEquipo } from '@/app/components/common/EscudoEquipo';
 import { Trophy, Target, Award, Shield } from 'lucide-react';
 import { StatsResumen } from '@/app/types/equipoResumen';
 
@@ -284,15 +284,12 @@ export const ParticipacionCard: React.FC<ParticipacionCardProps> = ({
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full overflow-hidden bg-[var(--black-800)] flex-shrink-0 flex items-center justify-center">
-                            <ImagenPublica
-                              src={equipo.img_equipo || '/img/default-team.png'}
-                              alt={equipo.nombre_equipo}
-                              width={32}
-                              height={32}
-                              fallbackIcon={<Shield className="w-4 h-4 text-[#737373]" />}
-                            />
-                          </div>
+                          <EscudoEquipo
+                            src={equipo.img_equipo}
+                            alt={equipo.nombre_equipo}
+                            size={32}
+                            className="flex-shrink-0"
+                          />
                           <span className={`text-sm font-medium ${
                             isUserTeam ? 'text-[var(--green)]' : 'text-white'
                           }`}>

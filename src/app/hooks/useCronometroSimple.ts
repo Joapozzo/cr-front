@@ -32,9 +32,9 @@ export const useCronometroSimple = (partidoId: number, estadoPartido: string) =>
 
     useEffect(() => {
         // Debug: ver qué valores estamos recibiendo
-        console.log('Estado partido:', estadoPartido);
-        console.log('Es partido activo:', esPartidoActivo);
-        console.log('Minutos por tiempo:', minutosPorTiempo);
+        ('Estado partido:', estadoPartido);
+        ('Es partido activo:', esPartidoActivo);
+        ('Minutos por tiempo:', minutosPorTiempo);
 
         if (!esPartidoActivo || !['C1', 'E', 'C2'].includes(estadoPartido)) {
             setCronometro(prev => ({ ...prev, enVivo: false }));
@@ -51,18 +51,18 @@ export const useCronometroSimple = (partidoId: number, estadoPartido: string) =>
                 case 'C1':
                     minutosTranscurridos = getTiempoTranscurridoPrimerTiempo();
                     fase = 'PT';
-                    console.log('C1 - Minutos PT:', minutosTranscurridos);
+                    ('C1 - Minutos PT:', minutosTranscurridos);
                     break;
                 case 'E':
                     // Durante el entretiempo, mantener el tiempo del primer tiempo
                     minutosTranscurridos = minutosPorTiempo || 45; // Usar valor por defecto
                     fase = 'HT';
-                    console.log('E - Entretiempo, mostrando:', minutosTranscurridos);
+                    ('E - Entretiempo, mostrando:', minutosTranscurridos);
                     break;
                 case 'C2':
                     minutosTranscurridos = getTiempoTranscurridoSegundoTiempo();
                     fase = 'ST';
-                    console.log('C2 - Minutos ST:', minutosTranscurridos);
+                    ('C2 - Minutos ST:', minutosTranscurridos);
                     break;
             }
 
@@ -90,8 +90,8 @@ export const useCronometroSimple = (partidoId: number, estadoPartido: string) =>
             const segundosTranscurridos = Math.floor(minutosTranscurridos * 60);
             const segundosPermitidos = minutosPorTiempo * 60;
 
-            console.log('Segundos transcurridos:', segundosTranscurridos);
-            console.log('Segundos permitidos:', segundosPermitidos);
+            ('Segundos transcurridos:', segundosTranscurridos);
+            ('Segundos permitidos:', segundosPermitidos);
 
             setCronometro({
                 tiempoFormateado: formatearTiempo(Math.min(segundosTranscurridos, segundosPermitidos)),

@@ -17,7 +17,7 @@ export interface ApiResponse<T> {
     message?: string;
 }
 
-export type EstadoJugador = 'A' | 'I';
+export type EstadoJugador = 'A' | 'I' | 'E'; // A=Activo, I=Inactivo, E=Expulsado
 
 export type EstadoSolicitud = 'E' | 'A' | 'R';
 

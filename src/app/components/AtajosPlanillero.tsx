@@ -18,7 +18,7 @@ const CardAccesosRapidos: React.FC = () => {
         },
         {
             icon: <Trophy className="text-green-400" size={20} />,
-            titulo: "Mis Partidos",
+            titulo: "Mis partidos",
             descripcion: "Ver historial",
             color: "green"
         },

@@ -2,7 +2,7 @@ import { Shield, Users, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "./ui/Button"
 import { useState, useEffect } from "react"
 import { CardTeamHomeUserSkeleton } from "./skeletons/CardTeamHomeUserSkeleton";
-import { URI_IMG } from "./ui/utils";
+import { EscudoEquipo } from "./common/EscudoEquipo";
 import { IPlantel } from "../types/plantel";
 
 interface CardTeamHomeUserProps {
@@ -10,7 +10,7 @@ interface CardTeamHomeUserProps {
     isLoading?: boolean;
 }
 
-const CardTeamHomeUser: React.FC = ({ equipos: teamsPlayer, isLoading = false }: CardTeamHomeUserProps) => {
+const CardTeamHomeUser: React.FC<CardTeamHomeUserProps> = ({ equipos: teamsPlayer, isLoading = false }) => {
     const [currentTeamIndex, setCurrentTeamIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -115,19 +115,12 @@ const CardTeamHomeUser: React.FC = ({ equipos: teamsPlayer, isLoading = false }:
                     >
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 flex items-center justify-center relative overflow-hidden group">
-                                {currentTeam.img_equipo ? (
-                                    <img
-                                        src={URI_IMG + currentTeam.img_equipo}
-                                        alt={currentTeam.nombre_equipo}
-                                        className="w-10 h-10 rounded-lg object-cover transition-transform duration-300 group-hover:scale-110"
-                                    />
-                                ) : (
-                                    <Shield
-                                        className="text-[var(--black-400)] transition-transform duration-300 group-hover:scale-110"
-                                        size={24}
-                                    />
-                                )}
-
+                                <EscudoEquipo
+                                    src={currentTeam.img_equipo}
+                                    alt={currentTeam.nombre_equipo}
+                                    size={40}
+                                    className="transition-transform duration-300 group-hover:scale-110"
+                                />
                                 {/* Subtle glow effect */}
                                 <div className="absolute inset-0 bg-gradient-to-r from-green-500/0 via-green-500/10 to-green-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                             </div>
@@ -205,7 +198,7 @@ const CardTeamHomeUser: React.FC = ({ equipos: teamsPlayer, isLoading = false }:
         <div className="bg-[var(--black-900)] rounded-2xl overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 bg-[var(--black-800)]">
                 <div className="flex items-center gap-2 text-sm">
-                    <span className="text-white font-bold">Mi Equipo</span>
+                    <span className="text-white font-bold">Mi equipo</span>
                 </div>
             </div>
 

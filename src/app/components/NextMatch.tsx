@@ -158,7 +158,11 @@ export const NextMatch: React.FC<NextMatchProps> = ({
                     {/* Cancha */}
                     <div className="flex flex-col items-center justify-center text-center">
                         <LandPlot className="text-[var(--green)] text-3xl mb-1" />
-                        <span className="text-xs uppercase">{partido.cancha || 'a conf.'}</span>
+                        <span className="text-xs uppercase">
+                            {typeof partido.cancha === 'object' && partido.cancha !== null
+                                ? (partido.cancha as any).nombre || 'a conf.'
+                                : partido.cancha || 'a conf.'}
+                        </span>
                     </div>
                 </div>
 

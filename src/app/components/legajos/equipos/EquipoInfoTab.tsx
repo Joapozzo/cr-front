@@ -3,7 +3,7 @@
 import { EquipoInformacionBasica, EstadisticasEquipo } from '@/app/types/legajos';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { FileText, Trophy, Users, Calendar, TrendingUp, Target, Award, Activity, BarChart3, PieChart as PieChartIcon } from 'lucide-react';
-import { FaFutbol, FaChartLine, FaChartPie } from 'react-icons/fa';
+import { FaFutbol, FaChartLine } from 'react-icons/fa';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -13,8 +13,6 @@ interface EquipoInfoTabProps {
     isLoading: boolean;
     isLoadingEstadisticas: boolean;
 }
-
-const COLORS = ['#10b981', '#f59e0b', '#ef4444', '#3b82f6'];
 
 export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEstadisticas }: EquipoInfoTabProps) => {
     if (isLoading) {
@@ -53,7 +51,7 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
             <div className="bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] p-6">
                 <div className="flex items-center gap-2 mb-4">
                     <FileText className="w-5 h-5 text-[var(--green)]" />
-                    <h2 className="text-xl font-bold text-[var(--white)]">Información Básica</h2>
+                    <h2 className="text-xl font-bold text-[var(--white)]">Información básica</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex items-start gap-3">
@@ -81,7 +79,7 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
                             <Trophy className="w-4 h-4 text-[var(--yellow)]" />
                         </div>
                         <div>
-                            <p className="text-sm text-[var(--gray-100)] mb-1">Categorías Activas</p>
+                            <p className="text-sm text-[var(--gray-100)] mb-1">Categorías activas</p>
                             <p className="text-[var(--white)] font-semibold">{equipoInfo.resumen.categorias_activas}</p>
                         </div>
                     </div>
@@ -90,7 +88,7 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
                             <Users className="w-4 h-4 text-[var(--green)]" />
                         </div>
                         <div>
-                            <p className="text-sm text-[var(--gray-100)] mb-1">Total de Jugadores</p>
+                            <p className="text-sm text-[var(--gray-100)] mb-1">Total de jugadores</p>
                             <p className="text-[var(--white)] font-semibold">{equipoInfo.resumen.total_jugadores}</p>
                         </div>
                     </div>
@@ -99,7 +97,7 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
                             <Calendar className="w-4 h-4 text-[var(--blue)]" />
                         </div>
                         <div>
-                            <p className="text-sm text-[var(--gray-100)] mb-1">Total de Partidos</p>
+                            <p className="text-sm text-[var(--gray-100)] mb-1">Total de partidos</p>
                             <p className="text-[var(--white)] font-semibold">{equipoInfo.resumen.total_partidos}</p>
                         </div>
                     </div>
@@ -115,7 +113,7 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
                 <div className="bg-[var(--gray-300)] rounded-lg border border-[var(--gray-200)] p-6 space-y-6">
                     <div className="flex items-center gap-2">
                         <Activity className="w-5 h-5 text-[var(--green)]" />
-                        <h2 className="text-xl font-bold text-[var(--white)]">Estadísticas Generales</h2>
+                        <h2 className="text-xl font-bold text-[var(--white)]">Estadísticas generales</h2>
                     </div>
                     
                     {/* Cards de estadísticas */}
@@ -123,7 +121,7 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
                         <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--gray-300)]">
                             <div className="flex items-center gap-2 mb-2">
                                 <Calendar className="w-4 h-4 text-[var(--blue)]" />
-                                <p className="text-sm text-[var(--gray-100)]">Partidos Jugados</p>
+                                <p className="text-sm text-[var(--gray-100)]">Partidos jugados</p>
                             </div>
                             <p className="text-2xl font-bold text-[var(--white)]">{estadisticas.estadisticas_generales.partidos_jugados}</p>
                         </div>
@@ -204,7 +202,7 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
                                             cx="50%"
                                             cy="50%"
                                             labelLine={false}
-                                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                            label={({ name, percent }) => `${name}: ${percent ? (percent * 100).toFixed(0) : 0}%`}
                                             outerRadius={80}
                                             fill="#8884d8"
                                             dataKey="value"

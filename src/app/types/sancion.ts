@@ -23,6 +23,15 @@ export interface Sancion {
             dni: string | null;
             img: string | null;
         };
+        planteles?: Array<{
+            id_equipo: number;
+            equipo: {
+                id_equipo: number;
+                nombre: string;
+                img: string | null;
+            };
+            id_categoria_edicion: number;
+        }>;
     };
     partido?: {
         id_partido: number;

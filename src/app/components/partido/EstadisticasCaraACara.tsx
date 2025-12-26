@@ -3,8 +3,7 @@
 import React from 'react';
 import { EstadisticasCaraACara as EstadisticasCaraACaraType } from '@/app/types/partidoDetalle';
 import { BaseCard } from '@/app/components/BaseCard';
-import { ImagenPublica } from '@/app/components/common/ImagenPublica';
-import { Shield } from 'lucide-react';
+import { EscudoEquipo } from '@/app/components/common/EscudoEquipo';
 import StatCaraCaraSkeleton from '../skeletons/StatCaraCaraSkeleton';
 
 interface EstadisticasCaraACaraProps {
@@ -37,15 +36,12 @@ export const EstadisticasCaraACara: React.FC<EstadisticasCaraACaraProps> = ({
         {/* Victorias Local */}
         <div className="flex flex-col items-center text-left flex-1">
           {/* Escudo del equipo */}
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-[var(--black-800)] flex-shrink-0 flex items-center justify-center border border-[#262626] mb-3">
-            <ImagenPublica
-              src={imgEquipoLocal || '/img/default-team.png'}
-              alt={nombreEquipoLocal}
-              width={48}
-              height={48}
-              fallbackIcon={<Shield className="w-5 h-5 sm:w-6 sm:h-6 text-[#737373]" />}
-            />
-          </div>
+          <EscudoEquipo
+            src={imgEquipoLocal}
+            alt={nombreEquipoLocal}
+            size={48}
+            className="mb-3 flex-shrink-0"
+          />
           {/* Número de victorias */}
           <p className="text-white font-bold text-2xl sm:text-3xl mb-1">
             {estadisticas.victorias_local}
@@ -75,15 +71,12 @@ export const EstadisticasCaraACara: React.FC<EstadisticasCaraACaraProps> = ({
         {/* Victorias Visita */}
         <div className="flex flex-col items-center text-left flex-1">
           {/* Escudo del equipo */}
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-[var(--black-800)] flex-shrink-0 flex items-center justify-center border border-[#262626] mb-3">
-            <ImagenPublica
-              src={imgEquipoVisita || '/img/default-team.png'}
-              alt={nombreEquipoVisita}
-              width={48}
-              height={48}
-              fallbackIcon={<Shield className="w-5 h-5 sm:w-6 sm:h-6 text-[#737373]" />}
-            />
-          </div>
+          <EscudoEquipo
+            src={imgEquipoVisita}
+            alt={nombreEquipoVisita}
+            size={48}
+            className="mb-3 flex-shrink-0"
+          />
           {/* Número de victorias */}
           <p className="text-white font-bold text-2xl sm:text-3xl mb-1">
             {estadisticas.victorias_visita}

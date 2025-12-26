@@ -1,7 +1,10 @@
 'use client';
 
-import { X } from 'lucide-react';
-import { Button } from './Button';
+import { EyeOff, Loader2 } from 'lucide-react';
+import { BaseModal } from '@/app/components/modals/ModalAdmin';
+import { useState } from 'react';
+import { jugadoresLegajosService } from '@/app/services/legajos/jugadores.service';
+import { ImagenPublica } from '../common/ImagenPublica';
 
 interface ImageViewerModalProps {
     isOpen: boolean;
@@ -9,6 +12,7 @@ interface ImageViewerModalProps {
     imgPublica?: string | null;
     imgSelfie?: string | null;
     nombre?: string;
+    id_jugador?: number; // ID del jugador para obtener selfie privada
 }
 
 export const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
@@ -16,86 +20,131 @@ export const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
     onClose,
     imgPublica,
     imgSelfie,
-    nombre = 'Usuario'
+    nombre = 'Usuario',
+    id_jugador
 }) => {
-    if (!isOpen) return null;
+    const [isSelfieRevealed, setIsSelfieRevealed] = useState(false);
+    const [selfiePrivadaUrl, setSelfiePrivadaUrl] = useState<string | null>(null);
+    const [isLoadingSelfie, setIsLoadingSelfie] = useState(false);
 
-    const hasImages = imgPublica || imgSelfie;
+    // Reset selfie visibility when modal closes
+    const handleClose = () => {
+        setIsSelfieRevealed(false);
+        setSelfiePrivadaUrl(null);
+        setIsLoadingSelfie(false);
+        onClose();
+    };
+
+    // Cargar selfie privada cuando se revele
+    const handleRevealSelfie = async () => {
+        if (isSelfieRevealed) {
+            setIsSelfieRevealed(false);
+            return;
+        }
+
+        // Si ya tenemos la URL, solo mostrar
+        if (selfiePrivadaUrl) {
+            setIsSelfieRevealed(true);
+            return;
+        }
+
+        // Si no tenemos id_jugador, no podemos cargar la selfie privada
+        if (!id_jugador) {
+            setIsSelfieRevealed(true);
+            return;
+        }
+
+        // Cargar selfie privada desde el backend
+        setIsLoadingSelfie(true);
+        try {
+            const url = await jugadoresLegajosService.obtenerSelfiePrivada(id_jugador);
+            setSelfiePrivadaUrl(url);
+            setIsSelfieRevealed(true);
+        } catch (error) {
+            console.error('Error al cargar selfie privada:', error);
+            // Si falla, intentar mostrar la selfie pública si existe
+            setIsSelfieRevealed(true);
+        } finally {
+            setIsLoadingSelfie(false);
+        }
+    };
+
+    const hasImages = imgPublica || imgSelfie || selfiePrivadaUrl;
+    const selfieToShow = selfiePrivadaUrl || imgSelfie;
 
     return (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-            {/* Overlay */}
-            <div
-                className="absolute inset-0 bg-black/70 transition-opacity"
-                onClick={onClose}
-            />
-
-            {/* Modal */}
-            <div className="relative bg-[var(--gray-400)] rounded-xl border-2 border-[var(--gray-300)] shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-auto transform transition-all">
-                {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-[var(--gray-300)] sticky top-0 bg-[var(--gray-400)] z-10">
-                    <h2 className="text-xl font-semibold text-[var(--white)]">
-                        Imágenes de {nombre}
-                    </h2>
-                    <button
-                        onClick={onClose}
-                        className="p-2 hover:bg-[var(--gray-300)] rounded-lg transition-colors"
-                    >
-                        <X className="w-5 h-5 text-[var(--gray-100)]" />
-                    </button>
+        <BaseModal
+            isOpen={isOpen}
+            onClose={handleClose}
+            title={`Imágenes de ${nombre}`}
+            type="info"
+            maxWidth="max-w-3xl"
+        >
+            {!hasImages ? (
+                <div className="text-center py-12">
+                    <p className="text-[var(--gray-100)]">No hay imágenes disponibles</p>
                 </div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Imagen Pública */}
+                    {imgPublica && (
+                        <ImagenPublica src={imgPublica} alt={`Imagen pública de ${nombre}`} />
+                    )}
 
-                {/* Content */}
-                <div className="p-6">
-                    {!hasImages ? (
-                        <div className="text-center py-12">
-                            <p className="text-[var(--gray-100)]">No hay imágenes disponibles</p>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Imagen Pública */}
-                            {imgPublica && (
-                                <div className="space-y-3">
-                                    <h3 className="text-[var(--white)] font-medium text-sm">
-                                        Imagen Pública
-                                    </h3>
-                                    <div className="relative w-full aspect-square bg-[var(--gray-300)] rounded-lg overflow-hidden">
-                                        <img
-                                            src={imgPublica}
-                                            alt={`Imagen pública de ${nombre}`}
-                                            className="w-full h-full object-cover"
-                                        />
+                    {/* Imagen Selfie */}
+                    {(selfieToShow || id_jugador) && (
+                        <div className="space-y-3">
+                            <h3 className="text-[var(--white)] font-medium text-sm flex items-center gap-2">
+                                Foto de verificación
+                                {!isSelfieRevealed && (
+                                    <span className="text-xs text-[var(--gray-100)]">(privada - click para ver)</span>
+                                )}
+                            </h3>
+                            <div 
+                                className="relative w-full mx-auto aspect-square bg-[var(--gray-300)] rounded-lg overflow-hidden cursor-pointer transition-all"
+                                onClick={handleRevealSelfie}
+                            >
+                                {isLoadingSelfie ? (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                                        <div className="flex flex-col items-center gap-2 text-[var(--white)]">
+                                            <Loader2 className="w-8 h-8 animate-spin" />
+                                            <span className="text-sm font-medium">Cargando...</span>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-
-                            {/* Imagen Selfie */}
-                            {imgSelfie && (
-                                <div className="space-y-3">
-                                    <h3 className="text-[var(--white)] font-medium text-sm">
-                                        Foto de Verificación (Selfie)
-                                    </h3>
-                                    <div className="relative w-full aspect-square bg-[var(--gray-300)] rounded-lg overflow-hidden">
+                                ) : selfieToShow ? (
+                                    <>
                                         <img
-                                            src={imgSelfie}
+                                            src={selfieToShow}
                                             alt={`Selfie de verificación de ${nombre}`}
-                                            className="w-full h-full object-cover"
+                                            className={`w-full h-full object-cover transition-all ${
+                                                isSelfieRevealed 
+                                                    ? 'blur-0 opacity-100' 
+                                                    : 'blur-md opacity-50'
+                                            }`}
                                         />
+                                        {!isSelfieRevealed && (
+                                            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                                                <div className="flex flex-col items-center gap-2 text-[var(--white)]">
+                                                    <EyeOff className="w-8 h-8" />
+                                                    <span className="text-sm font-medium">Click para ver</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
+                                ) : (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                                        <div className="flex flex-col items-center gap-2 text-[var(--white)]">
+                                            <EyeOff className="w-8 h-8" />
+                                            <span className="text-sm font-medium">Click para cargar</span>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>
-
-                {/* Footer */}
-                <div className="flex justify-end gap-3 p-6 border-t border-[var(--gray-300)] sticky bottom-0 bg-[var(--gray-400)]">
-                    <Button onClick={onClose} variant="default">
-                        Cerrar
-                    </Button>
-                </div>
-            </div>
-        </div>
+            )}
+        </BaseModal>
     );
 };
 

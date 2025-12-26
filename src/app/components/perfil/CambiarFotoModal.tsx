@@ -153,12 +153,12 @@ export const CambiarFotoModal = ({
       return;
     }
 
-    console.log('📤 Enviando foto al servidor...');
+    ('📤 Enviando foto al servidor...');
     
     actualizarFoto(preview, {
       onSuccess: (data) => {
-        console.log('✅ Foto actualizada exitosamente:', data);
-        console.log('🖼️ Nueva URL:', data.img);
+        ('✅ Foto actualizada exitosamente:', data);
+        ('🖼️ Nueva URL:', data.img);
         toast.success('Foto de perfil actualizada');
         handleClose();
       },

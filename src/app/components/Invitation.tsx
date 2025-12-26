@@ -1,6 +1,7 @@
 import { Check, User, X } from "lucide-react";
 import { SolicitudEnviada } from "../types/solicitudes";
 import { Button } from "./ui/Button";
+import UserAvatar from "./ui/UserAvatar";
 
 interface InvitationProps {
     invitacion: SolicitudEnviada;
@@ -18,17 +19,13 @@ const renderInvitation = ({handleAccept, handleReject, isLoading, invitacion}: I
 
     return (
         <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-lg flex items-center justify-center relative">
-                {invitacion.img_equipo ? (
-                    <img
-                        src={invitacion.img_equipo}
-                        alt={invitacion.nombre_equipo}
-                        className="w-10 h-10 rounded-lg object-cover opacity-60"
-                    />
-                ) : (
-                    <User className="text-[#737373]" size={24} />
-                )}
-
+            <div className="relative">
+                <UserAvatar
+                    img={invitacion.img_equipo}
+                    alt={invitacion.nombre_equipo}
+                    size="lg"
+                    className="opacity-60"
+                />
                 {/* Indicador de nueva invitación */}
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-[var(--green)] rounded-full animate-pulse"></div>
             </div>
@@ -51,14 +48,24 @@ const renderInvitation = ({handleAccept, handleReject, isLoading, invitacion}: I
                     <span>
                         Recibida hace {diasPendiente === 0 ? 'hoy' : `${diasPendiente} día${diasPendiente > 1 ? 's' : ''}`}
                     </span>
-                    {/* <span>
-                            De: {invitacion.nombre_capitan}
-                        </span> */}
-                    <span className="flex items-center gap-1">
-                        <div className="w-2 h-2 bg-[var(--green)] rounded-full animate-pulse"></div>
-                        Esperando respuesta
-                    </span>
+                    {invitacion.estado !== 'E' && invitacion.respondido_por_username && (
+                        <span>
+                            Respondida por: <span className="text-[var(--white)] font-medium">{invitacion.respondido_por_username}</span>
+                        </span>
+                    )}
+                    {invitacion.estado === 'E' && (
+                        <span className="flex items-center gap-1">
+                            <div className="w-2 h-2 bg-[var(--green)] rounded-full animate-pulse"></div>
+                            Esperando respuesta
+                        </span>
+                    )}
                 </div>
+
+                {invitacion.agregado_por && invitacion.estado === 'A' && (
+                    <p className="text-[#8C8C8C] text-xs mb-3">
+                        Agregado por: <span className="text-[var(--white)] font-medium">{invitacion.agregado_por}</span>
+                    </p>
+                )}
 
                 {invitacion.mensaje_capitan && (
                     <div className="mb-4 p-3 bg-[var(--black-950)] rounded-lg border border-[#262626]">

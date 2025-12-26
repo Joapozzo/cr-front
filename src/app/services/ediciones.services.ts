@@ -70,4 +70,20 @@ export const edicionesService = {
             throw new Error(error.response?.data?.message || 'No se pudo actualizar la edición');
         }
     },
+
+    cambiarEstadoEdicion: async (id: number, estado: 'I' | 'A' | 'T'): Promise<{ success: boolean; message: string; data: any }> => {
+        try {
+            const response = await api.patch<{ success: boolean; message: string; data: any }>(
+                `/admin/ediciones/${id}/cambiar-estado`,
+                { estado }
+            );
+            return response;
+        } catch (error: any) {
+            console.error('Error al cambiar estado de la edición:', error);
+            if (error.response?.data?.error) {
+                throw new Error(error.response.data.error);
+            }
+            throw new Error(error.response?.data?.message || 'No se pudo cambiar el estado de la edición');
+        }
+    },
 };

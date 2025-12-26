@@ -1,6 +1,7 @@
 // useCrearGol.ts
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { planilleroService } from '../services/planillero.services';
+import { useAuthStore } from '../stores/authStore';
 
 interface CrearGolData {
     idPartido: number;
@@ -18,9 +19,13 @@ interface CrearGolData {
 
 export const useCrearGol = () => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
 
     return useMutation({
         mutationFn: async ({ idPartido, golData }: CrearGolData) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
             return await planilleroService.crearGol(idPartido, golData);
         },
         onSuccess: (data, variables) => {
@@ -47,9 +52,13 @@ interface CrearAmonestacionData {
 
 export const useCrearAmonestacion = () => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
 
     return useMutation({
         mutationFn: async ({ idPartido, amonestacionData }: CrearAmonestacionData) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
             return await planilleroService.crearAmonestacion(idPartido, amonestacionData);
         },
         onSuccess: (data, variables) => {
@@ -77,9 +86,13 @@ interface CrearExpulsionData {
 
 export const useCrearExpulsion = () => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
 
     return useMutation({
         mutationFn: async ({ idPartido, expulsionData }: CrearExpulsionData) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
             return await planilleroService.crearExpulsion(idPartido, expulsionData);
         },
         onSuccess: (data, variables) => {

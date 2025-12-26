@@ -145,3 +145,19 @@ export const useActualizarEdicion = () => {
         },
     });
 };
+
+export const useCambiarEstadoEdicion = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation<
+        { success: boolean; message: string; data: any },
+        Error,
+        { id: number; estado: 'I' | 'A' | 'T' }
+    >({
+        mutationFn: ({ id, estado }) => edicionesService.cambiarEstadoEdicion(id, estado),
+        onSuccess: () => {
+            // Invalidar queries para refrescar la lista
+            queryClient.invalidateQueries({ queryKey: edicionesKeys.all });
+        },
+    });
+};

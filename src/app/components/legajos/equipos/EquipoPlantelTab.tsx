@@ -2,7 +2,7 @@
 
 import { PlantelEquipo } from '@/app/types/legajos';
 import { ImagenPublica } from '@/app/components/common/ImagenPublica';
-import { User, Calendar, Volleyball, Award } from 'lucide-react';
+import { User, Calendar, Volleyball } from 'lucide-react';
 import { URI_IMG } from '@/app/components/ui/utils';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -118,7 +118,7 @@ export const EquipoPlantelTab = ({ plantel, isLoading, categoriaSeleccionada }: 
                                             )}
                                         </div>
                                         <p className="text-xs text-[var(--gray-100)] truncate">
-                                            {jugador.jugador.posicion.nombre}
+                                            {jugador?.jugador?.posicion?.nombre}
                                         </p>
                                     </div>
 

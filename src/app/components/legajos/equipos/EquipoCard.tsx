@@ -1,9 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Users } from 'lucide-react';
 import { EquipoBusqueda } from '@/app/types/legajos';
+import { EscudoEquipo } from '@/app/components/common/EscudoEquipo';
 
 interface EquipoCardProps {
     equipo: EquipoBusqueda;
@@ -19,20 +19,12 @@ export const EquipoCard: React.FC<EquipoCardProps> = ({ equipo }) => {
                 <div className="flex items-start gap-4">
                     {/* Logo del equipo */}
                     <div className="flex-shrink-0">
-                        {equipo.img ? (
-                            <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[var(--gray-300)]">
-                                <Image
-                                    src={equipo.img}
-                                    alt={equipo.nombre}
-                                    fill
-                                    className="object-cover"
-                                />
-                            </div>
-                        ) : (
-                            <div className="w-16 h-16 rounded-lg bg-[var(--gray-300)] flex items-center justify-center">
-                                <Users className="h-8 w-8 text-[var(--gray-100)]" />
-                            </div>
-                        )}
+                        <EscudoEquipo
+                            src={equipo.img}
+                            alt={equipo.nombre}
+                            size={64}
+                            className="rounded-lg"
+                        />
                     </div>
 
                     {/* Información */}

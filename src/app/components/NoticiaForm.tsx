@@ -6,8 +6,9 @@ import { Input } from './ui/Input';
 import { TiptapEditor } from './TipTapEditor';
 import { ImageUploader } from './ImageUploader';
 import SelectGeneral from './ui/SelectGeneral';
-import { useCategoriaStore } from '../stores/categoriaStore';
+// import { useCategoriaStore } from '../stores/categoriaStore';
 import { useCategoriasPorEdicionActivas } from '../hooks/useCategorias';
+import { Loader2 } from 'lucide-react';
 
 interface NoticiaFormProps {
     initialData?: {
@@ -116,12 +117,16 @@ export const NoticiaForm: React.FC<NoticiaFormProps> = ({
             </div>
 
             {/* Tipo de noticia */}
-            <SelectGeneral
-                label="Tipo de noticia"
-                value={formData.id_tipo_noticia}
-                onChange={(e) => setFormData({ ...formData, id_tipo_noticia: parseInt(e.target.value) })}
-                options={tiposNoticia}
-            />
+            <div>
+                <label className="block text-sm font-medium text-[var(--white)] mb-2">
+                    Tipo de noticia
+                </label>
+                <SelectGeneral
+                    value={formData.id_tipo_noticia}
+                    onChange={(value) => setFormData({ ...formData, id_tipo_noticia: typeof value === 'number' ? value : parseInt(value) })}
+                    options={tiposNoticia}
+                />
+            </div>
 
             {/* Categorías */}
             <div>
@@ -135,11 +140,10 @@ export const NoticiaForm: React.FC<NoticiaFormProps> = ({
                         {categoriasData?.map((cat) => (
                             <label
                                 key={cat.id_categoria_edicion}
-                                className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-colors text-xs border ${
-                                    formData.categorias.includes(cat.id_categoria_edicion)
+                                className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-colors text-xs border ${formData.categorias.includes(cat.id_categoria_edicion)
                                         ? 'bg-[var(--green)]/20 border-[var(--green)] text-[var(--green)]'
                                         : 'bg-[var(--gray-300)] border-[var(--gray-200)] text-[var(--gray-100)] hover:border-[var(--green)]'
-                                }`}
+                                    }`}
                             >
                                 <input
                                     type="checkbox"
@@ -165,11 +169,10 @@ export const NoticiaForm: React.FC<NoticiaFormProps> = ({
                 <button
                     type="button"
                     onClick={() => setFormData({ ...formData, destacada: !formData.destacada })}
-                    className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
-                        formData.destacada
+                    className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${formData.destacada
                             ? 'bg-[var(--orange)]/20 border-[var(--orange)] text-[var(--orange)]'
                             : 'bg-[var(--gray-300)] border-[var(--gray-200)] text-[var(--gray-100)] hover:border-[var(--orange)]'
-                    }`}
+                        }`}
                 >
                     <svg className="w-5 h-5" fill={formData.destacada ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
@@ -184,11 +187,10 @@ export const NoticiaForm: React.FC<NoticiaFormProps> = ({
                 <button
                     type="button"
                     onClick={() => setFormData({ ...formData, publicada: !formData.publicada })}
-                    className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
-                        formData.publicada
+                    className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${formData.publicada
                             ? 'bg-[var(--green)]/20 border-[var(--green)] text-[var(--green)]'
                             : 'bg-[var(--gray-300)] border-[var(--gray-200)] text-[var(--gray-100)] hover:border-[var(--green)]'
-                    }`}
+                        }`}
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         {formData.publicada ? (
@@ -216,10 +218,16 @@ export const NoticiaForm: React.FC<NoticiaFormProps> = ({
                 </Button>
                 <Button
                     type="submit"
-                    variant="success"
+                    variant="success"   
                     disabled={isLoading}
                 >
                     {initialData ? 'Actualizar noticia' : 'Crear noticia'}
+                    {isLoading && (
+                        <>
+                            {' '} <Loader2 className="w-4 h-4 animate-spin inline-block ml-1" />
+                        </>
+                    )}
+
                 </Button>
             </div>
         </form>

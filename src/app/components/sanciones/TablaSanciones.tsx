@@ -4,6 +4,8 @@ import { Eye, Edit, Trash2, Search } from 'lucide-react';
 import { Sancion } from '@/app/types/sancion';
 import { formatearFechaCorta } from '@/app/utils/fechas';
 import { Button } from '../ui/Button';
+import { ImagenPublica } from '../common/ImagenPublica';
+import { EscudoEquipo } from '../common/EscudoEquipo';
 
 interface TablaSancionesProps {
     sanciones: Sancion[];
@@ -33,7 +35,7 @@ export default function TablaSanciones({
             if (filtroEstado === 'activas') {
                 cumpleFiltroEstado = sancion.estado === 'A' && (sancion.fechas_restantes || 0) > 0;
             } else if (filtroEstado === 'revocadas') {
-                cumpleFiltroEstado = sancion.estado === 'R' || (sancion.fechas_restantes || 0) === 0;
+                cumpleFiltroEstado = sancion.estado === 'I' || sancion.estado === 'R' || sancion.estado === 'C' || (sancion.fechas_restantes || 0) === 0;
             }
 
             return cumpleFiltroNombre && cumpleFiltroEstado;
@@ -41,13 +43,16 @@ export default function TablaSanciones({
     }, [sanciones, filtroNombre, filtroEstado]);
 
     const getEstadoBadge = (sancion: Sancion) => {
-        if (sancion.estado === 'R') {
+        if (sancion.estado === 'I' || sancion.estado === 'R') {
             return <span className="px-2 py-1 text-xs rounded bg-[var(--gray-300)] text-[var(--gray-100)]">Revocada</span>;
         }
-        if ((sancion.fechas_restantes || 0) > 0) {
+        if (sancion.estado === 'C' || (sancion.fechas_restantes || 0) === 0) {
+            return <span className="px-2 py-1 text-xs rounded bg-[var(--green)]/20 text-[var(--green)]">Cumplida</span>;
+        }
+        if (sancion.estado === 'A' && (sancion.fechas_restantes || 0) > 0) {
             return <span className="px-2 py-1 text-xs rounded bg-red-500/20 text-red-400">Activa</span>;
         }
-        return <span className="px-2 py-1 text-xs rounded bg-[var(--green)]/20 text-[var(--green)]">Cumplida</span>;
+        return <span className="px-2 py-1 text-xs rounded bg-[var(--gray-300)] text-[var(--gray-100)]">Desconocido</span>;
     };
 
     return (
@@ -111,7 +116,7 @@ export default function TablaSanciones({
                                     Jugador
                                 </th>
                                 <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--gray-100)] uppercase tracking-wider">
-                                    Partido
+                                    Equipo
                                 </th>
                                 <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--gray-100)] uppercase tracking-wider">
                                     Tipo
@@ -142,19 +147,7 @@ export default function TablaSanciones({
                                     <tr key={sancion.id_expulsion} className="hover:bg-[var(--gray-300)] transition-colors">
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-3">
-                                                {sancion.jugador?.usuario?.img ? (
-                                                    <img
-                                                        src={sancion.jugador.usuario.img}
-                                                        alt={`${sancion.jugador.usuario.nombre}`}
-                                                        className="w-10 h-10 rounded-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="w-10 h-10 rounded-full bg-[var(--gray-300)] flex items-center justify-center">
-                                                        <span className="text-[var(--white)] font-semibold">
-                                                            {sancion.jugador?.usuario?.nombre?.[0]}{sancion.jugador?.usuario?.apellido?.[0]}
-                                                        </span>
-                                                    </div>
-                                                )}
+                                                <ImagenPublica src={sancion.jugador?.usuario?.img} alt={`${sancion.jugador?.usuario?.nombre} ${sancion.jugador?.usuario?.apellido}`}/>
                                                 <div>
                                                     <p className="text-[var(--white)] font-medium">
                                                         {sancion.jugador?.usuario?.nombre} {sancion.jugador?.usuario?.apellido}
@@ -168,25 +161,59 @@ export default function TablaSanciones({
                                             </div>
                                         </td>
                                         <td className="px-4 py-3">
-                                            <div className="text-sm">
-                                                <p className="text-[var(--white)]">Jornada {sancion.partido?.jornada}</p>
-                                                <p className="text-xs text-[var(--gray-100)]">
-                                                    {sancion.partido?.dia ? formatearFechaCorta(sancion.partido.dia) : 'Por definir'}
-                                                </p>
-                                            </div>
+                                            {(() => {
+                                                // Obtener el equipo del jugador desde los planteles
+                                                // Si hay partido, buscar el plantel de la categoría del partido
+                                                // Si no hay partido (sanción administrativa), usar el primer plantel
+                                                const plantel = sancion.jugador?.planteles?.find(p => 
+                                                    sancion.partido?.categoriaEdicion?.id_categoria_edicion 
+                                                        ? p.id_categoria_edicion === sancion.partido.categoriaEdicion.id_categoria_edicion
+                                                        : true
+                                                ) || sancion.jugador?.planteles?.[0];
+                                                
+                                                const equipo = plantel?.equipo;
+                                                
+                                                if (!equipo) {
+                                                    return (
+                                                        <div className="text-sm text-[var(--gray-100)]">
+                                                            Sin equipo
+                                                        </div>
+                                                    );
+                                                }
+                                                
+                                                return (
+                                                    <div className="flex items-center gap-3">
+                                                        <EscudoEquipo
+                                                            src={equipo.img}
+                                                            alt={equipo.nombre}
+                                                            size={32}
+                                                        />
+                                                        <div>
+                                                            <p className="text-[var(--white)] font-medium">
+                                                                {equipo.nombre}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })()}
                                         </td>
                                         <td className="px-4 py-3">
                                             <div className="text-sm">
                                                 <p className="text-[var(--white)]">{sancion.tipo_tarjeta || 'No especificado'}</p>
                                                 {sancion.minuto && (
-                                                    <p className="text-xs text-[var(--gray-100)]">Min {sancion.minuto}'</p>
+                                                    <p className="text-xs text-[var(--gray-100)]">Min {sancion.minuto}&apos;</p>
                                                 )}
                                             </div>
                                         </td>
                                         <td className="px-4 py-3">
                                             <div className="text-sm text-[var(--white)]">
-                                                <span className="font-semibold">{sancion.fechas_restantes || 0}</span>
+                                                <span className="font-semibold">
+                                                    {sancion.fechas_restantes || 0}
+                                                </span>
                                                 <span className="text-[var(--gray-100)]"> / {sancion.fechas || 0}</span>
+                                                <div className="text-xs text-[var(--gray-100)] mt-1">
+                                                    Cumplidas: {(sancion.fechas || 0) - (sancion.fechas_restantes || 0)}
+                                                </div>
                                             </div>
                                         </td>
                                         <td className="px-4 py-3">
@@ -224,6 +251,11 @@ export default function TablaSanciones({
                                                         </button>
                                                     </>
                                                 )}
+                                                {/* {sancion.estado === 'C' && (
+                                                    <span className="text-xs text-[var(--green)] px-2">
+                                                        Cumplida
+                                                    </span>
+                                                )} */}
                                             </div>
                                         </td>
                                     </tr>

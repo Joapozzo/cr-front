@@ -29,7 +29,7 @@ export const userMenuItems = [
     icon: <Newspaper className="w-5 h-5" />,
   },
   {
-    label: 'Mi Equipo',
+    label: 'Mi equipo',
     href: '/mi-equipo',
     icon: <Users className="w-5 h-5" />,
   },
@@ -68,7 +68,7 @@ export const planilleroMenuItems = [
     icon: <Newspaper className="w-5 h-5" />,
   },
   {
-    label: 'Mi Equipo',
+    label: 'Mi equipo',
     href: '/mi-equipo',
     icon: <Users className="w-5 h-5" />,
   },

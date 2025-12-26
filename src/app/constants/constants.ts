@@ -1,0 +1,1 @@
+export const EMAIL_SUPPORT = process.env.NEXT_PUBLIC_EMAIL_SUPPORT;

@@ -45,7 +45,8 @@ export const useObtenerSolicitudesJugador = (
         queryKey: solicitudesKeys.jugador(id_jugador),
         queryFn: async () => {
             const response = await jugadorService.obtenerSolicitudesJugador(id_jugador);
-            return response.data;
+            // response ya es { message, data, total }
+            return response;
         },
         enabled: !!id_jugador && id_jugador > 0,
         staleTime: 1 * 60 * 1000,
@@ -63,15 +64,45 @@ export const useEnviarSolicitudJugador = (
 
     return useMutation({
         mutationFn: async (data: EnviarSolicitudData) => {
-            const response = await jugadorService.enviarSolicitudJugador(data);
-            return response.data;
+            try {
+                const response = await jugadorService.enviarSolicitudJugador(data);
+                // La respuesta puede tener 'data' o ser directamente el objeto
+                // Si tiene 'data', usarlo; si no, usar la respuesta completa
+                return response.data || response;
+            } catch (error: unknown) {
+                // Asegurar que el error tenga el mensaje correcto
+                const errorMessage = 
+                    (error instanceof Error && error.message) ||
+                    (typeof error === 'object' && error !== null && 'response' in error && 
+                     typeof (error as { response?: { data?: { error?: string } } }).response?.data?.error === 'string' 
+                     ? (error as { response: { data: { error: string } } }).response.data.error : null) ||
+                    (typeof error === 'object' && error !== null && 'error' in error && 
+                     typeof (error as { error?: string }).error === 'string' 
+                     ? (error as { error: string }).error : null) ||
+                    'Error al enviar la solicitud';
+                const enhancedError = new Error(errorMessage);
+                if (typeof error === 'object' && error !== null && 'response' in error) {
+                    (enhancedError as any).response = (error as { response?: unknown }).response;
+                }
+                throw enhancedError;
+            }
         },
-        onSuccess: (data, variables) => {
+        onSuccess: (data, variables, context) => {
+            // Invalidar queries primero
             queryClient.invalidateQueries({
                 queryKey: solicitudesKeys.jugador(variables.id_jugador)
             });
+            // Ejecutar onSuccess personalizado si existe
+            options?.onSuccess?.(data, variables, context);
         },
-        ...options,
+        onError: (error, variables, context) => {
+            // Ejecutar onError personalizado si existe
+            options?.onError?.(error, variables, context);
+        },
+        // Pasar el resto de opciones pero sin onSuccess/onError para evitar duplicados
+        ...(options ? Object.fromEntries(
+            Object.entries(options).filter(([key]) => key !== 'onSuccess' && key !== 'onError')
+        ) : {}),
     });
 };
 

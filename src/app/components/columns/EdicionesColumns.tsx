@@ -1,5 +1,6 @@
 import { Shield, User, TableProperties } from "lucide-react";
 import { Button } from "../ui/Button";
+import { EscudoEquipo } from "../common/EscudoEquipo";
 
 type Column = {
     key: string;
@@ -11,6 +12,21 @@ export const getEdicionesColumns = (
     handleIngresarEdicion: (id: number) => void
 ): Column[] => [
         {
+            key: "img",
+            label: "LOGO",
+            render: (_: unknown, row: { img?: string | null; nombre?: string }) => (
+                <div className="flex items-center">
+                    <EscudoEquipo
+                        src={row.img}
+                        alt={row.nombre || 'Edición'}
+                        width={40}
+                        height={40}
+                        // fallbackIcon={<Trophy className="w-6 h-6 text-[var(--gray-100)]" />}
+                    />
+                </div>
+            ),
+        },
+        {
             key: "nombre",
             label: "NOMBRE",
             render: (value: string) => (
@@ -20,22 +36,20 @@ export const getEdicionesColumns = (
         {
             key: "estado",
             label: "ESTADO",
-            render: (value: string) => (
-                <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${value === "A"
-                        ? "bg-[var(--import)] text-white"
-                        : value === "F"
-                            ? "bg-gray-500 text-white"
-                            : "bg-red-500 text-white"
-                        }`}
-                >
-                    {value === "A"
-                        ? "JUGANDO"
-                        : value === "F"
-                            ? "FINALIZADA"
-                            : "INACTIVA"}
-                </span>
-            ),
+            render: (value: string) => {
+                const estadoConfig = {
+                    'I': { label: 'INACTIVA', bg: 'bg-gray-500', text: 'text-white' },
+                    'A': { label: 'ACTIVA', bg: 'bg-[var(--import)]', text: 'text-white' },
+                    'T': { label: 'TERMINADA', bg: 'bg-blue-500', text: 'text-white' },
+                };
+                const config = estadoConfig[value as keyof typeof estadoConfig] || estadoConfig['I'];
+                
+                return (
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${config.bg} ${config.text}`}>
+                        {config.label}
+                    </span>
+                );
+            },
         },
         {
             key: "partidos_jugados",
@@ -77,11 +91,14 @@ export const getEdicionesColumns = (
         {
             key: "actions",
             label: "",
-            render: (_: any, row: any) => (
+            render: (_: unknown, row: { id_edicion: number }) => (
                 <Button
                     variant="success"
                     size="sm"
-                    onClick={() => handleIngresarEdicion(row.id_edicion)}
+                    onClick={(e) => {
+                        e.stopPropagation(); // Prevenir que se active el click de la fila
+                        handleIngresarEdicion(row.id_edicion);
+                    }}
                     className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
                 >
                     Ingresar

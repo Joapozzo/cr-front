@@ -34,7 +34,7 @@ export const CardEstadisticas: React.FC<EstadisticasProps> = ({
         <BaseCard>
             <CardHeader
                 icon={<TrendingUp className="text-green-400" size={16} />}
-                title="Mi Actividad"
+                title="Mi actividad"
             />
             <div className="px-6 py-4">
                 <div className="grid grid-cols-3 gap-4">

@@ -1,25 +1,24 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, User, Plus, Crown, Loader2, X, AlertTriangle } from 'lucide-react';
+import { Search, User, Plus, Crown, Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/app/components/ui/Button';
 import { Input } from '@/app/components/ui/Input';
 import { useBuscarJugadores } from '@/app/hooks/useEquipos';
+import { ImagenPublica } from '../common/ImagenPublica';
+import { BaseModal } from './ModalAdmin';
+import { JugadorBusqueda } from '@/app/types/plantel';
+import { URI_IMG } from '@/app/components/ui/utils';
 
-interface Jugador {
-    id_jugador: number;
-    nombre: string;
-    apellido: string;
-    dni: string;
-    fecha_nacimiento: string | null;
-}
+// Usar directamente JugadorBusqueda que ahora incluye dni y fecha_nacimiento
+type JugadorBusquedaModal = JugadorBusqueda;
 
 interface JugadorSelectionModalProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
     actionText: string;
-    onSelectJugador: (jugador: Jugador) => Promise<void>;
+    onSelectJugador: (jugador: JugadorBusquedaModal) => Promise<void>;
     isLoading?: boolean;
 }
 
@@ -32,7 +31,7 @@ export default function JugadorSelectionModal({
     isLoading = false
 }: JugadorSelectionModalProps) {
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedJugador, setSelectedJugador] = useState<Jugador | null>(null);
+    const [selectedJugador, setSelectedJugador] = useState<JugadorBusquedaModal | null>(null);
     const [errorMessage, setErrorMessage] = useState<string>('');
 
     // Hook para buscar jugadores
@@ -50,11 +49,11 @@ export default function JugadorSelectionModal({
         try {
             await onSelectJugador(selectedJugador);
             handleClose();
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error en operación:', error);
             
             // Usar el mensaje que viene del error
-            const errorMsg = error?.message || 'Error al realizar la operación';
+            const errorMsg = error instanceof Error ? error.message : 'Error al realizar la operación';
             setErrorMessage(errorMsg);
         }
     };
@@ -66,38 +65,27 @@ export default function JugadorSelectionModal({
         onClose();
     };
 
-    if (!isOpen) return null;
+    // Construir URL de imagen pública
+    const getImageUrl = (img: string | null | undefined): string | undefined => {
+        if (!img) return undefined;
+        // Si ya es una URL completa, retornarla tal cual
+        if (img.startsWith('http://') || img.startsWith('https://')) {
+            return img;
+        }
+        // Si es una ruta relativa, agregar URI_IMG
+        return `${URI_IMG}${img}`;
+    };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* Overlay */}
-            <div
-                className="absolute inset-0 bg-black opacity-50"
-                onClick={handleClose}
-            />
+        <BaseModal
+            isOpen={isOpen}
+            onClose={handleClose}
+            title={title}
+            type="create"
+            maxWidth="max-w-2xl"
+        >
 
-            {/* Modal */}
-            <div className="relative bg-[var(--gray-400)] rounded-xl border-2 border-[var(--green)] shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-[var(--gray-300)]">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-[var(--green)]/20 rounded-lg">
-                            <Search className="w-5 h-5 text-[var(--green)]" />
-                        </div>
-                        <h2 className="text-xl font-semibold text-[var(--white)]">
-                            {title}
-                        </h2>
-                    </div>
-                    <button
-                        onClick={handleClose}
-                        className="p-2 hover:bg-[var(--gray-300)] rounded-lg transition-colors"
-                    >
-                        <X className="w-5 h-5 text-[var(--gray-100)]" />
-                    </button>
-                </div>
-
-                {/* Content */}
-                <div className="p-6 space-y-4">
+            <div className="space-y-4">
                     {/* Error Message */}
                     {errorMessage && (
                         <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-4">
@@ -129,6 +117,7 @@ export default function JugadorSelectionModal({
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="pl-10"
                                 autoFocus
+                                icon={<Search/>}
                             />
                         </div>
                         <p className="text-sm text-[var(--gray-100)]">
@@ -167,7 +156,7 @@ export default function JugadorSelectionModal({
                                 </div>
                             )}
 
-                            {searchResults?.jugadores.map((jugador) => (
+                            {searchResults?.jugadores.map((jugador: JugadorBusquedaModal) => (
                                 <div
                                     key={jugador.id_jugador}
                                     className={`p-4 border rounded-lg cursor-pointer transition-all ${
@@ -178,19 +167,33 @@ export default function JugadorSelectionModal({
                                     onClick={() => setSelectedJugador(jugador)}
                                 >
                                     <div className="flex items-center justify-between">
-                                        <div>
-                                            <h4 className="text-[var(--white)] font-medium">
-                                                {jugador.nombre} {jugador.apellido}
-                                            </h4>
-                                            <div className="space-y-1">
-                                                <p className="text-[var(--gray-100)] text-sm">
-                                                    DNI: {jugador.dni}
-                                                </p>
-                                                {jugador.fecha_nacimiento && (
-                                                    <p className="text-[var(--gray-100)] text-sm">
-                                                        Nacimiento: {new Date(jugador.fecha_nacimiento).toLocaleDateString()}
-                                                    </p>
-                                                )}
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                                                <ImagenPublica
+                                                    src={getImageUrl(jugador.img)}
+                                                    alt={`${jugador.nombre} ${jugador.apellido}`}
+                                                    width={40}
+                                                    height={40}
+                                                    className="w-10 h-10 object-cover"
+                                                    fallbackIcon={<User className="w-5 h-5 text-[var(--gray-100)]" />}
+                                                />
+                                            </div>
+                                            <div>
+                                                <h4 className="text-[var(--white)] font-medium">
+                                                    {jugador.nombre} {jugador.apellido}
+                                                </h4>
+                                                <div className="space-y-1">
+                                                    {jugador.dni && (
+                                                        <p className="text-[var(--gray-100)] text-sm">
+                                                            DNI: {jugador.dni}
+                                                        </p>
+                                                    )}
+                                                    {jugador.fecha_nacimiento && (
+                                                        <p className="text-[var(--gray-100)] text-sm">
+                                                            Nacimiento: {new Date(jugador.fecha_nacimiento).toLocaleDateString()}
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
 
@@ -235,55 +238,63 @@ export default function JugadorSelectionModal({
                             </h3>
                             <div className="bg-[var(--green)]/10 border border-[var(--green)]/30 rounded-lg p-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-[var(--green)]/20 rounded-lg">
-                                        <User className="w-5 h-5 text-[var(--green)]" />
+                                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                                        <ImagenPublica
+                                            src={getImageUrl(selectedJugador.img)}
+                                            alt={`${selectedJugador.nombre} ${selectedJugador.apellido}`}
+                                            width={40}
+                                            height={40}
+                                            className="w-10 h-10 object-cover"
+                                            fallbackIcon={<User className="w-5 h-5 text-[var(--green)]" />}
+                                        />
                                     </div>
                                     <div>
                                         <h4 className="text-[var(--white)] font-medium">
                                             {selectedJugador.nombre} {selectedJugador.apellido}
                                         </h4>
-                                        <p className="text-[var(--gray-100)] text-sm">
-                                            DNI: {selectedJugador.dni}
-                                        </p>
+                                        {selectedJugador.dni && (
+                                            <p className="text-[var(--gray-100)] text-sm">
+                                                DNI: {selectedJugador.dni}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     )}
-                </div>
-
-                {/* Footer */}
-                <div className="flex justify-end gap-3 p-6 pt-4 border-t border-[var(--gray-300)]">
-                    <Button 
-                        onClick={handleClose}
-                        disabled={isLoading}
-                    >
-                        Cancelar
-                    </Button>
-                    <Button
-                        onClick={handleSubmit}
-                        disabled={!selectedJugador || isLoading}
-                        variant="success"
-                        className="flex items-center gap-2"
-                    >
-                        {isLoading ? (
-                            <>
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                                Procesando...
-                            </>
-                        ) : (
-                            <>
-                                {actionText === 'Agregar primer capitán' ? (
-                                    <Crown className="w-4 h-4" />
-                                ) : (
-                                    <Plus className="w-4 h-4" />
-                                )}
-                                {actionText}
-                            </>
-                        )}
-                    </Button>
-                </div>
             </div>
-        </div>
+
+            {/* Footer */}
+            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[var(--gray-300)]">
+                <Button 
+                    onClick={handleClose}
+                    disabled={isLoading}
+                >
+                    Cancelar
+                </Button>
+                <Button
+                    onClick={handleSubmit}
+                    disabled={!selectedJugador || isLoading}
+                    variant="success"
+                    className="flex items-center gap-2"
+                >
+                    {isLoading ? (
+                        <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Procesando...
+                        </>
+                    ) : (
+                        <>
+                            {actionText === 'Agregar primer capitán' ? (
+                                <Crown className="w-4 h-4" />
+                            ) : (
+                                <Plus className="w-4 h-4" />
+                            )}
+                            {actionText}
+                        </>
+                    )}
+                </Button>
+            </div>
+        </BaseModal>
     );
 }

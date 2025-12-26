@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useCategoriasPorEdicion, useCrearCategoriaEdicion, useDatosParaCrearCategoria } from '@/app/hooks/useCategorias';
 import { Button } from '@/app/components/ui/Button';
@@ -7,10 +8,11 @@ import { DataTable } from '@/app/components/ui/DataTable';
 import { TableSkeleton } from '@/app/components/skeletons/TableSkeleton';
 import { Plus, RefreshCcw, Loader2 } from 'lucide-react';
 import { getCategoriasColumns } from '@/app/components/columns/CategoriasColumns';
-import { FormField, FormModal, useModals } from '@/app/components/modals/ModalAdmin';
-import { crearCategoriaEdicionSchema, CrearCategoriaEdicionInput } from '@/app/schemas/categoria.schema';
+import { FormField, FormModal, useModals, FormDataValue } from '@/app/components/modals/ModalAdmin';
+import { crearCategoriaEdicionSchema } from '@/app/schemas/categoria.schema';
 import toast from 'react-hot-toast';
 import { useCategoriaStore } from '@/app/stores/categoriaStore';
+import HelperCrearNombreCategoria from '@/app/components/modals/HelperCrearNombreCategoria';
 
 const CategoriasPage = () => {
     const params = useParams();
@@ -18,7 +20,7 @@ const CategoriasPage = () => {
     const edicionId = parseInt(params.id as string);
 
     const { modals, openModal, closeModal } = useModals();
-    const { data: categorias, isLoading, error } = useCategoriasPorEdicion(edicionId);
+    const { data: categorias, isLoading, error, refetch } = useCategoriasPorEdicion(edicionId);
     const { data: datosCrear, isLoading: isLoadingDatos } = useDatosParaCrearCategoria({
         enabled: modals.create
     });
@@ -42,6 +44,7 @@ const CategoriasPage = () => {
                 puntos_derrota: categoriaEdicion.configuracion.puntos_derrota,
                 limite_cambios: categoriaEdicion.configuracion.limite_cambios,
                 recambio: categoriaEdicion.configuracion.recambio,
+                color: categoriaEdicion.configuracion.color,
             });
             
             router.push(`/adm/ediciones/${edicionId}/${id_categoria}/resumen`);
@@ -54,13 +57,37 @@ const CategoriasPage = () => {
         openModal('create');
     };
 
-    const handleCrearCategoria = async (data: CrearCategoriaEdicionInput): Promise<void> => {
+    const handleCrearCategoria = async (data: Record<string, FormDataValue>): Promise<void> => {
         return new Promise((resolve, reject) => {
-            // Agregar publicada por defecto
-            const dataConDefaults = {
+            // Procesar id_categoria: puede ser un id_categoria normal o un nombre_xxx
+            let idCategoria: number | undefined;
+            let idNombreCat: number | undefined;
+            
+            const categoriaValue = data.id_categoria;
+            
+            if (typeof categoriaValue === 'string' && categoriaValue.startsWith('nombre_')) {
+                // Es un nombre de categoría, extraer el id
+                const idNombre = categoriaValue.replace('nombre_', '');
+                idNombreCat = parseInt(idNombre);
+            } else if (categoriaValue !== undefined && categoriaValue !== null) {
+                // Es un id_categoria normal
+                idCategoria = typeof categoriaValue === 'number' ? categoriaValue : parseInt(String(categoriaValue));
+            }
+
+            // Agregar publicada por defecto y color default
+            const dataConDefaults: any = {
                 ...data,
-                publicada: 'N' // Por defecto no publicada
+                publicada: 'N', // Por defecto no publicada
+                color: '#3B82F6', // Color default (azul)
             };
+
+            // Reemplazar id_categoria con el valor correcto
+            delete dataConDefaults.id_categoria;
+            if (idCategoria) {
+                dataConDefaults.id_categoria = idCategoria;
+            } else if (idNombreCat) {
+                dataConDefaults.id_nombre_cat = idNombreCat;
+            }
 
             crearCategoriaEdicion(
                 { id_edicion: edicionId, data: dataConDefaults },
@@ -78,16 +105,39 @@ const CategoriasPage = () => {
         });
     };
 
-    const RefreshPage = () => {
-        window.location.reload();
+    const handleRefresh = () => {
+        refetch();
     };
 
-    const categoriaOptions = datosCrear?.data?.map(cat => ({
-        value: cat.id_categoria,
-        label: cat.nombre_completo
-    })) || [];
+    const categoriaOptions = useMemo(() => {
+        const options: Array<{ value: string | number; label: string; esNombre?: boolean }> = [];
+        
+        // Agregar categorías existentes
+        if (datosCrear?.data?.categorias) {
+            datosCrear.data.categorias.forEach(cat => {
+                options.push({
+                    value: cat.id_categoria,
+                    label: cat.nombre_completo,
+                    esNombre: false
+                });
+            });
+        }
+        
+        // Agregar nombres de categoría disponibles (sin categoría asociada)
+        if (datosCrear?.data?.nombres_disponibles) {
+            datosCrear.data.nombres_disponibles.forEach(nombre => {
+                options.push({
+                    value: `nombre_${nombre.id_nombre_cat}`, // Prefijo para identificar que es un nombre
+                    label: `${nombre.nombre_categoria} (nuevo)`,
+                    esNombre: true
+                });
+            });
+        }
+        
+        return options;
+    }, [datosCrear?.data]);
 
-    const categoriaFields: FormField[] = [
+    const categoriaFields: FormField[] = useMemo(() => [
         {
             name: 'id_categoria',
             label: 'Categoría',
@@ -138,7 +188,7 @@ const CategoriasPage = () => {
             required: true,
             placeholder: '0'
         }
-    ];
+    ], [categoriaOptions]);
 
     return (
         <div className="space-y-6">
@@ -162,11 +212,12 @@ const CategoriasPage = () => {
                         Agregar categoría
                     </Button>
                     <Button
-                        onClick={RefreshPage}
+                        onClick={handleRefresh}
                         className="flex items-center"
                         variant='more'
+                        disabled={isLoading}
                     >
-                        <RefreshCcw className="w-4 h-4 mr-2" />
+                        <RefreshCcw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
                         Refrescar
                     </Button>
                 </div>
@@ -180,37 +231,44 @@ const CategoriasPage = () => {
                     data={categorias || []}
                     columns={columns}
                     emptyMessage={error?.message || "No hay categorías para mostrar"}
+                    onRowClick={(row) => {
+                        if (row?.categoria?.id_categoria) {
+                            handleIngresarCategoria(row.categoria.id_categoria);
+                        }
+                    }}
                 />
             )}
 
-                {isLoadingDatos ? (
-                    // Loader mientras cargan los datos
-                    <FormModal
-                        isOpen={modals.create}
-                        onClose={() => closeModal('create')}
-                        title="Crear Categoría"
-                        fields={[]}
-                        onSubmit={() => Promise.resolve()}
-                        type="create"
-                    >
-                        <div className="flex items-center justify-center py-8">
-                            <div className="flex items-center gap-3">
-                                <Loader2 className="w-6 h-6 animate-spin text-[var(--green)]" />
-                                <span className="text-[var(--white)]">Cargando datos...</span>
-                            </div>
+            {/* Modal Crear Categoría */}
+            {isLoadingDatos ? (
+                <FormModal
+                    isOpen={modals.create}
+                    onClose={() => closeModal('create')}
+                    title="Crear categoría"
+                    fields={[]}
+                    onSubmit={() => Promise.resolve()}
+                    type="create"
+                >
+                    <div className="flex items-center justify-center py-8">
+                        <div className="flex items-center gap-3">
+                            <Loader2 className="w-6 h-6 animate-spin text-[var(--green)]" />
+                            <span className="text-[var(--white)]">Cargando datos...</span>
                         </div>
-                    </FormModal>
-                ) : (
-                    <FormModal
-                        isOpen={modals.create}
-                        onClose={() => closeModal('create')}
-                        title="Crear Categoría"
-                        fields={categoriaFields}
-                        onSubmit={handleCrearCategoria}
-                        type="create"
-                        validationSchema={crearCategoriaEdicionSchema}
-                    />
-                )}
+                    </div>
+                </FormModal>
+            ) : (
+                <FormModal
+                    isOpen={modals.create}
+                    onClose={() => closeModal('create')}
+                    title="Crear categoría"
+                    fields={categoriaFields}
+                    onSubmit={handleCrearCategoria}
+                    type="create"
+                    validationSchema={crearCategoriaEdicionSchema}
+                >
+                    <HelperCrearNombreCategoria />
+                </FormModal>
+            )}
         </div>
     );
 };

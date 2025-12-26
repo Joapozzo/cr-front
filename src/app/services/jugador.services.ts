@@ -21,6 +21,14 @@ export const jugadorService = {
         return response;
     },
 
+    /**
+     * Obtener o crear jugador del usuario autenticado
+     */
+    obtenerJugadorAutenticado: async (): Promise<any> => {
+        const response = await api.get('/user/jugador/perfil-autenticado');
+        return response;
+    },
+
     enviarSolicitudJugador: async (data: EnviarSolicitudData): Promise<any> => {
         const response = await api.post(`/user/enviar-solicitud`, data);
         return response;
@@ -42,7 +50,7 @@ export const jugadorService = {
     // jugadorService
     rechazarInvitacion: async (id_solicitud: number): Promise<any> => {
         const response = await api.put(`/user/rechazar-invitacion/${id_solicitud}`);
-        console.log('🔍 Response del servicio:', response);
+        ('🔍 Response del servicio:', response);
         return response;
     },
 
@@ -54,8 +62,9 @@ export const jugadorService = {
 
     // Buscar jugadores por nombre
     buscarJugadoresPorNombre: async (params: BuscarJugadoresPorNombreParams): Promise<BuscarJugadoreResponse> => {
-        const { query, limit } = params;
-        const response = await api.get<BuscarJugadoreResponse>(`/user/jugadores/buscar?query=${query}&limit=${limit}`);
+        const { query, limit = 10 } = params;
+        const encodedQuery = encodeURIComponent(query);
+        const response = await api.get<BuscarJugadoreResponse>(`/user/jugadores/buscar?query=${encodedQuery}&limit=${limit}`);
         return response;
     },
 
@@ -76,7 +85,7 @@ export const jugadorService = {
      * Obtener equipos del usuario autenticado con información completa (incluyendo id_categoria_edicion)
      */
     obtenerEquiposUsuarioCompletos: async (): Promise<ObtenerEquiposActualesDelJugadorResponse[]> => {
-        const response = await api.get<ObtenerEquiposActualesDelJugadorResponse[]>('/user/partidos/equipos-completos');
+        const response = await api.get<ObtenerEquiposActualesDelJugadorResponse[]>('/user/equipos/equipos-completos');
         return response;
     },
 

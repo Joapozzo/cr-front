@@ -3,9 +3,6 @@
 import Link from 'next/link';
 import { Users, ArrowRight } from 'lucide-react';
 
-/**
- * Componente para usuarios sin equipo - Invitación a unirse
- */
 export const UnirseEquipoCard = () => {
   return (
     <div className="relative bg-gradient-to-br from-[var(--gray-500)] via-[var(--gray-400)] to-[var(--gray-500)] rounded-2xl overflow-hidden border border-[var(--gray-400)] p-6 md:p-8">

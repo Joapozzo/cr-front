@@ -7,6 +7,7 @@ import { TablaJugadoresEstadisticas } from '@/app/components/estadisticas/TablaJ
 import { EquipoPosicion } from '@/app/types/posiciones';
 import {
   usePosicionesPorCategoriaEdicion,
+  useZonasPlayoffPorCategoriaEdicion,
   // Hooks por equipo (filtradas por equipo)
   useGoleadoresPorEquipo,
   useAsistenciasPorEquipo,
@@ -18,16 +19,28 @@ import { useCategoriaStore } from '@/app/stores/categoriaStore';
 
 interface StatsTabProps {
   idEquipo: number;
+  idCategoriaEdicion?: number | null;
 }
 
 export const StatsTab: React.FC<StatsTabProps> = ({
   idEquipo,
+  idCategoriaEdicion,
 }) => {
   const [activeTab, setActiveTab] = useState<EstadisticaTab>('posiciones');
+  
+  // Usar idCategoriaEdicion si se pasa como prop, sino intentar obtenerlo del store
   const { categoriaSeleccionada } = useCategoriaStore();
-  const id_categoria_edicion = categoriaSeleccionada?.id_categoria_edicion;
+  const id_categoria_edicion = idCategoriaEdicion ?? categoriaSeleccionada?.id_categoria_edicion;
 
-  const { data: posicionesData, isLoading: loadingPosiciones } = usePosicionesPorCategoriaEdicion(id_categoria_edicion || 0)
+  const { data: posicionesData, isLoading: loadingPosiciones } = usePosicionesPorCategoriaEdicion(
+    id_categoria_edicion || null,
+    { enabled: !!id_categoria_edicion }
+  );
+  
+  const { data: zonasPlayoffData, isLoading: loadingPlayoff } = useZonasPlayoffPorCategoriaEdicion(
+    id_categoria_edicion || null,
+    { enabled: !!id_categoria_edicion }
+  );
 
   const { data: goleadores, isLoading: loadingGoleadores } = useGoleadoresPorEquipo(
     idEquipo
@@ -142,12 +155,16 @@ export const StatsTab: React.FC<StatsTabProps> = ({
                         goles_contra: pos.goles_contra,
                         diferencia_goles: pos.diferencia_goles,
                         puntos: pos.puntos,
+                        puntos_descontados: pos.puntos_descontados,
+                        puntos_finales: pos.puntos_finales,
+                        apercibimientos: pos.apercibimientos,
                         ultima_actualizacion: new Date().toISOString().split('T')[0],
                         img_equipo: pos.img_equipo || undefined
                       }))}
-                      zonasPlayoff={[]}
-                      isLoading={loadingPosiciones}
+                      zonasPlayoff={zonasPlayoffData || []}
+                      isLoading={loadingPosiciones || loadingPlayoff}
                       userTeamIds={[idEquipo]} // Resaltar el equipo actual
+                      formatosPosicion={zona.formatosPosicion}
                     />
                   </div>
                 ))}
@@ -155,9 +172,10 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             ) : (
               <TablaPosicionesCompleta
                 posiciones={posicionesAplanadas}
-                zonasPlayoff={[]}
-                isLoading={loadingPosiciones}
+                zonasPlayoff={zonasPlayoffData || []}
+                isLoading={loadingPosiciones || loadingPlayoff}
                 userTeamIds={[idEquipo]} // Resaltar el equipo actual
+                formatosPosicion={posicionesData && posicionesData.length === 1 ? posicionesData[0].formatosPosicion : undefined}
               />
             )}
           </>
@@ -170,7 +188,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             isLoading={loadingGoleadores}
             onRowClick={(jugador) => {
               // TODO: Navegar a perfil del jugador o mostrar detalles
-              console.log('Jugador seleccionado:', jugador);
+              ('Jugador seleccionado:', jugador);
             }}
           />
         )}
@@ -181,7 +199,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             tipo="asistencias"
             isLoading={loadingAsistencias}
             onRowClick={(jugador) => {
-              console.log('Jugador seleccionado:', jugador);
+              ('Jugador seleccionado:', jugador);
             }}
           />
         )}
@@ -192,7 +210,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             tipo="amarillas"
             isLoading={loadingAmarillas}
             onRowClick={(jugador) => {
-              console.log('Jugador seleccionado:', jugador);
+              ('Jugador seleccionado:', jugador);
             }}
           />
         )}
@@ -203,7 +221,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             tipo="rojas"
             isLoading={loadingRojas}
             onRowClick={(jugador) => {
-              console.log('Jugador seleccionado:', jugador);
+              ('Jugador seleccionado:', jugador);
             }}
           />
         )}
@@ -214,7 +232,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             tipo="mvps"
             isLoading={loadingMVPs}
             onRowClick={(jugador) => {
-              console.log('Jugador seleccionado:', jugador);
+              ('Jugador seleccionado:', jugador);
             }}
           />
         )}

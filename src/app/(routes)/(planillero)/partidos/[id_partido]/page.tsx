@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import BackButton from '@/app/components/ui/BackButton';
 import PartidoHeaderSticky from '@/app/components/partido/CardPartidoHeader';
@@ -11,6 +11,8 @@ import { PartidoCompleto, IncidenciaGol, EstadoPartido } from '@/app/types/parti
 import { PartidoDetalleSkeleton } from '@/app/components/skeletons/PartidoDetalleSkeleton';
 import JugadoresTabsUnified from '@/app/components/partido/JugadoresTabsUnified';
 import { usePartidoDetalleUsuario } from '@/app/hooks/usePartidos';
+import { useCronometroPartido } from '@/app/hooks/useCronometroPartido';
+import usePartidoStore from '@/app/stores/partidoStore';
 
 export default function PartidoPageUsuario() {
   const params = useParams();
@@ -20,6 +22,40 @@ export default function PartidoPageUsuario() {
 
   // Hook para obtener detalle del partido
   const { data: datosPartido, isLoading: isLoadingData, error } = usePartidoDetalleUsuario(idPartido);
+
+  // Store para calcular el cronómetro
+  const {
+    setEstadoPartido,
+    setHoraInicio,
+    setHoraInicioSegundoTiempo,
+    setMinutosPorTiempo,
+    setMinutosEntretiempo
+  } = usePartidoStore();
+
+  // Hook para calcular el cronómetro
+  const cronometro = useCronometroPartido();
+
+  // Configurar el store con los datos del partido cuando se cargan
+  useEffect(() => {
+    if (datosPartido?.partido) {
+      const partido = datosPartido.partido;
+      if (partido.estado) {
+        setEstadoPartido(partido.estado as EstadoPartido);
+      }
+      if (partido.categoriaEdicion?.duracion_tiempo) {
+        setMinutosPorTiempo(partido.categoriaEdicion.duracion_tiempo);
+      }
+      if (partido.categoriaEdicion?.duracion_entretiempo) {
+        setMinutosEntretiempo(partido.categoriaEdicion.duracion_entretiempo);
+      }
+      if (['C1', 'C2', 'T'].includes(partido.estado) && partido.hora_inicio) {
+        setHoraInicio(new Date(partido.hora_inicio));
+      }
+      if (['C2', 'T'].includes(partido.estado) && partido.hora_inicio_segundo_tiempo) {
+        setHoraInicioSegundoTiempo(new Date(partido.hora_inicio_segundo_tiempo));
+      }
+    }
+  }, [datosPartido, setEstadoPartido, setHoraInicio, setHoraInicioSegundoTiempo, setMinutosPorTiempo, setMinutosEntretiempo]);
 
   if (!idPartido) {
     return (
@@ -49,8 +85,7 @@ export default function PartidoPageUsuario() {
     );
   }
 
-  const goles = datosPartido.incidencias?.filter((inc: any) => inc.tipo === 'gol') as IncidenciaGol[] || [];
-  const estaFinalizado = ['T', 'F'].includes(datosPartido.partido?.estado as EstadoPartido);
+  const goles = datosPartido.incidencias?.filter((inc: IncidenciaGol) => inc.tipo === 'gol') as IncidenciaGol[] || [];
 
   // Renderizar contenido según tab
   const renderTabContent = () => {
@@ -62,6 +97,8 @@ export default function PartidoPageUsuario() {
             ultimosPartidosVisita={datosPartido.ultimos_partidos_visita || []}
             nombreEquipoLocal={datosPartido.partido?.equipoLocal?.nombre || 'Local'}
             nombreEquipoVisita={datosPartido.partido?.equipoVisita?.nombre || 'Visitante'}
+            idEquipoLocal={datosPartido.partido?.equipoLocal?.id_equipo}
+            idEquipoVisita={datosPartido.partido?.equipoVisita?.id_equipo}
             imgEquipoLocal={datosPartido.partido?.equipoLocal?.img}
             imgEquipoVisita={datosPartido.partido?.equipoVisita?.img}
             loading={isLoadingData}
@@ -93,10 +130,11 @@ export default function PartidoPageUsuario() {
         goles={goles}
         esPlanillero={false} // Modo solo lectura
         isLoading={isLoadingData}
+        cronometro={cronometro}
       />
-
+      
       {/* Si está finalizado, mostrar incidencias y formaciones */}
-      {estaFinalizado && (
+      {datosPartido.partido && (
         <>
           {/* Incidencias y Formaciones */}
           <JugadoresTabsUnified
@@ -114,7 +152,9 @@ export default function PartidoPageUsuario() {
             }}
             incidencias={datosPartido.incidencias || []}
             destacados={datosPartido.jugadores_destacados || []}
-            jugadorDestacado={datosPartido.partido?.id_jugador_destacado || null}
+            jugadorDestacado={datosPartido.partido?.jugadorDestacado || null}
+            cambios={datosPartido.cambios || []}
+            idPartido={idPartido}
             loading={isLoadingData}
           />
         </>

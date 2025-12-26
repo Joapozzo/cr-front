@@ -69,6 +69,7 @@ export const useTablasPosicionesHome = ({
             nombre_equipo: tabla.nombre_equipo,
             categoria_edicion: tabla.categoria_edicion,
             posiciones: tabla.posiciones,
+            formatosPosicion: tabla.formatosPosicion,
         }));
     }, [tablasProp, tablasData]);
 

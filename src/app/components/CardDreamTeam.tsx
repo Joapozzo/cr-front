@@ -11,6 +11,8 @@ import ModalDeletePlayerDt from './modals/ModalDeletePlayerDt';
 import { useEliminarJugadorDreamteam } from '../hooks/useDreamteam';
 import { FORMACIONES_DISPONIBLES, MAPEO_POSICIONES_CODIGOS } from '../utils/formacionesDT';
 import { DreamTeam, JugadorDreamTeam } from '../types/dreamteam';
+import { EscudoEquipo } from './common/EscudoEquipo';
+import { ImagenPublica } from './common/ImagenPublica';
 
 interface DreamTeamFieldProps {
     dreamteam?: DreamTeam;
@@ -162,6 +164,7 @@ const DreamTeamField = ({
             throw error;
         }
     };
+    (dreamteam?.jugadores[0]);
 
     return (
         <div className="relative w-full max-w-full">
@@ -216,24 +219,16 @@ const DreamTeamField = ({
                                                 >
                                                     {/* Avatar del jugador */}
                                                     <div className="w-14 h-14 rounded-full border-2 border-[var(--gray-200)] shadow-lg flex items-center justify-center overflow-hidden transition-transform hover:scale-110 bg-[var(--gray-400)]">
-                                                        {jugador ? (
-                                                            <div className="w-full h-full bg-[var(--green)] flex items-center justify-center">
-                                                                <User className="w-7 h-7 text-white" />
-                                                            </div>
-                                                        ) : (
-                                                            <div className="w-full h-full bg-[var(--gray-300)] flex items-center justify-center border-2 border-dashed border-[var(--gray-200)]">
-                                                                <User className="w-6 h-6 text-[var(--gray-200)]" />
-                                                            </div>
-                                                        )}
+                                                        <ImagenPublica src={jugador?.usuario?.img} alt={`${jugador?.nombre} ${jugador?.apellido}`} width={56} height={56} className="w-full h-full object-cover" />
                                                     </div>
 
                                                     {/* Escudo del equipo - arriba a la izquierda */}
                                                     {jugador?.equipo?.img && (
                                                         <div className="absolute -top-1 -left-1 w-5 h-5 bg-white rounded-full border border-[var(--gray-300)] shadow-md flex items-center justify-center z-10">
-                                                            <img
+                                                            <EscudoEquipo
                                                                 src={jugador.equipo.img}
                                                                 alt={jugador.equipo.nombre}
-                                                                className="w-4 h-4 object-contain"
+                                                                size={16}
                                                             />
                                                         </div>
                                                     )}

@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { planilleroService } from '../services/planillero.services';
+import { useAuthStore } from '../stores/authStore';
 
 interface EliminarDorsalData {
     idCategoriaEdicion: number;
@@ -10,9 +11,13 @@ interface EliminarDorsalData {
 
 export const useEliminarDorsal = () => {
     const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
 
     return useMutation({
         mutationFn: async ({ idCategoriaEdicion, idPartido, idJugador, idEquipo }: EliminarDorsalData) => {
+            if (!usuario?.uid) {
+                throw new Error('Usuario no autenticado');
+            }
             return await planilleroService.eliminarDorsal(idCategoriaEdicion, idPartido, idJugador, idEquipo);
         },
         onSuccess: (data, variables) => {

@@ -69,7 +69,7 @@ export const StatsResumenSlider: React.FC<StatsResumenSliderProps> = ({
   if (!stats || stats.length === 0) {
     return (
       <div className="space-y-2">
-        <h3 className="text-white font-semibold text-xs sm:text-sm px-1">Estadísticas temporada</h3>
+        <h3 className="text-white font-semibold text-sm px-1">Estadísticas temporada</h3>
         <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-4 sm:p-6 text-center">
           <p className="text-[#737373] text-xs sm:text-sm">No hay estadísticas disponibles</p>
         </div>

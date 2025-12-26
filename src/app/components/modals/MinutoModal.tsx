@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import BaseModal from "./ModalPlanillero";
-import { Save, Loader2, ArrowLeft } from "lucide-react";
+import { Save, Loader2, ArrowLeft, AlertCircle } from "lucide-react";
 import { Button } from "../ui/Button";
-import { Input } from "../ui/Input";
 
 interface MinutoModalProps {
     isOpen: boolean;
@@ -27,54 +26,51 @@ const MinutoModal: React.FC<MinutoModalProps> = ({
     isLoading = false,
     isEditing = false
 }) => {
-    const [minuto, setMinuto] = useState<number>(minutoPartido);
+    const [minuto, setMinuto] = useState<string>(String(minutoPartido));
     const [error, setError] = useState<string>('');
 
     const accionLabels = {
         gol: 'Gol',
-        amarilla: 'Tarjeta Amarilla',
+        amarilla: 'Tarjeta amarilla',
         roja: 'Expulsión'
     };
 
     useEffect(() => {
         if (isOpen) {
-            setMinuto(minutoPartido);
+            setMinuto(String(minutoPartido));
             setError('');
         }
     }, [isOpen, minutoPartido]);
 
-    const validateMinuto = (value: number): boolean => {
-        if (!value || value < 1) {
-            setError('El minuto debe ser mayor a 0');
-            return false;
-        }
-        if (value > 120) {
-            setError('El minuto no puede ser mayor a 120');
-            return false;
-        }
-        setError('');
-        return true;
-    };
-
-    const handleMinutoChange = (value: string) => {
-        const numValue = parseInt(value) || minutoPartido;
-        setMinuto(numValue);
-        validateMinuto(numValue);
+    // Validar que el minuto sea un número válido
+    const isValidMinuto = () => {
+        if (!minuto.trim()) return false;
+        const minutoNumber = parseInt(minuto.trim());
+        return !isNaN(minutoNumber) && minutoNumber >= 1 && minutoNumber <= 120;
     };
 
     const handleSave = () => {
-        if (!validateMinuto(minuto)) return;
-        onSubmit(minuto);
+        // Validaciones locales - debe tener al menos un dígito y ser número válido
+        if (!minuto.trim()) {
+            setError('El minuto no puede estar vacío');
+            return;
+        }
+
+        const minutoNumber = parseInt(minuto.trim());
+        if (isNaN(minutoNumber) || minutoNumber < 1 || minutoNumber > 120) {
+            setError('El minuto debe ser un número entre 1 y 120');
+            return;
+        }
+
+        onSubmit(minutoNumber);
     };
 
     const handleClose = () => {
         if (isLoading) return;
-        setMinuto(minutoPartido);
+        setMinuto(String(minutoPartido));
         setError('');
         onClose();
     };
-
-    const canSave = minuto && !error && !isLoading;
 
     const renderStepIndicators = () => {
         // Si estamos editando, no mostrar indicadores de pasos
@@ -176,7 +172,7 @@ const MinutoModal: React.FC<MinutoModalProps> = ({
                     </Button>
                     <Button
                         onClick={handleSave}
-                        disabled={!canSave}
+                        disabled={isLoading || !isValidMinuto()}
                         variant="success"
                         className="flex items-center gap-2 w-full justify-center"
                     >
@@ -206,27 +202,44 @@ const MinutoModal: React.FC<MinutoModalProps> = ({
                     </label>
                     {!isEditing && (
                         <div className="text-xs text-[#737373] mb-4">
-                            Minuto actual del partido: {minutoPartido}'
+                            Minuto actual del partido: {minutoPartido}&apos;
                         </div>
                     )}
                     {isEditing && (
                         <div className="text-xs text-[#737373] mb-4">
-                            Minuto original: {minutoPartido}'
+                            Minuto original: {minutoPartido}&apos;
                         </div>
                     )}
                 </div>
 
-                <Input
-                    label="Minuto del incidente"
-                    type="number"
-                    min="1"
-                    max="120"
-                    placeholder="45"
-                    value={minuto}
-                    onChange={(e) => handleMinutoChange(e.target.value)}
-                    error={error}
-                    disabled={isLoading}
-                />
+                <div>
+                    <label className="block text-sm font-medium text-[#737373] mb-2">
+                        Minuto del incidente:
+                    </label>
+                    <input
+                        type="text"
+                        inputMode="numeric"
+                        value={minuto}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            // Validación manual: solo permitir números (0-9) o vacío
+                            if (value === '' || /^\d+$/.test(value)) {
+                                setMinuto(value);
+                            }
+                            setError(''); // Limpiar error al cambiar
+                        }}
+                        className="w-full px-3 py-2 bg-[#171717] border border-[#262626] rounded-lg text-white focus:outline-none focus:border-[var(--green)] transition-colors"
+                        autoFocus
+                        disabled={isLoading}
+                        placeholder="Ingrese el minuto"
+                    />
+                    {error && (
+                        <p className="mt-2 text-sm text-red-400 flex items-center gap-1 animate-in slide-in-from-top-1 duration-200">
+                            <AlertCircle size={14} />
+                            {error}
+                        </p>
+                    )}
+                </div>
 
                 {isEditing && (
                     <div className="bg-[#0A0A0A] border border-[#262626] rounded-lg p-4">

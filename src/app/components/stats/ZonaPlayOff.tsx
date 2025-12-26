@@ -1,11 +1,12 @@
 import { Trophy } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TablaPosiciones from './TablePosiciones';
 import { useZonaStore } from '@/app/stores/zonaStore';
 import { PosicionTabla } from '@/app/types/categoria';
-import { Zona } from '@/app/types/zonas';
+import { Zona, FormatoPosicion } from '@/app/types/zonas';
 import PlayoffBracket from '../playoff/PlayoffBracket';
 import TablaPosicionesSkeleton from '../skeletons/TablePosicionesSkeleton';
+import { zonasService } from '@/app/services/zonas.services';
 
 interface ZonasPlayoffProps {
     zonasPlayoff: Zona[];
@@ -64,6 +65,35 @@ const ZonasPlayoff = ({ zonasPlayoff, zonasTodosContraTodos, posiciones, isLoadi
 
     // Obtener zona actual
     const zonaActual = zonasTodosContraTodos.find(z => z.id_zona === zonaSeleccionada);
+    
+    // Estado para formatos de posición
+    const [formatosPosicion, setFormatosPosicion] = useState<FormatoPosicion[]>([]);
+    
+    // Obtener formatos de posición de la zona actual
+    useEffect(() => {
+        const obtenerFormatos = async () => {
+            // Primero intentar obtener de la zona actual si ya los tiene
+            if (zonaActual?.formatosPosiciones && zonaActual.formatosPosiciones.length > 0) {
+                setFormatosPosicion(zonaActual.formatosPosiciones);
+                return;
+            }
+            
+            // Si no los tiene, obtenerlos del servicio
+            if (zonaSeleccionada && zonaSeleccionada > 0) {
+                try {
+                    const formatos = await zonasService.obtenerFormatosPosicion(zonaSeleccionada);
+                    setFormatosPosicion(formatos || []);
+                } catch (error) {
+                    console.error('Error al obtener formatos de posición:', error);
+                    setFormatosPosicion([]);
+                }
+            } else {
+                setFormatosPosicion([]);
+            }
+        };
+        
+        obtenerFormatos();
+    }, [zonaSeleccionada, zonaActual]);
 
     return (
         <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] overflow-hidden">
@@ -72,7 +102,7 @@ const ZonasPlayoff = ({ zonasPlayoff, zonasTodosContraTodos, posiciones, isLoadi
                 <div className="flex items-center justify-between flex-wrap gap-4">
                     <h3 className="text-[var(--white)] font-semibold text-lg flex items-center gap-2">
                         <Trophy className="w-5 h-5 text-[var(--green)]" />
-                        {tipoVistaActiva === 'todos_contra_todos' ? 'Tabla de Posiciones' : 'Playoffs'}
+                        {tipoVistaActiva === 'todos_contra_todos' ? 'Tabla de posiciones' : 'Playoffs'}
                     </h3>
 
                     {/* Tabs principales: Fase de Grupos / Playoff */}
@@ -150,12 +180,12 @@ const ZonasPlayoff = ({ zonasPlayoff, zonasTodosContraTodos, posiciones, isLoadi
                     // Vista de Todos contra Todos
                     isLoading ? (
                         <TablaPosicionesSkeleton />
-                    ) : zonaActual && posiciones && posiciones.length > 0 ? (
-                        <TablaPosiciones posiciones={posiciones} />
+                    ) : posiciones && Array.isArray(posiciones) && posiciones.length > 0 ? (
+                        <TablaPosiciones posiciones={posiciones} formatosPosicion={formatosPosicion} />
                     ) : (
                         <div className="p-8 text-center">
                             <p className="text-[var(--gray-200)] italic">
-                                No hay posiciones disponibles para esta zona
+                                {isLoading ? 'Cargando posiciones...' : 'No hay posiciones disponibles para esta zona'}
                             </p>
                         </div>
                     )

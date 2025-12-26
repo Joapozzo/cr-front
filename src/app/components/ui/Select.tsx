@@ -57,7 +57,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                     </label>
                 )}
                 
-                <div className="relative group z-[999]">
+                <div className="relative group z-[90]">
                     <select
                         ref={ref}
                         value={value ?? ''}
@@ -66,7 +66,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                         onMouseDown={() => setIsOpen(prev => !prev)} // ✅ Cambiado
                         onBlur={() => setIsOpen(false)}
                         className={clsx(
-                            'w-full px-4 py-2.5 pr-10 rounded-[20px] font-medium transition-all duration-200 appearance-none',
+                            'w-full h-9 px-4 pr-10 rounded-[20px] font-medium transition-all duration-200 appearance-none',
                             'border border-[#2D2F30]',
                             'bg-[#1A1A1A] text-[#fafafa]',
                             'focus:outline-none focus:ring-2 focus:ring-[#2AD174] focus:border-transparent',

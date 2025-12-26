@@ -3,17 +3,87 @@ import { ChevronDown, MoreHorizontal, Trash2, Edit3 } from 'lucide-react';
 import DropdownMenu from "./DropDownMenu";
 import DropdownItem from "./DrowDownItem";
 import { useDatosParaCrearZona, useEditarZona, useEliminarZona } from "../hooks/useZonas";
+import { useQueryClient } from '@tanstack/react-query';
 import toast from "react-hot-toast";
-import { Zona } from "../types/zonas";
+import { Zona, FormatoPosicion } from "../types/zonas";
 import { FormField, FormModal, useModals } from "./modals/ModalAdmin";
 import { EditarZonaInput, editarZonaSchema } from "../schemas/zona.schema";
 import CardVacanteZona from "./CardVacanteZona";
 import { calcularVacantesOcupadas } from '../utils/vacantesHelpers';
+import { Equipo } from "../types/equipo";
+import FormatosPosicionStep from "./FormatosPosicionStep";
+import Campeon from "./Campeon";
+import { useEdicionStore } from "../stores/edicionStore";
 
-interface EquipoCampeon {
-    id: number;
-    nombre: string;
-}
+// Componente de Tabs para edición de zona
+const ZonaEditTabs = ({
+    activeTab,
+    setActiveTab,
+    formatosPosicion,
+    setFormatosPosicion,
+    cantidadEquipos,
+    formatosIniciales,
+    idZona,
+    onActualizarFormato,
+    onEliminarFormato,
+}: {
+    activeTab: 'info' | 'formatos';
+    setActiveTab: (tab: 'info' | 'formatos') => void;
+    formatosPosicion: FormatoPosicion[];
+    setFormatosPosicion: (formatos: FormatoPosicion[]) => void;
+    cantidadEquipos: number;
+    formatosIniciales?: FormatoPosicion[];
+    idZona: number;
+    onActualizarFormato: (id_formato: number, data: {
+        posicion_desde?: number;
+        posicion_hasta?: number;
+        descripcion?: string;
+        color?: string | null;
+        orden?: number;
+    }) => Promise<void>;
+    onEliminarFormato: (id_formato: number) => Promise<void>;
+}) => {
+    return (
+        <div className="w-full">
+            {/* Tabs */}
+            <div className="flex border-b border-[var(--gray-300)] mb-4 -mt-2">
+                <button
+                    onClick={() => setActiveTab('info')}
+                    className={`px-4 py-2 text-sm font-medium transition-colors ${
+                        activeTab === 'info'
+                            ? 'text-[var(--white)] border-b-2 border-[var(--green)]'
+                            : 'text-[var(--gray-100)] hover:text-[var(--white)]'
+                    }`}
+                >
+                    Información
+                </button>
+                <button
+                    onClick={() => setActiveTab('formatos')}
+                    className={`px-4 py-2 text-sm font-medium transition-colors ${
+                        activeTab === 'formatos'
+                            ? 'text-[var(--white)] border-b-2 border-[var(--green)]'
+                            : 'text-[var(--gray-100)] hover:text-[var(--white)]'
+                    }`}
+                >
+                    Formatos de Posición
+                </button>
+            </div>
+
+            {/* Contenido de tabs - solo formatos cuando está activo */}
+            {activeTab === 'formatos' && (
+                <div className="mt-2">
+                    <FormatosPosicionStep
+                        cantidadEquipos={cantidadEquipos}
+                        onFormatosChange={setFormatosPosicion}
+                        formatosIniciales={formatosIniciales}
+                        onActualizarFormato={onActualizarFormato}
+                        onEliminarFormato={onEliminarFormato}
+                    />
+                </div>
+            )}
+        </div>
+    );
+};
 
 const ZonaCard = ({ zona }: { zona: Zona }) => {
     const temporadas = zona.temporadas || [];
@@ -21,13 +91,17 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
 
     const [isExpanded, setIsExpanded] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [formatosPosicion, setFormatosPosicion] = useState<FormatoPosicion[]>([]);
+    const [activeTab, setActiveTab] = useState<'info' | 'formatos'>('info');
 
     const {
         data: datosCrearZona
-    } = useDatosParaCrearZona();
+    } = useDatosParaCrearZona(idZona);
     const eliminarZonaMutation = useEliminarZona();
     const { modals, openModal, closeModal } = useModals();
     const { mutate: editar } = useEditarZona();
+    const queryClient = useQueryClient();
+    const { edicionSeleccionada } = useEdicionStore();
 
     const vacantesOcupadas = calcularVacantesOcupadas(zona);
     const isCompleto = vacantesOcupadas === zona.cantidad_equipos
@@ -79,7 +153,50 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
                 id_categoria_edicion: zona.id_categoria_edicion,
                 data
             }, {
-                onSuccess: () => {
+                onSuccess: async () => {
+                    // Si es zona tipo "todos-contra-todos", guardar formatos de posición
+                    if (zona.tipoZona?.nombre === 'todos-contra-todos') {
+                        try {
+                            const { zonasService } = await import('../services/zonas.services');
+                            
+                            // Obtener formatos existentes
+                            const formatosExistentes = zona.formatosPosiciones || [];
+
+                            // Identificar formatos nuevos (sin id_formato_posicion o id = 0)
+                            const formatosNuevos = formatosPosicion.filter(
+                                f => !f.id_formato_posicion || f.id_formato_posicion === 0
+                            );
+
+                            // Identificar formatos eliminados (existen en BD pero no en el estado)
+                            const formatosEliminados = formatosExistentes.filter(
+                                f => !formatosPosicion.some(nf => nf.id_formato_posicion === f.id_formato_posicion)
+                            );
+
+                            // Eliminar formatos que ya no están
+                            for (const formato of formatosEliminados) {
+                                await zonasService.eliminarFormatoPosicion(idZona, formato.id_formato_posicion);
+                            }
+
+                            // Crear formatos nuevos
+                            for (const formato of formatosNuevos) {
+                                await zonasService.crearFormatoPosicion(idZona, {
+                                    posicion_desde: formato.posicion_desde,
+                                    posicion_hasta: formato.posicion_hasta,
+                                    descripcion: formato.descripcion,
+                                    color: formato.color,
+                                    orden: formato.orden,
+                                });
+                            }
+
+                            // Nota: La actualización de formatos existentes se manejaría aquí si fuera necesario
+                            // Por ahora, solo creamos nuevos y eliminamos los que ya no están
+                        } catch (error) {
+                            console.error('Error al guardar formatos de posición:', error);
+                            // No rechazamos la promesa porque la zona ya se actualizó
+                            toast.error('Zona actualizada, pero hubo un error al guardar los formatos de posición');
+                        }
+                    }
+
                     toast.success('Zona actualizada exitosamente');
                     resolve();
                 },
@@ -91,7 +208,7 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
         });
     };
 
-    const getEditarZonaFields = (zona: Zona, campeones: EquipoCampeon[] = []): FormField[] => {
+    const getEditarZonaFields = (zona: Zona, campeones: Equipo[] = []): FormField[] => {
         const fields: FormField[] = [
             {
                 name: 'nombre',
@@ -133,7 +250,7 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
                 type: 'select',
                 required: false,
                 options: campeones.map(equipo => ({
-                    value: equipo.id,
+                    value: equipo.id_equipo,
                     label: equipo.nombre
                 }))
             });
@@ -153,13 +270,14 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
     };
 
     const getInitialData = (zona: Zona) => {
+        // ✅ SIEMPRE precargar el equipo campeón si existe (no solo al editar)
         return {
             nombre: zona.nombre || "",
             id_tipo_zona: zona.tipoZona?.id,
             cantidad_equipos: zona.cantidad_equipos,
             campeon: zona.campeon || "N",
             terminada: zona.terminada || "N",
-            id_equipo_campeon: zona.id_equipo_campeon || undefined,
+            id_equipo_campeon: zona.id_equipo_campeon || undefined, // Siempre precargar si existe
         };
     };
 
@@ -204,9 +322,9 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
                                 <h3 className="text-[var(--white)] font-medium flex items-center gap-2">
                                     {zona.nombre}
                                     <span
-                                        className={`px-2 py-1 rounded-lg text-xs font-semibold backdrop-blur-md bg-opacity-20 border ${zona.etapa.id_etapa === 2
+                                        className={`px-2 py-1 rounded-lg text-xs font-semibold backdrop-blur-md bg-opacity-20 border ${zona.etapa.id_etapa === 1
                                             ? 'bg-yellow-400/20 border-yellow-400 text-yellow-300'
-                                            : zona.etapa.id_etapa === 3
+                                            : zona.etapa.id_etapa === 2
                                                 ? 'bg-slate-300/20 border-slate-300 text-slate-200'
                                                 : 'bg-white/10 border-white/20 text-white/70'
                                             }`}
@@ -227,15 +345,18 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
                                             {zona.terminada === 'S' ? 'Zona terminada' : 'Zona sin terminar'}
                                         </span>
                                     )}
-                                    {/* {zona.campeon === 'S' && (
-                                        <span className="text-sm text-[var(--blue)]">
-                                            {zona.id_equipo_campeon
-                                                ? `Campeón: ${getEquipoNombre(zona.id_equipo_campeon)}`
-                                                : 'Campeón: Sin definir'
-                                            }
-                                        </span>
-                                    )} */}
                                 </div>
+
+                                {/* Mostrar campeón si existe (todos contra todos o eliminación directa) */}
+                                {zona.campeon === 'S' && zona.equipoCampeon && (
+                                    <div className="mt-3 pt-3 border-t border-[var(--gray-300)]">
+                                        <Campeon
+                                            equipo={zona.equipoCampeon}
+                                            nombreEdicion={edicionSeleccionada?.nombre}
+                                            size="sm"
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -354,7 +475,10 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
                                             vacante={vacante}
                                             idZona={zona.id_zona}
                                             idCategoriaEdicion={zona.id_categoria_edicion}
-                                            temporada={temporada}
+                                            temporada={{
+                                                ...temporada,
+                                                info_vacante: temporada.info_vacante,
+                                            }}
                                             esEliminacionDirecta={false}
                                         />
                                     );
@@ -367,15 +491,49 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
 
             <FormModal
                 isOpen={modals.edit}
-                onClose={() => closeModal('edit')}
+                onClose={() => {
+                    closeModal('edit');
+                    setFormatosPosicion([]);
+                    setActiveTab('info');
+                }}
                 title={`Editar zona: ${zona.nombre}`}
-                fields={getEditarZonaFields(zona, [])}
+                fields={
+                    zona.tipoZona?.nombre === 'todos-contra-todos' && activeTab === 'formatos'
+                        ? undefined
+                        : getEditarZonaFields(zona, datosCrearZona?.data.equipos || [])
+                }
                 initialData={getInitialData(zona)}
                 onSubmit={handleEditarZona}
                 type="edit"
                 validationSchema={editarZonaSchema}
                 submitText="Actualizar zona"
-            />
+                maxWidth="max-w-4xl"
+            >
+                {/* Mostrar tabs solo si es tipo "todos-contra-todos" */}
+                {zona.tipoZona?.nombre === 'todos-contra-todos' && zona.cantidad_equipos ? (
+                    <ZonaEditTabs
+                        activeTab={activeTab}
+                        setActiveTab={setActiveTab}
+                        formatosPosicion={formatosPosicion}
+                        setFormatosPosicion={setFormatosPosicion}
+                        cantidadEquipos={zona.cantidad_equipos}
+                        formatosIniciales={zona.formatosPosiciones}
+                        idZona={idZona}
+                        onActualizarFormato={async (id_formato, data) => {
+                            const { zonasService } = await import('../services/zonas.services');
+                            await zonasService.actualizarFormatoPosicion(idZona, id_formato, data);
+                            // Invalidar queries para refrescar datos
+                            queryClient.invalidateQueries({ queryKey: ['zonas'] });
+                        }}
+                        onEliminarFormato={async (id_formato) => {
+                            const { zonasService } = await import('../services/zonas.services');
+                            await zonasService.eliminarFormatoPosicion(idZona, id_formato);
+                            // Invalidar queries para refrescar datos
+                            queryClient.invalidateQueries({ queryKey: ['zonas'] });
+                        }}
+                    />
+                ) : null}
+            </FormModal>
         </>
     );
 };
