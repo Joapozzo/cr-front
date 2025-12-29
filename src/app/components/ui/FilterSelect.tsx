@@ -9,7 +9,7 @@ interface FilterSelectOption {
 
 interface FilterSelectProps {
     value: string;
-    onChange: (value: string) => void;
+    onChange: (value: string | number) => void;
     options: FilterSelectOption[];
     placeholder?: string;
     className?: string;
@@ -24,7 +24,7 @@ export function FilterSelect({
     value, 
     onChange, 
     options, 
-    placeholder,
+    placeholder: _placeholder,
     className = '',
     width = 'w-48'
 }: FilterSelectProps) {
@@ -32,7 +32,7 @@ export function FilterSelect({
         <div className={width}>
             <Select
                 value={value}
-                onChange={onChange}
+                onChange={(val) => onChange(typeof val === 'string' ? val : String(val))}
                 options={options}
                 className={`h-9 ${className}`}
             />

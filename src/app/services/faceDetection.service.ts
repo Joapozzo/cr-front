@@ -31,7 +31,7 @@ export const loadFaceModels = async (): Promise<void> => {
       ]);
 
       modelsLoaded = true;
-      ('Modelos de face-api.js cargados correctamente');
+      console.log('Modelos de face-api.js cargados correctamente');
     } catch (error) {
       console.error('Error al cargar modelos de face-api.js:', error);
       modelsLoaded = false;

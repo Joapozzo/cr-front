@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { LogOut, Loader2 } from 'lucide-react';
 import { Button } from '@/app/components/ui/Button';
 import { BaseModal } from '@/app/components/modals/ModalAdmin';

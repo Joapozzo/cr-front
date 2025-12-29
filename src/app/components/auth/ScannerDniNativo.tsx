@@ -45,7 +45,7 @@ export const ScannerDNINativo = ({ onScan }: ScannerDNINativoProps) => {
       });
 
       if (qrCode) {
-        ('✅ QR detectado:', qrCode.data);
+        console.log('✅ QR detectado:', qrCode.data);
         onScan(qrCode.data);
         toast.success('Código QR detectado');
         setPreview(null);
@@ -71,7 +71,7 @@ export const ScannerDNINativo = ({ onScan }: ScannerDNINativoProps) => {
         },
         (result) => {
           if (result && result.codeResult) {
-            ('✅ Código de barras detectado:', result.codeResult.code);
+            console.log('✅ Código de barras detectado:', result.codeResult.code);
             onScan(result.codeResult.code);
             toast.success('Código de barras detectado');
           } else {

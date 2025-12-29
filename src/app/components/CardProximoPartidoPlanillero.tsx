@@ -24,7 +24,7 @@ interface ProximoPartidoProps {
 
 const CardProximoPartido: React.FC<ProximoPartidoProps> = ({ partido }) => {
     // Función para calcular el tiempo restante
-    const calcularTiempoRestante = (fecha: string, hora: string) => {
+    const _calcularTiempoRestante = (fecha: string, hora: string) => {
         const fechaPartido = new Date(`${fecha} ${hora}`);
         const ahora = new Date();
         const diferencia = fechaPartido.getTime() - ahora.getTime();

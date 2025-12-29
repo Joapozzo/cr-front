@@ -1,4 +1,4 @@
-import { Plus, User, X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import CardCanchaFutbol from './CardCanchaFutbol';
 import ModalSeleccionarJugador from './modals/ModalSeleccionarJugador';
@@ -15,7 +15,7 @@ import { EscudoEquipo } from './common/EscudoEquipo';
 import { ImagenPublica } from './common/ImagenPublica';
 
 interface DreamTeamFieldProps {
-    dreamteam?: DreamTeam;
+    dreamteam?: DreamTeam | null;
     onAgregarJugador?: (posicion: string) => void;
     onEliminarJugador?: (jugador: unknown) => void;
     jornada: number;
@@ -164,7 +164,7 @@ const DreamTeamField = ({
             throw error;
         }
     };
-    (dreamteam?.jugadores[0]);
+    console.log(dreamteam?.jugadores[0]);
 
     return (
         <div className="relative w-full max-w-full">

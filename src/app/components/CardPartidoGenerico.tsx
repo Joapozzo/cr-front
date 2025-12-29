@@ -111,7 +111,7 @@ export default function MatchCard({ partido, misEquiposIds = [] }: MatchCardProp
                 {/* Tarjetas Rojas Local */}
                 {rojasLocal.length > 0 && (
                     <div className="flex flex-col gap-1">
-                        {rojasLocal.map((roja, index) => (
+                        {rojasLocal.map((roja: Expulsion, index) => (
                             <div key={roja.id || index} className="w-3 h-4 bg-red-700 rounded-sm"></div>
                         ))}
                     </div>
@@ -143,7 +143,7 @@ export default function MatchCard({ partido, misEquiposIds = [] }: MatchCardProp
                 {/* Tarjetas Rojas Visita */}
                 {rojasVisita.length > 0 && (
                     <div className="flex flex-col gap-1">
-                        {rojasVisita.map((roja, index) => (
+                        {rojasVisita.map((roja: Expulsion, index) => (
                             <div key={roja.id || index} className="w-3 h-4 bg-red-700 rounded-sm"></div>
                         ))}
                     </div>

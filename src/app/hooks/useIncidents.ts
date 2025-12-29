@@ -105,7 +105,7 @@ export const useIncidentsLogic = ({ incidencias, partido }: UseIncidentsLogicPro
                 // Siempre pasar la roja relacionada cuando es la segunda amarilla
                 segundaAmarillaRelacionada: esSegundaAmarilla ? dobleAmarilla!.roja : undefined,
                 rojaRelacionada: esRojaDobleAmarilla ? dobleAmarilla!.segundaAmarilla : undefined,
-                esDobleAmarilla: esSegundaAmarilla || esRojaDobleAmarilla,
+                esDobleAmarilla: !!(esSegundaAmarilla || esRojaDobleAmarilla),
                 dobleAmarillaData: dobleAmarilla || undefined
             });
         });

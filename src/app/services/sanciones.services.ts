@@ -6,6 +6,7 @@ import {
     SancionResponse,
     VerificarSancionResponse
 } from "../types/sancion";
+import { SancionesActivasResponse } from "../hooks/useSanciones";
 
 export const sancionesService = {
     /**
@@ -121,7 +122,7 @@ export const sancionesService = {
         id_categoria_edicion?: number,
         limit?: number,
         page?: number
-    ) => {
+    ): Promise<SancionesActivasResponse> => {
         try {
             const params = new URLSearchParams();
             if (id_categoria_edicion) params.append('id_categoria_edicion', id_categoria_edicion.toString());
@@ -131,7 +132,7 @@ export const sancionesService = {
             const queryString = params.toString();
             const endpoint = `/user/sanciones${queryString ? `?${queryString}` : ''}`;
             
-            return await api.get(endpoint);
+            return await api.get<SancionesActivasResponse>(endpoint);
         } catch (error: any) {
             console.error('Error al obtener sanciones activas del usuario:', error);
             throw new Error(error.response?.data?.error || 'No se pudieron obtener las sanciones activas');

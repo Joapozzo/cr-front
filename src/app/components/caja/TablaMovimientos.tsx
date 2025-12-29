@@ -164,9 +164,13 @@ export default function TablaMovimientos({ movimientos, isLoading, onRefresh }: 
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center gap-2">
                                             {movimiento.afecta_saldo_fisico ? (
-                                                <Wallet className="w-4 h-4 text-[var(--green)]" title="Dinero físico" />
+                                                <span title="Dinero físico">
+                                                    <Wallet className="w-4 h-4 text-[var(--green)]" />
+                                                </span>
                                             ) : (
-                                                <CreditCard className="w-4 h-4 text-blue-400" title="Dinero digital" />
+                                                <span title="Dinero digital">
+                                                    <CreditCard className="w-4 h-4 text-blue-400" />
+                                                </span>
                                             )}
                                             <span className={`text-sm ${
                                                 movimiento.afecta_saldo_fisico ? 'text-[var(--green)]' : 'text-blue-400'

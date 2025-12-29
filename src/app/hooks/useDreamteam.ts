@@ -30,7 +30,7 @@ export const dreamteamKeys = {
 export const useDreamteamCategoriaJornada = (
     id_categoria_edicion: number,
     jornada: number,
-    options?: Omit<UseQueryOptions<DreamTeam, Error>, 'queryKey' | 'queryFn'>
+    options?: Omit<UseQueryOptions<DreamTeam | null, Error>, 'queryKey' | 'queryFn'>
 ) => {
     return useQuery({
         queryKey: dreamteamKeys.categoriaJornada(id_categoria_edicion, jornada),
@@ -38,23 +38,6 @@ export const useDreamteamCategoriaJornada = (
         enabled: !!id_categoria_edicion && !!jornada,
         staleTime: 5 * 60 * 1000, // 5 minutos
         gcTime: 10 * 60 * 1000, // 10 minutos
-        retry: 2,
-        refetchOnWindowFocus: false,
-        ...options,
-    });
-};
-
-// Hook para obtener dreamteam por ID
-export const useDreamteamPorId = (
-    id_dreamteam: number,
-    options?: Omit<UseQueryOptions<DreamTeam, Error>, 'queryKey' | 'queryFn'>
-) => {
-    return useQuery({
-        queryKey: dreamteamKeys.byId(id_dreamteam),
-        queryFn: () => dreamteamService.obtenerDreamTeamPorId(id_dreamteam),
-        enabled: !!id_dreamteam,
-        staleTime: 5 * 60 * 1000,
-        gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
         ...options,
@@ -107,7 +90,7 @@ export const useAgregarJugadorDreamteam = (
 // Hook para publicar dreamteam
 export const usePublicarDreamteam = (
     options?: UseMutationOptions<
-        { mensaje: string; dreamteam: DreamTeam },
+        { mensaje: string },
         Error,
         { id_dreamteam: number; formacion?: string }
     >
@@ -118,15 +101,9 @@ export const usePublicarDreamteam = (
         mutationFn: ({ id_dreamteam, formacion }: { id_dreamteam: number; formacion?: string }) =>
             dreamteamService.publicarDreamteam(id_dreamteam, formacion),
         onSuccess: (data, { id_dreamteam }) => {
-            // Invalidar queries relacionadas
+            // Invalidar todas las queries de dreamteam para asegurar actualización
             queryClient.invalidateQueries({
-                queryKey: dreamteamKeys.byId(id_dreamteam),
-            });
-            queryClient.invalidateQueries({
-                queryKey: dreamteamKeys.categoriaJornada(
-                    data.dreamteam.id_categoria_edicion,
-                    data.dreamteam.jornada
-                ),
+                queryKey: dreamteamKeys.all,
             });
         },
         ...options,
@@ -136,7 +113,7 @@ export const usePublicarDreamteam = (
 // Hook para eliminar jugador del dreamteam
 export const useEliminarJugadorDreamteam = (
     options?: UseMutationOptions<
-        { mensaje: string; dreamteam: DreamTeam },
+        { mensaje: string },
         Error,
         { id_dreamteam: number; id_partido: number; id_jugador: number }
     >
@@ -147,16 +124,6 @@ export const useEliminarJugadorDreamteam = (
         mutationFn: ({ id_dreamteam, id_partido, id_jugador }) =>
             dreamteamService.eliminarJugadorDeDreamteam(id_dreamteam, id_partido, id_jugador),
         onSuccess: (data, variables) => {
-            // Invalidar queries relacionadas
-            queryClient.invalidateQueries({
-                queryKey: dreamteamKeys.byId(variables.id_dreamteam),
-            });
-            queryClient.invalidateQueries({
-                queryKey: dreamteamKeys.categoriaJornada(
-                    data.dreamteam.id_categoria_edicion,
-                    data.dreamteam.jornada
-                ),
-            });
             // Invalidar todas las queries de dreamteam para asegurar actualización
             queryClient.invalidateQueries({
                 queryKey: dreamteamKeys.all,
@@ -165,14 +132,6 @@ export const useEliminarJugadorDreamteam = (
             // Invalidar TODAS las queries de jugadores destacados
             queryClient.invalidateQueries({
                 queryKey: jugadoresKeys.all,
-            });
-            
-            // Forzar refetch inmediato de los jugadores destacados específicos
-            queryClient.refetchQueries({
-                queryKey: jugadoresKeys.destacados(
-                    data.dreamteam.id_categoria_edicion,
-                    data.dreamteam.jornada
-                ),
             });
         },
         ...options,

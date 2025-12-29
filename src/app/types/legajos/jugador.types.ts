@@ -193,7 +193,6 @@ export interface PartidoJugador {
         id_equipo: number;
         es_local: boolean;
     };
-    resultado: ResultadoPartido | null;
 }
 
 export interface HistorialPartidosJugadorResponse {

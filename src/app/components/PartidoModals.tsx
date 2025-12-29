@@ -1,6 +1,9 @@
+"use client";
+
 import AccionModal from "@/app/components/modals/ActionsPlayerModal";
 import DorsalModal from "@/app/components/modals/DorsalModal";
 import ConfirmDeleteModal from "@/app/components/modals/ConfirmDeleteModal";
+import { usePartidoModals } from "@/app/hooks/usePartidoModals";
 
 interface PartidoModalsProps {
     modals: ReturnType<typeof usePartidoModals>;
@@ -42,7 +45,7 @@ const PartidoModals = ({
                 idPartido={Number(datosPartido?.partido.id_partido)}
                 idCategoriaEdicion={Number(datosPartido?.partido.id_categoria_edicion)}
                 idEquipo={modals.selectedJugador.id_equipo}
-                accionToEdit={modals.accionToEdit}
+                accionToEdit={modals.accionToEdit || undefined}
                 isEditing={modals.isEditingAction}
             />
 

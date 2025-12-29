@@ -6,13 +6,11 @@ import { FiltrosNoticias, OrdenNoticias } from '@/app/components/noticias/Filtro
 import { NoticiaCardLista } from '@/app/components/noticias/NoticiaCardLista';
 import { NoticiasListaSkeleton } from '@/app/components/skeletons/NoticiasListaSkeleton';
 import { useNoticiasPublicadas } from '@/app/hooks/useNoticias';
-import { Noticia } from '@/app/types/noticia';
-
 export default function NoticiasPage() {
   const [busqueda, setBusqueda] = useState('');
   const [orden, setOrden] = useState<OrdenNoticias>('fecha-desc');
   const [destacadas, setDestacadas] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
   const limit = 20;
 
   // Obtener noticias publicadas
@@ -29,7 +27,7 @@ export default function NoticiasPage() {
   const noticiasFiltradas = useMemo(() => {
     if (!data?.noticias) return [];
 
-    let resultado = [...data.noticias];
+    const resultado = [...data.noticias];
 
     // Ordenar según el orden seleccionado
     resultado.sort((a, b) => {

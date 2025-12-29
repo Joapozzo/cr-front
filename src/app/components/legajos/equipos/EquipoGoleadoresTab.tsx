@@ -38,9 +38,25 @@ const convertirGoleador = (goleador: GoleadorEquipo): Goleador => {
             nombre: 'N/A',
         },
         stats: {
-            goles: goleador.total,
-            partidos: goleador.partidos_jugados || 0,
-            promedio: goleador.partidos_jugados ? (goleador.total / goleador.partidos_jugados).toFixed(2) : '0.00',
+            goles: (() => {
+                const val: string | number | undefined = goleador.total;
+                if (typeof val === 'string') {
+                    return Number(val) || 0;
+                } else if (typeof val === 'number') {
+                    return val;
+                }
+                return 0;
+            })() as number,
+            partidos: (() => {
+                const val: string | number | undefined = goleador.partidos_jugados;
+                if (typeof val === 'string') {
+                    return Number(val) || 0;
+                } else if (typeof val === 'number') {
+                    return val;
+                }
+                return 0;
+            })() as number,
+            promedio: Number(goleador.partidos_jugados ? (Number(goleador.total) / Number(goleador.partidos_jugados)).toFixed(2) : '0.00'),
         },
     };
 };

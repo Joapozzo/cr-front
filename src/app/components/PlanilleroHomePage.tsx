@@ -74,7 +74,7 @@ const PlanilleroHomePage: React.FC = () => {
                 {data?.proximo_partido && (
                     <Suspense fallback={null}>
                         <PartidoItem 
-                            partido={data.proximo_partido} 
+                            partido={convertPartidoCompletoToPartido(data.proximo_partido)} 
                             onClick={(partidoId) => router.push(`/planillero/partidos/${partidoId}`)}
                         />
                     </Suspense>

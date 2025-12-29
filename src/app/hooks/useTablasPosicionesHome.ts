@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useTablasPosicionesPorEquipos } from './useTablasPosiciones';
 import { useAuthStore } from '../stores/authStore';
-import { ITablaPosicion } from '../components/home/TablaPosicionesHome';
+import { ITablaPosicion } from '../types/posiciones';
 
 interface UseTablasPosicionesHomeProps {
     tablas?: ITablaPosicion[];

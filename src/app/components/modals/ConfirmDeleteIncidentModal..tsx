@@ -101,7 +101,7 @@ const ConfirmDeleteIncidentModal: React.FC<ConfirmDeleteIncidentModalProps> = ({
     };
 
     const getIncidentDetails = () => {
-        let details = [];
+        const details: string[] = [];
         
         if (incidencia.tipo === 'gol') {
             if (incidencia.penal === 'S') details.push('(Penal)');
@@ -154,7 +154,7 @@ const ConfirmDeleteIncidentModal: React.FC<ConfirmDeleteIncidentModalProps> = ({
                     <div className="flex justify-between items-center pt-2 border-t border-[#262626]">
                         <span className="text-[#737373] text-sm">Minuto:</span>
                         <span className="text-[var(--green)] font-bold">
-                            {incidencia.minuto}'
+                            {incidencia.minuto}&apos;
                         </span>
                     </div>
                 </div>

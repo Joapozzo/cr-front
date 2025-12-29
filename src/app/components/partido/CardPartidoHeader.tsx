@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Calendar, Volleyball } from 'lucide-react';
+import { MapPin, Calendar } from 'lucide-react';
 import { EstadoPartido, IncidenciaGol, PartidoCompleto } from '@/app/types/partido';
 import { formatNombreJugador, formatTime } from '@/app/utils/cardPartido.helper';
 import BotoneraPartido from '../ButtonContainer';

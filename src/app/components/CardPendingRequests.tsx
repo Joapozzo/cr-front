@@ -145,7 +145,7 @@ const CardPendingRequests: React.FC<CardPendingRequestsProps> = ({
                             <div className="mt-3 p-3 bg-[var(--black-900)] rounded-lg border border-[var(--black-700)]">
                                 <p className="text-[var(--black-400)] text-xs mb-1">Tu mensaje:</p>
                                 <p className="text-[var(--black-300)] text-sm italic">
-                                    "{currentRequest.mensaje_jugador}"
+                                    &quot;{currentRequest.mensaje_jugador}&quot;
                                 </p>
                             </div>
                         )}

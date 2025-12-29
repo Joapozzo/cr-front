@@ -132,19 +132,31 @@ export const prediosService = {
      */
     obtenerCanchas: async (params?: ObtenerCanchasParams): Promise<CanchaConPredio[]> => {
         try {
-            const queryParams = new URLSearchParams();
+            let url: string;
             
             if (params?.id_predio) {
-                queryParams.append('id_predio', params.id_predio.toString());
+                // Si se especifica un predio, usar la ruta específica
+                const queryParams = new URLSearchParams();
+                
+                if (params.incluir_inactivas) {
+                    queryParams.append('incluir_inactivas', 'true');
+                }
+                
+                url = queryParams.toString()
+                    ? `/admin/predios/canchas/predio/${params.id_predio}?${queryParams.toString()}`
+                    : `/admin/predios/canchas/predio/${params.id_predio}`;
+            } else {
+                // Si no se especifica predio, usar ruta genérica (si existe en backend)
+                const queryParams = new URLSearchParams();
+                
+                if (params?.incluir_inactivas) {
+                    queryParams.append('incluir_inactivas', 'true');
+                }
+                
+                url = queryParams.toString()
+                    ? `/admin/predios/canchas?${queryParams.toString()}`
+                    : '/admin/predios/canchas';
             }
-            
-            if (params?.incluir_inactivas) {
-                queryParams.append('incluir_inactivas', 'true');
-            }
-            
-            const url = queryParams.toString()
-                ? `/admin/predios/canchas/predio/${params.id_predio}?${queryParams.toString()}`
-                : '/admin/predios/canchas';
             
             const response = await api.get<ObtenerCanchasResponse>(url);
             return response.canchas;

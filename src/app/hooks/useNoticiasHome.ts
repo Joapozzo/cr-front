@@ -1,5 +1,6 @@
 import { useMemo, useState, useRef } from 'react';
-import { useNoticiasPublicadas, Noticia } from './useNoticias';
+import { useNoticiasPublicadas } from './useNoticias';
+import { Noticia } from '../types/noticia';
 
 interface UseNoticiasHomeProps {
     noticias?: Noticia[];
@@ -12,7 +13,7 @@ interface UseNoticiasHomeReturn {
     loading: boolean;
     error: Error | null;
     activeDot: number;
-    scrollContainerRef: React.RefObject<HTMLDivElement>;
+    scrollContainerRef: React.RefObject<HTMLDivElement | null>;
     noticiasRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
     handleScroll: () => void;
     scrollToPage: (pageIndex: number) => void;

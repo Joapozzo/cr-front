@@ -9,9 +9,7 @@ interface StatsCardTemplateProps {
 
 const StatsCardTemplate: React.FC<StatsCardTemplateProps> = ({
     title,
-    icon,
-    children,
-    accentColor = 'var(--green)'
+    children
 }) => {
     return (
         <div className="bg-[var(--black)] border border-[var(--gray-300)] rounded-lg p-4 md:p-5 hover:border-[var(--green)] transition-all duration-300">

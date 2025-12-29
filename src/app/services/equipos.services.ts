@@ -397,8 +397,8 @@ export const equiposService = {
         return response;
     },
 
-    obtenerEstadisticasJugadoresPlantel: async (id_equipo: number, id_categoria_edicion: number): Promise<EstadisticasPlantelResponse[]> => {
-        const response = await api.get<EstadisticasPlantelResponse[]>(
+    obtenerEstadisticasJugadoresPlantel: async (id_equipo: number, id_categoria_edicion: number): Promise<EstadisticasPlantelResponse> => {
+        const response = await api.get<EstadisticasPlantelResponse>(
             `/user/estadisticas-plantel/${id_equipo}/${id_categoria_edicion}`
         );
 
@@ -423,23 +423,6 @@ export const equiposService = {
             pendientes: response.pendientes,
             aprobadas: response.aprobadas,
             rechazadas: response.rechazadas
-        };
-    },
-
-    obtenerSolicitudesBajaEquipo: async (id_equipo: number, id_categoria_edicion: number): Promise<{ solicitudes: any[]; total: number; pendientes: number; aprobadas: number; rechazadas: number }> => {
-        const response = await api.get<{ solicitudes: any[]; total: number; pendientes: number; aprobadas: number; rechazadas: number }>(
-            `/admin/equipos/solicitudes-baja?estado=P`
-        );
-        // Filtrar por equipo y categoría en el frontend si es necesario, o hacerlo en el backend
-        const solicitudesFiltradas = response.solicitudes?.filter(
-            (s: any) => s.equipo.id_equipo === id_equipo && s.categoriaEdicion?.id_categoria_edicion === id_categoria_edicion
-        ) || [];
-        return {
-            solicitudes: solicitudesFiltradas,
-            total: solicitudesFiltradas.length,
-            pendientes: solicitudesFiltradas.filter((s: any) => s.estado === 'P').length,
-            aprobadas: solicitudesFiltradas.filter((s: any) => s.estado === 'A').length,
-            rechazadas: solicitudesFiltradas.filter((s: any) => s.estado === 'R').length
         };
     },
 

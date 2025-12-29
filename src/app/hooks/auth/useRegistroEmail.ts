@@ -59,7 +59,7 @@ export const useRegistroEmail = () => {
     },
     onSuccess: (data) => {
       // TODOS los usuarios (incluyendo eventuales) deben verificar email primero
-      ('Usuario registrado. Email de verificación enviado:', data.user?.email || 'N/A');
+      console.log('Usuario registrado. Email de verificación enviado:', data.user?.email || 'N/A');
     },
     onError: (error: Error) => {
       console.error('Error en registro:', error);

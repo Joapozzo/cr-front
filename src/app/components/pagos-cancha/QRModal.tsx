@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import BaseModal from '../modals/ModalPlanillero';
-import { QrCode, Copy, Check } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
 import { Button } from '../ui/Button';
 import toast from 'react-hot-toast';
-import { QRCodeSVG } from 'react-qr-code';
+import QRCode from 'react-qr-code';
 
 interface QRModalProps {
     isOpen: boolean;
@@ -47,11 +47,10 @@ export default function QRModal({ isOpen, onClose, qrData, monto, equipo }: QRMo
                     {qrData ? (
                         <div className="text-center space-y-4">
                             <div className="bg-white p-4 rounded-lg inline-block">
-                                <QRCodeSVG
+                                <QRCode
                                     value={qrData}
                                     size={256}
                                     level="H"
-                                    includeMargin={true}
                                 />
                             </div>
                             <p className="text-xs text-[var(--gray-100)]">
@@ -82,7 +81,7 @@ export default function QRModal({ isOpen, onClose, qrData, monto, equipo }: QRMo
                     <p className="text-sm text-blue-400 mb-2 font-medium">Instrucciones:</p>
                     <ol className="text-xs text-blue-300 space-y-1 list-decimal list-inside">
                         <li>Abre la app de MercadoPago en tu celular</li>
-                        <li>Selecciona "Pagar" y luego "Pagar con QR"</li>
+                        <li>Selecciona &ldquo;Pagar&rdquo; y luego &ldquo;Pagar con QR&rdquo;</li>
                         <li>Escanea el código QR mostrado arriba</li>
                         <li>Confirma el pago en la app</li>
                         <li>El pago se procesará automáticamente</li>

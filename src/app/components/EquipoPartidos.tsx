@@ -1,11 +1,10 @@
 import React from 'react';
-import { CardUltimoPartido } from './CardUltimoPartido';
-import { CardPartidoGenerico } from './CardPartidoGenerico';
+import CardUltimoPartido from './CardUltimoPartido';
+import CardPartidoGenerico from './CardPartidoGenerico';
 import { Partido } from '../types/partido';
 import { NextMatch } from './NextMatch';
 import NextMatchSkeleton from './skeletons/NextMatchSkeleton';
 import CardUltimoPartidoSkeleton from './skeletons/CardUltimoPartido'; 
-import CardPartidoCategoriaSkeleton from './skeletons/CardPartidoCategoriaSkeleton'; 
 import CardPartidoGenericoSkeleton from './skeletons/CardPartidoGenericoSkeleton';
 
 interface EquipoPartidosProps {
@@ -49,9 +48,8 @@ export const EquipoPartidos: React.FC<EquipoPartidosProps> = ({
                     <CardUltimoPartidoSkeleton />
                 ) : ultimoPartido ? (
                     <CardUltimoPartido
-                        partido={ultimoPartido}
-                        miEquipo={equipoSeleccionado}
-                        nombreEquipo={nombreEquipo}
+                        partidos={[ultimoPartido]}
+                        isLoading={false}
                     />
                 ) : null}
 
@@ -59,14 +57,34 @@ export const EquipoPartidos: React.FC<EquipoPartidosProps> = ({
                     <CardPartidoGenericoSkeleton />
                 ) : ultimosPartidos.length > 0 ? (
                     <div className="flex flex-col w-full rounded-b-lg overflow-hidden bg-[var(--black-900)]">
-                        {ultimosPartidos.slice(0, 5).map((partido) => (
-                            <CardPartidoGenerico
-                                key={partido.id_partido}
-                                partido={partido}
-                                miEquipo={equipoSeleccionado}
-                                mostrarDia={true}
-                            />
-                        ))}
+                        {ultimosPartidos.slice(0, 5).map((partido) => {
+                            // Adaptar Partido a PartidoEquipo con valores por defecto
+                            const partidoAdaptado = {
+                                ...partido,
+                                equipoLocal: {
+                                    id_equipo: partido.id_equipolocal,
+                                    nombre: 'Equipo Local',
+                                    img: null
+                                },
+                                equipoVisita: {
+                                    id_equipo: partido.id_equipovisita,
+                                    nombre: 'Equipo Visita',
+                                    img: null
+                                },
+                                incidencias: {
+                                    goles: [],
+                                    expulsiones: []
+                                }
+                            } as any;
+                            
+                            return (
+                                <CardPartidoGenerico
+                                    key={partido.id_partido}
+                                    partido={partidoAdaptado}
+                                    misEquiposIds={equipoSeleccionado ? [equipoSeleccionado] : []}
+                                />
+                            );
+                        })}
                     </div>
                 ) : null}
             </div>

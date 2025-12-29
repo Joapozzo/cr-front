@@ -79,7 +79,7 @@ const useTransferenciasPendientes = () => {
                     '/cajero/inscripciones/transferencias-pendientes?limit=1'
                 );
                 return response.data?.length || 0;
-            } catch (error) {
+            } catch {
                 return 0;
             }
         },

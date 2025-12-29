@@ -153,7 +153,7 @@ export default function ConfiguracionPreciosPage() {
                         </Button>
                         <Button
                             variant="secondary"
-                            onClick={() => toast.info('Funcionalidad próximamente')}
+                            onClick={() => toast('Funcionalidad próximamente')}
                         >
                             <Upload className="w-4 h-4 mr-2" />
                             Importar

@@ -23,7 +23,7 @@ export const equiposLegajosService = {
     obtenerEquipoDetalle: async (id_equipo: number): Promise<EquipoInformacionBasica> => {
         try {
             const response = await api.get<{ success: boolean; data: EquipoInformacionBasica }>(`/legajos/equipo/${id_equipo}`);
-            (response);
+            console.log(response);
             if (!response.data) throw new Error('Equipo no encontrado');
             return response.data;
         } catch (error) {

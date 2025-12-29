@@ -9,7 +9,7 @@ interface CardComponentProps {
 export const CardComponent: React.FC<CardComponentProps> = ({
     titulo,
     children,
-    className = "",
+    className: _className = "",
 }) => {
     return (
         <div className="relative py-4 select-none bg-[var(--gray-400)] rounded-[20px] w-full flex flex-col">

@@ -28,11 +28,14 @@ export const metadata: Metadata = {
     "competencias deportivas",
     "equipos futbol",
     "categorias futbol",
-    "liga futbol"
+    "liga futbol",
+    "torneo amateur",
+    "futbol 7 cordoba"
   ],
   authors: [{ name: "Copa Relámpago" }],
   creator: "Copa Relámpago",
   publisher: "Copa Relámpago",
+  metadataBase: new URL('https://coparelampago.com'),
 
   // Configuración de robots
   robots: {
@@ -54,19 +57,13 @@ export const metadata: Metadata = {
     url: "https://coparelampago.com",
     siteName: "Copa Relámpago",
     title: "Copa Relámpago | El Mejor Torneo de Fútbol 7 de Córdoba",
-    description: "Copa Relámpago es el torneo de fútbol 7 más importante de Córdoba. Categorías para todas las edades, competencias profesionales y la mejor experiencia futbolística.",
+    description: "Participá en el torneo de fútbol 7 más profesional de Córdoba. Estadísticas en vivo, premios increíbles y la mejor comunidad.",
     images: [
       {
         url: "/logos/isologo.png",
         width: 1200,
         height: 630,
         alt: "Copa Relámpago - Logo",
-      },
-      {
-        url: "/logos/isologo.png",
-        width: 800,
-        height: 600,
-        alt: "Copa Relámpago",
       },
     ],
   },
@@ -76,23 +73,23 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@coparelampago",
     creator: "@coparelampago",
-    title: "Copa Relámpago | El Mejor Torneo de Fútbol 7 de Córdoba",
-    description: "Copa Relámpago es el torneo de fútbol 7 más importante de Córdoba. Categorías para todas las edades, competencias profesionales y la mejor experiencia futbolística.",
+    title: "Copa Relámpago | Torneo de Fútbol 7",
+    description: "El mejor torneo de fútbol 7 de Córdoba. ¡Inscribí a tu equipo!",
     images: ["/logos/isologo.png"],
   },
 
   // Favicons e iconos
   icons: {
     icon: [
-      { url: "/logos/favicon.ico" },
-      { url: "/logos/icon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/logos/icon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/logos/isologo.png" },
+      { url: "/logos/isologo.png", sizes: "32x32", type: "image/png" },
+      { url: "/logos/isologo.png", sizes: "16x16", type: "image/png" },
     ],
     apple: [
-      { url: "/logos/apple-touch-icon.png", sizes: "180x180" },
+      { url: "/logos/isologo.png", sizes: "180x180" },
     ],
     other: [
-      { rel: "mask-icon", url: "/logos/safari-pinned-tab.svg", color: "#2AD174" },
+      { rel: "mask-icon", url: "/logos/isologo.png", color: "#2AD174" },
     ],
   },
 
@@ -107,15 +104,8 @@ export const metadata: Metadata = {
   other: {
     "application-name": "Copa Relámpago",
     "msapplication-TileColor": "#2AD174",
-    "msapplication-TileImage": "/logos/mstile-144x144.png",
+    "msapplication-TileImage": "/logos/isologo.png",
     "theme-color": "#2AD174",
-  },
-
-  // Verificaciones
-  verification: {
-    google: "tu-codigo-google-aqui", // Reemplazar con código real
-    // yandex: "tu-codigo-yandex-aqui",
-    // yahoo: "tu-codigo-yahoo-aqui",
   },
 
   // Configuración para motores de búsqueda
@@ -188,7 +178,7 @@ export default function RootLayout({
         <Providers>
           {children}
         </Providers>
-        <Toaster/>
+        <Toaster />
       </body>
     </html>
   );

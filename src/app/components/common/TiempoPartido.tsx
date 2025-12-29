@@ -12,8 +12,8 @@ interface TiempoPartidoProps {
 
 export const TiempoPartido: React.FC<TiempoPartidoProps> = ({
     estado,
-    partidoId,
-    showCronometro = false,
+    partidoId: _partidoId,
+    showCronometro: _showCronometro = false,
     size = 'md',
     className = ''
 }) => {

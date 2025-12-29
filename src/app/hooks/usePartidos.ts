@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { partidosService } from '../services/partidos.services';
 import { Partido, UltimoYProximoPartidoResponse } from '../types/partido';
+import { PartidoResponse } from '../schemas/partidos.schema';
 
 // Query Keys para partidos
 export const partidosKeys = {
@@ -47,7 +48,7 @@ export const partidosKeys = {
  * Hook para obtener los últimos 5 partidos jugados de la última edición
  */
 export const useUltimos5PartidosJugados = (
-    options?: Omit<UseQueryOptions<Partido[], Error>, 'queryKey' | 'queryFn'>
+    options?: Omit<UseQueryOptions<any[], Error>, 'queryKey' | 'queryFn'>
 ) => {
     return useQuery({
         queryKey: partidosKeys.ultimosJugados(),
@@ -64,7 +65,7 @@ export const useUltimos5PartidosJugados = (
  * Hook para obtener los próximos 5 partidos de la próxima jornada
  */
 export const useProximos5PartidosProximaJornada = (
-    options?: Omit<UseQueryOptions<Partido[], Error>, 'queryKey' | 'queryFn'>
+    options?: Omit<UseQueryOptions<any[], Error>, 'queryKey' | 'queryFn'>
 ) => {
     return useQuery({
         queryKey: partidosKeys.proximosJornada(),
@@ -83,7 +84,7 @@ export const useProximos5PartidosProximaJornada = (
  * Hook para obtener partidos de última jornada de todas las categorías
  */
 export const useUltimosPartidosCategorias = (
-    options?: Omit<UseQueryOptions<Partido[], Error>, 'queryKey' | 'queryFn'>
+    options?: Omit<UseQueryOptions<any[], Error>, 'queryKey' | 'queryFn'>
 ) => {
     return useQuery({
         queryKey: partidosKeys.ultimaJornadaCategorias(),
@@ -100,7 +101,7 @@ export const useUltimosPartidosCategorias = (
  * Hook para obtener partidos de próxima jornada de todas las categorías
  */
 export const useProximosPartidosCategorias = (
-    options?: Omit<UseQueryOptions<Partido[], Error>, 'queryKey' | 'queryFn'>
+    options?: Omit<UseQueryOptions<any[], Error>, 'queryKey' | 'queryFn'>
 ) => {
     return useQuery({
         queryKey: partidosKeys.proximaJornadaCategorias(),
@@ -118,7 +119,7 @@ export const useProximosPartidosCategorias = (
  */
 export const usePartidosProximaJornadaDia = (
     dia: string,
-    options?: Omit<UseQueryOptions<Partido[], Error>, 'queryKey' | 'queryFn'>
+    options?: Omit<UseQueryOptions<any[], Error>, 'queryKey' | 'queryFn'>
 ) => {
     return useQuery({
         queryKey: partidosKeys.proximaFechaDia(dia),
@@ -137,7 +138,7 @@ type PartidosGeneralesType = 'ultimos-jugados' | 'proximos-jornada' | 'ultima-jo
 
 export const usePartidosGenerales = <T extends PartidosGeneralesType>(
     type: T,
-    options?: Omit<UseQueryOptions<Partido[], Error>, 'queryKey' | 'queryFn'>
+    options?: Omit<UseQueryOptions<PartidoResponse[], Error>, 'queryKey' | 'queryFn'>
 ) => {
     const queryConfig = {
         'ultimos-jugados': {
@@ -178,7 +179,7 @@ export const usePartidosGenerales = <T extends PartidosGeneralesType>(
  */
 export const useUltimos5PartidosEquipo = (
     id_equipo: number,
-    options?: Omit<UseQueryOptions<Partido[], Error>, 'queryKey' | 'queryFn'>
+    options?: Omit<UseQueryOptions<any[], Error>, 'queryKey' | 'queryFn'>
 ) => {
     return useQuery({
         queryKey: partidosKeys.equipoUltimos(id_equipo),
@@ -197,7 +198,7 @@ export const useUltimos5PartidosEquipo = (
  */
 export const useUltimoPartidoEquipo = (
     id_equipo: number,
-    options?: Omit<UseQueryOptions<Partido | null, Error>, 'queryKey' | 'queryFn'>
+    options?: Omit<UseQueryOptions<any | null, Error>, 'queryKey' | 'queryFn'>
 ) => {
     return useQuery({
         queryKey: partidosKeys.equipoUltimo(id_equipo),
@@ -216,7 +217,7 @@ export const useUltimoPartidoEquipo = (
  */
 export const useProximoPartidoEquipo = (
     id_equipo: number,
-    options?: Omit<UseQueryOptions<Partido | null, Error>, 'queryKey' | 'queryFn'>
+    options?: Omit<UseQueryOptions<any | null, Error>, 'queryKey' | 'queryFn'>
 ) => {
     return useQuery({
         queryKey: partidosKeys.equipoProximo(id_equipo),
@@ -314,7 +315,10 @@ export const usePartidosUsuario = (
 ) => {
     return useQuery({
         queryKey: partidosKeys.usuarioLista(tipo, id_categoria_edicion, jornada, limit, page),
-        queryFn: () => partidosService.obtenerPartidosUsuario(tipo, id_categoria_edicion, jornada, limit, page),
+        queryFn: async () => {
+            const response = await partidosService.obtenerPartidosUsuario(tipo, id_categoria_edicion, jornada, limit, page);
+            return response as PartidosUsuarioResponse;
+        },
         staleTime: 2 * 60 * 1000, // 2 minutos
         gcTime: 5 * 60 * 1000, // 5 minutos
         retry: 2,
@@ -354,7 +358,10 @@ export const usePartidosUsuarioPorEquipo = (
 ) => {
     return useQuery({
         queryKey: partidosKeys.equipoLista(id_equipo || 0, tipo, id_categoria_edicion, jornada, limit, page),
-        queryFn: () => partidosService.obtenerPartidosUsuarioPorEquipo(id_equipo!, tipo, id_categoria_edicion ?? undefined, jornada, limit, page),
+        queryFn: async () => {
+            const response = await partidosService.obtenerPartidosUsuarioPorEquipo(id_equipo!, tipo, id_categoria_edicion ?? undefined, jornada, limit, page);
+            return response as PartidosUsuarioResponse;
+        },
         staleTime: 2 * 60 * 1000, // 2 minutos
         gcTime: 5 * 60 * 1000, // 5 minutos
         retry: 2,

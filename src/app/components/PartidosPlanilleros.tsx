@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Partido } from "../types/partido";
+// import { Partido } from "../types/partido";
 import { BaseCard } from "./BaseCard";
 import TabNavigation from "./TabNavigationPlanillero";
 import PartidosList from "./PartidosListPlanillero";

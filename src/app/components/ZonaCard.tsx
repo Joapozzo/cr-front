@@ -19,11 +19,9 @@ import { useEdicionStore } from "../stores/edicionStore";
 const ZonaEditTabs = ({
     activeTab,
     setActiveTab,
-    formatosPosicion,
     setFormatosPosicion,
     cantidadEquipos,
     formatosIniciales,
-    idZona,
     onActualizarFormato,
     onEliminarFormato,
 }: {

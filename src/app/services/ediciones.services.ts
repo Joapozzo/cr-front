@@ -29,10 +29,11 @@ export const edicionesService = {
         }
     },
 
-    crearEdicion: async (data: CrearEdicion): Promise<EdicionResponse> => {
+    crearEdicion: async (data: CrearEdicion): Promise<Edicion> => {
         try {
             const response = await api.post<EdicionResponse>('/admin/ediciones', data);
-            return response;
+            // Extract the data field from the response
+            return response.data;
         } catch (error: any) {
             if (error.response?.status === 400) {
                 const backendErrors = error.response.data.errors;

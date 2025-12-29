@@ -34,8 +34,6 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         className = "",
         label,
         error,
-        showImages = false,
-        bgColor = "bg-[var(--gray-400)]",
         ...props 
     }, ref) => {
         const [isOpen, setIsOpen] = useState(false);

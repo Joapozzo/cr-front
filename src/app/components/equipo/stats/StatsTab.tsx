@@ -188,7 +188,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             isLoading={loadingGoleadores}
             onRowClick={(jugador) => {
               // TODO: Navegar a perfil del jugador o mostrar detalles
-              ('Jugador seleccionado:', jugador);
+              console.log('Jugador seleccionado:', jugador);
             }}
           />
         )}
@@ -199,7 +199,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             tipo="asistencias"
             isLoading={loadingAsistencias}
             onRowClick={(jugador) => {
-              ('Jugador seleccionado:', jugador);
+              console.log('Jugador seleccionado:', jugador);
             }}
           />
         )}
@@ -210,7 +210,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             tipo="amarillas"
             isLoading={loadingAmarillas}
             onRowClick={(jugador) => {
-              ('Jugador seleccionado:', jugador);
+              console.log('Jugador seleccionado:', jugador);
             }}
           />
         )}
@@ -221,7 +221,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             tipo="rojas"
             isLoading={loadingRojas}
             onRowClick={(jugador) => {
-              ('Jugador seleccionado:', jugador);
+              console.log('Jugador seleccionado:', jugador);
             }}
           />
         )}
@@ -232,7 +232,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             tipo="mvps"
             isLoading={loadingMVPs}
             onRowClick={(jugador) => {
-              ('Jugador seleccionado:', jugador);
+              console.log('Jugador seleccionado:', jugador);
             }}
           />
         )}

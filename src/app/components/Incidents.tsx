@@ -126,7 +126,7 @@ const Incidents: React.FC<IncidentsProps> = ({
                     isOpen={showDeleteModal}
                     onClose={handleCloseDeleteModal}
                     tipoIncidencia={incidenciaAEliminar.tipo}
-                    onConfirm={confirmarEliminacion}
+                    onConfirm={() => confirmarEliminacion(incidenciaAEliminar)}
                     isLoading={isLoadingDelete}
                 />
             )}

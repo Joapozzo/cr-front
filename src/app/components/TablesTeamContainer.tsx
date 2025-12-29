@@ -1,5 +1,5 @@
 import SquadTable from "./PlantelTable";
-import StandingsTable from "./TablaPosiciones";
+import StandingsTable from "./StandingsTable";
 
 interface TeamTablesContainerProps {
     id_categoria_edicion: number;

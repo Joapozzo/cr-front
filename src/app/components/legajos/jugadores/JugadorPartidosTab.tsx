@@ -3,7 +3,7 @@
 import { HistorialPartidosJugadorResponse, PartidoJugador } from '@/app/types/legajos';
 import MatchCard from '@/app/components/CardPartidoGenerico';
 import { Pagination } from '@/app/components/legajos/shared/Pagination';
-import { Calendar, History } from 'lucide-react';
+import { History } from 'lucide-react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -64,8 +64,8 @@ const convertirPartidoJugador = (partido: PartidoJugador, idJugador: number): an
 export const JugadorPartidosTab = ({
     partidos,
     isLoading,
-    categoriaSeleccionada,
-    page,
+    categoriaSeleccionada: _categoriaSeleccionada,
+    page: _page,
     onPageChange,
     idJugador,
 }: JugadorPartidosTabProps) => {

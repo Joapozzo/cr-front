@@ -13,7 +13,6 @@ import {
     Newspaper,
     Users,
     Trophy,
-    DollarSign,
     LogOut,
     User,
     Wallet

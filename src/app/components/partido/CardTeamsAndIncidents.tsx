@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Award, Star } from 'lucide-react';
 import { IncidenciaPartido, JugadorPlantel } from '@/app/types/partido';
 import { TbCircleLetterCFilled, TbRectangleVerticalFilled } from "react-icons/tb";
 import { GiSoccerKick } from "react-icons/gi";
@@ -95,7 +94,7 @@ const JugadorRow: React.FC<{
     esPlanillero?: boolean;
     onClick?: () => void;
     index: number;
-}> = ({ jugador, acciones, equipo, esPlanillero, onClick, index }) => {
+}> = ({ jugador, acciones, esPlanillero, onClick, index }) => {
     const { goles, amarillas, rojas, asistencias, esDestacado } = acciones;
     const tieneAcciones = goles > 0 || amarillas > 0 || rojas > 0 || asistencias > 0;
 
@@ -212,7 +211,7 @@ const IncidenciaRow: React.FC<{
                             </div>
                         </div>
                         <div className="text-xs font-mono text-[#737373] text-right">
-                            {incidencia.minuto}'
+                            {incidencia.minuto}&apos;
                         </div>
                     </div>
                 )}
@@ -228,7 +227,7 @@ const IncidenciaRow: React.FC<{
                 {!esLocal && (
                     <div className="flex items-center gap-2">
                         <div className="text-xs font-mono text-[#737373]">
-                            {incidencia.minuto}'
+                            {incidencia.minuto}&apos;
                         </div>
                         <div className="text-left">
                             <div className="text-sm font-medium text-white">

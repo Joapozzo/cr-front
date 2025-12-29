@@ -36,6 +36,7 @@ export const useCronometroPartido = () => {
     // Restaurar estado al montar el componente
     useEffect(() => {
         restaurarEstado();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

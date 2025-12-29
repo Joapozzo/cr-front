@@ -24,10 +24,10 @@ const PartidoLlave = ({ partido }: PartidoLlaveProps) => {
         <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-2 min-w-[280px]">
             <div className="space-y-2">
                 <EquipoCard
-                    equipo={partido.equipoLocal}
+                    equipo={partido.equipoLocal ?? undefined}
                     infoVacante={partido.info_vacante_local}
-                    goles={hasResult ? partido.goles_local : undefined}
-                    penales={hasResult && partido.pen_local !== undefined ? partido.pen_local : undefined}
+                    goles={hasResult ? (partido.goles_local ?? undefined) : undefined}
+                    penales={hasResult && partido.pen_local !== undefined && partido.pen_local !== null ? partido.pen_local : undefined}
                     isWinner={localWins}
                     isPending={!partido.equipoLocal}
                 />
@@ -44,10 +44,10 @@ const PartidoLlave = ({ partido }: PartidoLlaveProps) => {
                 </div>
 
                 <EquipoCard
-                    equipo={partido.equipoVisita}
+                    equipo={partido.equipoVisita ?? undefined}
                     infoVacante={partido.info_vacante_visita}
-                    goles={hasResult ? partido.goles_visita : undefined}
-                    penales={hasResult && partido.pen_visita !== undefined ? partido.pen_visita : undefined}
+                    goles={hasResult ? (partido.goles_visita ?? undefined) : undefined}
+                    penales={hasResult && partido.pen_visita !== undefined && partido.pen_visita !== null ? partido.pen_visita : undefined}
                     isWinner={visitaWins}
                     isPending={!partido.equipoVisita}
                 />

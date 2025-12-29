@@ -1,5 +1,5 @@
-import { Check, User, X } from "lucide-react";
-import { SolicitudEnviada } from "../types/solicitudes";
+import { Check, X } from "lucide-react";
+import { SolicitudEnviada, SolicitudEstado } from "../types/solicitudes";
 import { Button } from "./ui/Button";
 import UserAvatar from "./ui/UserAvatar";
 
@@ -48,12 +48,12 @@ const renderInvitation = ({handleAccept, handleReject, isLoading, invitacion}: I
                     <span>
                         Recibida hace {diasPendiente === 0 ? 'hoy' : `${diasPendiente} día${diasPendiente > 1 ? 's' : ''}`}
                     </span>
-                    {invitacion.estado !== 'E' && invitacion.respondido_por_username && (
+                    {invitacion.estado !== SolicitudEstado.E && invitacion.respondido_por_username && (
                         <span>
                             Respondida por: <span className="text-[var(--white)] font-medium">{invitacion.respondido_por_username}</span>
                         </span>
                     )}
-                    {invitacion.estado === 'E' && (
+                    {invitacion.estado === SolicitudEstado.E && (
                         <span className="flex items-center gap-1">
                             <div className="w-2 h-2 bg-[var(--green)] rounded-full animate-pulse"></div>
                             Esperando respuesta
@@ -71,7 +71,7 @@ const renderInvitation = ({handleAccept, handleReject, isLoading, invitacion}: I
                     <div className="mb-4 p-3 bg-[var(--black-950)] rounded-lg border border-[#262626]">
                         <p className="text-[#8C8C8C] text-xs mb-1">Mensaje del capitán:</p>
                         <p className="text-[#E5E5E5] text-sm italic">
-                            "{invitacion.mensaje_capitan}"
+                            &ldquo;{invitacion.mensaje_capitan}&rdquo;
                         </p>
                     </div>
                 )}

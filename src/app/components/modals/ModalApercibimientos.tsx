@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AlertTriangle, Minus, Plus, Loader2 } from 'lucide-react';
+import { Minus, Plus, Loader2 } from 'lucide-react';
 import { Button } from '@/app/components/ui/Button';
 import { toast } from 'react-hot-toast';
 import { equiposService } from '@/app/services/equipos.services';
@@ -36,10 +36,10 @@ export default function ModalApercibimientos({
 
     // Obtener configuración de la edición
     useEffect(() => {
-        if (categoriaSeleccionada?.edicion) {
-            setApercibimientosUmbral(categoriaSeleccionada.edicion.apercibimientos || 5);
-            setPuntosDescuento(categoriaSeleccionada.edicion.puntos_descuento || 1);
-        }
+        // TODO: Obtener configuración de apercibimientos desde el backend si está disponible
+        // Por ahora usar valores por defecto
+        setApercibimientosUmbral(5);
+        setPuntosDescuento(1);
     }, [categoriaSeleccionada]);
 
     // Resetear cuando se abre el modal

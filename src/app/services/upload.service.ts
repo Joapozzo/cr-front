@@ -118,7 +118,7 @@ export const capturarDesdeCamara = async (): Promise<MediaStream> => {
       audio: false,
     });
     
-    ('Cámara iniciada exitosamente:', stream);
+    console.log('Cámara iniciada exitosamente:', stream);
     return stream;
   } catch (error: any) {
     console.error('Error al acceder a la cámara:', error);

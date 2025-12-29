@@ -85,9 +85,7 @@ export default function ModalConfigPrecio({
                 fecha_desde: new Date().toISOString().split('T')[0],
                 fecha_hasta: null,
                 descripcion: '',
-                observaciones: '',
-                aplicar_fines_semana: false,
-                aplicar_feriados: false
+                observaciones: ''
             });
             setEsGlobal(true);
             setIdCategoriaSeleccionada(null);
@@ -357,7 +355,7 @@ export default function ModalConfigPrecio({
                         <div className="flex gap-3 pt-4">
                             <Button
                                 type="submit"
-                                variant="primary"
+                                variant="default"
                                 disabled={isLoading}
                                 className="flex-1"
                             >

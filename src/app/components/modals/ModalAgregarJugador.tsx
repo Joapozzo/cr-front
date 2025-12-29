@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, User, Plus, Loader2, X, UserPlus, AlertTriangle } from 'lucide-react';
+import { Search, User, Loader2, X, UserPlus, AlertTriangle } from 'lucide-react';
 import { Button } from '@/app/components/ui/Button';
 import { Input } from '@/app/components/ui/Input';
 import { useBuscarJugadores, useAgregarJugadorAlPlantel } from '@/app/hooks/useEquipos';
@@ -58,7 +58,7 @@ export default function AgregarJugadorModal({
             });
 
             // Usar el mensaje del backend si está disponible
-            const successMessage = response?.data?.message || 
+            const successMessage = (response as any)?.data?.message ||
                 `${selectedJugador.nombre} ${selectedJugador.apellido} agregado al plantel`;
             
             toast.success(successMessage, { id: toastId });

@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { FormModal } from '../modals/ModalAdmin';
 import { Sancion, CrearSancionInput, EditarSancionInput } from '@/app/types/sancion';
-import { Search, User, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { useJugadoresPorCategoria } from '@/app/hooks/useJugadoresPorCategoria';
 import { useDebounce } from '@/app/hooks/useDebounce';
 import { JugadorCategoria } from '@/app/types/jugador';
@@ -21,7 +21,7 @@ export default function ModalFormSancion({
     categoriaId,
     onClose,
     onSubmit,
-    isLoading = false
+    isLoading: _isLoading = false
 }: ModalFormSancionProps) {
     const esEdicion = !!sancion;
 

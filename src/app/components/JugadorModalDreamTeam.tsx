@@ -1,6 +1,6 @@
 'use client';
 
-import { Shield, Star, User } from "lucide-react";
+import { Shield, Star } from "lucide-react";
 import { JugadorDestacadoDt } from "../types/jugador";
 import { ImagenPublica } from "./common/ImagenPublica";
 
@@ -78,7 +78,7 @@ const JugadorModalDreamTeam = ({ jugador, jugadorSeleccionado, handleSeleccionar
                 </div>
                 <div className="text-center p-2 bg-[var(--gray-400)] rounded-lg">
                     <p className="text-2xl font-bold text-[var(--white)]">
-                        {jugador.estadisticas.minutos_jugados}'
+                        {jugador.estadisticas.minutos_jugados}&apos;
                     </p>
                     <p className="text-xs text-[var(--gray-100)]">Min.</p>
                 </div>

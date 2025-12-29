@@ -23,7 +23,9 @@ export interface BaseMercadoPase {
 
 // Estos ya no dan el error "An interface declaring no members..."
 // porque ahora el tipado es consistente con el uso:
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SolicitudResponse extends BaseMercadoPase {}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface InvitacionEnviadaResponse extends BaseMercadoPase {}
 
 /**

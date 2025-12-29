@@ -22,7 +22,7 @@ const getEquiposColumns = (
         {
             key: "nombre",
             label: "NOMBRE",
-            render: (value: string, row: any) => (
+            render: (value: unknown, row: any) => (
                 <div className="flex items-center gap-3">
                     <EscudoEquipo src={row.img} alt={row.nombre} size={32} className="flex-shrink-0" />
                     <span className="text-[var(--white)] font-medium">
@@ -34,12 +34,12 @@ const getEquiposColumns = (
         {
             key: "vacante",
             label: "VACANTE",
-            render: (value: string) => <EstadoBadge estado={value} />,
+            render: (value: unknown) => <EstadoBadge estado={String(value)} />,
         },
         {
             key: "lista_buena_fe",
             label: "LISTA DE BUENA FE",
-            render: (value: number, row: any) => (
+            render: (value: unknown, row: any) => (
                 <div className="flex items-center gap-2">
                     <Users className="w-4 h-4 text-[var(--green)]" />
                     <span className="text-[var(--white)] font-medium">
@@ -51,8 +51,8 @@ const getEquiposColumns = (
         {
             key: "solicitudes_pendientes",
             label: "SOLICITUDES PENDIENTES",
-            render: (value: number, row: any) => {
-                const solicitudes = value || 0;
+            render: (value: unknown, row: any) => {
+                const solicitudes = (typeof value === 'number' ? value : 0) || 0;
                 const invitaciones = row.invitaciones_pendientes || 0;
                 const total = solicitudes + invitaciones;
                 
@@ -91,7 +91,7 @@ const getEquiposColumns = (
         {
             key: "actions",
             label: "",
-            render: (value: any, row: any) => (
+            render: (value: unknown, row: any) => (
                 <div className="flex items-center gap-2">
                     {/* <button
                         onClick={() => handleEditEquipo(row.id_equipo)}

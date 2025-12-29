@@ -22,7 +22,7 @@ const BotoneraPartido: React.FC<BotoneraPartidoProps> = ({
     onEmpezarSegundoTiempo,
     onTerminarPartido,
     onFinalizarPartido,
-    onSuspenderPartido,
+    onSuspenderPartido: _onSuspenderPartido,
 }) => {
     const renderBotones = () => {
         switch (estado) {

@@ -84,7 +84,7 @@ export interface CategoriaEdicionDto {
 
 export interface CategoriaEdicionListResponse {
   message: string;
-  data: CategoriaEdicion[];
+  data: CategoriaEdicionDto[];
   error: string | null;
 }
 

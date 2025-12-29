@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Select, { SelectOption } from './ui/Select';
 import Image from 'next/image';
-import { imagenFallBack, imagenFallBackUser, URI_IMG } from './ui/utils';
+import { imagenFallBackUser, URI_IMG } from './ui/utils';
 import { useEdicionesConCategorias } from '../hooks/useEdiciones';
 import { useDreamteamCategoriaJornada } from '../hooks/useDreamteam';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -55,7 +55,7 @@ export const DreamTeam: React.FC<DreamTeamProps> = ({
                 setJornadaSeleccionada(jornadas[0] || 1);
             }
         }
-    }, [categoriaSeleccionada]);
+    }, [categoriaSeleccionada, jornadaSeleccionada]);
 
     // Generar opciones del select
     const opcionesCategorias: SelectOption[] = React.useMemo(() => {
@@ -131,7 +131,7 @@ export const DreamTeam: React.FC<DreamTeamProps> = ({
             {/* Logo Jugador con escudo del equipo */}
             <div className="relative flex">
                 <Image
-                    src={jugador.img ? `${URI_IMG}${jugador.img}` : imagenFallBackUser}
+                    src={jugador.usuario?.img ? `${URI_IMG}${jugador.usuario.img}` : imagenFallBackUser}
                     alt={`${jugador.nombre} ${jugador.apellido}`}
                     width={33}
                     height={33}
@@ -219,7 +219,7 @@ export const DreamTeam: React.FC<DreamTeamProps> = ({
                     </div>
 
                     {/* Filas de jugadores */}
-                    {organizarJugadoresPorFormacion(dreamteam.jugadores, dreamteam.formacion).map((fila, filaIndex) => (
+                    {organizarJugadoresPorFormacion(dreamteam.jugadores, dreamteam.formacion || '').map((fila, filaIndex) => (
                         <div key={filaIndex} className="flex w-full justify-around items-center gap-5 z-10">
                             {fila.map((jugador) => renderJugador(jugador))}
                         </div>

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import BaseModal from './ModalPlanillero';
 import { Input, Textarea } from '../ui/Input';
 import { Button } from '../ui/Button';
-import { useCerrarCaja, useCajaActual } from '@/app/hooks/useCaja';
+import { useCerrarCaja } from '@/app/hooks/useCaja';
 import { DollarSign, Loader2, Calculator } from 'lucide-react';
 import toast from 'react-hot-toast';
 

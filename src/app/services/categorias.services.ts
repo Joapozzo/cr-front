@@ -1,11 +1,12 @@
 import { api } from "../lib/api";
-import { ActualizarCategoriaInput, CategoriaActual, CategoriaEdicionListResponse, CategoriaEdicionResponse, CategoriaResponse, CrearCategoriaInput, DatosCrearCategoriaResponse, EstadisticasCategoriaEdicionResponse, ExpulsadosResponse, GoleadoresResponse, ProximosPartidosResponse, StatsCategoriaResponse, TablaPosicionesResponse, UltimosPartidosJugadosResponse } from "../types/categoria";
+import { ActualizarCategoriaInput, CategoriaActual, CategoriaEdicionDto, CategoriaEdicionListResponse, CategoriaEdicionResponse, CategoriaResponse, CrearCategoriaInput, DatosCrearCategoriaResponse, EstadisticasCategoriaEdicionResponse, ExpulsadosResponse, GoleadoresResponse, ProximosPartidosResponse, StatsCategoriaResponse, TablaPosicionesResponse, UltimosPartidosJugadosResponse } from "../types/categoria";
 import { ZonasPlayoffResponse } from "../types/zonas";
 
 export const categoriasService = {
-    obtenerCategoriasPorEdicion: async (id_edicion: number): Promise<CategoriaEdicionListResponse> => {
+    obtenerCategoriasPorEdicion: async (id_edicion: number): Promise<CategoriaEdicionDto[]> => {
         try {
             const rest = await api.get<CategoriaEdicionListResponse>(`/admin/categorias/edicion/${id_edicion}`);
+            // Extract the data array from the response (rest is already the response object, rest.data is the array)
             return rest.data;
         } catch (error) {
             console.error('Error al obtener categorias por edición:', error);
@@ -26,6 +27,7 @@ export const categoriasService = {
     obtenerCategoriaEdicionPorId: async (id_categoria_edicion: number): Promise<CategoriaEdicionDto> => {
         try {
             const response = await api.get<{ message: string; data: CategoriaEdicionDto }>(`/admin/categorias/${id_categoria_edicion}`);
+            // Extract the data field from the response (response is already the response object, response.data is the data field)
             return response.data;
         } catch (error) {
             console.error('Error al obtener categoria edición por ID:', error);

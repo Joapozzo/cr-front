@@ -96,7 +96,7 @@ const Incidents: React.FC<IncidentsProps> = ({
 
     const handleEditAction = (action: IncidenciaPartido) => {
         if (permitirAcciones && onEditAction) {
-            (action);
+            console.log(action);
 
             onEditAction(action);
         }

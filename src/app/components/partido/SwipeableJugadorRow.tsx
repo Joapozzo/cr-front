@@ -24,7 +24,7 @@ const SwipeableJugadorRow: React.FC<SwipeableJugadorRowProps> = ({
     limiteEnCancha,
     jugadoresEnCanchaActuales,
     enCancha,
-    esTitularOriginal,
+    esTitularOriginal: _esTitularOriginal,
     onToggleEnCancha,
     children,
     disabled = false

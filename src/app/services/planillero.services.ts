@@ -21,7 +21,7 @@ export const planilleroService = {
     
     partidosPendientesPlanillero: async (): Promise<PlanilleroPartidosResponse> => {
         try {
-            const response = await api.get(`/planillero/partidos-pendientes`);
+            const response = await api.get<PlanilleroPartidosResponse>(`/planillero/partidos-pendientes`);
             return response;
         } catch (error) {
             console.error('Error al obtener partidos pendientes del planillero:', error);
@@ -31,7 +31,7 @@ export const planilleroService = {
 
     partidosPlanilladosPlanillero: async (): Promise<PlanilleroPartidosResponse> => {
         try {
-            const response = await api.get(`/planillero/partidos-planillados`);
+            const response = await api.get<PlanilleroPartidosResponse>(`/planillero/partidos-planillados`);
             return response;
         } catch (error) {
             console.error('Error al obtener partidos planillados del planillero:', error);
@@ -41,7 +41,7 @@ export const planilleroService = {
 
     obtenerDatosCompletosPlanillero: async (idPartido: number): Promise<DatosCompletosPlanillero> => {
         try {
-            const response = await api.get(`/planillero/partidos/${idPartido}`);
+            const response = await api.get<DatosCompletosPlanillero>(`/planillero/partidos/${idPartido}`);
             return response;
         } catch (error) {
             console.error('Error al obtener datos completos del partido:', error);

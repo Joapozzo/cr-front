@@ -13,11 +13,11 @@ interface TimeLeft {
     segundos: number;
 }
 
-interface Equipo {
-    id: number;
-    nombre: string;
-    img?: string;
-}
+// interface Equipo {
+//     id: number;
+//     nombre: string;
+//     img?: string;
+// }
 
 interface NextMatchProps {
     partido?: Partido;
@@ -47,7 +47,7 @@ export const NextMatch: React.FC<NextMatchProps> = ({
                 const fechaHoraPartido = new Date(`${soloFecha}T${horaFormateada}Z`);
                 const ahora = new Date();
                 const horaLocal = new Date(fechaHoraPartido.getTime() + fechaHoraPartido.getTimezoneOffset() * 60000);
-                const diferencia = horaLocal - ahora;
+                const diferencia = horaLocal.getTime() - ahora.getTime();
 
                 if (diferencia > 0) {
                     setTimeLeft({
@@ -85,7 +85,6 @@ export const NextMatch: React.FC<NextMatchProps> = ({
     }
 
     const esEquipoLocal = miEquipo === partido.id_equipolocal;
-    const esEquipoVisita = miEquipo === partido.id_equipovisita;
     const equipoSeleccionado = esEquipoLocal ? partido.equipoLocal : partido.equipoVisita;
     const equipoRival = esEquipoLocal ? partido.equipoVisita : partido.equipoLocal;
 
@@ -128,13 +127,13 @@ export const NextMatch: React.FC<NextMatchProps> = ({
                             {formatearFecha(partido.dia)} - {partido.hora === "00:00:00" || !partido.hora ? 'a conf.' : formatearHora(partido.hora)}
                         </div>
                         <div className="text-[var(--black-400)] text-xs uppercase">
-                            Fecha {partido.jornada} - {partido.nombre_edicion}
+                            Fecha {partido.jornada}
                         </div>
 
                         {/* Equipos */}
                         <div className="mt-3 flex flex-col uppercase">
                             <Link
-                                href={`/equipo/${partido.equipoLocal.id}`}
+                                href={`/equipo/${partido.equipoLocal.id_equipo}`}
                                 className={`text-2xl font-semibold ${miEquipo === partido.id_equipolocal
                                     ? "text-[var(--green)]"
                                     : "text-white"
@@ -144,7 +143,7 @@ export const NextMatch: React.FC<NextMatchProps> = ({
                             </Link>
 
                             <Link
-                                href={`/equipo/${partido.equipoVisita.id}`}
+                                href={`/equipo/${partido.equipoVisita.id_equipo}`}
                                 className={`text-2xl font-semibold ${miEquipo === partido.id_equipovisita
                                     ? "text-[var(--green)]"
                                     : "text-white"

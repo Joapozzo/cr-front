@@ -23,7 +23,7 @@ export const useParsearCodigoDNI = () => {
   return useMutation({
     mutationFn: async (input: ParsearCodigoInput): Promise<ParsearCodigoResponse> => {
       const response = await api.post('/auth/parsear-codigo-dni', input);
-      return response;
+      return response as ParsearCodigoResponse;
     },
   });
 };

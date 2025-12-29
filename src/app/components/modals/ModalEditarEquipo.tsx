@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { X, Check, Loader2, Upload, AlertTriangle, Shield, Image as ImageIcon } from 'lucide-react';
+import { X, Check, Loader2, Upload, AlertTriangle, Shield } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { BaseModal } from './ModalAdmin';
 import { useActualizarEquipo } from '../../hooks/useEquipos';
-import { convertirABase64, validarImagen } from '../../services/upload.service';
+import { convertirABase64 } from '../../services/upload.service';
 import toast from 'react-hot-toast';
 import { Equipo } from '../../types/equipo';
 
@@ -42,7 +42,7 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
             setImagenBase64(null);
             setErrors({});
         }
-    }, [isOpen, equipo.id_equipo]); // Solo cuando se abre o cambia el equipo
+    }, [isOpen, equipo.id_equipo, equipo.nombre]); // Solo cuando se abre o cambia el equipo
 
     const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
@@ -69,7 +69,6 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
             toast.error('Solo se permiten archivos PNG');
             setImagenFile(null);
             setImagenBase64(null);
-            setImagenPreview(null);
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
@@ -82,7 +81,6 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
             toast.error(`El archivo es demasiado grande. Máximo ${MAX_FILE_SIZE_MB}MB`);
             setImagenFile(null);
             setImagenBase64(null);
-            setImagenPreview(null);
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
@@ -138,7 +136,7 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
 
             // Si no hay cambios, no hacer nada
             if (Object.keys(data).length === 0) {
-                toast.info('No hay cambios para guardar');
+                toast('No hay cambios para guardar');
                 setIsProcessing(false);
                 return;
             }

@@ -4,7 +4,7 @@ function classNames(...classes: (string | undefined | null | boolean)[]): string
   return classes.filter(Boolean).join(' ');
 }
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   variant?: 'default' | 'more' | 'footer' | 'success' | 'danger' | 'import' | 'export' | 'ghost' | 'secondary';
   size?: 'sm' | 'md' | 'lg';

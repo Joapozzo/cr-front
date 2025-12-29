@@ -33,7 +33,7 @@ const PlayoffBracket = ({ zonas }: PlayoffBracketProps) => {
         }));
 
     // Buscar el campeón en la última fase o en cualquier zona
-    const ultimaFase = fasesOrdenadas.length > 0 ? fasesOrdenadas[fasesOrdenadas.length - 1] : null;
+    const _ultimaFase = fasesOrdenadas.length > 0 ? fasesOrdenadas[fasesOrdenadas.length - 1] : null;
     const zonaConCampeon = zonas.find(z => z.equipoCampeon && z.equipoCampeon.id_equipo);
     const equipoCampeon = zonaConCampeon?.equipoCampeon;
 

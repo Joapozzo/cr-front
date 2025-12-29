@@ -1,10 +1,8 @@
-import { Partido } from '@/app/types/partido';
 import { PartidoResponse } from '@/app/schemas/partidos.schema';
 import {
     Edit3,
     Trash2,
     MessageSquare,
-    Shield,
 } from 'lucide-react';
 import { EscudoEquipo } from '../common/EscudoEquipo';
 
@@ -39,7 +37,7 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: PartidoRow) => void, o
         {
             key: "equipo_local",
             label: <div className="w-full text-right">LOCAL</div>,
-            render: (value: unknown, row: PartidoRow, index: number) => (
+            render: (value: unknown, row: PartidoRow, _index: number) => (
                 <div className="flex items-center justify-end gap-2">
                     <span className="text-[var(--white)] font-medium text-right">
                         {row.equipoLocal?.nombre || 'Sin definir'}
@@ -56,7 +54,7 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: PartidoRow) => void, o
         {
             key: "resultado",
             label: "",
-            render: (value: unknown, row: PartidoRow, index: number) =>
+            render: (value: unknown, row: PartidoRow, _index: number) =>
                 row.estado === "F" &&
                     row.goles_local !== null &&
                     row.goles_visita !== null ? (
@@ -78,7 +76,7 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: PartidoRow) => void, o
         {
             key: "equipo_visita",
             label: "VISITANTE",
-            render: (value: unknown, row: PartidoRow, index: number) => (
+            render: (value: unknown, row: PartidoRow, _index: number) => (
                 <div className="flex items-center justify-start gap-2">
                     <EscudoEquipo
                         src={row.equipoVisita?.img}
@@ -95,7 +93,7 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: PartidoRow) => void, o
         {
             key: "dia",
             label: "DÍA",
-            render: (value: unknown, row: PartidoRow, index: number) => {
+            render: (value: unknown, row: PartidoRow, _index: number) => {
                 if (!value) return <span className="text-[var(--gray-100)]">-</span>;
                 const dateValue = value instanceof Date ? value : new Date(String(value));
                 return (
@@ -108,19 +106,19 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: PartidoRow) => void, o
         {
             key: "estado",
             label: "ESTADO",
-            render: (value: unknown, row: PartidoRow, index: number) => <EstadoBadge estado={String(value)} />,
+            render: (value: unknown, row: PartidoRow, _index: number) => <EstadoBadge estado={String(value)} />,
         },
         {
             key: "hora",
             label: "HORA",
-            render: (value: unknown, row: PartidoRow, index: number) => (
+            render: (value: unknown, row: PartidoRow, _index: number) => (
                 <span className="text-[var(--gray-100)]">{String(value || '-')}</span>
             ),
         },
         {
             key: "planillero",
             label: "PLANILLERO",
-            render: (value: unknown, row: PartidoRow, index: number) => (
+            render: (value: unknown, row: PartidoRow, _index: number) => (
                 <span className="text-[var(--gray-100)]">
                     {row.planillero?.nombre} {row.planillero?.apellido}
                 </span>
@@ -129,7 +127,7 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: PartidoRow) => void, o
         {
             key: "cancha",
             label: "CANCHA",
-            render: (value: unknown, row: PartidoRow, index: number) => {
+            render: (value: unknown, row: PartidoRow, _index: number) => {
                 const canchaNombre = row.cancha?.nombre || (typeof value === 'string' ? value : 'Sin cancha');
                 return (
                     <span className="text-[var(--gray-100)]">{canchaNombre}</span>
@@ -139,7 +137,7 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: PartidoRow) => void, o
         {
             key: "actions",
             label: "",
-            render: (value: unknown, row: PartidoRow, index: number) => (
+            render: (value: unknown, row: PartidoRow, _index: number) => (
                 <div className="flex items-center gap-1">
                     <button
                         onClick={() => onEditar?.(row)}

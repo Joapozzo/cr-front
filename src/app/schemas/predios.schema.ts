@@ -37,7 +37,7 @@ export const actualizarPredioSchema = z.object({
         .optional()
         .nullable(),
     estado: z.enum(['A', 'I'], {
-        errorMap: () => ({ message: 'El estado debe ser A (Activo) o I (Inactivo)' })
+        message: 'El estado debe ser A (Activo) o I (Inactivo)'
     })
         .optional()
 });
@@ -59,7 +59,7 @@ export const crearCanchaSchema = z.object({
         .default(11)
         .optional(),
     estado: z.enum(['A', 'I'], {
-        errorMap: () => ({ message: 'El estado debe ser A (Activo) o I (Inactivo)' })
+        message: 'El estado debe ser A (Activo) o I (Inactivo)'
     })
         .default('A')
         .optional()
@@ -83,7 +83,7 @@ export const actualizarCanchaSchema = z.object({
         })
         .optional(),
     estado: z.enum(['A', 'I'], {
-        errorMap: () => ({ message: 'El estado debe ser A (Activo) o I (Inactivo)' })
+        message: 'El estado debe ser A (Activo) o I (Inactivo)'
     })
         .optional()
 });

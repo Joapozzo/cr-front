@@ -91,7 +91,7 @@ export default function ModalDetallesSancion({ sancion, onClose }: ModalDetalles
                             <p className="text-xs text-[var(--gray-100)]">Tipo de Tarjeta</p>
                             <p className="text-[var(--white)] font-medium">{sancion.tipo_tarjeta || 'No especificado'}</p>
                             {sancion.minuto && (
-                                <p className="text-xs text-[var(--gray-100)]">Minuto {sancion.minuto}'</p>
+                                <p className="text-xs text-[var(--gray-100)]">Minuto {sancion.minuto}&apos;</p>
                             )}
                         </div>
                     </div>

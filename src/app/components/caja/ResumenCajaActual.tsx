@@ -2,7 +2,7 @@
 
 import { useCajaActual } from '@/app/hooks/useCaja';
 import { Button } from '../ui/Button';
-import { TrendingUp, TrendingDown, Wallet, Loader2, AlertCircle } from 'lucide-react';
+import { TrendingUp, Wallet, Loader2, AlertCircle } from 'lucide-react';
 import AbrirCajaModal from '../modals/AbrirCajaModal';
 import { useState } from 'react';
 
@@ -58,7 +58,6 @@ export default function ResumenCajaActual() {
 
     const saldoFisico = caja.saldo_fisico ?? Number(caja.saldo_inicial);
     const saldoDigital = caja.saldo_digital ?? 0;
-    const saldoTotal = caja.saldo_total ?? saldoFisico;
     
     const totalIngresosFisico = caja.total_ingresos_fisico ?? 0;
     const totalEgresosFisico = caja.total_egresos_fisico ?? 0;

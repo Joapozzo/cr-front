@@ -11,8 +11,7 @@ export const useCronometroSimple = (partidoId: number, estadoPartido: string) =>
     const {
         getTiempoTranscurridoPrimerTiempo,
         getTiempoTranscurridoSegundoTiempo,
-        minutosPorTiempo,
-        estadoPartido: estadoStorePartido
+        minutosPorTiempo
     } = usePartidoStore();
 
     const [cronometro, setCronometro] = useState<CronometroSimple>({
@@ -32,9 +31,9 @@ export const useCronometroSimple = (partidoId: number, estadoPartido: string) =>
 
     useEffect(() => {
         // Debug: ver qué valores estamos recibiendo
-        ('Estado partido:', estadoPartido);
-        ('Es partido activo:', esPartidoActivo);
-        ('Minutos por tiempo:', minutosPorTiempo);
+        // console.log('Estado partido:', estadoPartido);
+        // console.log('Es partido activo:', esPartidoActivo);
+        // console.log('Minutos por tiempo:', minutosPorTiempo);
 
         if (!esPartidoActivo || !['C1', 'E', 'C2'].includes(estadoPartido)) {
             setCronometro(prev => ({ ...prev, enVivo: false }));
@@ -51,18 +50,18 @@ export const useCronometroSimple = (partidoId: number, estadoPartido: string) =>
                 case 'C1':
                     minutosTranscurridos = getTiempoTranscurridoPrimerTiempo();
                     fase = 'PT';
-                    ('C1 - Minutos PT:', minutosTranscurridos);
+                    // console.log('C1 - Minutos PT:', minutosTranscurridos);
                     break;
                 case 'E':
                     // Durante el entretiempo, mantener el tiempo del primer tiempo
                     minutosTranscurridos = minutosPorTiempo || 45; // Usar valor por defecto
                     fase = 'HT';
-                    ('E - Entretiempo, mostrando:', minutosTranscurridos);
+                    // console.log('E - Entretiempo, mostrando:', minutosTranscurridos);
                     break;
                 case 'C2':
                     minutosTranscurridos = getTiempoTranscurridoSegundoTiempo();
                     fase = 'ST';
-                    ('C2 - Minutos ST:', minutosTranscurridos);
+                    // console.log('C2 - Minutos ST:', minutosTranscurridos);
                     break;
             }
 
@@ -90,8 +89,8 @@ export const useCronometroSimple = (partidoId: number, estadoPartido: string) =>
             const segundosTranscurridos = Math.floor(minutosTranscurridos * 60);
             const segundosPermitidos = minutosPorTiempo * 60;
 
-            ('Segundos transcurridos:', segundosTranscurridos);
-            ('Segundos permitidos:', segundosPermitidos);
+            // console.log('Segundos transcurridos:', segundosTranscurridos);
+            // console.log('Segundos permitidos:', segundosPermitidos);
 
             setCronometro({
                 tiempoFormateado: formatearTiempo(Math.min(segundosTranscurridos, segundosPermitidos)),
@@ -101,9 +100,9 @@ export const useCronometroSimple = (partidoId: number, estadoPartido: string) =>
         };
 
         actualizarCronometro();
-        interval = setInterval(actualizarCronometro, 1000);
+        const intervalId = setInterval(actualizarCronometro, 1000);
 
-        return () => clearInterval(interval);
+        return () => clearInterval(intervalId);
     }, [
         estadoPartido, 
         esPartidoActivo, 

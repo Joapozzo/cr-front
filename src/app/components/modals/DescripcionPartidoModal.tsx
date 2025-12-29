@@ -31,7 +31,7 @@ const DescriptionModal = ({ isOpen, onClose, partido }: DescriptionModalProps) =
                         </span>
                     </div>
                     <p className="text-[var(--gray-100)] text-sm">
-                        {new Date(partido.dia).toLocaleDateString("es-ES")} - {partido.hora}
+                        {partido.dia ? new Date(partido.dia).toLocaleDateString("es-ES") : 'Fecha no disponible'} - {partido.hora || 'Hora no disponible'}
                     </p>
                 </div>
 

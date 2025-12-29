@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "./ui/Button";
 import ConfirmModal from "./modals/ConfirModal";
 import SlideCard from "./SlideCard";
-import { SolicitudRecibida } from "../types/solicitudes";
+import { SolicitudRecibida, SolicitudEstado } from "../types/solicitudes";
 import toast from "react-hot-toast";
 // import { useConfirmarSolicitud, useRechazarSolicitud } from "../hooks/useSolicitudes";
 import { useConfirmarSolicitud, useObtenerSolicitudesEquipo, useRechazarSolicitud } from "../hooks/useSolicitudesCapitan";
@@ -135,7 +135,7 @@ const SolicitudesCapitan: React.FC<SolicitudesCapitanProps> = ({
                         </p>
                     )}
 
-                    {solicitud.agregado_por && solicitud.estado === 'A' && (
+                    {solicitud.agregado_por && solicitud.estado === SolicitudEstado.A && (
                         <p className="text-[#8C8C8C] text-xs mb-3">
                             Agregado por: <span className="text-[var(--white)] font-medium">{solicitud.agregado_por}</span>
                         </p>

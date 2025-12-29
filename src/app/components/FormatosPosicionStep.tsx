@@ -201,7 +201,6 @@ const FormatosPosicionStep = ({
     };
 
     const handleEliminarFormato = async (id: string) => {
-        const formato = formatos.find(f => f.id === id);
         const esFormatoExistente = id.startsWith('existing-');
         const idFormato = esFormatoExistente ? parseInt(id.replace('existing-', '')) : null;
 

@@ -71,11 +71,11 @@ export const editarZonaSchema = z.object({
         .optional(),
 
     campeon: z.enum(['S', 'N'], {
-        invalid_type_error: 'El campo campeón debe ser "S" o "N"'
+        message: 'El campo campeón debe ser "S" o "N"'
     }).optional(),
 
     terminada: z.enum(['S', 'N'], {
-        invalid_type_error: 'El campo terminada debe ser "S" o "N"'
+        message: 'El campo terminada debe ser "S" o "N"'
     }).optional(),
 
     id_categoria_edicion: z.number()

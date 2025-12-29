@@ -1,14 +1,6 @@
 import { useQuery, useMutation, useQueryClient, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
 import { noticiasService } from '../services/noticias.services';
-import { Noticia, NoticiasPaginadas, CrearNoticiaInput, ActualizarNoticiaInput, FiltrosNoticias } from '../types/noticia';
-
-// Tipos para respuesta de noticias
-export interface NoticiasPublicadasResponse {
-    noticias: Noticia[];
-    total: number;
-    limit: number | null;
-    offset: number;
-}
+import { Noticia, NoticiasPaginadas, CrearNoticiaInput, ActualizarNoticiaInput, FiltrosNoticias, NoticiasPublicadasResponse } from '../types/noticia';
 
 // Query Keys para noticias
 export const noticiasKeys = {

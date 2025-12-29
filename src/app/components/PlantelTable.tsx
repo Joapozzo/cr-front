@@ -3,7 +3,7 @@ import { XCircle, UserMinus, AlertCircle, Volleyball, Star, User2 } from 'lucide
 import { useEstadisticasJugadoresPlantel } from '../hooks/useEstadisticasJugadoresPlantel';
 import { EstadisticasJugador } from '../types/plantel';
 import SquadTableSkeleton from './skeletons/SquadTableSkeleton';
-import { useSolicitudesBajaEquipo, useSolicitarBaja } from '../hooks/useSolicitudesBaja';
+import { useSolicitarBaja } from '../hooks/useSolicitudesBaja';
 import { usePlayerStore } from '../stores/playerStore';
 import SolicitarBajaModal from './modals/SolicitarBajaModal';
 
@@ -15,25 +15,25 @@ interface SquadTableProps {
 }
 
 export default function SquadTable({ id_categoria_edicion, esCapitan, esEdicionActual, id_equipo }: SquadTableProps) {
-    const { jugador } = usePlayerStore();
     const {
         data: plantelStats,
         isLoading,
         isError,
         error,
-        refetch
     } = useEstadisticasJugadoresPlantel(id_equipo, id_categoria_edicion);
 
-    const {
-        data: solicitudesBaja,
-        isLoading: isLoadingSolicitudesBaja,
-        isError: isErrorSolicitudesBaja,
-        error: errorSolicitudesBaja,
-    } = useSolicitudesBajaEquipo(
-        id_equipo,
-        jugador?.id_jugador || 0,
-        id_categoria_edicion
-    );
+    const { jugador } = usePlayerStore();
+
+    // const {
+    //     data: solicitudesBaja,
+    //     isLoading: isLoadingSolicitudesBaja,
+    //     isError: isErrorSolicitudesBaja,
+    //     error: errorSolicitudesBaja,
+    // } = useSolicitudesBajaEquipo(
+    //     id_equipo,
+    //     jugador?.id_jugador || 0,
+    //     id_categoria_edicion
+    // );
     const { mutate: solicitarBaja, isPending: isLoadingSolicitud } = useSolicitarBaja();
 
     const [jugadorSeleccionado, setJugadorSeleccionado] = useState<{ id: number; nombre: string } | null>(null);
@@ -48,9 +48,8 @@ export default function SquadTable({ id_categoria_edicion, esCapitan, esEdicionA
 
     // Verificar si un jugador tiene solicitud pendiente
     const tieneSolicitudPendiente = (id_jugador: number): boolean => {
-        return solicitudesBaja?.solicitudes.some(
-            solicitud => solicitud.jugador.id_jugador === id_jugador && solicitud.estado === 'P'
-        ) || false;
+        // TODO: Implementar cuando se reactive useSolicitudesBajaEquipo
+        return false;
     };
 
     const handleSolicitarBaja = (id_jugador: number, nombre: string, apellido: string) => {
@@ -66,9 +65,12 @@ export default function SquadTable({ id_categoria_edicion, esCapitan, esEdicionA
     const handleConfirmarBaja = (motivo: string, observaciones: string) => {
         // ('🚀 handleConfirmarBaja', motivo, observaciones);
         
-        if (!jugadorSeleccionado) return;
+        if (!jugadorSeleccionado || !jugador?.id_jugador) return;
 
         solicitarBaja({
+            id_equipo,
+            id_jugador_capitan: jugador.id_jugador,
+            id_categoria_edicion,
             id_jugador_baja: jugadorSeleccionado.id,
             motivo,
             observaciones
@@ -255,7 +257,7 @@ export default function SquadTable({ id_categoria_edicion, esCapitan, esEdicionA
             </div>
 
             {/* Solicitudes de Baja */}
-            {solicitudesBaja && solicitudesBaja.solicitudes.length > 0 && esCapitan && esEdicionActual && (
+            {false && esCapitan && esEdicionActual && (
                 <div className="bg-[#171717] rounded-xl border border-[#262626] overflow-hidden">
                     <div className="flex items-center gap-2 p-4 bg-[#0a0a0a] border-b border-[#262626]">
                         <AlertCircle size={18} className="text-[#737373]" />
@@ -264,8 +266,8 @@ export default function SquadTable({ id_categoria_edicion, esCapitan, esEdicionA
                         </h3>
                     </div>
                     <div className="p-4 space-y-2">
-                        {solicitudesBaja.solicitudes.map((solicitud, index) => {
-                            const estiloEstado = {
+                        {[].map((solicitud: any, index: number) => {
+                            const estilosEstado: Record<string, { bg: string; border: string; text: string; label: string }> = {
                                 'P': {
                                     bg: 'bg-yellow-500/10',
                                     border: 'border-yellow-500/30',
@@ -284,7 +286,8 @@ export default function SquadTable({ id_categoria_edicion, esCapitan, esEdicionA
                                     text: 'text-[#737373]',
                                     label: 'Rechazada'
                                 }
-                            }[solicitud.estado];
+                            };
+                            const estiloEstado = estilosEstado[solicitud.estado] || estilosEstado['P'];
 
                             return (
                                 <div

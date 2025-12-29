@@ -32,7 +32,7 @@ export default function CajeroDashboard() {
         edicionSeleccionada?.id_edicion || 0,
         { enabled: !!edicionSeleccionada?.id_edicion }
     );
-    const categorias = categoriasData?.data || [];
+    const categorias = categoriasData || [];
 
     const { data, isLoading, error, refetch } = useDashboard({
         fecha_desde: fechaDesde,
@@ -69,7 +69,7 @@ export default function CajeroDashboard() {
                         {edicionSeleccionada && categorias && categorias.length > 0 && (
                             <FilterSelect
                                 value={categoriaFiltro?.toString() || 'TODAS'}
-                                onChange={(value) => setCategoriaFiltro(value === 'TODAS' ? undefined : parseInt(value))}
+                                onChange={(value) => setCategoriaFiltro(value === 'TODAS' ? undefined : parseInt(String(value)))}
                                 options={[
                                     { value: 'TODAS', label: 'Todas las categorías' },
                                     ...categoriaOptions

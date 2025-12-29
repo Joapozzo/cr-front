@@ -134,7 +134,7 @@ export const adminMenuItems = [
 ];
 
 // Helper para obtener el menú según el rol
-export const getMenuItemsByRole = (rol: 'ADMIN' | 'PLANILLERO' | 'USER') => {
+export const getMenuItemsByRole = (rol: 'ADMIN' | 'PLANILLERO' | 'USER' | 'CAJERO') => {
   switch (rol) {
     case 'ADMIN':
       return adminMenuItems;

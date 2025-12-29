@@ -1,6 +1,6 @@
 import { Equipo } from "@/app/types/equipo";
 import { InfoVacante } from "@/app/types/temporada";
-import { Shield } from "lucide-react";
+// import { Shield } from "lucide-react";
 import { EscudoEquipo } from "../common/EscudoEquipo";
 
 interface EquipoCardProps {

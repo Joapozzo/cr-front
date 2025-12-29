@@ -23,25 +23,25 @@ export const usePlayer = (id_jugador: number, options: UsePlayerOptions = {}) =>
     const getTeamsByCategory = (id_categoria_edicion?: number) => {
         const teamsPlayer = query.data?.teamsPlayer || [];
         if (!id_categoria_edicion) return teamsPlayer;
-        return teamsPlayer.filter(team => team.id_categoria_edicion === id_categoria_edicion);
+        return teamsPlayer.filter((team: IPlantel) => team.id_categoria_edicion === id_categoria_edicion);
     };
 
     const isPlayerInTeam = (id_equipo: number, id_categoria_edicion: number): boolean => {
         const teamsPlayer = query.data?.teamsPlayer || [];
         return teamsPlayer.some(
-            team => team.id_equipo === id_equipo && team.id_categoria_edicion === id_categoria_edicion
+            (team: IPlantel) => team.id_equipo === id_equipo && team.id_categoria_edicion === id_categoria_edicion
         );
     };
 
     const getPlayerTeamInCategory = (id_categoria_edicion: number): IPlantel | undefined => {
         const teamsPlayer = query.data?.teamsPlayer || [];
-        return teamsPlayer.find(team => team.id_categoria_edicion === id_categoria_edicion);
+        return teamsPlayer.find((team: IPlantel) => team.id_categoria_edicion === id_categoria_edicion);
     };
 
     const isEventualPlayer = (id_equipo: number, id_categoria_edicion: number): boolean => {
         const teamsPlayer = query.data?.teamsPlayer || [];
         const team = teamsPlayer.find(
-            team => team.id_equipo === id_equipo && team.id_categoria_edicion === id_categoria_edicion
+            (team: IPlantel) => team.id_equipo === id_equipo && team.id_categoria_edicion === id_categoria_edicion
         );
         return team?.eventual === "si";
     };
@@ -49,7 +49,7 @@ export const usePlayer = (id_jugador: number, options: UsePlayerOptions = {}) =>
     const isSanctionedPlayer = (id_equipo: number, id_categoria_edicion: number): boolean => {
         const teamsPlayer = query.data?.teamsPlayer || [];
         const team = teamsPlayer.find(
-            team => team.id_equipo === id_equipo && team.id_categoria_edicion === id_categoria_edicion
+            (team: IPlantel) => team.id_equipo === id_equipo && team.id_categoria_edicion === id_categoria_edicion
         );
         return team?.sancionado === "si";
     };

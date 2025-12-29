@@ -58,7 +58,7 @@ export const useLogin = () => {
 
     onSuccess: (data) => {
       toast.success('Inicio de sesión exitoso ✅');
-      ('Login exitoso →', data);
+      console.log('Login exitoso →', data);
     },
 
     onError: (error: any) => {

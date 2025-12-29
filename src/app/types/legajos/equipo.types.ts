@@ -220,7 +220,6 @@ export interface PartidoEquipo {
         nombre: string;
         img?: string;
     } | null;
-    resultado: ResultadoPartido | null;
     goles_equipo: Array<{
         id_gol: number;
         jugador: {

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import React from 'react';
 import { Sancion } from '@/app/types/sancion';
 import { BaseModal } from '../modals/ModalAdmin';
 import { Button } from '../ui/Button';

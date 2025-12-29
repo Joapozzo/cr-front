@@ -18,7 +18,7 @@ export const CambiarFotoModal = ({
   currentImage,
 }: CambiarFotoModalProps) => {
   const [preview, setPreview] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [_selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -153,12 +153,12 @@ export const CambiarFotoModal = ({
       return;
     }
 
-    ('📤 Enviando foto al servidor...');
+    console.log('📤 Enviando foto al servidor...');
     
     actualizarFoto(preview, {
       onSuccess: (data) => {
-        ('✅ Foto actualizada exitosamente:', data);
-        ('🖼️ Nueva URL:', data.img);
+        console.log('✅ Foto actualizada exitosamente:', data);
+        console.log('🖼️ Nueva URL:', data.img);
         toast.success('Foto de perfil actualizada');
         handleClose();
       },

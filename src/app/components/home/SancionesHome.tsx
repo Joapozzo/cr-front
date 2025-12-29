@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertTriangle, ChevronLeft, ChevronRight, ExternalLink, User } from 'lucide-react';
+import { AlertTriangle, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { BaseCard, CardHeader } from '../BaseCard';
 import { BaseCardTableSkeleton } from '../skeletons/BaseCardTableSkeleton';
 import Link from 'next/link';

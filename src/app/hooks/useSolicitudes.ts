@@ -3,23 +3,12 @@ import { EnviarSolicitudData, SolicitudResponse, SolicitudesJugadorResponse } fr
 import { jugadorService } from '../services/jugador.services';
 import { equiposService } from '../services/equipos.services';
 
-// Query Keys
-export const solicitudesKeys = {
-    all: ['solicitudes'] as const,
-    jugador: (id: number) => [...solicitudesKeys.all, 'jugador', id] as const,
-};
-
-// Tipos para los parámetros
-interface ConfirmarSolicitudParams {
-    id_solicitud: number;
-    id_jugador: number;
-}
-
-interface RechazarSolicitudParams {
-    id_solicitud: number;
+interface EnviarInvitacionParams {
     id_equipo: number;
-    id_jugador: number;
+    id_jugador_invitado: number;
     id_categoria_edicion: number;
+    id_jugador_capitan: number;
+    mensaje_capitan?: string;
 }
 
 interface CancelarInvitacionParams {
@@ -29,12 +18,12 @@ interface CancelarInvitacionParams {
     id_categoria_edicion: number;
 }
 
-interface EnviarInvitacionParams {
-    id_equipo: number;
-    id_jugador_invitado: number;
-    id_categoria_edicion: number;
-    id_jugador_capitan: number;
-}
+// Query Keys
+export const solicitudesKeys = {
+    all: ['solicitudes'] as const,
+    jugador: (id: number) => [...solicitudesKeys.all, 'jugador', id] as const,
+};
+
 
 // Hook para obtener solicitudes de un jugador
 export const useObtenerSolicitudesJugador = (
@@ -114,8 +103,14 @@ export const useEnviarInvitacion = (
 
     return useMutation({
         mutationFn: async (params: EnviarInvitacionParams) => {
-            const response = await jugadorService.enviarInvitacion(params);
-            return response.data;
+            const response = await equiposService.enviarInvitacion({
+                id_equipo: params.id_equipo,
+                id_jugador_invitado: params.id_jugador_invitado,
+                id_jugador_capitan: params.id_jugador_capitan,
+                id_categoria_edicion: params.id_categoria_edicion,
+                mensaje_capitan: params.mensaje_capitan
+            });
+            return response;
         },
         onSuccess: (data, variables) => {
             queryClient.invalidateQueries({
@@ -163,11 +158,14 @@ export const useConfirmarInvitacion = (
 
     return useMutation({
         mutationFn: async (id_solicitud: number) => {
+            if (!id_jugador || id_jugador <= 0) {
+                throw new Error('ID de jugador inválido');
+            }
             const response = await jugadorService.confirmarInvitacion(id_solicitud, id_jugador);
             return response;
         },
         onSuccess: (data, variables, context) => {
-            if (id_jugador) {
+            if (id_jugador && id_jugador > 0) {
                 queryClient.invalidateQueries({
                     queryKey: solicitudesKeys.jugador(id_jugador)
                 });
@@ -223,7 +221,7 @@ export const useRechazarInvitacion = (
             return response;
         },
         onSuccess: (data, variables, context) => {
-            if (id_jugador) {
+            if (id_jugador && id_jugador > 0) {
                 queryClient.invalidateQueries({
                     queryKey: solicitudesKeys.jugador(id_jugador)
                 });
@@ -276,7 +274,12 @@ export const useCancelarInvitacion = (
 
     return useMutation({
         mutationFn: async (params: CancelarInvitacionParams) => {
-            const response = await jugadorService.cancelarInvitacion(params);
+            const response = await equiposService.cancelarInvitacion({
+                id_solicitud: params.id_solicitud,
+                id_equipo: params.id_equipo,
+                id_jugador_capitan: params.id_jugador,
+                id_categoria_edicion: params.id_categoria_edicion
+            });
             return response.data;
         },
         onSuccess: () => {
@@ -302,10 +305,8 @@ export const useSolicitudes = (id_jugador?: number) => {
 
     const enviarSolicitudMutation = useEnviarSolicitudJugador();
     const enviarInvitacionMutation = useEnviarInvitacion();
-    const confirmarSolicitudMutation = useConfirmarSolicitud(id_jugador);
-    const confirmarInvitacionMutation = useConfirmarInvitacion(id_jugador);
-    const rechazarSolicitudMutation = useRechazarSolicitud(id_jugador);
-    const rechazarInvitacionMutation = useRechazarInvitacion(id_jugador);
+    const confirmarInvitacionMutation = useConfirmarInvitacion(id_jugador || 0);
+    const rechazarInvitacionMutation = useRechazarInvitacion(id_jugador || 0);
     const cancelarSolicitudMutation = useCancelarSolicitud(id_jugador);
     const cancelarInvitacionMutation = useCancelarInvitacion(id_jugador);
 
@@ -328,20 +329,10 @@ export const useSolicitudes = (id_jugador?: number) => {
         enviarInvitacionAsync: enviarInvitacionMutation.mutateAsync,
         isEnviandoInvitacion: enviarInvitacionMutation.isPending,
 
-        // Confirmar solicitud (capitán)
-        confirmarSolicitud: confirmarSolicitudMutation.mutate,
-        confirmarSolicitudAsync: confirmarSolicitudMutation.mutateAsync,
-        isConfirmandoSolicitud: confirmarSolicitudMutation.isPending,
-
         // Confirmar invitación (jugador)
         confirmarInvitacion: confirmarInvitacionMutation.mutate,
         confirmarInvitacionAsync: confirmarInvitacionMutation.mutateAsync,
         isConfirmandoInvitacion: confirmarInvitacionMutation.isPending,
-
-        // Rechazar solicitud (capitán)
-        rechazarSolicitud: rechazarSolicitudMutation.mutate,
-        rechazarSolicitudAsync: rechazarSolicitudMutation.mutateAsync,
-        isRechazandoSolicitud: rechazarSolicitudMutation.isPending,
 
         // Rechazar invitación (jugador)
         rechazarInvitacion: rechazarInvitacionMutation.mutate,

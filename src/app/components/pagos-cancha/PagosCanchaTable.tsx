@@ -3,7 +3,7 @@
 import { PagoCancha } from '@/app/types/pagoCancha';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { DollarSign, Clock, CheckCircle, AlertCircle, X, Loader2 } from 'lucide-react';
+import { DollarSign, Clock, CheckCircle, AlertCircle, X } from 'lucide-react';
 import PagarCanchaModal from './PagarCanchaModal';
 import { useState } from 'react';
 import { useAnularPagoCancha } from '@/app/hooks/usePagosCancha';

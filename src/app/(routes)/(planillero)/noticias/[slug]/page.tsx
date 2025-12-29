@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useMemo, useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useNoticiaPorSlug } from '@/app/hooks/useNoticias';
 import { UserPageWrapper } from '@/app/components/layouts/UserPageWrapper';
 import { Clock, Eye, ArrowLeft } from 'lucide-react';

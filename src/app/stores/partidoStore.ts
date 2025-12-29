@@ -37,8 +37,9 @@ interface PartidoState {
 
     // Funciones de persistencia
     persistirEstado: () => void;
+    persistirObservaciones: (idPartido?: number) => void;
     restaurarEstado: () => void;
-    limpiarEstadoPersistido: () => void;
+    limpiarEstadoPersistido: (idPartido?: number) => void;
 
     // Reset existente
     resetPartido: () => void;
@@ -235,7 +236,7 @@ const usePartidoStore = create<PartidoState>((set, get) => ({
             }
 
             // Restaurar observaciones desde localStorage (se restaurará desde el componente con idPartido)
-            let observacionesGuardadas = '';
+            const observacionesGuardadas = '';
 
             // Restaurar estado
             set({

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import BaseModal from "./ModalPlanillero";
 import { Save, ArrowLeft } from "lucide-react";
@@ -96,13 +98,6 @@ const GolModal: React.FC<GolModalProps> = ({
         };
 
         onSubmit(data);
-    };
-
-    const handleClose = () => {
-        // setTipoGol(null);
-        // setTieneAsistencia(false);
-        // setJugadorAsistencia(null);
-        onClose();
     };
 
     const handleBack = () => {

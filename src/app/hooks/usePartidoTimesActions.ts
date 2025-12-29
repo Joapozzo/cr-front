@@ -21,7 +21,7 @@ export const usePartidoTimesActions = (idPartido: number) => {
 
     const handleEmpezarPartido = async () => {
         try {
-            const response = await comenzarPartido(idPartido);
+            const response = await comenzarPartido(idPartido) as { hora_inicio?: string };
             if (response.hora_inicio) {
                 setHoraInicio(new Date(response.hora_inicio));
             }
@@ -45,7 +45,7 @@ export const usePartidoTimesActions = (idPartido: number) => {
 
     const handleComenzarSegundoTiempo = async () => {
         try {
-            const response = await comenzarSegundoTiempo(idPartido);
+            const response = await comenzarSegundoTiempo(idPartido) as { hora_inicio_segundo_tiempo?: string };
             if (response.hora_inicio_segundo_tiempo) {
                 setHoraInicioSegundoTiempo(new Date(response.hora_inicio_segundo_tiempo));
             }

@@ -96,7 +96,7 @@ const CardPartidoResult: React.FC<PartidoCardProps> = ({
                             </span>
                             {cronometro.shouldShowAdicional && (
                                 <span className="text-red-500 font-bold">
-                                    +{cronometro.tiempoAdicional}'
+                                    +{cronometro.tiempoAdicional}&apos;
                                 </span>
                             )}
                         </div>

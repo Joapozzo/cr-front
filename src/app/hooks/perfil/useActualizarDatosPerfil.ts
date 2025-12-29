@@ -16,7 +16,7 @@ export const useActualizarDatosPerfil = () => {
           ...usuario,
           nombre: data.usuario.nombre,
           apellido: data.usuario.apellido,
-          telefono: data.usuario.telefono,
+          telefono: data.usuario.telefono?.toString() ?? null,
           nacimiento: data.usuario.nacimiento,
         });
       }

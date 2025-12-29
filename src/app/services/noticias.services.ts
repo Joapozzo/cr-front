@@ -1,5 +1,5 @@
 import { api } from "../lib/api";
-import { ActualizarNoticiaInput, CrearNoticiaInput, FiltrosNoticias, Noticia, NoticiasPaginadas,  } from "../types/noticia";
+import { ActualizarNoticiaInput, CrearNoticiaInput, FiltrosNoticias, Noticia, NoticiasPaginadas, NoticiasPublicadasResponse } from "../types/noticia";
 
 
 export const noticiasService = {
@@ -15,7 +15,7 @@ export const noticiasService = {
         destacada?: boolean,
         id_tipo_noticia?: number,
         id_categoria_edicion?: number
-    ) => {
+    ): Promise<NoticiasPublicadasResponse> => {
         try {
             const params = new URLSearchParams();
 
@@ -29,7 +29,7 @@ export const noticiasService = {
             const queryString = params.toString();
             const endpoint = `/user/noticias${queryString ? `?${queryString}` : ''}`;
             
-            return await api.get(endpoint);
+            return await api.get<NoticiasPublicadasResponse>(endpoint);
         } catch (error) {
             console.error("Error al obtener noticias publicadas:", error);
             throw new Error("No se pudieron cargar las noticias publicadas");

@@ -29,7 +29,7 @@ const SingleIncident: React.FC<SingleIncidentProps> = ({
     isAsistencia = false,
     showActions = false,
     segundaAmarillaRelacionada,
-    rojaRelacionada,
+    rojaRelacionada: _rojaRelacionada,
     esDobleAmarilla,
     dobleAmarillaData,
     onEdit,

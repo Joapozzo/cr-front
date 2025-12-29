@@ -68,6 +68,11 @@ export interface JugadorDreamTeam {
     posicion_index?: number; // Índice de la posición en la formación (1-7)
     posicion_codigo?: string; // Código específico de la posición (ARQ, DEF, LD, etc.)
     equipo: Equipo;
+    usuario?: {
+        img: string;
+        nombre: string;
+        apellido: string;
+    };
 }
 
 export interface EstadisticasJugador {

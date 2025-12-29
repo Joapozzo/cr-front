@@ -1,6 +1,12 @@
-import { PartidoExpulsados } from './../../../../cr-back/src/models/partido';
 import { Equipo } from "./equipo";
 import { PosicionJugador } from "./partido";
+
+// Tipo local para partido con información de expulsados
+export interface PartidoExpulsados {
+    id_partido: number;
+    jornada: number;
+    fecha: string;
+}
 
 // Tipo base para posición (sin id_posicion, útil para casos donde solo se necesita codigo y nombre)
 export interface PosicionJugadorSimple {

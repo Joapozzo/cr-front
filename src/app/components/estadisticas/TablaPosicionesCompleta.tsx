@@ -107,7 +107,7 @@ export const TablaPosicionesCompleta: React.FC<TablaPosicionesCompletaProps> = (
     return posiciones;
   }, [posiciones, zonasTodosContraTodos.length, zonaActual]);
 
-  (posicionesAMostrar);
+  // console.log(posicionesAMostrar);
 
   return (
     <div className="space-y-4">

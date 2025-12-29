@@ -10,6 +10,12 @@ import CerrarCajaModal from '@/app/components/modals/CerrarCajaModal';
 import { useState } from 'react';
 import { formatDateForDisplay } from '@/app/utils/dateHelpers';
 import CajaDetalleSkeleton from '@/app/components/skeletons/CajaDetalleSkeleton';
+import { CajaDiaria } from '@/app/services/caja.service';
+import { MovimientoCaja } from '@/app/services/movimientoCaja.service';
+
+type CajaDiariaConMovimientos = CajaDiaria & {
+    movimientos?: MovimientoCaja[];
+};
 
 export default function CajaDetallePage() {
     const params = useParams();
@@ -17,7 +23,8 @@ export default function CajaDetallePage() {
     const id_caja = parseInt(params.id as string);
     const [cerrarCajaModalAbierto, setCerrarCajaModalAbierto] = useState(false);
 
-    const { data: caja, isLoading, error, refetch } = useCajaPorId(id_caja);
+    const { data: cajaData, isLoading, error, refetch } = useCajaPorId(id_caja);
+    const caja = cajaData as CajaDiariaConMovimientos | undefined;
 
     if (isLoading) {
         return <CajaDetalleSkeleton />;

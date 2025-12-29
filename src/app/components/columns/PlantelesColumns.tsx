@@ -1,4 +1,4 @@
-import { Edit3, Trash2, User, LogOut, Ban } from "lucide-react";
+import { User, LogOut, Ban } from "lucide-react";
 import { ImagenPublica } from "../common/ImagenPublica";
 import { Button } from "../ui/Button";
 

@@ -19,7 +19,7 @@ const TabNavigationTeams: React.FC<TabNavigationProps> = ({
     countLocal,
     countVisitante
 }) => {
-    const URLImages = "";
+    // const URLImages = "";
 
     return (
         <div className="flex items-center justify-center mb-6 w-full">

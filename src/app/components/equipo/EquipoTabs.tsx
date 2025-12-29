@@ -71,7 +71,7 @@ export const EquipoTabs: React.FC<EquipoTabsProps> = ({
         {tabs.map((tab, index) => (
           <button
             key={tab.value}
-            ref={el => tabsRef.current[index] = el}
+            ref={el => { tabsRef.current[index] = el; }}
             onClick={() => onTabChange(tab.value)}
             className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 scroll-snap-align-center ${
               tabActiva === tab.value

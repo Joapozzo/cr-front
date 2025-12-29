@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import BaseModal from "./ModalPlanillero";
 import { Save } from "lucide-react";

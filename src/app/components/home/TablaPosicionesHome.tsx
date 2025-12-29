@@ -191,7 +191,7 @@ export const TablaPosicionesHome = ({
                           }`}>
                           {equipo.puntos || 0}
                         </span>
-                        {equipo.puntos_descontados > 0 && equipo.apercibimientos > 0 && (
+                        {(equipo.puntos_descontados ?? 0) > 0 && (equipo.apercibimientos ?? 0) > 0 && (
                           <span className="text-[10px] text-[var(--yellow)] mt-0.5">
                             -{equipo.puntos_descontados}
                           </span>

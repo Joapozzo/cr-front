@@ -59,7 +59,7 @@ export default function GraficoMetodosPago({ resumen, isLoading }: GraficoMetodo
                         cy="50%"
                         labelLine={false}
                         label={({ name, percent, value }) => 
-                            `${name}: ${(percent * 100).toFixed(0)}% ($${value.toLocaleString('es-AR')})`
+                            `${name}: ${((percent ?? 0) * 100).toFixed(0)}% ($${value.toLocaleString('es-AR')})`
                         }
                         outerRadius={100}
                         fill="#8884d8"

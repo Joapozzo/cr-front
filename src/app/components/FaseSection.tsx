@@ -61,12 +61,12 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
             }, {
                 onSuccess: async (response) => {
                     // Si es zona tipo "todos-contra-todos" y hay formatos, guardarlos
-                    const tipoZona = datosCrearZona?.data.tiposZona?.find(t => t.id === data.id_tipo_zona);
+                    const tipoZona = datosCrearZona?.data.tiposZona?.find(t => t.id === Number(data.tipo_zona));
                     if (tipoZona?.nombre === 'todos-contra-todos' && formatosPosicion.length > 0) {
                         try {
                             const { zonasService } = await import('../services/zonas.services');
                             // La respuesta tiene estructura: { data: { zona: {...}, partidosCreados: [...] } }
-                            const idZona = response.data.zona?.id_zona || response.data.id_zona;
+                            const idZona = (response.data as any).zona?.id_zona || response.data.id_zona;
 
                             // Crear todos los formatos nuevos
                             for (const formato of formatosPosicion) {

@@ -5,7 +5,7 @@ interface HomeWrapperProps {
   variant?: 'default' | 'planilla';
 }
 
-export const HomeWrapper: React.FC<HomeWrapperProps> = ({ children, variant = 'default' }) => {
+export const HomeWrapper: React.FC<HomeWrapperProps> = ({ children }) => {
 
   return (
     <div className={`w-full flex justify-between items-start gap-4 p-6

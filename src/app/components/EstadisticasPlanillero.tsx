@@ -9,7 +9,7 @@ interface EstadisticasProps {
 }
 
 export const CardEstadisticas: React.FC<EstadisticasProps> = ({ 
-    stats = { partidosPendientes: 0, partidosCompletados: 0, totalMes: 0 }, 
+    stats = { pendientes: 0, completados: 0, completados_este_mes: 0 }, 
     isLoading = false 
 }) => {
     

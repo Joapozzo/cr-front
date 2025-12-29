@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import Cropper from 'react-easy-crop';
-import { Area } from 'react-easy-crop/types';
+import Cropper, { Area } from 'react-easy-crop';
 import { Loader2 } from 'lucide-react';
 
 interface ImageCropperProps {
@@ -111,12 +110,12 @@ export const ImageCropper = ({ image, onCropComplete, onCancel }: ImageCropperPr
       // Convertir imagen base64 a blob URL si es necesario
       const imageUrl = image.startsWith('data:') ? image : `data:image/jpeg;base64,${image}`;
       
-      ('Tamaño original (base64):', image.length, 'caracteres');
+      console.log('Tamaño original (base64):', image.length, 'caracteres');
       
       const croppedImageBase64 = await getCroppedImg(imageUrl, croppedAreaPixels);
       
-      ('Tamaño recortado (base64):', croppedImageBase64.length, 'caracteres');
-      ('Reducción:', ((1 - croppedImageBase64.length / image.length) * 100).toFixed(2) + '%');
+      console.log('Tamaño recortado (base64):', croppedImageBase64.length, 'caracteres');
+      console.log('Reducción:', ((1 - croppedImageBase64.length / image.length) * 100).toFixed(2) + '%');
       
       onCropComplete(croppedImageBase64);
     } catch (error) {

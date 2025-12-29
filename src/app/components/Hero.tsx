@@ -5,7 +5,7 @@ const Hero: React.FC = () => {
         <div 
             className="w-full flex justify-center bg-cover bg-top bg-no-repeat relative"
             style={{
-                backgroundImage: 'url(https://coparelampago.com/uploads/CR/img_hero.jpg)'
+                backgroundImage: 'url(/logos/hero.jpg)'
             }}
         >
             {/* Overlay gradient */}

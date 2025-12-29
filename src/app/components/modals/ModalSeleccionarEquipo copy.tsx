@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Plus, Shield, Loader2, AlertTriangle } from 'lucide-react';
 import { BaseModal } from './ModalAdmin';
 import { Button } from '../ui/Button';
@@ -46,10 +46,9 @@ const ModalSeleccionarEquipo = ({
         10
     );
 
-    const { mutate: crearEquipo, isPending: isCreatingEquipo } = useCrearEquipo();
+    const { mutate: crearEquipo } = useCrearEquipo();
     const {
         mutate: actualizarVacante,
-        isPending: isUpdatingVacante,
         error: updateError
     } = useActualizarVacante();
 
@@ -213,7 +212,7 @@ const ModalSeleccionarEquipo = ({
                                     </div>
 
                                     <p className="text-[var(--gray-100)] text-sm mb-3">
-                                        ¿Quieres crear un nuevo equipo llamado "{debouncedSearchQuery}"?
+                                        ¿Quieres crear un nuevo equipo llamado &ldquo;{debouncedSearchQuery}&rdquo;?
                                     </p>
 
                                     <div className="flex gap-3">

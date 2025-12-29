@@ -32,8 +32,6 @@ export const TablaPosiciones: React.FC<TablaPosicionesProps> = ({
         { enabled: !!categoriaSeleccionada }
     );
 
-    (tablasData);
-
     // Configurar categoría por defecto cuando cargan los datos
     useEffect(() => {
         if (edicionesConCategorias && edicionesConCategorias.length > 0 && !categoriaSeleccionada) {
@@ -212,7 +210,7 @@ export const TablaPosiciones: React.FC<TablaPosicionesProps> = ({
                                                     <span className={'text-sm font-bold  text-white'}>
                                                         {equipo.puntos || 0}
                                                     </span>
-                                                    {equipo.puntos_descontados > 0 && equipo.apercibimientos > 0 && (
+                                                    {(equipo.puntos_descontados ?? 0) > 0 && (equipo.apercibimientos ?? 0) > 0 && (
                                                         <span className="text-[10px] text-[var(--yellow)] mt-0.5">
                                                             -{equipo.puntos_descontados}
                                                         </span>

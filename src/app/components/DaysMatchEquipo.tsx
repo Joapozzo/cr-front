@@ -11,7 +11,7 @@ interface DaysMatchEquipoProps {
 }
 
 interface MatchCardProps {
-    partido: PartidoEquipo;
+    partido: PartidoEquipo | null | undefined;
     isLoading?: boolean;
 }
 
@@ -30,7 +30,7 @@ export function ProximoPartido({ partido, isLoading }: MatchCardProps) {
             {/* Contenido */}
             <div className="p-2">
                 {
-                    isLoading ? <MatchCardSkeleton /> : <MatchCard partido={partido} />
+                    isLoading ? <MatchCardSkeleton /> : partido ? <MatchCard partido={partido} /> : null
                 }
             </div>
         </div>
@@ -52,7 +52,7 @@ export function UltimoPartido({ partido, isLoading }: MatchCardProps) {
             {/* Contenido */}
             <div className="p-2">
                 {
-                    isLoading ? <MatchCardSkeleton /> : <MatchCard partido={partido} />
+                    isLoading ? <MatchCardSkeleton /> : partido ? <MatchCard partido={partido} /> : null
                 }
             </div>
         </div>

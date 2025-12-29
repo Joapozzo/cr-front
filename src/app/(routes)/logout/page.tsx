@@ -9,6 +9,7 @@ export default function LogoutPage() {
 
   useEffect(() => {
     logout();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getMessages = () => {

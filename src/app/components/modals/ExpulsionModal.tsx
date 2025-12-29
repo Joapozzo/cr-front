@@ -140,7 +140,7 @@ const ExpulsionModal: React.FC<ExpulsionModalProps> = ({
                         </label>
                         <Select
                             value={motivo}
-                            onChange={setMotivo}
+                            onChange={(val) => setMotivo(typeof val === 'string' ? val : String(val))}
                             options={motivosExpulsion}
                             placeholder="Selecciona el motivo de la expulsión"
                         />

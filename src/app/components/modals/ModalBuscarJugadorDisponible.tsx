@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { X, Search, Filter, Users, TrendingUp, Loader2, AlertCircle } from 'lucide-react';
+import { X, Search, Filter, Users, TrendingUp, Loader2 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import JugadorModalDreamTeam from '../JugadorModalDreamTeam';
@@ -203,7 +203,7 @@ const ModalBuscarJugadorDisponible = ({
                             </span>
                             {debouncedSearchTerm && (
                                 <span className="text-[var(--white)]">
-                                    Búsqueda: "{debouncedSearchTerm}"
+                                    Búsqueda: &ldquo;{debouncedSearchTerm}&rdquo;
                                 </span>
                             )}
                             {isLoading && (

@@ -1,4 +1,3 @@
-import { vaciarFormacion } from './../../../../cr-back/src/services/dreamteam.service';
 import { api } from "../lib/api";
 import {
     DreamTeam,

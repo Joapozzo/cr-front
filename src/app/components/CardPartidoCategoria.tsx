@@ -1,5 +1,5 @@
 import React from 'react';
-import { CardPartidoGenerico } from './CardPartidoGenerico';
+import CardPartidoGenerico from './CardPartidoGenerico';
 import { Partido } from '../types/partido';
 
 interface CategoriaPartidos {
@@ -59,13 +59,33 @@ export const CardPartidoCategoria: React.FC<CardPartidoCategoriaProps> = ({
                         <p className="text-[var(--black-400)]">No hay partidos disponibles</p>
                     </div>
                 ) : (
-                    partidosAMostrar.map((partido) => (
-                        <CardPartidoGenerico
-                            key={partido.id_partido}
-                            partido={partido}
-                            mostrarDia={true}
-                        />
-                    ))
+                    partidosAMostrar.map((partido) => {
+                        // Adaptar Partido a PartidoEquipo con valores por defecto
+                        const partidoAdaptado = {
+                            ...partido,
+                            equipoLocal: {
+                                id_equipo: partido.id_equipolocal,
+                                nombre: 'Equipo Local',
+                                img: null
+                            },
+                            equipoVisita: {
+                                id_equipo: partido.id_equipovisita,
+                                nombre: 'Equipo Visita',
+                                img: null
+                            },
+                            incidencias: {
+                                goles: [],
+                                expulsiones: []
+                            }
+                        } as any;
+                        
+                        return (
+                            <CardPartidoGenerico
+                                key={partido.id_partido}
+                                partido={partidoAdaptado}
+                            />
+                        );
+                    })
                 )}
             </div>
         </div>

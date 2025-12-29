@@ -34,7 +34,7 @@ const SolicitarBajaModal: React.FC<SolicitarBajaModalProps> = ({
         if (!motivo.trim() || !observaciones.trim()) {
             return toast.error('Debes rellenar todos los campos');
         }
-        ('🚀 handleConfirm', motivo, observaciones);
+        console.log('🚀 handleConfirm', motivo, observaciones);
         
         if (!motivo.trim()) {
             return;

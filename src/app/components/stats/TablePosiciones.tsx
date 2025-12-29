@@ -10,7 +10,7 @@ interface TablaPosicionesProps {
 }
 
 const TablaPosiciones = ({  posiciones, formatosPosicion = [] }: TablaPosicionesProps) => {
-    (posiciones);
+    console.log(posiciones);
 
     return (
         <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] overflow-hidden">

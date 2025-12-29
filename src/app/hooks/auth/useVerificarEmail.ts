@@ -75,7 +75,7 @@ export const useReenviarEmailVerificacion = () => {
       return result;
     },
     onSuccess: () => {
-      ('Email de verificación reenviado');
+      console.log('Email de verificación reenviado');
     },
   });
 };

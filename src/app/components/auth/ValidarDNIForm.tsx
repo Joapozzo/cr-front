@@ -37,7 +37,6 @@ export const ValidarDniForm = () => {
   // Usar requireAuth: false para no bloquear la navegación, la validación se hace en el layout
   const { isAuthenticated } = useAuth({ requireAuth: false });
   const [isScanning, setIsScanning] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [processingMessage, setProcessingMessage] = useState('Escaneando DNI...');
   const parsearCodigo = useParsearCodigoDNI();
   const parsearFoto = useParsearDniFoto();
@@ -92,7 +91,6 @@ export const ValidarDniForm = () => {
 
     // Cambiar a vista de formulario
     setIsScanning(false);
-    setIsProcessing(false);
     setStep('form');
     
     // Toast después del cambio de vista (pequeño delay para que el DOM se actualice)
@@ -114,12 +112,12 @@ export const ValidarDniForm = () => {
       
       // Cambiar directamente a vista de formulario sin mostrar toast
       setIsScanning(false);
-      setIsProcessing(false);
       setStep('form');
     } else if (dniEscaneado && isDniDataExpired(dniEscaneado)) {
       // Si están expirados, limpiarlos
       clearDniEscaneado();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Solo ejecutar al montar el componente
 
   // Handler cuando se escanea el código
@@ -127,7 +125,6 @@ export const ValidarDniForm = () => {
     try {
       // Mostrar estado de procesamiento INMEDIATAMENTE
       setIsScanning(false);
-      setIsProcessing(true);
       setProcessingMessage('Procesando código de barras...');
       setStep('processing');
 
@@ -137,7 +134,6 @@ export const ValidarDniForm = () => {
       const data = await parsearCodigo.mutateAsync({ codigoBarras });
 
       if (!data.exito || !data.datos) {
-        setIsProcessing(false);
         setStep('scan');
         toast.error(data.error || 'Código de barras inválido');
         return;
@@ -146,7 +142,6 @@ export const ValidarDniForm = () => {
       actualizarFormularioConDatosDNI(data.datos);
 
     } catch (error: unknown) {
-      setIsProcessing(false);
       setStep('scan');
       if (typeof error === "object" && error && "message" in error) {
         toast.error((error as { message: string }).message);
@@ -161,7 +156,6 @@ export const ValidarDniForm = () => {
     try {
       // Mostrar estado de procesamiento INMEDIATAMENTE
       setIsScanning(false);
-      setIsProcessing(true);
       setProcessingMessage('Procesando foto...');
       setStep('processing');
 
@@ -171,7 +165,6 @@ export const ValidarDniForm = () => {
       const data = await parsearFoto.mutateAsync({ imagenBase64 });
 
       if (!data.exito || !data.datos) {
-        setIsProcessing(false);
         setStep('scan');
         toast.error(data.error || 'No se pudo leer el DNI. Asegúrate de que la foto sea clara y vuelve a intentar.');
         return;
@@ -181,7 +174,6 @@ export const ValidarDniForm = () => {
 
     } catch (error: unknown) {
       console.error('Error al procesar foto del DNI:', error);
-      setIsProcessing(false);
       setStep('scan');
       
       if (typeof error === "object" && error && "message" in error) {

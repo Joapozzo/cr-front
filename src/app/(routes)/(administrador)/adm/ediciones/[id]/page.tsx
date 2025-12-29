@@ -12,6 +12,7 @@ import { FormField, FormModal, useModals, FormDataValue } from '@/app/components
 import { crearCategoriaEdicionSchema } from '@/app/schemas/categoria.schema';
 import toast from 'react-hot-toast';
 import { useCategoriaStore } from '@/app/stores/categoriaStore';
+import { CategoriaDisponible, NombreCategoriaDisponible } from '@/app/types/categoria';
 import HelperCrearNombreCategoria from '@/app/components/modals/HelperCrearNombreCategoria';
 
 const CategoriasPage = () => {
@@ -114,7 +115,7 @@ const CategoriasPage = () => {
         
         // Agregar categorías existentes
         if (datosCrear?.data?.categorias) {
-            datosCrear.data.categorias.forEach(cat => {
+            datosCrear.data.categorias.forEach((cat: CategoriaDisponible) => {
                 options.push({
                     value: cat.id_categoria,
                     label: cat.nombre_completo,
@@ -125,7 +126,7 @@ const CategoriasPage = () => {
         
         // Agregar nombres de categoría disponibles (sin categoría asociada)
         if (datosCrear?.data?.nombres_disponibles) {
-            datosCrear.data.nombres_disponibles.forEach(nombre => {
+            datosCrear.data.nombres_disponibles.forEach((nombre: NombreCategoriaDisponible) => {
                 options.push({
                     value: `nombre_${nombre.id_nombre_cat}`, // Prefijo para identificar que es un nombre
                     label: `${nombre.nombre_categoria} (nuevo)`,

@@ -7,7 +7,8 @@ import { DeleteModal } from './modals/ModalAdmin';
 import { useAgregarJugadorYAsignarCapitan, useAsignarCapitan, useDesactivarCapitan } from '@/app/hooks/useEquipos';
 import { toast } from 'react-hot-toast';
 import JugadorSelectionModal from './modals/ModalSeleccionJugadores';
-import { JugadorPlantel, JugadorBusqueda } from '@/app/types/jugador';
+import { JugadorPlantel } from '@/app/types/jugador';
+import { JugadorBusqueda as JugadorBusquedaModal } from '@/app/types/plantel';
 
 interface CapitanesManagerProps {
     plantel: JugadorPlantel[];
@@ -49,7 +50,7 @@ export default function CapitanesManager({
         setShowSelectionModal(true);
     };
 
-    const handleSelectJugador = async (jugador: JugadorBusqueda) => {
+    const handleSelectJugador = async (jugador: JugadorBusquedaModal) => {
         const toastId = toast.loading(
             modalType === 'primer_capitan' 
                 ? "Agregando primer capitán..." 

@@ -1,9 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import { X, Copy, Check } from 'lucide-react';
 import { Button } from '../ui/Button';
-import { toast } from 'react-hot-toast';
 import { UsuarioAdmin } from '@/app/types/user';
 
 interface ModalResetPasswordProps {

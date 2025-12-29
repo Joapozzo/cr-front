@@ -1,6 +1,6 @@
 'use client';
 
-import { TrendingUp, TrendingDown, DollarSign, AlertCircle, Calendar, Activity } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, AlertCircle, Calendar } from 'lucide-react';
 import { DashboardResumen } from '@/app/services/dashboard.service';
 
 interface TarjetasResumenProps {

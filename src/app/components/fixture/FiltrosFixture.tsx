@@ -1,6 +1,6 @@
 'use client';
 
-import { Calendar, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 interface FiltrosFixtureProps {
@@ -15,7 +15,7 @@ export const FiltrosFixture: React.FC<FiltrosFixtureProps> = ({
   jornadas,
   jornadaActual,
   onJornadaChange,
-  onFechaChange,
+  onFechaChange: _onFechaChange,
   loading = false
 }) => {
   const [isOpen, setIsOpen] = useState(false);

@@ -75,7 +75,7 @@ export const tablasService = {
             const response = await api.get<TablaPosicionesResponse>(
                 `/user/tabla/${id_categoria_edicion}/${id_zona}`
             );
-            return response.data;
+            return response.data || response.tabla || [];
         } catch (error) {
             console.error('Error al obtener tabla de posiciones:', error);
             throw new Error('No se pudo cargar la tabla de posiciones');
@@ -92,7 +92,7 @@ export const tablasService = {
             const response = await api.get<TablasTodasZonasResponse>(
                 `/user/tablas/${id_categoria_edicion}`
             );
-            return response.data;
+            return response.data || {};
         } catch (error) {
             console.error('Error al obtener tablas de todas las zonas:', error);
             throw new Error('No se pudieron cargar las tablas de posiciones');

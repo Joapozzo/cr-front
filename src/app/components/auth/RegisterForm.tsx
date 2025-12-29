@@ -18,7 +18,7 @@ import { Button } from '@/app/components/ui/Button';
 import { Input } from '@/app/components/ui/Input';
 import { BsGoogle } from 'react-icons/bs';
 import { registroEmailSchema, type RegistroEmailFormData } from '@/app/lib/auth.validation';
-import { proximoPasoARuta } from '@/app/utils/authRedirect';
+import { proximoPasoARuta, determinarRutaRedireccion } from '@/app/utils/authRedirect';
 import { useAuthStore } from '@/app/stores/authStore';
 
 export const RegisterForm = () => {
@@ -42,14 +42,13 @@ export const RegisterForm = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors, isValid },
+        formState: { errors },
         watch,
     } = useForm<RegistroEmailFormData>({
         resolver: zodResolver(registroEmailSchema),
         mode: 'onChange',
     });
     const password = watch('password');
-    const email = watch('email');
 
     // Si el usuario está autenticado pero no tiene email verificado y estamos en /registro,
     // mostrar pantalla de verificación automáticamente

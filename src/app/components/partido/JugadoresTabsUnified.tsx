@@ -409,14 +409,14 @@ const JugadoresTabsUnified: React.FC<JugadoresTabsProps> = ({
         if (mode === 'view') {
             const golesConAsistencias = incidencias.filter(i => i.tipo === 'gol' && (i as any).asistencias);
             if (golesConAsistencias.length > 0) {
-                ('Goles con asistencias encontrados:', golesConAsistencias.length);
+                console.log('Goles con asistencias encontrados:', golesConAsistencias.length);
                 golesConAsistencias.forEach(gol => {
-                    ('Gol:', gol.id, 'Asistencias:', (gol as any).asistencias);
+                    console.log('Gol:', gol.id, 'Asistencias:', (gol as any).asistencias);
                 });
             }
             const asistenciasExpandidas = incidenciasExpandidas.filter(i => i.tipo === 'asistencia');
             if (asistenciasExpandidas.length > 0) {
-                ('Asistencias expandidas:', asistenciasExpandidas);
+                console.log('Asistencias expandidas:', asistenciasExpandidas);
             }
         }
         
@@ -1186,13 +1186,13 @@ const JugadoresTabsUnified: React.FC<JugadoresTabsProps> = ({
                                     })}
 
                                     {/* Mostrar MVP al final si el partido está finalizado */}
-                                    {(['T', 'F'].includes(estadoPartido || '')) && jugadorDestacado?.usuario?.nombre && jugadorDestacado?.usuario?.apellido && (
+                                    {(['T', 'F'].includes(estadoPartido || '')) && jugadorDestacado?.nombre && jugadorDestacado?.apellido && (
                                         <div className="mt-2 pt-2 border-t border-[#262626]">
                                             <div className="flex items-center justify-center py-2">
                                                 <div className="text-center">
                                                     <div className="flex items-center gap-2 justify-center">
                                                         <span className="text-sm font-medium text-white">
-                                                            {jugadorDestacado.usuario?.nombre?.charAt(0) || ''}. {jugadorDestacado.usuario?.apellido?.toUpperCase() || ''}
+                                                            {jugadorDestacado.nombre?.charAt(0) || ''}. {jugadorDestacado.apellido?.toUpperCase() || ''}
                                                         </span>
                                                         <Star className="text-yellow-500 fill-current" size={15} />
                                                     </div>

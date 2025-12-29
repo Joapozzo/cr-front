@@ -92,3 +92,10 @@ export interface FiltrosNoticias {
     destacada?: boolean;
     busqueda?: string;
 }
+
+export interface NoticiasPublicadasResponse {
+    noticias: Noticia[];
+    total: number;
+    limit: number | null;
+    offset: number;
+}

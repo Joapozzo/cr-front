@@ -291,7 +291,7 @@ export const SelfieForm = () => {
   }
 
   // Cargar lista de cámaras
-  const cargarCamaras = async () => {
+  const _cargarCamaras = async () => {
     try {
       await navigator.mediaDevices.getUserMedia({ video: true });
       await new Promise(resolve => setTimeout(resolve, 100));

@@ -198,7 +198,7 @@ const Historial: React.FC<HistorialProps> = ({
                                     <div className="mt-2 p-2 bg-[var(--card-background)] rounded border border-[var(--gray-300)]">
                                         <p className="text-[var(--gray-100)] text-xs mb-1">Mensaje:</p>
                                         <p className="text-[var(--white)] text-xs italic">
-                                            "{movimiento.mensaje}"
+                                            &ldquo;{movimiento.mensaje}&rdquo;
                                         </p>
                                     </div>
                                 )}

@@ -50,7 +50,7 @@ export const jugadorService = {
     // jugadorService
     rechazarInvitacion: async (id_solicitud: number): Promise<any> => {
         const response = await api.put(`/user/rechazar-invitacion/${id_solicitud}`);
-        ('🔍 Response del servicio:', response);
+        console.log('🔍 Response del servicio:', response);
         return response;
     },
 

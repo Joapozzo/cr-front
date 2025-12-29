@@ -46,13 +46,13 @@ export const EquipoTablaTab = ({ tabla, isLoading, categoriaSeleccionada, idEqui
     const zonasTodosContraTodos = tabla.tablas.filter(t => {
         const tipo = t.zona.tipo;
         // Tipo 1 (todos-contra-todos) y tipo 3 (todos-contra-todos-ida-vuelta)
-        return tipo === '1' || tipo === 1 || tipo === '3' || tipo === 3 || !tipo;
+        return tipo === '1' || tipo === '3' || !tipo;
     });
 
     const zonasEliminacionDirecta = tabla.tablas.filter(t => {
         const tipo = t.zona.tipo;
         // Solo tipo 2 (eliminacion-directa) y tipo 4 (eliminacion-directa-ida-vuelta)
-        return tipo === '2' || tipo === 2 || tipo === '4' || tipo === 4;
+        return tipo === '2' || tipo === '4';
     });
 
     // Convertir zonas de eliminación directa al formato de PlayoffBracket
@@ -66,7 +66,8 @@ export const EquipoTablaTab = ({ tabla, isLoading, categoriaSeleccionada, idEqui
             nombre: tablaZona.zona.nombre || '',
         },
         partidos: [], // Los partidos vendrían del backend si están disponibles
-    }));
+        temporadas: [],
+    } as Zona));
 
     return (
         <div className="space-y-6">

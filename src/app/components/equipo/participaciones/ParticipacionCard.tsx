@@ -5,7 +5,7 @@ import { ParticipacionEquipo } from '@/app/types/participacionEquipo';
 import { StatsParticipacionSlider } from './StatsParticipacionSlider';
 import { BaseCard } from '@/app/components/BaseCard';
 import { EscudoEquipo } from '@/app/components/common/EscudoEquipo';
-import { Trophy, Target, Award, Shield } from 'lucide-react';
+import { Trophy, Target, Award } from 'lucide-react';
 import { StatsResumen } from '@/app/types/equipoResumen';
 
 interface ParticipacionCardProps {

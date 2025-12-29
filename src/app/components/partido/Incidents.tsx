@@ -30,7 +30,7 @@ const IncidenciaRow: React.FC<{
     permitirAcciones,
     asistenciaRelacionada,
     segundaAmarillaRelacionada,
-    rojaRelacionada,
+    rojaRelacionada: _rojaRelacionada,
     esDobleAmarilla,
     dobleAmarillaData,
     onEdit,
@@ -240,7 +240,7 @@ const IncidenciaRow: React.FC<{
 
         // En modo planillero, si es la segunda amarilla, mostrar con la roja agrupada
         if (esPlanillero && esSegundaAmarillaDoble && segundaAmarillaRelacionada) {
-            const roja = segundaAmarillaRelacionada;
+            // const roja = segundaAmarillaRelacionada;
             return (
                 <div className="opacity-0 translate-y-4" style={{ animation: `fadeSlideIn 0.3s ease-out ${index * 30}ms forwards` }}>
                     {/* FILA PRINCIPAL (SEGUNDA AMARILLA + ROJA AGRUPADAS) */}

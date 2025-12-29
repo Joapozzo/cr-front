@@ -82,7 +82,7 @@ const TablaPosicionesContentSkeleton: React.FC<TablaPosicionesContentSkeletonPro
                         { text: 'Clasificación directa' }, 
                         { text: 'Playoffs' }, 
                         { text: 'Descenso' }
-                    ].map(({ text }, index) => (
+                    ].map((_item, index) => (
                         <div key={index} className="flex items-center gap-2">
                             <Skeleton width={12} height={12} borderRadius={999} />
                             <Skeleton width={100} height={14} borderRadius={6} />
