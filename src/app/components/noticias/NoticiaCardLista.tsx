@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Noticia } from '@/app/types/noticia';
 import { Newspaper, Eye, Clock } from 'lucide-react';
 import { formatearFechaNoticia } from '@/app/utils/fechas';
@@ -15,7 +16,7 @@ export const NoticiaCardLista: React.FC<NoticiaCardListaProps> = ({ noticia }) =
   };
 
   return (
-    <Link 
+    <Link
       href={`/noticias/${noticia.slug || noticia.id_noticia}`}
       className="block group"
     >
@@ -24,17 +25,18 @@ export const NoticiaCardLista: React.FC<NoticiaCardListaProps> = ({ noticia }) =
           {/* Imagen */}
           <div className="relative w-full sm:w-48 h-48 sm:h-auto bg-[#262626] overflow-hidden flex-shrink-0">
             {(noticia.img_portada || noticia.img) ? (
-              <img
-                src={noticia.img_portada || noticia.img}
+              <Image
+                src={noticia.img_portada || noticia.img || ''}
                 alt={noticia.titulo}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
               <div className="flex items-center justify-center h-full text-[#737373]">
                 <Newspaper size={48} />
               </div>
             )}
-            
+
             {/* Badge tipo noticia y destacada */}
             <div className="absolute top-2 left-2 flex gap-2">
               {noticia.tipoNoticia && (
@@ -57,7 +59,7 @@ export const NoticiaCardLista: React.FC<NoticiaCardListaProps> = ({ noticia }) =
               <h3 className="text-white font-semibold text-sm sm:text-base line-clamp-2 group-hover:text-[var(--green)] transition-colors">
                 {noticia.titulo}
               </h3>
-              
+
               {(noticia.contenido_preview || noticia.contenido) && (
                 <p className="text-[#737373] text-xs sm:text-sm line-clamp-2 sm:line-clamp-3">
                   {truncarTexto(noticia.contenido_preview || noticia.contenido, 150)}

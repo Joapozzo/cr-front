@@ -3,6 +3,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
+import Image from 'next/image';
+
 const About = () => {
     return (
         <section id="about" className="py-20 bg-[var(--black)] overflow-hidden">
@@ -17,9 +19,11 @@ const About = () => {
                     >
                         <div className="relative">
                             <div className="absolute -inset-4 bg-[var(--green)]/20 rounded-3xl blur-xl"></div>
-                            <img
+                            <Image
                                 src="https://images.unsplash.com/photo-1517466787929-bc90951d64b8?q=80&w=1935&auto=format&fit=crop"
                                 alt="Jugadores de Copa Relámpago"
+                                width={800}
+                                height={450}
                                 className="relative rounded-2xl shadow-2xl w-full object-cover aspect-video"
                             />
                             <div className="absolute -bottom-6 -right-6 bg-[var(--black-900)] p-6 rounded-xl border border-[var(--black-800)] shadow-xl hidden md:block">
@@ -36,14 +40,14 @@ const About = () => {
                         transition={{ duration: 0.8 }}
                         className="lg:w-1/2"
                     >
-                        <h2 className="text-3xl md:text-5xl font-bold text-[var(--white)] mb-6">
+                        <h2 className="text-2xl md:text-5xl font-bold text-[var(--white)] mb-6">
                             Más que un torneo, <br />
                             <span className="text-[var(--green)]">una comunidad</span>
                         </h2>
-                        <p className="text-[var(--gray-100)] text-lg mb-6 leading-relaxed">
+                        <p className="text-[var(--gray-100)] text-base md:text-lg mb-6 leading-relaxed">
                             Desde 2016, Copa Relámpago ha sido el punto de encuentro para los amantes del fútbol en Córdoba. Lo que empezó como un pequeño torneo de amigos, hoy es una de las ligas más competitivas y organizadas de la ciudad.
                         </p>
-                        <p className="text-[var(--gray-100)] text-lg mb-8 leading-relaxed">
+                        <p className="text-[var(--gray-100)] text-base md:text-lg mb-8 leading-relaxed">
                             Nuestra misión es brindar una experiencia profesional al jugador amateur. Canchas impecables, arbitraje de nivel, y una organización que está en cada detalle para que vos solo te preocupes por jugar.
                         </p>
 

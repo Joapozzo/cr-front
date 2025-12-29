@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { MapPin, Mail } from 'lucide-react';
 import { FaInstagram, FaFacebook } from 'react-icons/fa';
 
+import Image from 'next/image';
+
 const Footer = () => {
     return (
         <footer className="bg-[var(--black)] border-t border-[var(--black-900)] pt-16 pb-8">
@@ -11,8 +13,13 @@ const Footer = () => {
                     {/* Brand */}
                     <div>
                         <Link href="/" className="flex items-center gap-2 mb-4">
-                            <img src="/logos/isologo.png" alt="Copa Relámpago" className="h-10 w-auto" />
-                            <span className="text-xl font-bold text-[var(--white)]">Copa Relámpago</span>
+                            <Image
+                                src="/logos/isologo.png"
+                                alt="Copa Relámpago"
+                                width={40}
+                                height={40}
+                                className="h-10 w-auto"
+                            />
                         </Link>
                         <p className="text-[var(--gray-100)] text-sm leading-relaxed">
                             El torneo de fútbol 7 más emocionante de Córdoba. Organización profesional, estadísticas en tiempo real y la mejor comunidad.
@@ -37,7 +44,7 @@ const Footer = () => {
                             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-[var(--black-900)] p-3 rounded-full text-[var(--gray-100)] hover:text-white hover:bg-[var(--green)] transition-all">
                                 <FaInstagram size={20} />
                             </a>
-                            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="bg-[var(--black-900)] p-3 rounded-full text-[var(--gray-100)] hover:text-white hover:bg-blue-600 transition-all">
+                            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="bg-[var(--black-900)] p-3 rounded-full text-[var(--gray-100)] hover:text-white hover:bg-[var(--blue-600)] transition-all">
                                 <FaFacebook size={20} />
                             </a>
                         </div>

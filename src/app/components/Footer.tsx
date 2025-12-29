@@ -4,6 +4,8 @@ import { Instagram, Facebook, MessageCircle, User, Mail, Youtube } from "lucide-
 import { Button } from './ui/Button';
 import { Input, Textarea } from './ui/Input';
 
+import Image from 'next/image';
+
 const Footer: React.FC = () => {
     return (
         <footer
@@ -28,9 +30,11 @@ const Footer: React.FC = () => {
 
                     {/* COLUMNA 1: Logo y Call-to-Action */}
                     <div className="flex flex-col items-start gap-5">
-                        <img
+                        <Image
                             src="/Logos/isologo.png"
                             alt="Logo CR"
+                            width={120}
+                            height={120}
                             className="w-[120px] md:w-30"
                         />
                         <h3 className="text-2xl md:text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-bold text-white leading-tight">

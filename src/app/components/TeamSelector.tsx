@@ -4,6 +4,8 @@ import Select, { SelectOption } from '@/app/components/ui/Select';
 import { Shield } from 'lucide-react';
 import { usePlayerStore } from '../stores/playerStore';
 
+import Image from 'next/image';
+
 export default function TeamSelector() {
     const { equipos, equipoSeleccionado, setEquipoSeleccionado } = usePlayerStore();
 
@@ -18,13 +20,14 @@ export default function TeamSelector() {
                 <div className="bg-[var(--gray-400)] text-white rounded-[20px] px-6 py-4 pointer-events-none">
                     <div className="flex items-center gap-3">
                         {team.img_equipo ? (
-                            <div className="w-15 h-15 rounded-lg overflow-hidden flex-shrink-0 bg-[var(--gray-300)]">
-                                <img
+                            <div className="w-15 h-15 rounded-lg overflow-hidden flex-shrink-0 bg-[var(--gray-300)] relative">
+                                <Image
                                     src={team.img_equipo}
                                     alt={team.nombre_equipo}
-                                    className="w-full h-full object-cover"
-                                    style={{ imageRendering: 'auto' }}
-                                    loading="eager"
+                                    fill
+                                    className="object-cover"
+                                    sizes="60px"
+                                    priority
                                 />
                             </div>
                         ) : (

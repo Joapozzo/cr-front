@@ -33,6 +33,41 @@
   --danger: #ef4444;
   --import: #6366f1;
   --export: #a855f7;
+
+  /* Added from Components */
+  --red-100: #fee2e2;
+  --red-300: #fca5a5;
+  --red-400: #f87171;
+  --red-500: #ef4444;
+  --red-600: #dc2626;
+  --red-700: #b91c1c;
+
+  --green-300: #86efac;
+  --green-400: #4ade80;
+  --green-500: #22c55e;
+  --green-800: #166534;
+
+  --blue-400: #60a5fa;
+  --blue-500: #3b82f6;
+  --blue-600: #2563eb;
+
+  --yellow-300: #fde047;
+  --yellow-400: #facc15;
+  --yellow-500: #eab308;
+
+  --orange-400: #fb923c;
+  --orange-500: #f97316;
+
+  --purple-500: #a855f7;
+
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --gray-950: #030712;
+
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
 }
 
 @theme inline {
@@ -59,9 +94,19 @@ html {
   scroll-behavior: smooth;
 }
 
-*::-webkit-scrollbar { width: 8px; height: 8px; } 
-*::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--green), var(--green-win)); border-radius: 10px; }
-*::-webkit-scrollbar-track { background: var(--gray-400); }
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--green), var(--green-win));
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--gray-400);
+}
 
 /* Animaciones para escaneo de DNI */
 @keyframes scan-line {
@@ -69,9 +114,11 @@ html {
     top: 0;
     opacity: 0;
   }
+
   50% {
     opacity: 1;
   }
+
   100% {
     top: 100%;
     opacity: 0;
@@ -82,6 +129,7 @@ html {
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }

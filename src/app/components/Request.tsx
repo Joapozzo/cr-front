@@ -43,13 +43,13 @@ const SearchInput = memo(({ onSearchChange }: { onSearchChange: (value: string) 
 SearchInput.displayName = 'SearchInput';
 
 // Componente para renderizar cada solicitud con manejo de imagen
-const SolicitudItemComponent = memo(({ 
-    solicitud, 
-    diasPendiente, 
-    getEstadoColor, 
-    getEstadoTexto 
-}: { 
-    solicitud: SolicitudEnviada; 
+const SolicitudItemComponent = memo(({
+    solicitud,
+    diasPendiente,
+    getEstadoColor,
+    getEstadoTexto
+}: {
+    solicitud: SolicitudEnviada;
     diasPendiente: number;
     getEstadoColor: (estado: string) => string;
     getEstadoTexto: (estado: string) => string;
@@ -91,9 +91,9 @@ const SolicitudItemComponent = memo(({
                                 </div>
                             )}
                             {solicitud.motivo_rechazo && (
-                                <div className="mt-2 p-2 bg-red-500/10 rounded border border-red-500/30">
-                                    <p className="text-red-400 text-xs mb-1">Motivo de rechazo:</p>
-                                    <p className="text-red-300 text-xs italic">
+                                <div className="mt-2 p-2 bg-[var(--red-500)]/10 rounded border border-[var(--red-500)]/30">
+                                    <p className="text-[var(--red-400)] text-xs mb-1">Motivo de rechazo:</p>
+                                    <p className="text-[var(--red-300)] text-xs italic">
                                         &quot;{solicitud.motivo_rechazo}&quot;
                                     </p>
                                 </div>
@@ -160,7 +160,7 @@ const Solicitudes: React.FC<SolicitudesProps> = ({
 
     // Combinar solicitudes de equipo y solicitudes de baja
     const solicitudesEquipo: SolicitudEnviada[] = solicitudes?.data?.filter((s: SolicitudEnviada) => s.tipo_solicitud === 'J') || [];
-    
+
     // Convertir solicitudes de baja al formato SolicitudEnviada
     const solicitudesBajaFormateadas: SolicitudEnviada[] = solicitudesBaja?.data?.map((sb: {
         id_solicitud: number;
@@ -255,23 +255,23 @@ const Solicitudes: React.FC<SolicitudesProps> = ({
                 setEquipoSeleccionado(null);
                 setSearchTerm('');
                 // Usar el mensaje del backend si está disponible, sino uno por defecto
-                const mensajeExito = (typeof data === 'object' && data !== null && 'message' in data && 
-                                     typeof (data as { message?: string }).message === 'string')
-                    ? (data as { message: string }).message 
+                const mensajeExito = (typeof data === 'object' && data !== null && 'message' in data &&
+                    typeof (data as { message?: string }).message === 'string')
+                    ? (data as { message: string }).message
                     : 'Solicitud enviada exitosamente';
                 toast.success(mensajeExito);
             },
             onError: (error: unknown) => {
                 console.log('onError ejecutado, error:', error);
                 // Extraer el mensaje de error de diferentes formas posibles
-                const errorMessage = 
-                    (error instanceof Error && error.message) || 
-                    (typeof error === 'object' && error !== null && 'response' in error && 
-                     typeof (error as { response?: { data?: { error?: string } } }).response?.data?.error === 'string' 
-                     ? (error as { response: { data: { error: string } } }).response.data.error : null) ||
-                    (typeof error === 'object' && error !== null && 'error' in error && 
-                     typeof (error as { error?: string }).error === 'string' 
-                     ? (error as { error: string }).error : null) ||
+                const errorMessage =
+                    (error instanceof Error && error.message) ||
+                    (typeof error === 'object' && error !== null && 'response' in error &&
+                        typeof (error as { response?: { data?: { error?: string } } }).response?.data?.error === 'string'
+                        ? (error as { response: { data: { error: string } } }).response.data.error : null) ||
+                    (typeof error === 'object' && error !== null && 'error' in error &&
+                        typeof (error as { error?: string }).error === 'string'
+                        ? (error as { error: string }).error : null) ||
                     'Error al enviar la solicitud';
                 toast.error(errorMessage);
                 console.error('Error al enviar solicitud:', error);
@@ -283,12 +283,12 @@ const Solicitudes: React.FC<SolicitudesProps> = ({
         switch (estado) {
             case 'A':
             case 'aceptada':
-                return 'text-green-400 bg-green-500/20 border-green-500/30';
+                return 'text-[var(--green-400)] bg-[var(--green-500)]/20 border-[var(--green-500)]/30';
             case 'R':
             case 'rechazada':
-                return 'text-red-400 bg-red-500/20 border-red-500/30';
+                return 'text-[var(--red-400)] bg-[var(--red-500)]/20 border-[var(--red-500)]/30';
             default:
-                return 'text-orange-400 bg-orange-500/20 border-orange-500/30';
+                return 'text-[var(--orange-400)] bg-[var(--orange-500)]/20 border-[var(--orange-500)]/30';
         }
     };
 

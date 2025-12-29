@@ -2,6 +2,7 @@
 
 import { Newspaper, ExternalLink, Clock, Eye } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { BaseCard, CardHeader } from '../BaseCard';
 import { Noticia } from '@/app/types/noticia';
 import { NoticiaCardSkeleton2 } from '../skeletons/NoticiaCardSkeleton';
@@ -22,7 +23,7 @@ const NoticiaCard = ({ noticia }: { noticia: Noticia }) => {
   };
 
   return (
-    <Link 
+    <Link
       href={`/noticias/${noticia.slug || noticia.id_noticia}`}
       className="block group h-full"
     >
@@ -30,17 +31,18 @@ const NoticiaCard = ({ noticia }: { noticia: Noticia }) => {
         {/* Imagen */}
         <div className="relative h-44 bg-[#262626] overflow-hidden">
           {(noticia.img_portada || noticia.img) ? (
-            <img
-              src={noticia.img_portada || noticia.img}
+            <Image
+              src={noticia.img_portada || noticia.img || ''}
               alt={noticia.titulo}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
             <div className="flex items-center justify-center h-full text-[#737373]">
               <Newspaper size={48} />
             </div>
           )}
-          
+
           {/* Badge tipo noticia */}
           {noticia.tipoNoticia && (
             <div className="absolute top-2 left-2">
@@ -79,7 +81,7 @@ const NoticiaCard = ({ noticia }: { noticia: Noticia }) => {
                 <Clock size={12} />
                 <span>{formatearFechaNoticia(noticia.fecha_creacion)}</span>
               </div>
-              
+
               {noticia.visitas > 0 && (
                 <div className="flex items-center gap-1">
                   <Eye size={12} />
@@ -98,8 +100,8 @@ const NoticiaCard = ({ noticia }: { noticia: Noticia }) => {
   );
 };
 
-export const NoticiasHome = ({ 
-  noticias, 
+export const NoticiasHome = ({
+  noticias,
   loading = false,
   linkNoticiasCompleta = '/noticias'
 }: NoticiasHomeProps) => {
@@ -119,7 +121,7 @@ export const NoticiasHome = ({
   if (error && !noticias) {
     return (
       <BaseCard>
-        <CardHeader 
+        <CardHeader
           icon={<Newspaper size={18} className="text-[var(--green)]" />}
           title="Noticias"
           subtitle="Error al cargar"
@@ -130,12 +132,12 @@ export const NoticiasHome = ({
       </BaseCard>
     );
   }
-  
+
   // Casos vacíos
   if (!isLoading && (!noticiasData || noticiasData.length === 0)) {
     return (
       <BaseCard>
-        <CardHeader 
+        <CardHeader
           icon={<Newspaper size={18} className="text-[var(--green)]" />}
           title="Noticias"
         />
@@ -155,7 +157,7 @@ export const NoticiasHome = ({
   if (isLoading) {
     return (
       <BaseCard>
-        <CardHeader 
+        <CardHeader
           icon={<Newspaper size={18} className="text-[var(--green)]" />}
           title="Noticias"
           subtitle="Cargando..."
@@ -170,7 +172,7 @@ export const NoticiasHome = ({
   return (
     <BaseCard>
       <div className="rounded-t-2xl overflow-hidden">
-        <CardHeader 
+        <CardHeader
           icon={<Newspaper size={18} className="text-[var(--green)]" />}
           title="Noticias"
           subtitle={`${noticiasData.length} ${noticiasData.length === 1 ? 'noticia' : 'noticias'}`}
@@ -179,14 +181,14 @@ export const NoticiasHome = ({
 
       {/* Slider horizontal deslizable */}
       <div className="w-full overflow-hidden">
-        <div 
+        <div
           ref={scrollContainerRef}
           onScroll={handleScroll}
           className="overflow-x-auto scroll-smooth snap-mandatory hide-scrollbar px-2 py-4"
         >
           <div className="flex gap-2 px-2">
             {noticiasData.map((noticia, index) => (
-              <div 
+              <div
                 key={noticia.id_noticia}
                 ref={(el) => {
                   noticiasRefs.current[index] = el;
@@ -207,11 +209,10 @@ export const NoticiasHome = ({
             <button
               key={index}
               onClick={() => scrollToPage(index)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                index === activeDot 
-                  ? 'w-8 bg-[var(--green)]' 
+              className={`h-2 rounded-full transition-all duration-300 ${index === activeDot
+                  ? 'w-8 bg-[var(--green)]'
                   : 'w-2 bg-[#525252] hover:bg-[#737373]'
-              }`}
+                }`}
               aria-label={`Ir a página ${index + 1}`}
             />
           ))}
@@ -220,7 +221,7 @@ export const NoticiasHome = ({
 
       {/* Link para ver todas las noticias */}
       <div className="border-t border-[#262626] p-4">
-        <Link 
+        <Link
           href={linkNoticiasCompleta}
           className="flex items-center justify-center gap-2 text-sm text-[var(--green)] hover:text-[var(--green)]/80 transition-colors font-medium"
         >

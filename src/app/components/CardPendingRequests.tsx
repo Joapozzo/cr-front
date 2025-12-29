@@ -1,6 +1,7 @@
 "use client";
 
 import { Clock, ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
+import Image from 'next/image';
 import { useState, useEffect } from "react";
 import { SolicitudPendiente } from "../types/user";
 import { URI_IMG } from "./ui/utils";
@@ -78,8 +79,8 @@ const CardPendingRequests: React.FC<CardPendingRequestsProps> = ({
                                     key={index}
                                     onClick={() => handleRequestChange(index)}
                                     className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentRequestIndex
-                                            ? 'bg-orange-400 w-4'
-                                            : 'bg-[var(--black-700)] hover:bg-[var(--black-600)]'
+                                        ? 'bg-orange-400 w-4'
+                                        : 'bg-[var(--black-700)] hover:bg-[var(--black-600)]'
                                         }`}
                                 />
                             ))}
@@ -104,10 +105,12 @@ const CardPendingRequests: React.FC<CardPendingRequestsProps> = ({
                 <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-lg flex items-center justify-center relative">
                         {currentRequest.img_equipo ? (
-                            <img
+                            <Image
                                 src={URI_IMG + currentRequest.img_equipo}
                                 alt={currentRequest.nombre_equipo}
-                                className="w-10 h-10 rounded-lg object-cover opacity-60"
+                                width={40}
+                                height={40}
+                                className="rounded-lg object-cover opacity-60"
                             />
                         ) : (
                             <AlertCircle className="text-[var(--black-500)]" size={24} />

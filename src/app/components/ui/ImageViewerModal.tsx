@@ -1,6 +1,7 @@
 'use client';
 
 import { EyeOff, Loader2 } from 'lucide-react';
+import Image from 'next/image';
 import { BaseModal } from '@/app/components/modals/ModalAdmin';
 import { useState } from 'react';
 import { jugadoresLegajosService } from '@/app/services/legajos/jugadores.service';
@@ -100,7 +101,7 @@ export const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
                                     <span className="text-xs text-[var(--gray-100)]">(privada - click para ver)</span>
                                 )}
                             </h3>
-                            <div 
+                            <div
                                 className="relative w-full mx-auto aspect-square bg-[var(--gray-300)] rounded-lg overflow-hidden cursor-pointer transition-all"
                                 onClick={handleRevealSelfie}
                             >
@@ -113,14 +114,14 @@ export const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
                                     </div>
                                 ) : selfieToShow ? (
                                     <>
-                                        <img
+                                        <Image
                                             src={selfieToShow}
                                             alt={`Selfie de verificación de ${nombre}`}
-                                            className={`w-full h-full object-cover transition-all ${
-                                                isSelfieRevealed 
-                                                    ? 'blur-0 opacity-100' 
+                                            fill
+                                            className={`object-cover transition-all ${isSelfieRevealed
+                                                    ? 'blur-0 opacity-100'
                                                     : 'blur-md opacity-50'
-                                            }`}
+                                                }`}
                                         />
                                         {!isSelfieRevealed && (
                                             <div className="absolute inset-0 flex items-center justify-center bg-black/30">

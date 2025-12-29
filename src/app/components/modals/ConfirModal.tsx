@@ -83,20 +83,20 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         switch (variant) {
             case 'success':
                 return {
-                    iconBg: 'bg-green-500/10',
-                    iconColor: 'text-green-400',
+                    iconBg: 'bg-[var(--green-500)]/10',
+                    iconColor: 'text-[var(--green-400)]',
                     buttonVariant: 'success' as const
                 };
             case 'danger':
                 return {
-                    iconBg: 'bg-red-500/10',
-                    iconColor: 'text-red-400',
+                    iconBg: 'bg-[var(--red-500)]/10',
+                    iconColor: 'text-[var(--red-400)]',
                     buttonVariant: 'danger' as const
                 };
             default:
                 return {
-                    iconBg: 'bg-blue-500/10',
-                    iconColor: 'text-blue-400',
+                    iconBg: 'bg-[var(--blue-500)]/10',
+                    iconColor: 'text-[var(--blue-400)]',
                     buttonVariant: 'footer' as const
                 };
         }
@@ -106,17 +106,15 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
     return (
         <div
-            className={`fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 transition-opacity duration-200 ${
-                isAnimating ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 transition-opacity duration-200 ${isAnimating ? 'opacity-100' : 'opacity-0'
+                }`}
             onClick={handleOverlayClick}
         >
-            <div className={`bg-black rounded-2xl border border-[var(--gray-300)] w-full max-w-md transition-all duration-300 ${
-                isAnimating
+            <div className={`bg-black rounded-2xl border border-[var(--gray-300)] w-full max-w-md transition-all duration-300 ${isAnimating
                     ? 'opacity-100 scale-100 translate-y-0'
                     : 'opacity-0 scale-95 translate-y-4'
-                
-            }`}>
+
+                }`}>
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--gray-300)]">
                     <div className="flex items-center gap-3">

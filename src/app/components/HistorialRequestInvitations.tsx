@@ -1,6 +1,7 @@
 "use client";
 
 import { History, Check, X, Clock, ArrowRight, User } from "lucide-react";
+import Image from 'next/image';
 
 interface MovimientoHistorial {
     id: number;
@@ -156,10 +157,12 @@ const Historial: React.FC<HistorialProps> = ({
                             {/* Logo del equipo */}
                             <div className="w-8 h-8 rounded-lg flex items-center justify-center">
                                 {movimiento.img_equipo ? (
-                                    <img
+                                    <Image
                                         src={movimiento.img_equipo}
                                         alt={movimiento.nombre_equipo}
-                                        className="w-6 h-6 rounded-lg object-cover"
+                                        width={24}
+                                        height={24}
+                                        className="rounded-lg object-cover"
                                     />
                                 ) : (
                                     <User className="text-[var(--gray-100)]" size={16} />

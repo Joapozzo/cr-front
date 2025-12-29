@@ -6,6 +6,8 @@ import { User as UserIcon, LogOut } from 'lucide-react';
 import { useAuth } from '@/app/hooks/auth/useAuth';
 import { AvatarPerfil } from '../perfil/AvatarPerfil';
 
+import Image from 'next/image';
+
 export const UserDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { usuario } = useAuth();
@@ -25,10 +27,11 @@ export const UserDropdown = () => {
       >
         <div className="relative w-6 h-6 rounded-full overflow-hidden">
           {usuario.img ? (
-            <img
+            <Image
               src={usuario.img}
               alt={usuario.nombre}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
             />
           ) : (
             <UserIcon className="text-white w-full h-full p-0.5" />
@@ -41,11 +44,10 @@ export const UserDropdown = () => {
 
       {/* Dropdown Menu */}
       <div
-        className={`absolute right-0 top-full mt-3 w-64 bg-[var(--gray-500)] rounded-lg shadow-2xl border border-[var(--gray-400)] overflow-hidden transform transition-all duration-200 origin-top-right ${
-          isOpen
+        className={`absolute right-0 top-full mt-3 w-64 bg-[var(--gray-500)] rounded-lg shadow-2xl border border-[var(--gray-400)] overflow-hidden transform transition-all duration-200 origin-top-right ${isOpen
             ? 'opacity-100 scale-100 pointer-events-auto'
             : 'opacity-0 scale-95 pointer-events-none'
-        }`}
+          }`}
       >
         {/* Header - Perfil del usuario */}
         <div className="relative bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] p-4 border-b border-[var(--gray-400)]">

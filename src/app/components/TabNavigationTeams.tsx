@@ -34,7 +34,7 @@ const TabNavigationTeams: React.FC<TabNavigationProps> = ({
                     <Shield className="text-black" size={22} />
                     {equipoLocal.nombre}
                     <span className={`px-2 py-0.5 rounded-full text-xs ${activeTab === 'local'
-                        ? 'bg-gray-200 text-gray-700'
+                        ? 'bg-gray-200 text-[var(--gray-700)]'
                         : 'bg-[#171717] text-white'
                         }`}>
                         {countLocal}
@@ -50,7 +50,7 @@ const TabNavigationTeams: React.FC<TabNavigationProps> = ({
                     <Shield className="text-white" size={22} />
                     {equipoVisitante.nombre}
                     <span className={`px-2 py-0.5 rounded-full text-xs ${activeTab === 'visitante'
-                        ? 'bg-gray-200 text-gray-700'
+                        ? 'bg-gray-200 text-[var(--gray-700)]'
                         : 'bg-[#171717] text-white'
                         }`}>
                         {countVisitante}

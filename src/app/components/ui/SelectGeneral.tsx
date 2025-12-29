@@ -1,8 +1,7 @@
-'use client';
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { URI_IMG } from './utils';
+import Image from 'next/image';
 
 export interface SelectOption {
     value: string | number;
@@ -95,9 +94,11 @@ const SelectGeneral: React.FC<SelectProps> = ({
             >
                 <div className="flex items-center gap-2">
                     {showImages && selectedOption?.image && (
-                        <img
+                        <Image
                             src={selectedOption.image.startsWith('http') ? selectedOption.image : URI_IMG + selectedOption.image}
                             alt={selectedOption.label}
+                            width={24}
+                            height={24}
                             className={`${imageSizeClasses[size]} rounded-full object-cover`}
                         />
                     )}
@@ -107,8 +108,7 @@ const SelectGeneral: React.FC<SelectProps> = ({
                 </div>
 
                 <ChevronDown
-                    className={`w-4 h-4 ml-2 transition-transform duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'
-                        }`}
+                    className={`w-4 h-4 ml-2 transition-transform duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
                 />
             </div>
 
@@ -136,13 +136,17 @@ const SelectGeneral: React.FC<SelectProps> = ({
                                 `}
                             >
                                 {showImages && option.image && (
-                                    <img
+                                    <Image
                                         src={option.image.startsWith('http') ? option.image : URI_IMG + option.image}
                                         alt={option.label}
+                                        width={24}
+                                        height={24}
                                         className={`${imageSizeClasses[size]} rounded-full object-cover`}
                                     />
                                 )}
-                                <span>{option.label}</span>
+                                <span className={option.value === value ? 'font-medium' : ''}>
+                                    {option.label}
+                                </span>
                             </li>
                         ))}
                     </ul>

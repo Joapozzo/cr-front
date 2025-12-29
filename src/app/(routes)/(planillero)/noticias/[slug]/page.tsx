@@ -5,6 +5,7 @@ import { useNoticiaPorSlug } from '@/app/hooks/useNoticias';
 import { UserPageWrapper } from '@/app/components/layouts/UserPageWrapper';
 import { Clock, Eye, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { formatearFechaNoticia } from '@/app/utils/fechas';
 import { NoticiaCardSkeleton2 } from '@/app/components/skeletons/NoticiaCardSkeleton';
 import { tiptapJsonToHtml, sanitizeHtml } from '@/app/utils/tiptapToHtml';
@@ -25,13 +26,13 @@ export default function NoticiaPage({ params }: NoticiaPageProps) {
             setContenidoHtml('');
             return;
         }
-        
+
         try {
             // Intentar parsear como JSON (formato Tiptap)
-            const parsed = typeof noticia.contenido === 'string' 
-                ? JSON.parse(noticia.contenido) 
+            const parsed = typeof noticia.contenido === 'string'
+                ? JSON.parse(noticia.contenido)
                 : noticia.contenido;
-            
+
             // Si es un objeto con estructura de Tiptap, convertir a HTML
             if (parsed && typeof parsed === 'object' && parsed.type === 'doc') {
                 const html = tiptapJsonToHtml(parsed);
@@ -65,7 +66,7 @@ export default function NoticiaPage({ params }: NoticiaPageProps) {
                         <p className="text-red-400 text-sm">
                             {error?.message || 'Noticia no encontrada'}
                         </p>
-                        <Link 
+                        <Link
                             href="/noticias"
                             className="mt-4 inline-flex items-center gap-2 text-[var(--green)] hover:text-[var(--green)]/80 transition-colors"
                         >
@@ -82,7 +83,7 @@ export default function NoticiaPage({ params }: NoticiaPageProps) {
         <UserPageWrapper>
             <div className="w-full space-y-6">
                 {/* Botón volver */}
-                <Link 
+                <Link
                     href="/noticias"
                     className="inline-flex items-center gap-2 text-[#737373] hover:text-white transition-colors text-sm"
                 >
@@ -95,10 +96,11 @@ export default function NoticiaPage({ params }: NoticiaPageProps) {
                     {/* Imagen de portada */}
                     {noticia.img_portada && (
                         <div className="relative h-64 sm:h-96 bg-[#262626] overflow-hidden">
-                            <img
+                            <Image
                                 src={noticia.img_portada}
                                 alt={noticia.titulo}
-                                className="w-full h-full object-cover"
+                                fill
+                                className="object-cover"
                             />
                         </div>
                     )}
@@ -139,7 +141,7 @@ export default function NoticiaPage({ params }: NoticiaPageProps) {
                         </div>
 
                         {/* Contenido */}
-                        <div 
+                        <div
                             className="prose prose-invert max-w-none text-white prose-headings:text-white prose-p:text-[#e5e5e5] prose-strong:text-white prose-a:text-[var(--green)] prose-a:hover:text-[var(--green)]/80"
                             dangerouslySetInnerHTML={{ __html: contenidoHtml }}
                         />

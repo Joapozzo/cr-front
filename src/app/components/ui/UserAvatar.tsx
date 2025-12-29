@@ -3,6 +3,8 @@
 import { User } from "lucide-react";
 import { useState } from "react";
 
+import Image from 'next/image';
+
 interface UserAvatarProps {
     img?: string | null;
     alt?: string;
@@ -43,11 +45,12 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
     // Si hay imagen y no hay error, mostrar la imagen
     if (img && !imgError) {
         return (
-            <div className={`${sizeConfig.container} ${roundedClass} overflow-hidden flex-shrink-0 ${className}`}>
-                <img
+            <div className={`${sizeConfig.container} ${roundedClass} overflow-hidden flex-shrink-0 relative ${className}`}>
+                <Image
                     src={img}
                     alt={alt}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                     onError={() => setImgError(true)}
                 />
             </div>

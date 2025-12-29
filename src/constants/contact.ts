@@ -1,4 +1,4 @@
-export const WHATSAPP_NUMBER = "5493516XXXXXX"; // Reemplazar con el número real
+export const WHATSAPP_NUMBER = "5493516829820";
 
 export const getWhatsAppLink = (message?: string) => {
     const defaultMessage = "Hola! Quiero información sobre cómo inscribir mi equipo en Copa Relámpago";

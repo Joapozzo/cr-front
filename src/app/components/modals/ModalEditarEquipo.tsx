@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { X, Check, Loader2, Upload, AlertTriangle, Shield } from 'lucide-react';
+import Image from 'next/image';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { BaseModal } from './ModalAdmin';
@@ -152,15 +153,15 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
                         setImagenFile(null);
                         setImagenBase64(null);
                         setIsProcessing(false);
-                        
+
                         // Mostrar toast
                         toast.success('Equipo actualizado exitosamente');
-                        
+
                         // Actualizar datos en el componente padre
                         if (onSuccess) {
                             await onSuccess();
                         }
-                        
+
                         // Cerrar modal después de actualizar
                         onClose();
                     },
@@ -239,10 +240,11 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
                             <div className="w-32 h-32 rounded-full bg-[var(--gray-200)] flex items-center justify-center overflow-hidden border-2 border-[var(--gray-300)]">
                                 {imagenPreview && (imagenPreview.startsWith('data:') || imagenPreview.startsWith('http')) ? (
                                     // eslint-disable-next-line @next/next/no-img-element
-                                    <img
+                                    <Image
                                         src={imagenPreview}
                                         alt="Preview"
-                                        className="w-full h-full object-cover"
+                                        fill
+                                        className="object-cover"
                                     />
                                 ) : (
                                     <Shield className="w-12 h-12 text-[var(--gray-100)]" />

@@ -173,7 +173,7 @@ export default function Sidebar() {
                             className="w-full p-2 rounded-lg transition-colors group hover:bg-[var(--black-900)] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                             title={isLoggingOut ? 'Saliendo...' : 'Cerrar sesión'}
                         >
-                            <LogOut className={`w-5 h-5 text-red-500 group-hover:text-red-400 transition-colors ${isLoggingOut ? 'opacity-50' : ''}`} />
+                            <LogOut className={`w-5 h-5 text-[var(--red-500)] group-hover:text-[var(--red-400)] transition-colors ${isLoggingOut ? 'opacity-50' : ''}`} />
                         </button>
                     </div>
                 ) : (
@@ -199,14 +199,14 @@ export default function Sidebar() {
                         </div>
 
                         <div className="mt-3 flex space-x-2">
-                            <Link href="/adm/perfil" className="flex-1 bg-[var(--green)] text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-300 transition-colors flex items-center justify-center space-x-2">
+                            <Link href="/adm/perfil" className="flex-1 bg-[var(--green)] text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-[var(--green-300)] transition-colors flex items-center justify-center space-x-2">
                                 <User className="w-4 h-4" />
                                 <span>Perfil</span>
                             </Link>
                             <button
                                 onClick={logout}
                                 disabled={isLoggingOut}
-                                className="flex-1 border border-red-500 text-red-500 px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex-1 border border-[var(--red-500)] text-[var(--red-500)] px-3 py-2 rounded-lg text-sm font-medium hover:bg-[var(--red-500)] hover:text-white transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <LogOut className="w-4 h-4" />
                                 <span>{isLoggingOut ? 'Saliendo...' : 'Salir'}</span>
@@ -229,7 +229,7 @@ export default function Sidebar() {
                                         ? "bg-[var(--black-900)] text-white"
                                         : "hover:bg-[var(--black-900)]"
                                         }`}
-                                    >
+                                >
                                     <item.icon
                                         className={`w-5 h-5 flex-shrink-0 ${isActive
                                             ? "text-[var(--green)]"

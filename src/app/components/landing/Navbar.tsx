@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -17,6 +18,17 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMobileMenuOpen]);
+
     const navLinks = [
         { name: 'Inicio', href: '#hero' },
         { name: 'Características', href: '#features' },
@@ -30,8 +42,22 @@ const Navbar = () => {
                 }`}
         >
             <div className="container mx-auto px-4 flex justify-between items-center">
-                <Link href="/" className="flex items-center gap-2">
-                    <img src="/logos/isologo.png" alt="Copa Relámpago" className="h-15 w-auto" />
+                <Link
+                    href="/"
+                    className="flex items-center gap-2"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                >
+                    <Image
+                        src="/logos/isologo.png"
+                        alt="Copa Relámpago"
+                        width={60}
+                        height={60}
+                        className="h-15 w-auto"
+                        priority
+                    />
                 </Link>
 
                 {/* Desktop Menu */}
@@ -56,41 +82,80 @@ const Navbar = () => {
                 {/* Mobile Menu Button */}
                 <button
                     className="md:hidden text-white"
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    onClick={() => setIsMobileMenuOpen(true)}
                 >
-                    {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    <Menu size={24} />
                 </button>
             </div>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu Overlay & Drawer */}
             <AnimatePresence>
                 {isMobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="fixed inset-0 z-40 bg-[var(--black)] pt-24 px-4 md:hidden"
-                    >
-                        <div className="flex flex-col items-center gap-8">
-                            {navLinks.map((link) => (
-                                <Link
-                                    key={link.name}
-                                    href={link.href}
-                                    className="text-2xl text-[var(--gray-100)] hover:text-[var(--green)] transition-colors font-medium"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
-                            <Link
-                                href="/login"
-                                className="bg-[var(--green)] hover:bg-[var(--green-win)] text-white px-8 py-3 rounded-full font-medium text-lg w-full text-center max-w-xs"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                                Iniciar Sesión
-                            </Link>
-                        </div>
-                    </motion.div>
+                    <>
+                        {/* Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm md:hidden"
+                        />
+
+                        {/* Drawer */}
+                        <motion.div
+                            initial={{ x: '100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                            className="fixed top-0 right-0 h-full w-[80%] max-w-sm bg-black z-[100] shadow-2xl border-l border-white/10 md:hidden p-6"
+                        >
+                            <div className="flex flex-col h-full">
+                                <div className="flex justify-between items-center mb-8">
+                                    <button
+                                        onClick={() => {
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                            setIsMobileMenuOpen(false);
+                                        }}
+                                        className="focus:outline-none"
+                                    >
+                                        <Image
+                                            src="/logos/isologo.png"
+                                            alt="Copa Relámpago"
+                                            width={40}
+                                            height={40}
+                                            className="h-10 w-auto"
+                                        />
+                                    </button>
+                                    <button
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="text-[var(--gray-100)] hover:text-white transition-colors"
+                                    >
+                                        <X size={24} />
+                                    </button>
+                                </div>
+
+                                <div className="flex flex-col gap-6">
+                                    {navLinks.map((link) => (
+                                        <Link
+                                            key={link.name}
+                                            href={link.href}
+                                            className="text-lg text-[var(--gray-100)] hover:text-[var(--green)] transition-colors font-medium border-b border-white/5 pb-2"
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                        >
+                                            {link.name}
+                                        </Link>
+                                    ))}
+                                    <Link
+                                        href="/login"
+                                        className="bg-[var(--green)] hover:bg-[var(--green-win)] text-white px-6 py-3 rounded-xl font-medium text-base w-full text-center mt-4 transition-all"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    >
+                                        Iniciar Sesión
+                                    </Link>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
                 )}
             </AnimatePresence>
         </nav>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, Plus, Loader2, AlertTriangle, Shield } from 'lucide-react';
+import Image from 'next/image';
 import { useEquiposPorCategoriaEdicion, useBuscarEquiposDisponibles, useCrearEquipo } from '../hooks/useEquipos';
 import { useOcuparVacante } from '../hooks/useTemporadas';
 import { Button } from './ui/Button';
@@ -207,7 +208,7 @@ const TabSeleccionManual = ({
                                     {equiposEncontrados.map((equipo) => {
                                         const isApto = equipo.apto !== false; // Si no viene el campo, asumir apto
                                         const isDisabled = !isApto || isLoading || equipoBeingProcessed !== null;
-                                        
+
                                         return (
                                             <div
                                                 key={equipo.id_equipo}
@@ -216,21 +217,22 @@ const TabSeleccionManual = ({
                                                         handleSelectEquipo(equipo.id_equipo);
                                                     }
                                                 }}
-                                                className={`p-3 rounded-lg border transition-colors ${
-                                                    isDisabled
+                                                className={`p-3 rounded-lg border transition-colors ${isDisabled
                                                         ? 'border-[var(--gray-400)] bg-[var(--gray-400)]/10 opacity-50 cursor-not-allowed'
                                                         : equipoBeingProcessed === equipo.id_equipo
-                                                        ? 'border-[var(--green)] bg-[var(--green)]/10 cursor-pointer'
-                                                        : 'border-[var(--gray-300)] hover:border-[var(--green)] hover:bg-[var(--green)]/5 cursor-pointer'
-                                                }`}
+                                                            ? 'border-[var(--green)] bg-[var(--green)]/10 cursor-pointer'
+                                                            : 'border-[var(--gray-300)] hover:border-[var(--green)] hover:bg-[var(--green)]/5 cursor-pointer'
+                                                    }`}
                                             >
                                                 <div className="flex items-center gap-3">
                                                     {equipo.img ? (
                                                         // eslint-disable-next-line @next/next/no-img-element
-                                                        <img
+                                                        <Image
                                                             src={equipo.img}
                                                             alt={equipo.nombre}
-                                                            className="w-10 h-10 rounded-full object-cover"
+                                                            width={40}
+                                                            height={40}
+                                                            className="rounded-full object-cover"
                                                         />
                                                     ) : (
                                                         <div className="w-10 h-10 bg-[var(--gray-200)] rounded-full flex items-center justify-center flex-shrink-0">

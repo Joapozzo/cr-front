@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 interface ImageUploaderProps {
   value?: string;
@@ -31,7 +32,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     const file = e.dataTransfer.files[0];
     if (file) {
       handleFileChange(file);
@@ -49,7 +50,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
 
   return (
     <div className="w-full">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="block text-sm font-medium text-[var(--gray-700)] mb-2">
         {label}
       </label>
 
@@ -65,10 +66,13 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       >
         {preview ? (
           <div className="relative">
-            <img
+            <Image
               src={preview}
               alt="Preview"
-              className="max-h-64 mx-auto rounded-lg"
+              width={500}
+              height={300}
+              className="max-h-64 w-auto mx-auto rounded-lg"
+              style={{ objectFit: 'contain' }}
             />
             <button
               onClick={() => {
@@ -97,7 +101,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
                 strokeLinejoin="round"
               />
             </svg>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-[var(--gray-600)]">
               Arrastra una imagen aquí o{' '}
               <label className="text-blue-600 hover:text-blue-700 cursor-pointer font-medium">
                 selecciona un archivo

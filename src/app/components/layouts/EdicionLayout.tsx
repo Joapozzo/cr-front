@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Shield, ChevronDown, Search, Trophy } from 'lucide-react';
+import Image from 'next/image';
 import { ImagenPublica } from '../common/ImagenPublica';
 import { useEdicionCategoria } from '@/app/contexts/EdicionCategoriaContext';
 
@@ -101,9 +102,9 @@ export const EdicionLayout: React.FC<EdicionLayoutProps> = ({
                 onClick={() => setIsOpenEdicion(!isOpenEdicion)}
                 className="p-1 hover:bg-[var(--black-800)] rounded transition-colors"
               >
-                <ChevronDown 
-                  className={`text-[#737373] transition-transform duration-200 ${isOpenEdicion ? 'rotate-180' : ''}`} 
-                  size={16} 
+                <ChevronDown
+                  className={`text-[#737373] transition-transform duration-200 ${isOpenEdicion ? 'rotate-180' : ''}`}
+                  size={16}
                 />
               </button>
             )}
@@ -115,7 +116,7 @@ export const EdicionLayout: React.FC<EdicionLayoutProps> = ({
 
         {/* Dropdown de ediciones */}
         {hayMultiplesEdiciones && isOpenEdicion && (
-          <div 
+          <div
             ref={edicionDropdownRef}
             className="absolute top-full left-0 right-0 mt-2 bg-[var(--black-900)] border border-[#262626] rounded-xl shadow-2xl z-50 overflow-hidden"
           >
@@ -137,15 +138,16 @@ export const EdicionLayout: React.FC<EdicionLayoutProps> = ({
                   <button
                     key={edicion.id_edicion}
                     onClick={() => handleSeleccionarEdicion(edicion.id_edicion)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--black-800)] transition-colors text-left ${
-                      edicionSeleccionada?.id_edicion === edicion.id_edicion ? 'bg-[var(--black-800)]' : ''
-                    }`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--black-800)] transition-colors text-left ${edicionSeleccionada?.id_edicion === edicion.id_edicion ? 'bg-[var(--black-800)]' : ''
+                      }`}
                   >
                     {edicion.img && (
-                      <img 
-                        src={edicion.img} 
+                      <Image
+                        src={edicion.img}
                         alt={edicion.nombre}
-                        className="w-8 h-8 rounded-full object-cover"
+                        width={32}
+                        height={32}
+                        className="rounded-full object-cover"
                       />
                     )}
                     {!edicion.img && (
@@ -154,9 +156,8 @@ export const EdicionLayout: React.FC<EdicionLayoutProps> = ({
                       </div>
                     )}
                     <div className="flex-1">
-                      <p className={`text-sm font-medium ${
-                        edicionSeleccionada?.id_edicion === edicion.id_edicion ? 'text-[var(--green)]' : 'text-white'
-                      }`}>
+                      <p className={`text-sm font-medium ${edicionSeleccionada?.id_edicion === edicion.id_edicion ? 'text-[var(--green)]' : 'text-white'
+                        }`}>
                         {edicion.nombre}
                       </p>
                       <p className="text-xs text-[#737373]">{edicion.temporada}</p>

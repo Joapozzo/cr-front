@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { MdQrCodeScanner, MdCameraAlt } from 'react-icons/md';
 import { Loader2 } from 'lucide-react';
+import Image from 'next/image';
 import toast from 'react-hot-toast';
 import jsQR from 'jsqr'; // npm install jsqr
 
@@ -27,7 +28,7 @@ export const ScannerDNINativo = ({ onScan }: ScannerDNINativoProps) => {
       const image = await createImageBitmap(file);
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
-      
+
       if (!context) {
         throw new Error('No se pudo crear el contexto del canvas');
       }
@@ -108,7 +109,14 @@ export const ScannerDNINativo = ({ onScan }: ScannerDNINativoProps) => {
       {/* Preview de la imagen capturada */}
       {preview && (
         <div className="relative w-full rounded-lg overflow-hidden">
-          <img src={preview} alt="Vista previa" className="w-full" />
+          <Image
+            src={preview}
+            alt="Vista previa"
+            width={500}
+            height={300}
+            className="w-full h-auto"
+            style={{ objectFit: 'contain' }}
+          />
           {isProcessing && (
             <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
               <div className="flex flex-col items-center gap-2">

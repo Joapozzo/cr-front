@@ -8,6 +8,8 @@ import { UserDropdown } from './navbar/UserDropdown';
 import { getMenuItemsByRole } from '../config/menuItems';
 import { useAuth } from '../hooks/auth/useAuth';
 
+import Image from 'next/image';
+
 const Navbar: React.FC = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { usuario } = useAuth();
@@ -42,11 +44,14 @@ const Navbar: React.FC = () => {
                         href="/"
                         className="absolute left-1/2 transform -translate-x-1/2 h-[30%] flex items-center cursor-pointer"
                     >
-                        <img
-                            src="/Logos/isologo-reducido.png"
-                            alt="Logo Copa Relampago Mobile"
-                            className="h-full"
-                        />
+                        <div className="relative h-full w-[100px]">
+                            <Image
+                                src="/Logos/isologo-reducido.png"
+                                alt="Logo Copa Relampago Mobile"
+                                fill
+                                className="object-contain"
+                            />
+                        </div>
                     </Link>
 
                     {/* Right - Notifications */}
@@ -62,9 +67,11 @@ const Navbar: React.FC = () => {
                         href="/planillero/home"
                         className="flex items-center cursor-pointer"
                     >
-                        <img
+                        <Image
                             src="/Logos/logotipo.png"
                             alt="Logo Copa Relampago"
+                            width={160}
+                            height={20}
                             className="h-5 w-auto" // controla la altura del logo
                         />
                     </Link>

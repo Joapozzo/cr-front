@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Menu, Bell } from "lucide-react";
 import { MobileMenuPlanillero } from './navbar/MobileMenuPlanillero';
 
@@ -21,7 +22,7 @@ const NavbarPlanillero: React.FC = () => {
                 {/* Mobile Layout */}
                 <div className="flex md:hidden items-center justify-between w-full">
                     {/* Left - Menu Button */}
-                    <button 
+                    <button
                         onClick={() => setIsMenuOpen(true)}
                         className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--green)] transition-colors duration-300"
                         aria-label="Abrir menú"
@@ -34,11 +35,14 @@ const NavbarPlanillero: React.FC = () => {
                         href="/"
                         className="absolute left-1/2 transform -translate-x-1/2 h-[30%] flex items-center cursor-pointer"
                     >
-                        <img
-                            src="/Logos/isologo-reducido.png"
-                            alt="Logo Copa Relampago Mobile"
-                            className="h-full"
-                        />
+                        <div className="relative h-full w-[40px]">
+                            <Image
+                                src="/Logos/isologo-reducido.png"
+                                alt="Logo Copa Relampago Mobile"
+                                fill
+                                className="object-contain"
+                            />
+                        </div>
                     </Link>
 
                     {/* Right - Notifications */}
@@ -54,10 +58,12 @@ const NavbarPlanillero: React.FC = () => {
                         href="/planillero/home"
                         className="flex items-center cursor-pointer"
                     >
-                        <img
+                        <Image
                             src="/Logos/logotipo.png"
                             alt="Logo Copa Relampago"
-                            className="h-5 w-auto" // controla la altura del logo
+                            width={120}
+                            height={20}
+                            className="h-5 w-auto"
                         />
                     </Link>
 
@@ -79,9 +85,9 @@ const NavbarPlanillero: React.FC = () => {
             </div>
 
             {/* Mobile Menu */}
-            <MobileMenuPlanillero 
-                isOpen={isMenuOpen} 
-                onClose={() => setIsMenuOpen(false)} 
+            <MobileMenuPlanillero
+                isOpen={isMenuOpen}
+                onClose={() => setIsMenuOpen(false)}
             />
         </header>
     );

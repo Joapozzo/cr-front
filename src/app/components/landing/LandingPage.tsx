@@ -10,7 +10,7 @@ import FloatingWhatsApp from './FloatingWhatsApp';
 
 const LandingPage = () => {
     return (
-        <div className="min-h-screen bg-black text-white selection:bg-green-500 selection:text-white">
+        <div className="min-h-screen bg-black text-white selection:bg-[var(--green-500)] selection:text-white">
             <Navbar />
             <main>
                 <Hero />

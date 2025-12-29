@@ -16,7 +16,7 @@ const features = [
         description: 'Todo el torneo en tu celular. Fixture, resultados y tablas actualizadas al instante.'
     },
     {
-        icon: <BarChart2 className="w-8 h-8 text-blue-500" />,
+        icon: <BarChart2 className="w-8 h-8 text-[var(--blue-500)]" />,
         title: 'Estadísticas Completas',
         description: 'Seguimiento detallado de goleadores, asistencias y vallas invictas.'
     },
@@ -26,12 +26,12 @@ const features = [
         description: 'Jugamos en Complejo Elenia, las mejores canchas de sintético de Córdoba.'
     },
     {
-        icon: <Users className="w-8 h-8 text-purple-500" />,
+        icon: <Users className="w-8 h-8 text-[var(--purple-500)]" />,
         title: 'Categorías para Todos',
         description: 'Torneos Libres, Sub-19 y Femenino. Hay un lugar para tu equipo.'
     },
     {
-        icon: <Smartphone className="w-8 h-8 text-orange-500" />,
+        icon: <Smartphone className="w-8 h-8 text-[var(--orange-500)]" />,
         title: 'Seguimiento en Vivo',
         description: 'Viví el minuto a minuto de cada partido desde nuestra plataforma web.'
     }
@@ -57,10 +57,10 @@ const Features = () => {
         <section id="features" className="py-20 bg-[var(--black-950)]">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-5xl font-bold text-[var(--white)] mb-4">
+                    <h2 className="text-2xl md:text-5xl font-bold text-[var(--white)] mb-4">
                         Por qué elegir <span className="text-[var(--green)]">Copa Relámpago</span>
                     </h2>
-                    <p className="text-[var(--gray-100)] max-w-2xl mx-auto text-lg">
+                    <p className="text-[var(--gray-100)] max-w-2xl mx-auto text-base md:text-lg">
                         Llevamos la experiencia del fútbol amateur al siguiente nivel con tecnología y organización de primera.
                     </p>
                 </div>
@@ -76,12 +76,12 @@ const Features = () => {
                         <motion.div
                             key={index}
                             variants={item}
-                            className="bg-[var(--black-900)] p-8 rounded-2xl border border-[var(--black-800)] hover:border-[var(--green)]/30 transition-all hover:bg-[var(--black-800)] group"
+                            className="bg-[var(--black-900)] p-5 md:p-8 rounded-2xl border border-[var(--black-800)] hover:border-[var(--green)]/30 transition-all hover:bg-[var(--black-800)] group"
                         >
                             <div className="mb-6 p-4 bg-[var(--black-800)] rounded-xl inline-block group-hover:scale-110 transition-transform">
                                 {feature.icon}
                             </div>
-                            <h3 className="text-xl font-bold text-[var(--white)] mb-3">{feature.title}</h3>
+                            <h3 className="text-lg md:text-xl font-bold text-[var(--white)] mb-3">{feature.title}</h3>
                             <p className="text-[var(--gray-100)] leading-relaxed">
                                 {feature.description}
                             </p>

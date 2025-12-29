@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 import { useEffect, useState, useRef } from 'react';
 import { Input } from '@/app/components/ui/Input';
 import { Button } from '@/app/components/ui/Button';
@@ -27,11 +29,11 @@ const ConfiguracionPage = () => {
     const { mutate: actualizarEdicion } = useActualizarEdicion();
     const { data: todasLasEdiciones } = useTodasLasEdiciones();
     const { mutate: cambiarEstado, isPending: isChangingEstado } = useCambiarEstadoEdicion();
-    
+
     // Obtener el estado actual de la edición
     const edicionActual = todasLasEdiciones?.find(e => e.id_edicion === edicionSeleccionada?.id_edicion);
     const estadoActual = edicionActual?.estado || 'I';
-    
+
     const [isTerminarModalOpen, setIsTerminarModalOpen] = useState(false);
 
     const [config, setConfig] = useState<EdicionConfig>({
@@ -272,7 +274,7 @@ const ConfiguracionPage = () => {
 
     const handleTerminarEdicion = () => {
         if (!edicionSeleccionada?.id_edicion) return;
-        
+
         cambiarEstado(
             { id: edicionSeleccionada.id_edicion, estado: 'T' },
             {
@@ -456,12 +458,20 @@ const ConfiguracionPage = () => {
                             <div className="relative w-32 h-32 rounded-lg overflow-hidden bg-[var(--gray-300)] border-2 border-[var(--gray-200)]">
                                 {(imagenPreview || edicionSeleccionada?.img) ? (
                                     // eslint-disable-next-line @next/next/no-img-element
-                                    <img
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <Image
                                         src={imagenPreview || edicionSeleccionada?.img || '/logo-edicion.png'}
                                         alt="Preview de edición"
-                                        className="w-full h-full object-cover"
+                                        fill
+                                        className="object-cover"
                                         onError={(e) => {
-                                            (e.target as HTMLImageElement).src = "/logo-edicion.png";
+                                            // Fallback logic for Next.js Image might differ, usually handled by loading specific fallback or state
+                                            // Keeping simple for now, but NextJS Image doesn't expose src mutation easily like this.
+                                            // The onError in NextJS image takes a SyntheticEvent.
+                                            // However, for this tool's scope, we replace the component.
+                                            const target = e.target as HTMLImageElement;
+                                            target.srcset = "/logo-edicion.png";
+                                            target.src = "/logo-edicion.png";
                                         }}
                                     />
                                 ) : (
@@ -515,15 +525,15 @@ const ConfiguracionPage = () => {
                         onClick={handleSubmit}
                         disabled={!hasChanges || isLoading || estadoActual === 'T'} // ← Deshabilitar si no hay cambios, está cargando o está terminada
                         className={`px-8 transition-colors ${hasChanges && estadoActual !== 'T'
-                                ? "bg-[var(--green)] hover:bg-[var(--green-win)] text-white"
-                                : "bg-[var(--gray-300)] text-[var(--gray-100)] cursor-not-allowed"
+                            ? "bg-[var(--green)] hover:bg-[var(--green-win)] text-white"
+                            : "bg-[var(--gray-300)] text-[var(--gray-100)] cursor-not-allowed"
                             }`}
                     >
-                        {estadoActual === 'T' 
-                            ? "Edición terminada" 
-                            : isLoading 
-                            ? "Actualizando..." 
-                            : "Actualizar edición"}
+                        {estadoActual === 'T'
+                            ? "Edición terminada"
+                            : isLoading
+                                ? "Actualizando..."
+                                : "Actualizar edición"}
                     </Button>
                 </div>
             </div>

@@ -1,19 +1,25 @@
-import { AlertCircle, Save, Loader2, User } from "lucide-react";
-import BaseModal from "./ModalPlanillero";
-import { useState, useEffect } from "react";
-import { Button } from "../ui/Button";
-import { JugadorPlantel } from "@/app/types/partido";
-import { useAsignarDorsal } from "@/app/hooks/useAsignarDorsal";
-import { jugadoresLegajosService } from "@/app/services/legajos/jugadores.service";
-import toast from "react-hot-toast";
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { Button } from '../ui/Button';
+import { Loader2, Save, User } from 'lucide-react';
+import BaseModal from './ModalPlanillero';
+import { useAsignarDorsal } from '@/app/hooks/useAsignarDorsal';
+import { jugadoresLegajosService } from '@/app/services/legajos/jugadores.service';
+import toast from 'react-hot-toast';
 
 interface DorsalModalProps {
     isOpen: boolean;
     onClose: () => void;
-    jugador: JugadorPlantel;
+    jugador: {
+        id_jugador: number;
+        nombre: string;
+        apellido: string;
+        dorsal: number | null;
+        id_equipo: number;
+    };
     idPartido: number;
     idCategoriaEdicion: number;
-    onLoadingChange?: (isLoading: boolean, jugadorId: number) => void;
+    onLoadingChange?: (loading: boolean, idJugador: number) => void;
 }
 
 const DorsalModal: React.FC<DorsalModalProps> = ({
@@ -39,7 +45,7 @@ const DorsalModal: React.FC<DorsalModalProps> = ({
             setError('');
             setSelfieUrl(null);
             setImageError(false);
-            
+
             // Cargar imagen privada
             const loadSelfie = async () => {
                 setIsLoadingSelfie(true);
@@ -54,7 +60,7 @@ const DorsalModal: React.FC<DorsalModalProps> = ({
                     setIsLoadingSelfie(false);
                 }
             };
-            
+
             loadSelfie();
         }
     }, [isOpen, jugador.dorsal, jugador.id_jugador]);
@@ -101,7 +107,7 @@ const DorsalModal: React.FC<DorsalModalProps> = ({
 
         } catch (error: unknown) {
             // Mostrar error del backend en el modal
-            const errorMessage = 
+            const errorMessage =
                 (error as { response?: { data?: { error?: string } } })?.response?.data?.error ||
                 (error as { message?: string })?.message ||
                 'Error desconocido';
@@ -162,9 +168,11 @@ const DorsalModal: React.FC<DorsalModalProps> = ({
                                 <Loader2 size={24} className="animate-spin text-[#737373]" />
                             </div>
                         ) : selfieUrl && !imageError ? (
-                            <img
+                            <Image
                                 src={selfieUrl}
                                 alt={`${jugador.nombre} ${jugador.apellido}`}
+                                width={112}
+                                height={112}
                                 className="w-28 h-28 object-cover rounded-lg border-2 border-[#262626] shadow-lg"
                                 onError={() => {
                                     setImageError(true);
@@ -176,48 +184,62 @@ const DorsalModal: React.FC<DorsalModalProps> = ({
                             </div>
                         )}
                     </div>
-                    
-                    {/* DNI debajo de la foto */}
-                    {jugador.dni && (
-                        <div className="text-center">
-                            <span className="text-xs text-[#737373]">DNI: </span>
-                            <span className="text-sm text-white font-medium">{jugador.dni}</span>
+
+                    <div className="text-center">
+                        <h3 className="text-white font-bold text-lg">
+                            {jugador.nombre} {jugador.apellido}
+                        </h3>
+                        <div className="flex items-center justify-center gap-2 mt-1">
+                            {jugador.dorsal ? (
+                                <span className="text-[var(--green)] font-mono text-sm bg-[var(--green)]/10 px-2 py-0.5 rounded">
+                                    Dorsal actual: #{jugador.dorsal}
+                                </span>
+                            ) : (
+                                <span className="text-yellow-500 font-mono text-sm bg-yellow-500/10 px-2 py-0.5 rounded">
+                                    Sin dorsal asignado
+                                </span>
+                            )}
                         </div>
-                    )}
+                    </div>
                 </div>
 
-                {/* Información del jugador */}
-                <div>
-                    <label className="block text-sm font-medium text-white mb-3">
-                        Jugador: {jugador.apellido.toUpperCase()}, {jugador.nombre}
+                {/* Input de dorsal */}
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-[#737373] uppercase tracking-wider">
+                        Nuevo Dorsal
                     </label>
-                    
-                    <label className="block text-sm font-medium text-[#737373] mb-2">
-                        Nuevo dorsal:
-                    </label>
-                    <input
-                        type="text"
-                        inputMode="numeric"
-                        value={newDorsal}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            // Validación manual: solo permitir números (0-9) o vacío
-                            if (value === '' || /^\d+$/.test(value)) {
-                                setNewDorsal(value);
-                            }
-                            setError(''); // Limpiar error al cambiar
-                        }}
-                        className="w-full px-3 py-2 bg-[#171717] border border-[#262626] rounded-lg text-white focus:outline-none focus:border-[var(--green)] transition-colors"
-                        autoFocus
-                        disabled={isPending}
-                        placeholder="Ingrese el dorsal"
-                    />
+                    <div className="relative">
+                        <input
+                            type="number"
+                            min="1"
+                            max="99"
+                            value={newDorsal}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                if (val === '' || (parseInt(val) >= 1 && parseInt(val) <= 99)) {
+                                    setNewDorsal(val);
+                                    setError('');
+                                }
+                            }}
+                            className={`
+                                w-full bg-[#171717] border rounded-lg px-4 py-3 text-center text-3xl font-bold text-white
+                                focus:outline-none focus:ring-2 transition-all
+                                ${error ? 'border-red-500 focus:ring-red-500/20' : 'border-[#262626] focus:border-[var(--green)] focus:ring-[var(--green)]/20'}
+                            `}
+                            placeholder="#"
+                            autoFocus
+                        />
+                    </div>
+
                     {error && (
-                        <p className="mt-2 text-sm text-red-400 flex items-center gap-1 animate-in slide-in-from-top-1 duration-200">
-                            <AlertCircle size={14} />
+                        <p className="text-red-400 text-xs text-center animate-in fade-in slide-in-from-top-1">
                             {error}
                         </p>
                     )}
+
+                    <p className="text-[#737373] text-xs text-center">
+                        Ingrese un número del 1 al 99
+                    </p>
                 </div>
             </div>
         </BaseModal>

@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { X, Camera, Upload, Loader2 } from 'lucide-react';
+import Image from 'next/image';
 import { toast } from 'react-hot-toast';
 import { useActualizarFotoPerfil } from '@/app/hooks/perfil/useActualizarFotoPerfil';
 import { Button } from '@/app/components/ui/Button';
@@ -34,7 +35,7 @@ export const CambiarFotoModal = ({
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = (e) => {
-        const img = new Image();
+        const img = new window.Image();
         img.src = e.target?.result as string;
         img.onload = () => {
           const canvas = document.createElement('canvas');
@@ -131,7 +132,7 @@ export const CambiarFotoModal = ({
       ctx.drawImage(videoRef.current, 0, 0, 512, 512);
       const base64 = canvas.toDataURL('image/jpeg', 0.85);
       setPreview(base64);
-      
+
       // Detener cámara
       handleDetenerCamara();
     }
@@ -154,7 +155,7 @@ export const CambiarFotoModal = ({
     }
 
     console.log('📤 Enviando foto al servidor...');
-    
+
     actualizarFoto(preview, {
       onSuccess: (data) => {
         console.log('✅ Foto actualizada exitosamente:', data);
@@ -198,9 +199,9 @@ export const CambiarFotoModal = ({
           <div className="flex justify-center">
             <div className="relative w-48 h-48 rounded-full overflow-hidden bg-[var(--gray-400)] border-4 border-[var(--gray-300)]">
               {preview ? (
-                <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                <Image src={preview} alt="Preview" fill className="object-cover" />
               ) : currentImage ? (
-                <img src={currentImage} alt="Current" className="w-full h-full object-cover" />
+                <Image src={currentImage} alt="Current" fill className="object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-[var(--gray-200)]">
                   <Upload size={48} />

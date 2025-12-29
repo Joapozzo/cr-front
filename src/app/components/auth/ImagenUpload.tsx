@@ -2,6 +2,7 @@
 import { useState, useRef } from 'react';
 import { MdCloudUpload, MdCheckCircle } from 'react-icons/md';
 import { Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 interface ImageUploadProps {
     label: string;
@@ -80,10 +81,11 @@ export const ImageUpload = ({
                         <p className="text-xs text-[var(--green)]">Imagen subida</p>
                     </>
                 ) : preview ? (
-                    <img
+                    <Image
                         src={preview}
                         alt="Preview"
-                        className="w-full h-full object-cover rounded-lg"
+                        fill
+                        className="object-cover rounded-lg"
                     />
                 ) : (
                     <>

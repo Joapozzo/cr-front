@@ -13,6 +13,8 @@ interface EscudoEquipoProps {
   size?: number; // Tamaño único para width y height
 }
 
+import Image from 'next/image';
+
 export const EscudoEquipo = ({
   src,
   alt,
@@ -44,8 +46,8 @@ export const EscudoEquipo = ({
         className={`flex items-center justify-center bg-[var(--gray-300)] text-[var(--gray-100)] rounded-full ${className}`}
         style={{ width: finalWidth, height: finalHeight }}
       >
-        <Shield 
-          size={shieldSize} 
+        <Shield
+          size={shieldSize}
           className="text-[var(--gray-200)]"
         />
       </div>
@@ -53,8 +55,8 @@ export const EscudoEquipo = ({
   }
 
   return (
-    <div 
-      className="relative flex items-center justify-center" 
+    <div
+      className="relative flex items-center justify-center"
       style={{ width: finalWidth, height: finalHeight }}
     >
       {/* Skeleton loader */}
@@ -65,20 +67,15 @@ export const EscudoEquipo = ({
       )}
 
       {/* Imagen - object-contain para mostrar el escudo completo sin recortar */}
-      <img
+      <Image
         src={imgUrl}
         alt={alt}
+        fill
         className={`${className} ${loading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300 object-contain`}
         onLoad={() => setLoading(false)}
         onError={() => {
           setError(true);
           setLoading(false);
-        }}
-        style={{ 
-          width: '100%', 
-          height: '100%',
-          maxWidth: finalWidth,
-          maxHeight: finalHeight
         }}
       />
     </div>

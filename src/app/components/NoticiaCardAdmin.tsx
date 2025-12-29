@@ -1,6 +1,7 @@
 import { UseMutationResult } from "@tanstack/react-query";
 import { Noticia } from "../types/noticia";
 import { Button } from "./ui/Button";
+import Image from 'next/image';
 
 interface CardNoticiaAdminProps {
     noticia: Noticia;
@@ -23,10 +24,11 @@ const CardNoticiaAdmin = ({ noticia, handleEdit, handleTogglePublish, handleDele
             {/* Imagen */}
             <div className="relative h-48 bg-[var(--gray-300)]">
                 {(noticia.img_portada || noticia.img) ? (
-                    <img
-                        src={noticia.img_portada || noticia.img}
+                    <Image
+                        src={noticia.img_portada || noticia.img || ''}
                         alt={noticia.titulo}
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
                     />
                 ) : (
                     <div className="flex items-center justify-center h-full text-[var(--gray-100)]">

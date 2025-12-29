@@ -21,7 +21,7 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: PartidoRow) => void, o
             'S': { label: 'SUSPENDIDO', color: 'bg-red-600 text-white' },
             'A': { label: 'APLAZADO', color: 'bg-orange-600 text-white' },
             'T': { label: 'FALTA SUBIR', color: 'bg-yellow-600 text-white' },
-            'I': { label: 'INDEFINIDO', color: 'bg-gray-600 text-white' },
+            'I': { label: 'INDEFINIDO', color: 'bg-[var(--gray-600)] text-white' },
         };
 
         const estadoInfo = estados[estado as keyof typeof estados] || estados['P'];

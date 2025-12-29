@@ -16,6 +16,8 @@ interface ImagenPublicaProps {
  * Componente para renderizar imágenes públicas con fallback
  * Maneja errores de carga y muestra un placeholder si no hay imagen
  */
+import Image from 'next/image';
+
 export const ImagenPublica = ({
   src,
   alt,
@@ -49,16 +51,16 @@ export const ImagenPublica = ({
       )}
 
       {/* Imagen */}
-      <img
+      <Image
         src={src}
         alt={alt}
-        className={`${className} ${loading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+        fill
+        className={`${className} ${loading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300 object-cover`}
         onLoad={() => setLoading(false)}
         onError={() => {
           setError(true);
           setLoading(false);
         }}
-        style={{ width, height }}
       />
     </div>
   );
