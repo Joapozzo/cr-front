@@ -55,7 +55,7 @@ export const AvatarPerfil = ({
     <>
       <div className="relative inline-block">
         {/* Avatar */}
-        <div className={`${sizeClasses[size]} rounded-full overflow-hidden border-4 border-[var(--gray-300)] bg-[var(--gray-400)] flex items-center justify-center`}>
+        <div className={`${sizeClasses[size]} rounded-full overflow-hidden border-4 border-[var(--gray-300)] bg-[var(--gray-400)] relative`}>
           <ImagenPublica
             src={imagenUrl}
             alt={`Avatar de ${nombre}`}

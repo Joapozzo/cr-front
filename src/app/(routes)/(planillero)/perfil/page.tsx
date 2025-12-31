@@ -49,7 +49,7 @@ export default function MisDatosPage() {
             {/* Header */}
             <div className="text-start my-6">
                 <h1 className="text-2xl font-bold text-[var(--white)] mb-2">
-                    Mis Datos Personales
+                    Mis datos personales
                 </h1>
                 <p className="text-[var(--gray-100)] text-sm">
 
@@ -60,7 +60,7 @@ export default function MisDatosPage() {
             {/* Información Personal */}
             <div className="bg-[var(--card-background)] rounded-lg space-y-4">
                 <h2 className="text-lg font-semibold text-[var(--white)] mb-4 border-b border-[var(--gray-300)] pb-2">
-                    Información Personal
+                    Información personal
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -113,7 +113,7 @@ export default function MisDatosPage() {
                     />
 
                     <Input
-                        label="Fecha de Nacimiento"
+                        label="Fecha de nacimiento"
                         value={formatFecha(usuario.nacimiento)}
                         disabled
                         icon={<Calendar className="w-4 h-4" />}

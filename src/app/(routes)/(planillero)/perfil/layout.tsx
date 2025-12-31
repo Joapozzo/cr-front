@@ -22,24 +22,24 @@ export default function PerfilLayout({
             icon: User,
             href: '/perfil',
         },
-        {
-            id: 'estadisticas',
-            label: 'Estadísticas',
-            icon: BarChart3,
-            href: '/perfil/estadisticas',
-        },
+        // {
+        //     id: 'estadisticas',
+        //     label: 'Estadísticas',
+        //     icon: BarChart3,
+        //     href: '/perfil/estadisticas',
+        // },
         {
             id: 'solicitudes',
             label: 'Solicitudes',
             icon: MessageSquare,
             href: '/perfil/solicitudes',
         },
-        {
-            id: 'configuracion',
-            label: 'Configuración',
-            icon: Settings,
-            href: '/perfil/configuracion',
-        },
+        // {
+        //     id: 'configuracion',
+        //     label: 'Configuración',
+        //     icon: Settings,
+        //     href: '/perfil/configuracion',
+        // },
     ];
 
     const isActiveTab = (href: string) => {

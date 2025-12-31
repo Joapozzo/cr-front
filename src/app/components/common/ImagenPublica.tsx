@@ -42,7 +42,7 @@ export const ImagenPublica = ({
   }
 
   return (
-    <div className="relative" style={{ width, height }}>
+    <div className={`relative ${width || height ? '' : 'w-full h-full'}`} style={{ width, height }}>
       {/* Skeleton loader */}
       {loading && (
         <div

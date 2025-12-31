@@ -74,7 +74,7 @@ const PerfilUsuario: React.FC = () => {
                         variant={activeTab === 'perfil' ? 'more' : 'default'}
                     >
                         <User className="w-4 h-4 inline-block mr-2" />
-                        Información Personal
+                        Información personal
                     </Button>
                     <Button
                         onClick={() => setActiveTab('seguridad')}
@@ -116,7 +116,7 @@ const PerfilUsuario: React.FC = () => {
                         {/* Personal Information */}
                         <div className="bg-[#1A1A1A] border border-[#2D2F30] rounded-2xl p-6">
                             <h3 className="text-lg font-semibold text-white mb-4">
-                                Información Personal
+                                Información personal
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <Input
@@ -156,7 +156,7 @@ const PerfilUsuario: React.FC = () => {
                                     icon={<Phone className="w-4 h-4" />}
                                 />
                                 <Input
-                                    label="Fecha de Nacimiento"
+                                    label="Fecha de nacimiento"
                                     type="date"
                                     value={usuario.nacimiento ? (typeof usuario.nacimiento === 'string' ? usuario.nacimiento : new Date(usuario.nacimiento).toISOString().split('T')[0]) : ''}
                                     disabled

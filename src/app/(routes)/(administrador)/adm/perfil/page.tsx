@@ -177,7 +177,7 @@ export default function PerfilAdminPage() {
                     />
 
                     <Input
-                        label="Fecha de Nacimiento"
+                        label="Fecha de nacimiento"
                         value={formData.nacimiento}
                         onChange={(e) => handleInputChange('nacimiento', e.target.value)}
                         icon={<Calendar className="w-4 h-4" />}
