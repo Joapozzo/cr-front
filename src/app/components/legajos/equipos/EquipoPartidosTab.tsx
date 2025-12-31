@@ -229,10 +229,18 @@ export const EquipoPartidosTab = ({
         return jornadas;
     }, [fixturesProximos]);
 
+    // Resetear jornada cuando cambia la categoría
+    useEffect(() => {
+        setJornadaSeleccionada(undefined);
+    }, [categoriaSeleccionada]);
+
     // Inicializar jornada seleccionada
     useEffect(() => {
-        if (vistaActiva === 'jornada' && !jornadaSeleccionada && jornadasDisponibles.length > 0) {
-            setJornadaSeleccionada(jornadasDisponibles[0]);
+        if (vistaActiva === 'jornada' && jornadasDisponibles.length > 0) {
+            // Si no hay jornada seleccionada o la jornada seleccionada no está en las disponibles, seleccionar la primera
+            if (!jornadaSeleccionada || !jornadasDisponibles.includes(jornadaSeleccionada)) {
+                setJornadaSeleccionada(jornadasDisponibles[0]);
+            }
         }
     }, [jornadasDisponibles, vistaActiva, jornadaSeleccionada]);
 

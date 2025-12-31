@@ -20,6 +20,7 @@ import {
 import { useLogout } from '../hooks/auth/useLogout';
 import { MdStadium } from 'react-icons/md';
 import { useAuthStore } from '../stores/authStore';
+import { ImagenPublica } from './common/ImagenPublica';
 
 interface MenuItem {
     id: string;
@@ -154,18 +155,14 @@ export default function Sidebar() {
             <div className="p-4 border-b border-[var(--black-900)]">
                 {isCollapsed ? (
                     <div className="flex flex-col items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-[var(--green)] flex items-center justify-center overflow-hidden">
-                            {usuario?.img ? (
-                                <Image
-                                    src={usuario.img}
-                                    alt="Avatar"
-                                    width={40}
-                                    height={40}
-                                    className="w-full h-full object-cover rounded-full"
-                                />
-                            ) : (
-                                <User className="w-6 h-6 text-white" />
-                            )}
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+                            <ImagenPublica
+                                src={usuario?.img}
+                                alt="Avatar"
+                                width={120}
+                                height={120}
+                                className="w-full h-full object-cover rounded-full"
+                            />
                         </div>
                         <button
                             onClick={logout}

@@ -250,7 +250,6 @@ const Solicitudes: React.FC<SolicitudesProps> = ({
             mensaje_jugador: mensaje
         }, {
             onSuccess: (data) => {
-                console.log('onSuccess ejecutado, data:', data);
                 setShowSolicitudModal(false);
                 setEquipoSeleccionado(null);
                 setSearchTerm('');
@@ -262,7 +261,6 @@ const Solicitudes: React.FC<SolicitudesProps> = ({
                 toast.success(mensajeExito);
             },
             onError: (error: unknown) => {
-                console.log('onError ejecutado, error:', error);
                 // Extraer el mensaje de error de diferentes formas posibles
                 const errorMessage =
                     (error instanceof Error && error.message) ||

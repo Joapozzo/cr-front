@@ -38,8 +38,8 @@ const PlayoffBracket = ({ zonas }: PlayoffBracketProps) => {
     const equipoCampeon = zonaConCampeon?.equipoCampeon;
 
     return (
-        <div className="overflow-x-auto">
-            <div className="inline-flex items-start gap-0 min-w-max p-4">
+        <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+            <div className="inline-flex items-start gap-0 min-w-max p-2 md:p-4">
                 {fasesOrdenadas.length > 0 ? (
                     <>
                         {fasesOrdenadas.map((fase, index) => (
@@ -59,12 +59,12 @@ const PlayoffBracket = ({ zonas }: PlayoffBracketProps) => {
                             <>
                                 <Conector altura={200 * Math.pow(2, fasesOrdenadas.length)} />
                                 <div className="flex flex-col items-center">
-                                    <div className="text-center mb-4 sticky top-0 bg-[var(--yellow)]/20 py-2 px-4 rounded-lg border border-[var(--yellow)]/30">
-                                        <h4 className="text-[var(--white)] font-semibold">
+                                    <div className="text-center mb-2 md:mb-4 sticky top-0 bg-[var(--yellow)]/20 py-1.5 md:py-2 px-2 md:px-4 rounded-lg border border-[var(--yellow)]/30">
+                                        <h4 className="text-[var(--white)] font-semibold text-sm md:text-base">
                                             Campeón
                                         </h4>
                                     </div>
-                                    <div className="bg-[var(--gray-400)] rounded-lg border-2 border-[var(--yellow)] p-6 min-w-[280px]">
+                                    <div className="bg-[var(--gray-400)] rounded-lg border-2 border-[var(--yellow)] p-3 md:p-6 min-w-[240px] md:min-w-[280px]">
                                         <Campeon
                                             equipo={equipoCampeon}
                                             size="md"
@@ -75,8 +75,8 @@ const PlayoffBracket = ({ zonas }: PlayoffBracketProps) => {
                         )}
                     </>
                 ) : (
-                    <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-8">
-                        <p className="text-[var(--gray-200)] text-center italic">
+                    <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-4 md:p-8">
+                        <p className="text-[var(--gray-200)] text-center italic text-sm md:text-base">
                             No hay partidos de playoff disponibles
                         </p>
                     </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { ImagenPublica } from '../common/ImagenPublica';
+import { EscudoEquipo } from '../common/EscudoEquipo';
 import { ChevronDown, Crown, User } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { ObtenerEquiposActualesDelJugadorResponse } from '@/app/types/jugador';
@@ -21,9 +22,6 @@ interface EquipoLayoutProps {
   
   // Children (tabs y contenido)
   children: React.ReactNode;
-  
-  // Loading
-  loading?: boolean;
 }
 
 export const EquipoLayout: React.FC<EquipoLayoutProps> = ({
@@ -34,8 +32,7 @@ export const EquipoLayout: React.FC<EquipoLayoutProps> = ({
   esCapitan,
   equiposDelUsuario = [],
   onCambiarEquipo,
-  children,
-  loading = false
+  children
 }) => {
   const [selectorAbierto, setSelectorAbierto] = useState(false);
   const selectorRef = useRef<HTMLDivElement>(null);
@@ -55,52 +52,19 @@ export const EquipoLayout: React.FC<EquipoLayoutProps> = ({
   // Mostrar selector solo si pertenece al equipo Y tiene más de 1 equipo
   const mostrarSelector = perteneceAlEquipo && equiposDelUsuario.length > 1;
 
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        {/* Header skeleton */}
-        <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-4">
-          <div className="flex items-start gap-4">
-            <div className="w-16 h-16 rounded-full bg-[var(--black-800)] animate-pulse flex-shrink-0" />
-            <div className="flex-1 space-y-2">
-              <div className="h-6 bg-[var(--black-800)] rounded animate-pulse w-48" />
-              <div className="h-4 bg-[var(--black-800)] rounded animate-pulse w-24" />
-            </div>
-          </div>
-        </div>
-        {/* Children skeleton */}
-        {children}
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-0 w-full">
       {/* Header del equipo */}
       <div className="bg-[var(--black-900)] border border-[#262626] rounded-t-xl p-4">
         <div className="flex items-center gap-4">
           {/* Escudo del equipo */}
-          {imgEquipo ? (
-            <div className="w-16 h-16 flex-shrink-0">
-              <ImagenPublica
-                src={imgEquipo}
-                alt={nombreEquipo}
-                width={64}
-                height={64}
-                fallbackIcon="Shield"
-              />
-            </div>
-          ) : (
-            <div className="w-16 h-16 rounded-full overflow-hidden bg-[var(--black-800)] flex-shrink-0 border-2 border-[#262626] flex items-center justify-center">
-              <ImagenPublica
-                src="/img/default-team.png"
-                alt={nombreEquipo}
-                width={64}
-                height={64}
-                fallbackIcon="Shield"
-              />
-            </div>
-          )}
+          <div className="flex-shrink-0">
+            <EscudoEquipo
+              src={imgEquipo}
+              alt={nombreEquipo}
+              size={64}
+            />
+          </div>
 
           {/* Nombre y selector */}
           <div className="flex-1 min-w-0">
@@ -136,27 +100,13 @@ export const EquipoLayout: React.FC<EquipoLayoutProps> = ({
                           eq.id_equipo === idEquipo ? 'bg-[var(--black-800)]' : ''
                         }`}
                       >
-                        {eq.img_equipo ? (
-                          <div className="w-8 h-8 flex-shrink-0">
-                            <ImagenPublica
-                              src={eq.img_equipo}
-                              alt={eq.nombre_equipo}
-                              width={32}
-                              height={32}
-                              fallbackIcon="Shield"
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-8 h-8 rounded-full overflow-hidden bg-[var(--black-800)] flex-shrink-0 flex items-center justify-center">
-                            <ImagenPublica
-                              src="/img/default-team.png"
-                              alt={eq.nombre_equipo}
-                              width={32}
-                              height={32}
-                              fallbackIcon="Shield"
-                            />
-                          </div>
-                        )}
+                        <div className="flex-shrink-0">
+                          <EscudoEquipo
+                            src={eq.img_equipo}
+                            alt={eq.nombre_equipo}
+                            size={32}
+                          />
+                        </div>
                         <div className="flex-1 text-left min-w-0">
                           <p className={`text-sm font-medium truncate ${
                             eq.id_equipo === idEquipo ? 'text-[var(--green)]' : 'text-white'

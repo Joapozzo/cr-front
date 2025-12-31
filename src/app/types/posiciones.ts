@@ -42,4 +42,5 @@ export interface ITablaPosicion {
     categoria_edicion: string; // Ej: "Primera - Apertura 2024"
     posiciones: IEquipoPosicion[]; // 6 equipos (contexto alrededor del equipo del usuario)
     formatosPosicion?: FormatoPosicion[]; // Formatos de posición para mostrar badges y leyenda
+    id_categoria_edicion?: number; // ID de la categoría edición para navegación
 }

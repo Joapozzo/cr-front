@@ -46,13 +46,19 @@ export const PartidosTab: React.FC<PartidosTabProps> = ({
     page
   );
 
-  // Resetear cuando cambia la query (vista, jornada, equipo, etc.)
+  // Resetear cuando cambia el equipo, categoría o vista (pero NO cuando cambia la jornada)
   useEffect(() => {
-    if (queryKeyRef.current !== currentQueryKey) {
-      queryKeyRef.current = currentQueryKey;
-      setPage(1);
-      setAllPartidos([]);
+    queryKeyRef.current = currentQueryKey;
+    setPage(1);
+    setAllPartidos([]);
+    if (vistaActiva === 'jornada') {
+      setJornadaSeleccionada(undefined);
     }
+  }, [idEquipo, idCategoriaEdicion, vistaActiva]);
+
+  // Actualizar queryKeyRef cuando cambia currentQueryKey (para evitar procesar datos antiguos)
+  useEffect(() => {
+    queryKeyRef.current = currentQueryKey;
   }, [currentQueryKey]);
 
   // Actualizar lista acumulada de partidos cuando cambian los datos
@@ -135,8 +141,11 @@ export const PartidosTab: React.FC<PartidosTabProps> = ({
 
   // Inicializar jornada seleccionada cuando se cargan las jornadas
   useEffect(() => {
-    if (vistaActiva === 'jornada' && !jornadaSeleccionada && jornadasDisponibles.length > 0) {
-      setJornadaSeleccionada(jornadasDisponibles[0]);
+    if (vistaActiva === 'jornada' && jornadasDisponibles.length > 0) {
+      // Si no hay jornada seleccionada o la jornada seleccionada no está en las disponibles, seleccionar la primera
+      if (!jornadaSeleccionada || !jornadasDisponibles.includes(jornadaSeleccionada)) {
+        setJornadaSeleccionada(jornadasDisponibles[0]);
+      }
     }
   }, [jornadasDisponibles, vistaActiva, jornadaSeleccionada]);
 

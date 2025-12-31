@@ -42,18 +42,18 @@ export default function Error({ error, reset }: ErrorProps) {
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4 w-full">
           <Button 
             variant="footer" 
             size="lg" 
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto flex-1"
             onClick={reset}
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             Intentar de nuevo
           </Button>
-          <Link href="/">
-            <Button variant="default" size="lg" className="w-full sm:w-auto">
+          <Link href="/" className="w-full sm:w-auto flex-1">
+            <Button variant="default" size="lg" className="w-full sm:w-auto flex-1">
               <Home className="w-4 h-4 mr-2" />
               Volver al inicio
             </Button>

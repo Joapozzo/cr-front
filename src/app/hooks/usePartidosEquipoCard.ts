@@ -43,6 +43,7 @@ export const usePartidosEquipoCard = ({
   const {
     data: partidosData,
     isLoading: isLoadingPartidos,
+    isFetching: isFetchingPartidos,
     error: errorPartidos,
   } = useUltimosYProximosPartidosJugador({
     enabled: !partidosProp, // Solo hacer fetch si no se pasan partidos como prop
@@ -95,8 +96,12 @@ export const usePartidosEquipoCard = ({
     [partidos]
   );
 
-  // Estado de loading: usar prop o estado del hook
-  const loading = loadingProp ?? isLoadingPartidos;
+  // Estado de loading: usar prop, o estado del hook considerando carga inicial
+  // Si no se ha recibido data (undefined) significa que aún no terminó la carga inicial
+  // También considerar isFetching cuando no hay datos aún (pero no si ya hay datos - refetch en background)
+  // Solo mostrar como "no hay datos" cuando data ya existe pero está vacío
+  const hasDataLoaded = partidosData !== undefined;
+  const loading = loadingProp ?? (isLoadingPartidos || (!hasDataLoaded && (isFetchingPartidos || !partidosProp)));
 
   // Estado del tab activo y dirección de slide
   const [activeTab, setActiveTab] = useState<TabType>('proximos');

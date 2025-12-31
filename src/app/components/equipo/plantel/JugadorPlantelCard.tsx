@@ -33,13 +33,13 @@ export const JugadorPlantelCard: React.FC<JugadorPlantelCardProps> = ({
       `}
     >
       {/* Foto del jugador */}
-      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-[var(--black-800)] flex-shrink-0 border border-[#262626]">
+      <div className="w-10 h-10 sm:w-10 sm:h-10 rounded-full overflow-hidden flex-shrink-0">
         <ImagenPublica
           src={jugador.img || '/img/default-avatar.png'}
           alt={`${jugador.nombre} ${jugador.apellido}`}
-          width={56}
-          height={56}
-          className="w-full h-full object-cover"
+          width={40}
+          height={40}
+          className="w-full h-full object-cover object-center"
           fallbackIcon={<User className="w-6 h-6 sm:w-7 sm:h-7 text-[#737373]" />}
         />
       </div>

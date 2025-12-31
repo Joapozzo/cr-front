@@ -30,9 +30,9 @@ const BottomNavigationPlanillero: React.FC = () => {
     const isHomeActive = pathname === '/planillero/home';
 
     return (
-        <div className="fixed bottom-8 left-0 right-0 z-[9999] md:hidden pointer-events-none">
+        <div className="fixed bottom-8 left-0 right-0 z-[50] md:hidden pointer-events-none">
             <div className="flex items-end justify-center px-6">
-                <div className="relative flex items-center justify-center pointer-events-auto">
+                <div className="relative flex items-center justify-center pointer-events-auto z-[50]">
 
                     {/* Fondo redondeado */}
                     <div className="absolute inset-0 bg-[var(--black-800)]/95 backdrop-blur-lg rounded-full shadow-2xl border border-[var(--black-700)]/50 -mx-6 -my-2"></div>
@@ -64,7 +64,7 @@ const BottomNavigationPlanillero: React.FC = () => {
                         </div>
 
                         {/* Botón Home central - Sobresale */}
-                        <Link href="/planillero/home" className="relative z-20 pointer-events-auto">
+                        <Link href="/planillero/home" className="relative z-[1] pointer-events-auto">
                             <div className={`p-3 rounded-full transition-all duration-300 shadow-2xl transform -translate-y-5 ${isHomeActive
                                 ? 'bg-[var(--green)] text-white scale-110 shadow-[var(--green)]/40'
                                 : 'bg-[var(--green)] text-white hover:scale-105 hover:shadow-[var(--green)]/30'

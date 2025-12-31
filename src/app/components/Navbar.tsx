@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
                     >
                         <div className="relative h-full w-[100px]">
                             <Image
-                                src="/Logos/isologo-reducido.png"
+                                src="/logos/isologo-reducido.png"
                                 alt="Logo Copa Relampago Mobile"
                                 fill
                                 className="object-contain"
@@ -55,9 +55,9 @@ const Navbar: React.FC = () => {
                     </Link>
 
                     {/* Right - Notifications */}
-                    <button className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--green)] transition-colors duration-300">
+                    {/* <button className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--green)] transition-colors duration-300">
                         <Bell className="text-white w-5 h-5" />
-                    </button>
+                    </button> */}
                 </div>
 
                 {/* Desktop Layout */}

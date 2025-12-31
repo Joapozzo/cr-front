@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { PartidoResumido } from '@/app/types/equipoResumen';
-import { ImagenPublica } from '@/app/components/common/ImagenPublica';
-import { Shield } from 'lucide-react';
+import { EscudoEquipo } from '@/app/components/common/EscudoEquipo';
 import { UltimosPartidosResumenSkeleton } from '@/app/components/skeletons/UltimosPartidosResumenSkeleton';
 
 interface UltimosPartidosResumenProps {
@@ -61,20 +60,11 @@ export const UltimosPartidosResumen: React.FC<UltimosPartidosResumenProps> = ({
               {partido.goles_equipo}-{partido.goles_rival}
             </div>
             {/* Escudo del rival */}
-            {partido.img_equipo_rival ? (
-              <ImagenPublica
-                src={partido.img_equipo_rival}
-                alt={partido.nombre_equipo_rival}
-                width={48}
-                height={48}
-                className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
-                fallbackIcon={<Shield size={16} className="text-[#737373]" />}
-              />
-            ) : (
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-[var(--black-800)] border border-[#262626] flex items-center justify-center">
-                <Shield size={16} className="text-[#737373]" />
-              </div>
-            )}
+            <EscudoEquipo
+              src={partido.img_equipo_rival}
+              alt={partido.nombre_equipo_rival}
+              size={48}
+            />
           </div>
         ))}
       </div>

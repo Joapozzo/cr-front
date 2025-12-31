@@ -23,7 +23,7 @@ export const useSubirSelfie = () => {
       return response;
     },
     onSuccess: (data) => {
-      console.log('Selfie subida exitosamente:', data.selfieUrl);
+      // Selfie subida exitosamente
     },
     onError: (error: Error) => {
       console.error('Error al subir selfie:', error);

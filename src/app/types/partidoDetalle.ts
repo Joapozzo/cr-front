@@ -30,7 +30,7 @@ export interface PartidoDetalleUsuario {
   }>;
   ultimos_partidos_local?: Partido[];
   ultimos_partidos_visita?: Partido[];
-  historial?: HistorialPartidos;
+  historial?: Partido[];
 }
 
 // Último partido resumido de un equipo

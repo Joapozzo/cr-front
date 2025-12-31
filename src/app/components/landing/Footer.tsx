@@ -1,9 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { MapPin, Mail } from 'lucide-react';
-import { FaInstagram, FaFacebook } from 'react-icons/fa';
+import { FaInstagram, FaFacebook, FaWhatsapp } from 'react-icons/fa';
 
 import Image from 'next/image';
+import { getWhatsAppLink } from '@/constants/contact';
 
 const Footer = () => {
     return (
@@ -41,11 +42,14 @@ const Footer = () => {
                     <div>
                         <h3 className="text-[var(--white)] font-bold mb-6">Seguinos</h3>
                         <div className="flex gap-4">
-                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-[var(--black-900)] p-3 rounded-full text-[var(--gray-100)] hover:text-white hover:bg-[var(--green)] transition-all">
+                            <a href="https://instagram.com/coparelampago" target="_blank" rel="noopener noreferrer" className="bg-[var(--black-900)] p-3 rounded-full text-[var(--gray-100)] hover:text-white hover:bg-[var(--red)] transition-all">
                                 <FaInstagram size={20} />
                             </a>
-                            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="bg-[var(--black-900)] p-3 rounded-full text-[var(--gray-100)] hover:text-white hover:bg-[var(--blue-600)] transition-all">
+                            <a href="https://facebook.com/coparelampagocba" target="_blank" rel="noopener noreferrer" className="bg-[var(--black-900)] p-3 rounded-full text-[var(--gray-100)] hover:text-white hover:bg-[var(--blue-600)] transition-all">
                                 <FaFacebook size={20} />
+                            </a>
+                            <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="bg-[var(--black-900)] p-3 rounded-full text-[var(--gray-100)] hover:text-white hover:bg-[var(--green)] transition-all">
+                                <FaWhatsapp size={20} />
                             </a>
                         </div>
                     </div>

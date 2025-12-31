@@ -44,8 +44,6 @@ export const useOcuparVacanteConAutomatizacion = () => {
                 queryKey: ['tabla-posiciones'],
                 exact: false
             });
-
-            console.log('✅ Vacante ocupada con automatización:', data.mensaje);
         },
         onError: (error: Error) => {
             console.error('❌ Error al ocupar vacante con automatización:', error.message);
@@ -80,8 +78,6 @@ export const useConfigurarAutomatizacionPartido = () => {
 
             // También invalidar todas las zonas ya que el partido puede afectar la visualización
             queryClient.invalidateQueries({ queryKey: zonasKeys.all });
-
-            console.log('✅ Automatización de partido configurada:', data.mensaje);
         },
         onError: (error: Error) => {
             console.error('❌ Error al configurar automatización de partido:', error.message);

@@ -81,13 +81,11 @@ const InvitacionesCapitan: React.FC<InvitacionesCapitanProps> = ({
             mensaje_capitan: mensaje
         }, {
             onSuccess: (data) => {
-                console.log('✅ Invitación enviada exitosamente. Data recibida:', data);
                 setShowInvitacionModal(false);
                 setJugadorSeleccionado(null);
                 setSearchTerm('');
                 // Usar el mensaje del backend - el backend devuelve { message: "..." }
                 const mensajeExito = data?.message || 'Invitación enviada exitosamente';
-                console.log('📝 Mensaje a mostrar:', mensajeExito);
                 toast.success(mensajeExito, {
                     duration: 4000,
                     position: 'top-right',

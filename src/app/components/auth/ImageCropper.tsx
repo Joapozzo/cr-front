@@ -110,12 +110,7 @@ export const ImageCropper = ({ image, onCropComplete, onCancel }: ImageCropperPr
       // Convertir imagen base64 a blob URL si es necesario
       const imageUrl = image.startsWith('data:') ? image : `data:image/jpeg;base64,${image}`;
       
-      console.log('Tamaño original (base64):', image.length, 'caracteres');
-      
       const croppedImageBase64 = await getCroppedImg(imageUrl, croppedAreaPixels);
-      
-      console.log('Tamaño recortado (base64):', croppedImageBase64.length, 'caracteres');
-      console.log('Reducción:', ((1 - croppedImageBase64.length / image.length) * 100).toFixed(2) + '%');
       
       onCropComplete(croppedImageBase64);
     } catch (error) {

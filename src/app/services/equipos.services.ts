@@ -42,7 +42,15 @@ export const equiposService = {
 
     obtenerEquipoPorId: async (id: number): Promise<Equipo> => {
         try {
-            return await api.get<Equipo>(`/user/equipos/${id}`);
+            const response = await api.get<{ success: boolean; data: { id_equipo: number; nombre: string; descripcion?: string; img: string | null } }>(`/legajos/equipo/${id}`);
+            // Transformar la respuesta del endpoint de legajos al formato Equipo esperado
+            return {
+                id_equipo: response.data.id_equipo,
+                nombre: response.data.nombre,
+                descripcion: response.data.descripcion,
+                img: response.data.img,
+                categorias: [] // Se puede obtener por separado si es necesario
+            };
         } catch (error) {
             console.error(`Error al obtener equipo ${id}:`, error);
             throw new Error('No se pudo cargar el equipo');

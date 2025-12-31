@@ -38,6 +38,7 @@ export const PreviaTab: React.FC<PreviaTabProps> = ({
           titulo={nombreEquipoLocal}
           imgEquipo={imgEquipoLocal}
           loading={loading}
+          alineacionTitulo="center"
         />
 
         {/* Últimos partidos Visita */}
@@ -47,6 +48,7 @@ export const PreviaTab: React.FC<PreviaTabProps> = ({
           titulo={nombreEquipoVisita}
           imgEquipo={imgEquipoVisita}
           loading={loading}
+          alineacionTitulo="center"
         />
       </div>
     </div>

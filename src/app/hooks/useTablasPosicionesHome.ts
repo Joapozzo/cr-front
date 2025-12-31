@@ -46,6 +46,7 @@ export const useTablasPosicionesHome = ({
     const {
         data: tablasData,
         isLoading: isLoadingTablas,
+        isFetching: isFetchingTablas,
         error: errorTablas,
     } = useTablasPosicionesPorEquipos(
         limitPosiciones, // 6 posiciones para el home
@@ -70,11 +71,16 @@ export const useTablasPosicionesHome = ({
             categoria_edicion: tabla.categoria_edicion,
             posiciones: tabla.posiciones,
             formatosPosicion: tabla.formatosPosicion,
+            id_categoria_edicion: tabla.id_categoria_edicion,
         }));
     }, [tablasProp, tablasData]);
 
-    // Estado de loading: usar prop o estado del hook
-    const loading = loadingProp ?? isLoadingTablas;
+    // Estado de loading: usar prop, o estado del hook considerando carga inicial
+    // Si no se ha recibido data (undefined) significa que aún no terminó la carga inicial
+    // También considerar isFetching cuando no hay datos aún (pero no si ya hay datos - refetch en background)
+    // Solo mostrar como "no hay datos" cuando data ya existe pero está vacío
+    const hasDataLoaded = tablasData !== undefined;
+    const loading = loadingProp ?? (isLoadingTablas || (!hasDataLoaded && (isFetchingTablas || !tablasProp)));
 
     // Estado del tab activo y dirección de slide
     const [currentTablaIndex, setCurrentTablaIndex] = useState(0);

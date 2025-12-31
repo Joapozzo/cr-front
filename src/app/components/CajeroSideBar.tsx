@@ -16,7 +16,8 @@ import {
     FileText,
     Calculator,
     LogOut,
-    User
+    User,
+    Shield
 } from 'lucide-react';
 import { useLogout } from '../hooks/auth/useLogout';
 import { useAuthStore } from '../stores/authStore';
@@ -223,6 +224,40 @@ export default function CajeroSideBar() {
             {/* Navigation Menu */}
             <nav className="flex-1 p-4 overflow-y-auto">
                 <ul className={`space-y-2 ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
+                    {/* Admin Panel Link - Solo visible si el usuario es admin */}
+                    {usuario?.rol === 'ADMIN' && (
+                        <>
+                            <li className={isCollapsed ? 'w-full' : ''}>
+                                <Link
+                                    href="/adm/dashboard"
+                                    className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg transition-colors group relative border border-[var(--green)] ${pathname?.startsWith('/adm') ? "bg-[var(--black-900)] text-white" : "hover:bg-[var(--black-900)]"}`}
+                                    title={isCollapsed ? "Panel de Administración" : undefined}
+                                >
+                                    <Shield
+                                        className={`w-5 h-5 flex-shrink-0 ${pathname?.startsWith('/adm')
+                                            ? "text-[var(--green)]"
+                                            : "text-[var(--green)]"
+                                            } group-hover:scale-110 transition-transform`}
+                                    />
+                                    {!isCollapsed && (
+                                        <span
+                                            className={`transition-colors flex-1 ${pathname?.startsWith('/adm')
+                                                ? "text-[var(--green)] font-medium"
+                                                : "text-[var(--green)] group-hover:text-white"
+                                                }`}
+                                        >
+                                            Panel Admin
+                                        </span>
+                                    )}
+                                </Link>
+                            </li>
+                            {!isCollapsed && (
+                                <li className="my-2">
+                                    <div className="border-t border-[var(--black-900)]"></div>
+                                </li>
+                            )}
+                        </>
+                    )}
                     {menuItems.map((item) => {
                         const isActive = isActiveLink(item.href);
                         const isDisabled = item.disabled;

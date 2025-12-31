@@ -19,7 +19,6 @@ const PartidoItem: React.FC<PartidoItemProps> = ({ partido, isPendiente = false,
     const nombreLocal = partido.equipoLocal?.nombre || `Equipo ${partido.id_equipolocal || 'Local'}`;
     const nombreVisita = partido.equipoVisita?.nombre || `Equipo ${partido.id_equipovisita || 'Visita'}`;
     const estadoInfo = getEstadoInfo(partido.estado);
-    console.log(partido);
     return (
         <div
             className={`flex flex-col gap-4 bg-[#171717] rounded-lg border border-[#262626] p-4 transition-all duration-200 ${onClick

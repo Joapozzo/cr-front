@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
     return (
         <footer
             id="footer"
-            className="py-8 z-[100] flex justify-center items-center bottom-0 w-full bg-[var(--gray-500)]"
+            className="py-8 z-[20] flex justify-center items-center bottom-0 w-full bg-[var(--gray-500)]"
         >
             {/* Mobile Footer - Simple */}
             <div className="flex md:hidden w-full justify-center items-center px-8">

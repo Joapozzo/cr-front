@@ -58,7 +58,6 @@ const Invitaciones: React.FC<InvitacionesProps> = ({
 
         try {
             const data = await aceptarInvitacion(selectedInvitation.id_solicitud);
-            console.log('Data recibida:', data);
             toast.success(data.message || 'Invitación aceptada correctamente');
             onAcceptInvitation?.(selectedInvitation.id_solicitud);
             setShowAcceptModal(false);
@@ -77,7 +76,6 @@ const Invitaciones: React.FC<InvitacionesProps> = ({
             // mutateAsync devuelve directamente la data
             const data = await rechazarInvitacion(selectedInvitation.id_solicitud);
 
-            console.log('Data recibida:', data);
             toast.success(data.message || 'Invitación rechazada correctamente');
             onRejectInvitation?.(selectedInvitation.id_solicitud);
             setShowRejectModal(false);

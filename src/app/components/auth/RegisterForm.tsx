@@ -50,21 +50,12 @@ export const RegisterForm = () => {
     });
     const password = watch('password');
 
-    // Si el usuario está autenticado pero no tiene email verificado y estamos en /registro,
-    // mostrar pantalla de verificación automáticamente
+    // Asegurar que emailRegistrado tenga el email del usuario cuando se muestra la pantalla de verificación
     useEffect(() => {
-        if (usuario && !usuario.email_verificado && !usuario.cuenta_activada && !registroExitoso) {
-            // Usuario autenticado pero sin email verificado - mostrar pantalla de verificación
+        if (usuario && !usuario.email_verificado && usuario.email && !emailRegistrado) {
             setEmailRegistrado(usuario.email);
-            setRegistroExitoso(true);
         }
-        // Si el usuario ya tiene email verificado, no mostrar pantalla de verificación
-        // (puede estar en proceso de redirección)
-        if (usuario && usuario.email_verificado && registroExitoso) {
-            // El email ya está verificado, no mostrar pantalla de verificación
-            // El componente se redirigirá en handleVerificarEmail
-        }
-    }, [usuario, registroExitoso]);
+    }, [usuario, emailRegistrado]);
 
     // Validaciones visuales de password
     const hasMinLength = password?.length >= 8;
@@ -82,7 +73,13 @@ export const RegisterForm = () => {
                     // Obtener email del resultado o del usuario en store
                     const emailParaMostrar = result?.usuario?.email || result?.user?.email || data.email;
                     
-                    toast.success('¡Registro exitoso! Revisa tu email para verificar tu cuenta.');
+                    // Si el email ya existía, mostrar mensaje diferente
+                    if (result?.emailYaExiste) {
+                        toast.success('Sesión iniciada. Revisa tu email para verificar tu cuenta.');
+                    } else {
+                        toast.success('¡Registro exitoso! Revisa tu email para verificar tu cuenta.');
+                    }
+                    
                     setEmailRegistrado(emailParaMostrar);
                     setRegistroExitoso(true);
                 },
@@ -96,6 +93,9 @@ export const RegisterForm = () => {
     const handleVerificarEmail = () => {
         verificarEmail(undefined, {
             onSuccess: (result) => {
+                // Resetear el estado de registro exitoso para evitar mostrar pantalla de verificación
+                setRegistroExitoso(false);
+                
                 // Usar el proximoPaso del backend para redirigir correctamente
                 const proximoPaso = result?.proximoPaso || 'VALIDAR_DNI';
                 const ruta = proximoPasoARuta(proximoPaso, usuario?.rol);
@@ -139,7 +139,8 @@ export const RegisterForm = () => {
     // Si el usuario ya tiene email verificado, redirigir directamente
     useEffect(() => {
         if (usuario && usuario.email_verificado && !usuario.cuenta_activada) {
-            // El email ya está verificado, redirigir al siguiente paso
+            // El email ya está verificado, resetear estado local y redirigir al siguiente paso
+            setRegistroExitoso(false);
             const { ruta } = determinarRutaRedireccion(usuario);
             if (ruta !== '/registro') {
                 router.replace(ruta);
@@ -147,9 +148,9 @@ export const RegisterForm = () => {
         }
     }, [usuario, router]);
 
-    // Si el registro fue exitoso, mostrar la pantalla de verificación
-    // PERO solo si el email aún no está verificado
-    if (registroExitoso && usuario && !usuario.email_verificado) {
+    // Si el usuario está autenticado pero no tiene email verificado, mostrar la pantalla de verificación
+    // Esto funciona tanto para usuarios que acaban de registrarse como para usuarios que vuelven después de verificar
+    if (usuario && !usuario.email_verificado && !usuario.cuenta_activada) {
         return (
             <div className="flex flex-col gap-6 w-full">
                 {/* Icono y mensaje */}
@@ -162,10 +163,13 @@ export const RegisterForm = () => {
                             Verifica tu email
                         </h3>
                         <p className="text-sm text-[var(--gray-200)]">
+                            Por favor, revisa tu bandeja de entrada/spam y haz clic en el enlace de verificación.
+                        </p>
+                        <p className="text-sm text-[var(--gray-200)]">
                             Hemos enviado un email de verificación a:
                         </p>
                         <p className="text-sm font-medium text-[var(--green)] mt-1">
-                            {emailRegistrado}
+                            {emailRegistrado || usuario.email}
                         </p>
                     </div>
                 </div>

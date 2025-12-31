@@ -109,7 +109,7 @@ export const EquipoTablaTab = ({ tabla, isLoading, categoriaSeleccionada, idEqui
                     {/* Tablas de todos contra todos */}
                     {zonasTodosContraTodos.length > 0 ? (
                         <>
-                            <h2 className="text-xl font-bold text-[var(--white)] mb-4">Tabla de Posiciones</h2>
+                            <h2 className="text-xl font-bold text-[var(--white)] mb-4">Tabla de posiciones</h2>
                             {zonasTodosContraTodos.map((tablaZona, idx) => (
                                 <div key={idx} className="space-y-4">
                                     <h3 className="text-lg font-semibold text-[var(--white)]">

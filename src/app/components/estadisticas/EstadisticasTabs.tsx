@@ -1,6 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { 
   Trophy, 
   Users, 
@@ -26,7 +28,6 @@ interface TabOption {
 
 interface EstadisticasTabsProps {
   activeTab: EstadisticaTab;
-  onTabChange: (tab: EstadisticaTab) => void;
 }
 
 const tabOptions: TabOption[] = [
@@ -64,10 +65,23 @@ const tabOptions: TabOption[] = [
 
 
 export const EstadisticasTabs: React.FC<EstadisticasTabsProps> = ({
-  activeTab,
-  onTabChange
+  activeTab
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+
+  // Construir URL base manteniendo query params (especialmente categoria)
+  const baseUrl = useMemo(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    return '/estadisticas';
+  }, [searchParams]);
+
+  // Función helper para construir la URL de cada tab
+  const getTabUrl = (tabId: EstadisticaTab) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tipo', tabId);
+    return `${baseUrl}?${params.toString()}`;
+  };
   
   return (
     <div className="w-full space-y-3">
@@ -78,20 +92,23 @@ export const EstadisticasTabs: React.FC<EstadisticasTabsProps> = ({
           className="overflow-x-auto scroll-smooth scrollbar-thin scrollbar-thumb-[#262626] scrollbar-track-transparent hover:scrollbar-thumb-[#525252]"
         >
           <div className="flex items-center gap-2 p-2 min-w-max">
-            {tabOptions.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => onTabChange(tab.id)}
-                className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 whitespace-nowrap ${
-                  activeTab === tab.id
-                    ? 'bg-[var(--green)] text-white'
-                    : 'text-[#737373] hover:text-white hover:bg-[var(--black-800)]'
-                }`}
-              >
-                {tab.icon}
-                <span className="font-medium text-sm">{tab.label}</span>
-              </button>
-            ))}
+            {tabOptions.map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <Link
+                  key={tab.id}
+                  href={getTabUrl(tab.id)}
+                  className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 whitespace-nowrap ${
+                    isActive
+                      ? 'bg-[var(--green)] text-white'
+                      : 'text-[#737373] hover:text-white hover:bg-[var(--black-800)]'
+                  }`}
+                >
+                  {tab.icon}
+                  <span className="font-medium text-sm">{tab.label}</span>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>

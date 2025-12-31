@@ -70,7 +70,7 @@ export const MobileMenuPlanillero = ({ isOpen, onClose }: MobileMenuPlanilleroPr
     <>
       {/* Backdrop/Overlay */}
       <div
-        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[99999] transition-opacity duration-300 md:hidden ${
           isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={onClose}
@@ -79,13 +79,13 @@ export const MobileMenuPlanillero = ({ isOpen, onClose }: MobileMenuPlanilleroPr
 
       {/* Drawer/Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full w-[85%] max-w-[320px] bg-[var(--gray-500)] z-[9999] shadow-2xl transform transition-transform duration-300 ease-out md:hidden ${
+        className={`fixed top-0 left-0 h-full w-[85%] max-w-[320px] bg-[var(--gray-500)] z-[100000] shadow-2xl transform transition-transform duration-300 ease-out md:hidden ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Header - Perfil del usuario */}
-          <div className="relative bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] p-6 pb-8">
+          <div className="relative bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] p-6 pb-6">
             {/* Botón cerrar */}
             <button
               onClick={onClose}
@@ -96,19 +96,21 @@ export const MobileMenuPlanillero = ({ isOpen, onClose }: MobileMenuPlanilleroPr
             </button>
 
             {/* Avatar y datos */}
-            <div className="flex flex-col items-center gap-3 mt-2">
-              <AvatarPerfil
-                imagenUrl={usuario.img}
-                nombre={usuario.nombre}
-                size="md"
-                editable={false}
-              />
+            <div className="flex flex-row items-center gap-3 mt-2">
+              <div className="flex-shrink-0">
+                <AvatarPerfil
+                  imagenUrl={usuario.img}
+                  nombre={usuario.nombre}
+                  size="md"
+                  editable={false}
+                />
+              </div>
 
-              <div className="text-center">
-                <h3 className="text-white font-semibold text-lg">
+              <div className="flex-1 min-w-0">
+                <h3 className="text-white font-semibold text-lg truncate">
                   {usuario.nombre} {usuario.apellido}
                 </h3>
-                <p className="text-[var(--gray-200)] text-sm mt-0.5">
+                <p className="text-[var(--gray-200)] text-sm mt-0.5 truncate">
                   {usuario.email}
                 </p>
               </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useMemo } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { ChevronDown, Search } from 'lucide-react';
 import { useEdicionCategoria } from '@/app/contexts/EdicionCategoriaContext';
 
@@ -9,6 +10,8 @@ import { useEdicionCategoria } from '@/app/contexts/EdicionCategoriaContext';
  * Primero selecciona edición, luego categorías de esa edición
  */
 export const SelectorEdicionCategoria = () => {
+  const router = useRouter();
+  const pathname = usePathname();
   const {
     isLoading,
     edicionSeleccionada,
@@ -49,6 +52,14 @@ export const SelectorEdicionCategoria = () => {
     setCategoriaSeleccionada(categoria);
     setIsOpenCategoria(false);
     setSearchTermCategoria('');
+    
+    // Actualizar URL con el parámetro de categoría
+    const params = new URLSearchParams(window.location.search);
+    params.set('categoria', categoria.id.toString());
+    
+    // Mantener otros parámetros (como 'tipo' en estadísticas)
+    const newUrl = `${pathname}?${params.toString()}`;
+    router.push(newUrl, { scroll: false });
   };
 
   if (isLoading) {

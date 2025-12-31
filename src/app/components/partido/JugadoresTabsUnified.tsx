@@ -4,7 +4,6 @@ import { IncidenciaPartido, JugadorPlantel, EstadoPartido, JugadorDestacado } fr
 import IncidenciaRow from './Incidents';
 import JugadorRow from './JugadorRow';
 import { calcularAccionesJugador, esJugadorDestacado } from '@/app/utils/formacion.helper';
-import FormacionesCardSkeleton from '../skeletons/FormacionesCardSkeleton';
 import CambioJugadorModal from './CambioJugadorModal';
 import { useCambiosPorPartido, useCrearCambioJugador, useEditarCambioJugador, useEliminarCambioJugador } from '@/app/hooks/useCambiosJugador';
 import { useFormaciones } from '@/app/hooks/useFormaciones';
@@ -405,20 +404,6 @@ const JugadoresTabsUnified: React.FC<JugadoresTabsProps> = ({
             }
         });
         
-        // Debug temporal
-        if (mode === 'view') {
-            const golesConAsistencias = incidencias.filter(i => i.tipo === 'gol' && (i as any).asistencias);
-            if (golesConAsistencias.length > 0) {
-                console.log('Goles con asistencias encontrados:', golesConAsistencias.length);
-                golesConAsistencias.forEach(gol => {
-                    console.log('Gol:', gol.id, 'Asistencias:', (gol as any).asistencias);
-                });
-            }
-            const asistenciasExpandidas = incidenciasExpandidas.filter(i => i.tipo === 'asistencia');
-            if (asistenciasExpandidas.length > 0) {
-                console.log('Asistencias expandidas:', asistenciasExpandidas);
-            }
-        }
         
         return incidenciasExpandidas;
     }, [incidencias, mode]);
@@ -1037,9 +1022,7 @@ const JugadoresTabsUnified: React.FC<JugadoresTabsProps> = ({
         );
     };
 
-    if (loading) {
-        return <FormacionesCardSkeleton />
-    }
+    // No mostrar skeleton aquí, se maneja en el componente lazy
 
     return (
         <>

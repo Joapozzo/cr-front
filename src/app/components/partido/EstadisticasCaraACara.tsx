@@ -39,7 +39,7 @@ export const EstadisticasCaraACara: React.FC<EstadisticasCaraACaraProps> = ({
           <EscudoEquipo
             src={imgEquipoLocal}
             alt={nombreEquipoLocal}
-            size={48}
+            size={30}
             className="mb-3 flex-shrink-0"
           />
           {/* Número de victorias */}
@@ -74,7 +74,7 @@ export const EstadisticasCaraACara: React.FC<EstadisticasCaraACaraProps> = ({
           <EscudoEquipo
             src={imgEquipoVisita}
             alt={nombreEquipoVisita}
-            size={48}
+            size={30}
             className="mb-3 flex-shrink-0"
           />
           {/* Número de victorias */}

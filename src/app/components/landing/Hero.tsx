@@ -8,7 +8,7 @@ import { Button } from '@/app/components/ui/Button';
 
 import Image from 'next/image';
 
-const Hero = () => {
+const  Hero = () => {
     const { scrollY } = useScroll();
     const y = useTransform(scrollY, [0, 500], [0, 150]);
 
@@ -17,11 +17,20 @@ const Hero = () => {
             {/* Background Image */}
             <motion.div style={{ y }} className="absolute inset-0 z-0">
                 <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/90 z-10" />
+                {/* Mobile Image */}
                 <Image
-                    src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=2093&auto=format&fit=crop"
+                    src="/hero_mobile.jpg"
                     alt="Cancha de fútbol"
                     fill
-                    className="object-cover"
+                    className="object-cover md:hidden"
+                    priority
+                />
+                {/* Desktop Image */}
+                <Image
+                    src="/hero.jpg"
+                    alt="Cancha de fútbol"
+                    fill
+                    className="object-cover hidden md:block"
                     priority
                 />
             </motion.div>

@@ -102,54 +102,61 @@ export const authService = {
       try {
         userCredential = await createUserWithEmailAndPassword(auth, email, password);
       } catch (firebaseError: any) {
-        // Si el email ya existe, verificar si es un eventual
+        // Si el email ya existe, intentar hacer login con las credenciales proporcionadas
         if (firebaseError.code === 'auth/email-already-in-use') {
-          // Verificar si es un eventual
-          const apiBaseUrl = getApiBaseUrl();
-          const verificarResponse = await fetch(
-            `${apiBaseUrl}/auth/verificar-email-eventual?email=${encodeURIComponent(email)}`
-          );
-
-          if (verificarResponse.ok) {
-            const verificarData = await verificarResponse.json();
+          // Intentar hacer login para verificar si la contraseña es correcta
+          try {
+            const loginResult = await signInWithEmailAndPassword(auth, email, password);
             
-            if (verificarData.esEventual) {
-              // Es un eventual, intentar hacer login para obtener el UID
-              // Luego actualizar la contraseña
+            // Si el login es exitoso, el usuario ya existe y tiene la contraseña correcta
+            // Si el email no está verificado, reenviar el email de verificación
+            if (!loginResult.user.emailVerified) {
               try {
-                // Intentar login con una contraseña incorrecta para obtener el usuario
-                // (Firebase no permite obtener usuario sin autenticación)
-                // En su lugar, usaremos el UID del backend
-                const uid = verificarData.usuario.uid;
-                
-                // Obtener token usando signInWithEmailAndPassword con contraseña temporal
-                // Pero como no conocemos la contraseña, necesitamos otro enfoque
-                // Mejor: usar el endpoint de registro con el UID del eventual
-                
-                // Obtener token de Firebase usando el email (necesitamos autenticarnos primero)
-                // Alternativa: crear un custom token desde el backend
-                // Por ahora, retornar un error especial que el frontend manejará
-                return {
-                  success: false,
-                  error: 'EVENTUAL_NEEDS_PASSWORD',
-                  esEventual: true,
-                  usuario: verificarData.usuario,
-                };
-              } catch (error) {
-                return {
-                  success: false,
-                  error: 'Tu cuenta ya existe. Por favor, establece tu contraseña.',
-                  esEventual: true,
-                };
+                await sendEmailVerification(loginResult.user);
+              } catch (emailError) {
+                console.error('Error al reenviar email de verificación:', emailError);
+                // No fallar si hay error al enviar email, pero loguear para debugging
               }
             }
+            
+            // Retornar un resultado especial para indicar que necesita verificar email
+            return {
+              success: true,
+              user: loginResult.user,
+              emailYaExiste: true, // Flag para indicar que el email ya existía
+            };
+          } catch (loginError: any) {
+            // El login falló, verificar si es un eventual
+            if (loginError.code === 'auth/wrong-password' || loginError.code === 'auth/user-not-found') {
+              const apiBaseUrl = getApiBaseUrl();
+              const verificarResponse = await fetch(
+                `${apiBaseUrl}/auth/verificar-email-eventual?email=${encodeURIComponent(email)}`
+              );
+
+              if (verificarResponse.ok) {
+                const verificarData = await verificarResponse.json();
+                
+                if (verificarData.esEventual) {
+                  // Es un eventual, retornar error especial
+                  return {
+                    success: false,
+                    error: 'EVENTUAL_NEEDS_PASSWORD',
+                    esEventual: true,
+                    usuario: verificarData.usuario,
+                  };
+                }
+              }
+              
+              // No es eventual y la contraseña es incorrecta, o el usuario no existe
+              return {
+                success: false,
+                error: 'El email ya está registrado. Si olvidaste tu contraseña, usa la opción de recuperación. Si eres un jugador eventual, contacta al administrador.',
+              };
+            }
+            
+            // Otro error en el login
+            throw loginError;
           }
-          
-          // No es eventual o no se pudo verificar
-          return {
-            success: false,
-            error: 'El email ya está registrado. Si eres un jugador eventual, contacta al administrador.',
-          };
         }
         
         // Otro error de Firebase

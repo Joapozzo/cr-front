@@ -51,8 +51,6 @@ export const useLoginGoogle = () => {
             errorMessage.includes('Unauthorized');
           
           if (isUserNotFound) {
-            console.log('Usuario no existe en backend, registrando...');
-            
             // Registrar usuario en backend (con email)
             await api.post('/auth/register', { 
               uid: user.uid,

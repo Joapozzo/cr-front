@@ -28,7 +28,7 @@ const Navbar = () => {
 
     return (
         <nav
-            className={`fixed top-0 left-0 right-0 z-[201] transition-all duration-300 bg-[var(--black)] md:backdrop-blur-md shadow-lg shadow-[var(--black)]/50 ${isScrolled ? 'py-2' : 'py-3'}`}
+            className={`fixed top-0 left-0 right-0 z-[201] transition-all duration-300 ${isScrolled || isMobileMenuOpen ? 'bg-[var(--black)] md:backdrop-blur-md shadow-lg shadow-[var(--black)]/50 py-2' : 'bg-transparent py-3'}`}
         >
             <div className="container mx-auto px-4 flex justify-between items-center max-w-6xl">
                 <Link

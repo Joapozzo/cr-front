@@ -40,10 +40,10 @@ const UsuariosPage = () => {
     
     const { data, isLoading, error, refetch, isFetching } = useUsuariosAdmin(page, limit, busqueda || undefined, idRol);
 
-    // Obtener roles disponibles para el filtro
+    // Obtener roles disponibles para el filtro (incluye ADMIN, PLANILLERO, JUGADOR, CAJERO, INVITADO)
     const { data: roles } = useQuery({
         queryKey: ['usuarios-roles'],
-        queryFn: usuariosService.obtenerRolesDisponibles,
+        queryFn: usuariosService.obtenerRolesAdministrativos,
         staleTime: 10 * 60 * 1000, // 10 minutos
     });
 
@@ -168,19 +168,6 @@ const UsuariosPage = () => {
     const pagination = data?.pagination;
     const isRefreshing = isLoading || isFetching;
 
-    if (error) {
-        return (
-            <div className="flex items-center justify-center h-64">
-                <div className="text-center">
-                    <p className="text-[var(--red)] mb-4">Error al cargar los usuarios</p>
-                    <Button onClick={handleRefresh}>
-                        Reintentar
-                    </Button>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="space-y-8">
             {/* Header */}
@@ -250,7 +237,16 @@ const UsuariosPage = () => {
             </div>
 
             {/* Contenido */}
-            {isRefreshing ? (
+            {error ? (
+                <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-12">
+                    <div className="flex flex-col items-center justify-center text-center">
+                        <p className="text-[var(--red)] mb-4">Error al cargar los usuarios</p>
+                        <Button onClick={handleRefresh}>
+                            Reintentar
+                        </Button>
+                    </div>
+                </div>
+            ) : isRefreshing ? (
                 <TableSkeleton columns={8} rows={8} />
             ) : (
                 <div className="space-y-4">

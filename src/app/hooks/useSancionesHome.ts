@@ -39,6 +39,7 @@ export const useSancionesHome = ({
     const {
         data: sancionesData,
         isLoading: isLoadingSanciones,
+        isFetching: isFetchingSanciones,
         error: errorSanciones,
     } = useSancionesActivasUsuario(
         undefined, // Sin filtro de categoría en el home
@@ -56,8 +57,12 @@ export const useSancionesHome = ({
         return sancionesData.sanciones;
     }, [sancionesProp, sancionesData]);
 
-    // Estado de loading: usar prop o estado del hook
-    const loading = loadingProp ?? isLoadingSanciones;
+    // Estado de loading: usar prop, o estado del hook considerando carga inicial
+    // Si no se ha recibido data (undefined) significa que aún no terminó la carga inicial
+    // También considerar isFetching cuando no hay datos aún (pero no si ya hay datos - refetch en background)
+    // Solo mostrar como "no hay datos" cuando data ya existe pero está vacío
+    const hasDataLoaded = sancionesData !== undefined;
+    const loading = loadingProp ?? (isLoadingSanciones || (!hasDataLoaded && (isFetchingSanciones || !sancionesProp)));
 
     // Estado de paginación
     const [currentPage, setCurrentPage] = useState(0);

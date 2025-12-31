@@ -2,13 +2,15 @@
 
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { PartidosEquipoCard } from "@/app/components/home/PartidosEquipoCard";
-import { TablaPosicionesHome } from "@/app/components/home/TablaPosicionesHome";
-import { SancionesHome } from "@/app/components/home/SancionesHome";
-import { NoticiasHome } from "@/app/components/home/NoticiasHome";
 import { UserPageWrapper } from "@/app/components/layouts/UserPageWrapper";
 import { usePlayerStore } from "@/app/stores/playerStore";
-import { UnirseEquipoCard } from "@/app/components/home/UnirseEquipoCard";
+import {
+  LazyUnirseEquipoCard,
+  LazyPartidosEquipoCard,
+  LazyTablaPosicionesHome,
+  LazySancionesHome,
+  LazyNoticiasHome,
+} from "@/app/components/home/LazyHomeComponents";
 
 export default function Home() {
     const { equipos } = usePlayerStore();
@@ -38,32 +40,15 @@ export default function Home() {
             );
         }
     }, []);
-    
+
     return (
         <UserPageWrapper>
             <div className="w-full space-y-6">
-                {
-                    equipos.length <= 0 ? (
-                        <UnirseEquipoCard />
-                        // <PartidosEquipoCard />
-                    ) : (
-                        <PartidosEquipoCard />
-                    )
-                }
-
-                <TablaPosicionesHome
-                    linkTablaCompleta="/estadisticas/posiciones"
-                />
-
-                {/* Sanciones Activas */}
-                <SancionesHome
-                    linkSancionesCompleta="/estadisticas/sanciones"
-                />
-
-                {/* Noticias */}
-                <NoticiasHome
-                    linkNoticiasCompleta="/noticias"
-                />
+                <LazyUnirseEquipoCard show={equipos.length <= 0} />
+                <LazyPartidosEquipoCard show={equipos.length > 0} />
+                <LazyTablaPosicionesHome linkTablaCompleta="/estadisticas" />
+                <LazySancionesHome />
+                <LazyNoticiasHome linkNoticiasCompleta="/noticias" />
             </div>
         </UserPageWrapper>
     );

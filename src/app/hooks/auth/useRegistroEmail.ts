@@ -51,6 +51,38 @@ export const useRegistroEmail = () => {
         };
       }
       
+      // Si el email ya existía y el login fue exitoso, hacer login en el backend
+      if (result.success && (result as any).emailYaExiste) {
+        // Obtener token y hacer login en backend
+        const token = await obtenerToken();
+        if (!token) {
+          throw new Error('No se pudo obtener el token de autenticación.');
+        }
+
+        // Llamar al backend para obtener datos del usuario
+        const response = await api.post('/auth/login', null, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = response as {
+          success: boolean;
+          usuario: any;
+          proximoPaso: 'VERIFICAR_EMAIL' | 'VALIDAR_DNI' | 'SELFIE' | 'COMPLETO';
+        };
+
+        // Guardar en store
+        login(token, data.usuario);
+
+        return {
+          user: result.user,
+          emailYaExiste: true,
+          proximoPaso: data.proximoPaso,
+          usuario: data.usuario,
+        };
+      }
+      
       if (!result.success) {
         throw new Error(result.error);
       }
@@ -59,7 +91,6 @@ export const useRegistroEmail = () => {
     },
     onSuccess: (data) => {
       // TODOS los usuarios (incluyendo eventuales) deben verificar email primero
-      console.log('Usuario registrado. Email de verificación enviado:', data.user?.email || 'N/A');
     },
     onError: (error: Error) => {
       console.error('Error en registro:', error);

@@ -78,11 +78,13 @@ export const TablaPosicionesHome = ({
           title="Tabla de posiciones"
           subtitle="Cargando..."
         />
-        <BaseCardTableSkeleton
-          columns={5}
-          rows={6}
-          hasAvatar={false}
-        />
+        <div className="p-4">
+          <BaseCardTableSkeleton
+            columns={5}
+            rows={6}
+            hasAvatar={false}
+          />
+        </div>
       </BaseCard>
     );
   }
@@ -160,58 +162,68 @@ export const TablaPosicionesHome = ({
                       }`}
                   >
                     <td className="py-3 px-3">
-                      <div className="flex items-center">
-                        <FormatoPosicionBadge
-                          posicion={equipo.posicion}
-                          formatosPosicion={tablaActual?.formatosPosicion}
-                        />
-                        <span className={`text-sm font-bold ${esMiEquipo ? 'text-[var(--green)]' : 'text-white'
-                          }`}>
-                          {equipo.posicion}
-                        </span>
-                      </div>
+                      <Link href={`/equipos/${equipo.id_equipo}`} className="block">
+                        <div className="flex items-center">
+                          <FormatoPosicionBadge
+                            posicion={equipo.posicion}
+                            formatosPosicion={tablaActual?.formatosPosicion}
+                          />
+                          <span className={`text-sm font-bold ${esMiEquipo ? 'text-[var(--green)]' : 'text-white'
+                            }`}>
+                            {equipo.posicion}
+                          </span>
+                        </div>
+                      </Link>
                     </td>
                     <td className="py-3 px-3">
-                      <div className="flex items-center gap-2">
-                        <EscudoEquipo
-                          src={equipo.img_equipo}
-                          alt={equipo.nombre_equipo}
-                          size={24}
-                          className="flex-shrink-0"
-                        />
-                        <span className={`text-sm font-medium truncate ${esMiEquipo ? 'text-[var(--green)]' : 'text-white'
-                          }`}>
-                          {equipo.nombre_equipo}
-                        </span>
-                      </div>
+                      <Link href={`/equipos/${equipo.id_equipo}`} className="block">
+                        <div className="flex items-center gap-2">
+                          <EscudoEquipo
+                            src={equipo.img_equipo}
+                            alt={equipo.nombre_equipo}
+                            size={20}
+                            className="flex-shrink-0"
+                          />
+                          <span className={`text-sm font-medium truncate ${esMiEquipo ? 'text-[var(--green)]' : 'text-white'
+                            }`}>
+                            {equipo.nombre_equipo}
+                          </span>
+                        </div>
+                      </Link>
                     </td>
                     <td className="text-center py-3 px-2">
-                      <div className="flex flex-col items-center">
-                        <span className={`text-sm font-bold ${esMiEquipo ? 'text-[var(--green)]' : 'text-white'
-                          }`}>
-                          {equipo.puntos || 0}
-                        </span>
-                        {(equipo.puntos_descontados ?? 0) > 0 && (equipo.apercibimientos ?? 0) > 0 && (
-                          <span className="text-[10px] text-[var(--yellow)] mt-0.5">
-                            -{equipo.puntos_descontados}
+                      <Link href={`/equipos/${equipo.id_equipo}`} className="block">
+                        <div className="flex flex-col items-center">
+                          <span className={`text-sm font-bold ${esMiEquipo ? 'text-[var(--green)]' : 'text-white'
+                            }`}>
+                            {equipo.puntos || 0}
                           </span>
-                        )}
-                      </div>
+                          {(equipo.puntos_descontados ?? 0) > 0 && (equipo.apercibimientos ?? 0) > 0 && (
+                            <span className="text-[10px] text-[var(--yellow)] mt-0.5">
+                              -{equipo.puntos_descontados}
+                            </span>
+                          )}
+                        </div>
+                      </Link>
                     </td>
                     <td className={`text-center py-3 px-2 text-sm ${esMiEquipo ? 'text-[var(--green)]' : 'text-white'
                       }`}>
-                      {equipo.partidos_jugados}
+                      <Link href={`/equipos/${equipo.id_equipo}`} className="block">
+                        {equipo.partidos_jugados}
+                      </Link>
                     </td>
                     <td className="text-center py-3 px-2">
-                      <span className={`text-sm font-medium ${equipo.diferencia_goles > 0
-                          ? esMiEquipo ? 'text-[var(--green)]' : 'text-green-400'
-                          : equipo.diferencia_goles < 0
-                            ? 'text-red-400'
-                            : esMiEquipo ? 'text-[var(--green)]' : 'text-gray-400'
-                        }`}>
-                        {equipo.diferencia_goles > 0 ? '+' : ''}
-                        {equipo.diferencia_goles}
-                      </span>
+                      <Link href={`/equipos/${equipo.id_equipo}`} className="block">
+                        <span className={`text-sm font-medium ${equipo.diferencia_goles > 0
+                            ? esMiEquipo ? 'text-[var(--green)]' : 'text-green-400'
+                            : equipo.diferencia_goles < 0
+                              ? 'text-red-400'
+                              : esMiEquipo ? 'text-[var(--green)]' : 'text-gray-400'
+                          }`}>
+                          {equipo.diferencia_goles > 0 ? '+' : ''}
+                          {equipo.diferencia_goles}
+                        </span>
+                      </Link>
                     </td>
                   </tr>
                 );
@@ -243,7 +255,10 @@ export const TablaPosicionesHome = ({
       {/* Link para ver tabla completa */}
       <div className="border-t border-[#262626] p-4">
         <Link
-          href={linkTablaCompleta}
+          href={tablaActual?.id_categoria_edicion 
+            ? `${linkTablaCompleta}?categoria=${tablaActual.id_categoria_edicion}&tipo=posiciones`
+            : `${linkTablaCompleta}?tipo=posiciones`
+          }
           className="flex items-center justify-center gap-2 text-sm text-[var(--green)] hover:text-[var(--green)]/80 transition-colors font-medium"
         >
           Ver tabla completa

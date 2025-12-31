@@ -38,8 +38,6 @@ export const useOcuparVacante = () => {
             // Invalidar queries específicas de la zona y categoría afectadas
             queryClient.invalidateQueries({ queryKey: zonasKeys.porId(id_zona) });
             queryClient.invalidateQueries({ queryKey: zonasKeys.porCategoria(id_categoria_edicion) });
-
-            console.log('✅ Vacante ocupada exitosamente:', response.mensaje);
         },
         onError: (error) => {
             console.error('❌ Error al ocupar vacante:', error);
@@ -73,8 +71,6 @@ export const useLiberarVacante = () => {
             // Invalidar queries específicas de la zona y categoría afectadas
             queryClient.invalidateQueries({ queryKey: zonasKeys.porId(id_zona) });
             queryClient.invalidateQueries({ queryKey: zonasKeys.porCategoria(id_categoria_edicion) });
-
-            console.log('✅ Vacante liberada exitosamente:', response.mensaje);
         },
         onError: (error) => {
             console.error('❌ Error al liberar vacante:', error);
@@ -108,8 +104,6 @@ export const useActualizarVacante = () => {
             // Invalidar queries específicas de la zona y categoría afectadas
             queryClient.invalidateQueries({ queryKey: zonasKeys.porId(id_zona) });
             queryClient.invalidateQueries({ queryKey: zonasKeys.porCategoria(id_categoria_edicion) });
-
-            console.log('✅ Vacante actualizada exitosamente:', response.message);
         },
         onError: (error) => {
             console.error('❌ Error al actualizar vacante:', error);

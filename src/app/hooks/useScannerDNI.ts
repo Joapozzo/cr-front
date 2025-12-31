@@ -82,8 +82,6 @@ export const useScannerDNI = ({
 
       // Convertir a base64
       const imagenBase64 = await convertFileToBase64(file);
-      
-      console.log('Imagen seleccionada, tamaño (base64):', imagenBase64.length, 'caracteres');
 
       // Guardar imagen para recortar y mostrar cropper
       setImageToCrop(imagenBase64);

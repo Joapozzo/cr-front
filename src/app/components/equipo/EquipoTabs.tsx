@@ -1,107 +1,132 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useMemo } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 export type TabEquipo = 'resumen' | 'plantel' | 'stats' | 'partidos' | 'participaciones';
 
-interface EquipoTabsProps {
-  tabActiva: TabEquipo;
-  onTabChange: (tab: TabEquipo) => void;
-  loading?: boolean;
+interface TabOption {
+  id: TabEquipo;
+  label: string;
 }
 
-const tabs: { value: TabEquipo; label: string }[] = [
-  { value: 'resumen', label: 'Resumen' },
-  { value: 'plantel', label: 'Plantel' },
-  { value: 'stats', label: 'Stats' },
-  { value: 'partidos', label: 'Partidos' },
-  { value: 'participaciones', label: 'Participaciones' }
+interface EquipoTabsProps {
+  activeTab: TabEquipo;
+  idEquipo?: number | null;
+  baseUrl?: string; // URL base para construir los links (default: '/miequipo')
+}
+
+const tabOptions: TabOption[] = [
+  { id: 'resumen', label: 'Resumen' },
+  { id: 'plantel', label: 'Plantel' },
+  { id: 'stats', label: 'Stats' },
+  { id: 'partidos', label: 'Partidos' },
+  { id: 'participaciones', label: 'Participaciones' }
 ];
 
 export const EquipoTabs: React.FC<EquipoTabsProps> = ({
-  tabActiva,
-  onTabChange,
-  loading = false
+  activeTab,
+  idEquipo,
+  baseUrl: baseUrlProp
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [currentPage, setCurrentPage] = useState(0);
-  const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
+  const searchParams = useSearchParams();
 
-  // Calcular total de páginas
-  const totalPages = tabs.length;
+  // Construir URL base - usar prop si se proporciona, sino usar '/miequipo' por defecto
+  const baseUrl = useMemo(() => {
+    return baseUrlProp || '/miequipo';
+  }, [baseUrlProp]);
 
-  // Scroll al tab activo
-  useEffect(() => {
-    const activeIndex = tabs.findIndex(tab => tab.value === tabActiva);
-    if (activeIndex !== -1 && tabsRef.current[activeIndex]) {
-      tabsRef.current[activeIndex]?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center'
-      });
-      setCurrentPage(activeIndex);
+  // Filtrar tabs: no mostrar 'stats' cuando baseUrl no es '/miequipo'
+  const availableTabs = useMemo(() => {
+    if (baseUrl === '/miequipo') {
+      return tabOptions;
     }
-  }, [tabActiva]);
+    return tabOptions.filter(tab => tab.id !== 'stats');
+  }, [baseUrl]);
 
-  if (loading) {
-    return (
-      <div className="border-b border-[#262626]">
-        <div className="flex gap-2 p-4 overflow-x-auto scrollbar-hide">
-          {[...Array(5)].map((_, i) => (
-            <div
-              key={i}
-              className="h-8 w-24 bg-[var(--black-800)] rounded animate-pulse flex-shrink-0"
-            />
-          ))}
+  // Función helper para construir la URL de cada tab
+  const getTabUrl = (tabId: TabEquipo) => {
+    const params = new URLSearchParams();
+    
+    // Si la baseUrl es '/miequipo', mantener el comportamiento original
+    if (baseUrl === '/miequipo') {
+      // Copiar todos los params existentes (incluyendo equipo)
+      searchParams.forEach((value, key) => {
+        params.set(key, value);
+      });
+      // Luego establecer el nuevo tab (esto sobrescribirá el tab anterior si existe)
+      params.set('tab', tabId);
+      if (idEquipo) {
+        params.set('equipo', idEquipo.toString());
+      }
+    } else {
+      // Para otras URLs (como /equipos/[id]), solo agregar el tab
+      params.set('tab', tabId);
+    }
+    
+    return `${baseUrl}?${params.toString()}`;
+  };
+  
+  return (
+    <div className="w-full space-y-3">
+      {/* Tabs con scroll */}
+      <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl">
+        <div 
+          ref={scrollContainerRef}
+          className="overflow-x-auto scroll-smooth scrollbar-thin scrollbar-thumb-[#262626] scrollbar-track-transparent hover:scrollbar-thumb-[#525252]"
+        >
+          <div className="flex items-center gap-2 p-2 min-w-max">
+            {availableTabs.map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <Link
+                  key={tab.id}
+                  href={getTabUrl(tab.id)}
+                  className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 whitespace-nowrap ${
+                    isActive
+                      ? 'bg-[var(--green)] text-white'
+                      : 'text-[#737373] hover:text-white hover:bg-[var(--black-800)]'
+                  }`}
+                >
+                  <span className="font-medium text-sm">{tab.label}</span>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
-    );
-  }
 
-  return (
-    <div className="bg-[var(--black-900)] rounded-xl border border-[#262626]">
-      {/* Tabs scrollables */}
-      <div
-        ref={scrollContainerRef}
-        className="flex gap-2 px-4 py-3 overflow-x-auto scrollbar-hide scroll-smooth"
-        style={{
-          scrollSnapType: 'x mandatory'
-        }}
-      >
-        {tabs.map((tab, index) => (
-          <button
-            key={tab.value}
-            ref={el => { tabsRef.current[index] = el; }}
-            onClick={() => onTabChange(tab.value)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 scroll-snap-align-center ${
-              tabActiva === tab.value
-                ? 'bg-[var(--green)] text-white'
-                : 'text-[#737373] hover:text-white hover:bg-[var(--black-700)]'
+      {/* Barra indicadora minimalista */}
+      <div className="flex items-center justify-center gap-1 px-4">
+        {availableTabs.map((tab) => (
+          <div
+            key={tab.id}
+            className={`h-1 rounded-full transition-all duration-300 ${
+              activeTab === tab.id 
+                ? 'w-8 bg-[var(--green)]' 
+                : 'w-1 bg-[#262626]'
             }`}
-            style={{
-              scrollSnapAlign: 'center'
-            }}
-          >
-            {tab.label}
-          </button>
+          />
         ))}
       </div>
 
-      {/* Indicadores de página (dots) */}
-      {totalPages > 3 && (
-        <div className="flex items-center justify-center gap-1 py-2">
-          {[...Array(totalPages)].map((_, index) => (
-            <div
-              key={index}
-              className={`h-1 rounded-full transition-all duration-300 ${
-                index === currentPage
-                  ? 'w-4 bg-[var(--green)]'
-                  : 'w-1 bg-[#262626]'
-              }`}
-            />
-          ))}
-        </div>
-      )}
+      <style jsx>{`
+        .scrollbar-thin::-webkit-scrollbar {
+          height: 6px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+          background: #262626;
+          border-radius: 3px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+          background: #525252;
+        }
+      `}</style>
     </div>
   );
 };

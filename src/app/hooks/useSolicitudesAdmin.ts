@@ -110,7 +110,7 @@ export const useConfirmarSolicitud = (
     return useMutation<ConfirmarSolicitudResponse, Error, { id_solicitud: number; id_jugador: number }>({
         mutationFn: ({ id_solicitud, id_jugador }) => solicitudesService.confirmarSolicitud(id_solicitud, id_jugador),
         onSuccess: (data, variables) => {
-            console.log(`Solicitud ${variables.id_solicitud} confirmada con éxito.`, data);
+            // Solicitud confirmada con éxito
         },
         onSettled: onSettled, // Invalida las queries tras el éxito o error
         onError: (error) => {
@@ -131,7 +131,7 @@ export const useRechazarSolicitud = (
     return useMutation<RechazarResponse, Error, number>({
         mutationFn: (id_solicitud) => solicitudesService.rechazarSolicitud(id_solicitud),
         onSuccess: (data, variables) => {
-            console.log(`Solicitud ${variables} rechazada con éxito.`, data);
+            // Solicitud rechazada con éxito
         },
         onSettled: onSettled,
         onError: (error) => {
@@ -153,7 +153,7 @@ export const useConfirmarInvitacion = (
     return useMutation<ConfirmarInvitacionResponse, Error, { id_solicitud: number; id_jugador: number }>({
         mutationFn: ({ id_solicitud, id_jugador }) => solicitudesService.confirmarInvitacion(id_solicitud, id_jugador),
         onSuccess: (data, variables) => {
-            console.log(`Invitación ${variables.id_solicitud} confirmada con éxito.`, data);
+            // Invitación confirmada con éxito
         },
         onSettled: onSettled,
         onError: (error) => {
@@ -174,7 +174,7 @@ export const useRechazarInvitacion = (
     return useMutation<RechazarResponse, Error, number>({
         mutationFn: (id_solicitud) => solicitudesService.rechazarInvitacion(id_solicitud),
         onSuccess: (data, variables) => {
-            console.log(`Invitación ${variables} rechazada con éxito.`, data);
+            // Invitación rechazada con éxito
         },
         onSettled: onSettled,
         onError: (error) => {
@@ -220,7 +220,7 @@ export const useConfirmarBajaJugador = (
     return useMutation<{ message: string }, Error, number>({
         mutationFn: (id_solicitud) => equiposService.confirmarBajaJugador(id_solicitud),
         onSuccess: (data, variables) => {
-            console.log(`Solicitud de baja ${variables} confirmada con éxito.`, data);
+            // Solicitud de baja confirmada con éxito
         },
         onSettled: onSettled,
         onError: (error) => {
@@ -241,7 +241,7 @@ export const useRechazarBajaJugador = (
     return useMutation<{ message: string }, Error, { id_solicitud: number; motivo_rechazo?: string }>({
         mutationFn: ({ id_solicitud, motivo_rechazo }) => equiposService.rechazarBajaJugador(id_solicitud, motivo_rechazo),
         onSuccess: (data, variables) => {
-            console.log(`Solicitud de baja ${variables.id_solicitud} rechazada con éxito.`, data);
+            // Solicitud de baja rechazada con éxito
         },
         onSettled: onSettled,
         onError: (error) => {

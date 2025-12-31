@@ -12,6 +12,7 @@ interface UltimosPartidosEquipoProps {
   titulo: string;
   loading?: boolean;
   imgEquipo?: string | null;
+  alineacionTitulo?: 'left' | 'right' | 'center';
 }
 
 export const UltimosPartidosEquipo: React.FC<UltimosPartidosEquipoProps> = ({
@@ -19,7 +20,8 @@ export const UltimosPartidosEquipo: React.FC<UltimosPartidosEquipoProps> = ({
   idEquipoPrincipal,
   titulo,
   loading = false,
-  imgEquipo = null
+  imgEquipo = null,
+  alineacionTitulo = 'left'
 }) => {
 
   const router = useRouter();
@@ -30,17 +32,20 @@ export const UltimosPartidosEquipo: React.FC<UltimosPartidosEquipoProps> = ({
   }
 
   if (!partidos || partidos.length === 0) {
+    const textAlignClass = alineacionTitulo === 'right' ? 'text-right' : alineacionTitulo === 'center' ? 'text-center' : 'text-left';
     return (
       <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-4">
-        <h4 className="text-white font-semibold text-sm mb-3">{titulo}</h4>
+        <h4 className={`text-white font-semibold text-sm mb-3 ${textAlignClass}`}>{titulo}</h4>
         <p className="text-[#737373] text-xs text-center py-4">No hay partidos recientes</p>
       </div>
     );
   }
 
+  const textAlignClass = alineacionTitulo === 'right' ? 'text-right' : alineacionTitulo === 'center' ? 'text-center' : 'text-left';
+  
   return (
     <div className="p-4">
-      <h4 className="text-white font-semibold text-sm mb-3 px-2">{titulo}</h4>
+      <h4 className={`text-white font-semibold text-sm mb-3 px-2 ${textAlignClass}`}>{titulo}</h4>
       <div className="space-y-2">
         {partidos.map((partido) => {
           // Determinar si el equipo principal es local o visitante
@@ -84,7 +89,7 @@ export const UltimosPartidosEquipo: React.FC<UltimosPartidosEquipoProps> = ({
                 <EscudoEquipo
                   src={imgEquipo || equipoPrincipal?.img}
                   alt={equipoPrincipal?.nombre || titulo}
-                  size={40}
+                  size={30}
                   className="flex-shrink-0"
                 />
 
@@ -97,7 +102,7 @@ export const UltimosPartidosEquipo: React.FC<UltimosPartidosEquipoProps> = ({
                 <EscudoEquipo
                   src={equipoRival?.img}
                   alt={equipoRival?.nombre || 'Rival'}
-                  size={40}
+                  size={30}
                   className="flex-shrink-0"
                 />
               </div>

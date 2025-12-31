@@ -194,7 +194,7 @@ export const ParticipacionCard: React.FC<ParticipacionCardProps> = ({
         <BaseCard className="p-3 sm:p-4">
           <div className="flex items-center gap-2 mb-2">
             <Target className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--green)]" />
-            <h4 className="text-white font-semibold text-xs sm:text-sm">Goles Anotados</h4>
+            <h4 className="text-white font-semibold text-xs sm:text-sm">Goles anotados</h4>
           </div>
           <p className="text-white font-bold text-xl sm:text-2xl">
             {participacion.goles_anotados}
@@ -204,7 +204,7 @@ export const ParticipacionCard: React.FC<ParticipacionCardProps> = ({
         <BaseCard className="p-3 sm:p-4">
           <div className="flex items-center gap-2 mb-2">
             <Target className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />
-            <h4 className="text-white font-semibold text-xs sm:text-sm">Goles Recibidos</h4>
+            <h4 className="text-white font-semibold text-xs sm:text-sm">Goles recibidos</h4>
           </div>
           <p className="text-white font-bold text-xl sm:text-2xl">
             {participacion.goles_recibidos}
@@ -214,7 +214,7 @@ export const ParticipacionCard: React.FC<ParticipacionCardProps> = ({
         <BaseCard className="p-3 sm:p-4">
           <div className="flex items-center gap-2 mb-2">
             <Award className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500" />
-            <h4 className="text-white font-semibold text-xs sm:text-sm">Vallas Invictas</h4>
+            <h4 className="text-white font-semibold text-xs sm:text-sm">Vallas invictas</h4>
           </div>
           <p className="text-white font-bold text-xl sm:text-2xl">
             {participacion.vallas_invictas}
@@ -224,7 +224,7 @@ export const ParticipacionCard: React.FC<ParticipacionCardProps> = ({
 
       {/* Tabla de posiciones (compacta, solo top 3 + nuestro equipo) */}
       <div className="space-y-3">
-        <h4 className="text-white font-semibold text-sm px-1">Tabla de Posiciones</h4>
+        <h4 className="text-white font-semibold text-sm px-1">Tabla de posiciones</h4>
         <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">

@@ -41,32 +41,36 @@ const Campeon = memo(({
 
     const config = sizeConfig[size];
 
+    // Ajustar tamaños para mobile
+    const escudoSize = size === 'md' ? 40 : config.escudo; // Reducir de 48 a 40 en mobile para md
+    const trophySize = size === 'md' ? 18 : config.trophy; // Reducir de 20 a 18 en mobile para md
+    
     return (
-        <div className={`flex items-center ${config.gap} ${className}`}>
+        <div className={`flex items-center gap-2 md:${config.gap} ${className}`}>
             {/* Escudo del equipo */}
             <EscudoEquipo
                 src={equipo.img}
                 alt={equipo.nombre}
-                size={config.escudo}
+                size={escudoSize}
                 className="flex-shrink-0"
             />
 
             {/* Información del campeón */}
             <div className="flex flex-col flex-1 min-w-0">
                 {/* Nombre del equipo con ícono de trofeo */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 md:gap-2">
                     <Trophy 
-                        className={`w-${config.trophy} h-${config.trophy} text-[var(--yellow)] flex-shrink-0`}
-                        style={{ width: config.trophy, height: config.trophy }}
+                        className="text-[var(--yellow)] flex-shrink-0"
+                        style={{ width: trophySize, height: trophySize }}
                     />
-                    <span className={`${config.text} font-semibold text-[var(--white)] truncate`}>
+                    <span className={`text-xs md:${config.text} font-semibold text-[var(--white)] truncate`}>
                         {equipo.nombre}
                     </span>
                 </div>
 
                 {/* Nombre de la edición (opcional) */}
                 {nombreEdicion && (
-                    <span className={`${config.text} text-[var(--gray-100)] truncate mt-0.5`}>
+                    <span className={`text-xs md:${config.text} text-[var(--gray-100)] truncate mt-0.5`}>
                         {nombreEdicion}
                     </span>
                 )}

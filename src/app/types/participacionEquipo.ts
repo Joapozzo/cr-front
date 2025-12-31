@@ -11,6 +11,8 @@ export interface ParticipacionEquipo {
   posicion_final?: number;
   // Instancia de eliminación (si fue eliminado en playoffs)
   instancia_eliminacion?: 'cuartos' | 'semifinal' | 'final' | 'campeon';
+  // Nombre de la última zona donde participó (liguilla o playoff)
+  nombre_ultima_zona?: string;
   // Stats generales del equipo
   goles_anotados: number;
   goles_recibidos: number;

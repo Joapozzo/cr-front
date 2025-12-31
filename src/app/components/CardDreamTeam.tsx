@@ -164,7 +164,6 @@ const DreamTeamField = ({
             throw error;
         }
     };
-    console.log(dreamteam?.jugadores[0]);
 
     return (
         <div className="relative w-full max-w-full">

@@ -1,57 +1,81 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useMemo, Suspense, useEffect } from 'react';
+import { useParams, useSearchParams, useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+import { TabEquipo } from '@/app/components/equipo/EquipoTabs';
+import { BaseCardTableSkeleton } from '@/app/components/skeletons/BaseCardTableSkeleton';
+import { useEquipoPorId } from '@/app/hooks/useEquipos';
+import { usePlayerStore } from '@/app/stores/playerStore';
 import { UserPageWrapper } from '@/app/components/layouts/UserPageWrapper';
 import { EquipoLayout } from '@/app/components/equipo/EquipoLayout';
-import { EquipoTabs, TabEquipo } from '@/app/components/equipo/EquipoTabs';
-import { ResumenTab } from '@/app/components/equipo/resumen/ResumenTab';
-import { PlantelTab } from '@/app/components/equipo/plantel/PlantelTab';
-import { StatsTab } from '@/app/components/equipo/stats/StatsTab';
-import { PartidosTab } from '@/app/components/equipo/partidos/PartidosTab';
-import { ParticipacionesTab } from '@/app/components/equipo/participaciones/ParticipacionesTab';
-import { usePlayerStore } from '@/app/stores/playerStore';
-import { useEquipoResumen } from '@/app/hooks/useEquipoResumen';
-import { useEquipoPlantel } from '@/app/hooks/useEquipoPlantel';
-import { useEquipoParticipaciones } from '@/app/hooks/useEquipoParticipaciones';
-import { useEquipoPorId } from '@/app/hooks/useEquipos';
+import { EquipoTabs } from '@/app/components/equipo/EquipoTabs';
 
+// Lazy load de componentes de tabs (usando los mismos que miequipo)
+const ResumenContent = dynamic(
+  () => import('../../miequipo/components/ResumenContent'),
+  { ssr: false }
+);
+
+const PlantelContent = dynamic(
+  () => import('../../miequipo/components/PlantelContent'),
+  { ssr: false }
+);
+
+const PartidosContent = dynamic(
+  () => import('../../miequipo/components/PartidosContent'),
+  { ssr: false }
+);
+
+const ParticipacionesContent = dynamic(
+  () => import('../../miequipo/components/ParticipacionesContent'),
+  { ssr: false }
+);
 
 export default function EquipoPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const idEquipo = params?.id ? parseInt(params.id as string) : null;
-
-  // Player store
   const { equipos, esCapitanDeEquipo } = usePlayerStore();
-
-  // Estado local
-  const [tabActiva, setTabActiva] = useState<TabEquipo>('resumen');
-
-  // Obtener datos del equipo (deshabilitado si no hay idEquipo)
+  
   const { data: equipo, isLoading: loadingEquipo } = useEquipoPorId(idEquipo || 0, {
     enabled: !!idEquipo
   });
 
-  // Obtener datos relacionados (deshabilitados si no hay idEquipo)
-  const { data: resumen, isLoading: loadingResumen } = useEquipoResumen(
-    idEquipo || null,
-    undefined, // id_categoria_edicion (opcional, se usará la última activa)
-    { enabled: !!idEquipo }
-  );
-  
-  const { data: plantel, isLoading: loadingPlantel } = useEquipoPlantel(
-    idEquipo || null,
-    undefined, // id_categoria_edicion (opcional, se usará la última activa)
-    { enabled: !!idEquipo }
-  );
+  // Obtener el tab desde search params (sin stats para equipos/[id])
+  const tabActivo = useMemo(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['resumen', 'plantel', 'partidos', 'participaciones'].includes(tabParam)) {
+      return tabParam as TabEquipo;
+    }
+    return 'resumen' as TabEquipo;
+  }, [searchParams]);
 
-  const { data: participaciones, isLoading: loadingParticipaciones } = useEquipoParticipaciones(
-    idEquipo || null,
-    { enabled: !!idEquipo }
-  );
+  // Verificar si el usuario pertenece a este equipo
+  const perteneceAlEquipo = useMemo(() => {
+    if (!idEquipo) return false;
+    return equipos.some(eq => eq.id_equipo === idEquipo);
+  }, [equipos, idEquipo]);
 
-  // Early return si no hay idEquipo (después de todos los hooks)
+  const esCapitan = idEquipo ? esCapitanDeEquipo(idEquipo) : false;
+
+  // Handler para ver todos los stats - redirige a estadisticas
+  const handleVerTodosStats = (tipo: string) => {
+    if (equipo) {
+      router.push(`/estadisticas?tipo=${tipo}`);
+    }
+  };
+
+  // Handler para cambiar de equipo desde el selector
+  const handleCambiarEquipo = (nuevoIdEquipo: number) => {
+    router.push(`/equipos/${nuevoIdEquipo}`);
+  };
+
+  // Obtener id_categoria_edicion del equipo (necesitamos esto para los componentes)
+  const idCategoriaEdicion = equipo?.categorias?.[0]?.id_categoria_edicion || undefined;
+
+  // Early returns DESPUÉS de todos los hooks
   if (!idEquipo) {
     return (
       <UserPageWrapper>
@@ -62,87 +86,97 @@ export default function EquipoPage() {
     );
   }
 
-  // Verificar si el usuario pertenece a este equipo
-  const perteneceAlEquipo = equipos.some(eq => eq.id_equipo === idEquipo);
-  const esCapitan = esCapitanDeEquipo(idEquipo);
+  if (!equipo && !loadingEquipo) {
+    return (
+      <UserPageWrapper>
+        <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-12 text-center">
+          <p className="text-[#737373] text-sm">Equipo no encontrado</p>
+        </div>
+      </UserPageWrapper>
+    );
+  }
 
-  // Handler para cambiar de equipo desde el selector
-  const handleCambiarEquipo = (nuevoIdEquipo: number) => {
-    router.push(`/equipos/${nuevoIdEquipo}`);
-  };
-
-  // Handler para ver todos los stats
-  const handleVerTodosStats = (tipo: string) => {
-    // TODO: Navegar a la página de stats con el filtro correspondiente
-    router.push(`/equipos/${idEquipo}/stats?tipo=${tipo}`);
-  };
-
-  // Contenido según la tab activa
-  const renderTabContent = () => {
-    switch (tabActiva) {
+  // Renderizar el componente correspondiente según el tab
+  const renderContent = () => {
+    switch (tabActivo) {
       case 'resumen':
         return (
-          <ResumenTab
-            idEquipo={idEquipo}
-            resumen={resumen || null}
-            loading={loadingResumen}
-            onVerTodosStats={handleVerTodosStats}
+          <ResumenContent 
+            idEquipo={idEquipo} 
+            idCategoriaEdicion={idCategoriaEdicion || 0} 
+            onVerTodosStats={handleVerTodosStats} 
           />
         );
       case 'plantel':
         return (
-          <PlantelTab
-            idEquipo={idEquipo}
-            plantel={plantel || null}
-            perteneceAlEquipo={perteneceAlEquipo}
-            esCapitan={esCapitan}
-            loading={loadingPlantel}
-          />
-        );
-      case 'stats':
-        return (
-          <StatsTab
-            idEquipo={idEquipo}
+          <PlantelContent 
+            idEquipo={idEquipo} 
+            idCategoriaEdicion={idCategoriaEdicion || 0} 
+            perteneceAlEquipo={perteneceAlEquipo} 
+            esCapitan={esCapitan} 
           />
         );
       case 'partidos':
         return (
-          <PartidosTab
-            idEquipo={idEquipo}
+          <PartidosContent 
+            idEquipo={idEquipo} 
+            idCategoriaEdicion={idCategoriaEdicion || 0} 
           />
         );
       case 'participaciones':
         return (
-          <ParticipacionesTab
-            idEquipo={idEquipo}
-            participaciones={participaciones || []}
-            loading={loadingParticipaciones}
+          <ParticipacionesContent 
+            idEquipo={idEquipo} 
           />
         );
       default:
-        return null;
+        return (
+          <ResumenContent 
+            idEquipo={idEquipo} 
+            idCategoriaEdicion={idCategoriaEdicion || 0} 
+            onVerTodosStats={handleVerTodosStats} 
+          />
+        );
     }
   };
 
   return (
     <UserPageWrapper>
-      <EquipoLayout
-        idEquipo={idEquipo}
-        nombreEquipo={equipo?.nombre || 'Cargando...'}
-        imgEquipo={equipo?.img || null}
-        perteneceAlEquipo={perteneceAlEquipo}
-        esCapitan={esCapitan}
-        equiposDelUsuario={equipos}
-        onCambiarEquipo={handleCambiarEquipo}
-        loading={loadingEquipo}
-      >
-        <EquipoTabs
-          tabActiva={tabActiva}
-          onTabChange={setTabActiva}
-          loading={loadingEquipo}
-        />
-        {renderTabContent()}
-      </EquipoLayout>
+      {loadingEquipo ? (
+        <div className="space-y-6">
+          <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-4">
+            <div className="flex items-start gap-4">
+              <div className="w-16 h-16 rounded-full bg-[var(--black-800)] animate-pulse flex-shrink-0" />
+              <div className="flex-1 space-y-2">
+                <div className="h-6 bg-[var(--black-800)] rounded animate-pulse w-48" />
+                <div className="h-4 bg-[var(--black-800)] rounded animate-pulse w-24" />
+              </div>
+            </div>
+          </div>
+          <BaseCardTableSkeleton columns={3} rows={4} hasAvatar={false} />
+        </div>
+      ) : (
+        <EquipoLayout
+          idEquipo={idEquipo || 0}
+          nombreEquipo={equipo?.nombre || 'Cargando...'}
+          imgEquipo={equipo?.img || null}
+          perteneceAlEquipo={perteneceAlEquipo}
+          esCapitan={esCapitan}
+          equiposDelUsuario={equipos}
+          onCambiarEquipo={handleCambiarEquipo}
+        >
+          <div className="w-full space-y-6 pt-6">
+            <EquipoTabs
+              activeTab={tabActivo}
+              idEquipo={idEquipo}
+              baseUrl={`/equipos/${idEquipo}`}
+            />
+            <Suspense fallback={<BaseCardTableSkeleton columns={3} rows={4} hasAvatar={false} />}>
+              {renderContent()}
+            </Suspense>
+          </div>
+        </EquipoLayout>
+      )}
     </UserPageWrapper>
   );
 }

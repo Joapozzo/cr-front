@@ -26,13 +26,13 @@ export const PartidoTabs: React.FC<PartidoTabsProps> = ({
   }
 
   return (
-    <div className="flex items-center gap-6 w-full justify-center mt-2">
+    <div className="flex items-center gap-4 sm:gap-6 w-full justify-center mt-2 px-2 sm:px-0">
       <div
         onClick={() => onTabChange('previa')}
         className="cursor-pointer relative pb-1 transition-colors duration-200"
       >
         <span
-          className={`text-sm font-medium transition-colors duration-200 ${
+          className={`text-xs sm:text-sm font-medium transition-colors duration-200 ${
             tabActiva === 'previa'
               ? 'text-[var(--green)]'
               : 'text-white'
@@ -53,7 +53,7 @@ export const PartidoTabs: React.FC<PartidoTabsProps> = ({
         className="cursor-pointer relative pb-1 transition-colors duration-200"
       >
         <span
-          className={`text-sm font-medium transition-colors duration-200 ${
+          className={`text-xs sm:text-sm font-medium transition-colors duration-200 ${
             tabActiva === 'cara-a-cara'
               ? 'text-[var(--green)]'
               : 'text-white'

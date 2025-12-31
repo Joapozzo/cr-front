@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { X, LogOut, ChevronRight } from 'lucide-react';
 import { useAuth } from '@/app/hooks/auth/useAuth';
 import { AvatarPerfil } from '../perfil/AvatarPerfil';
+import { ImagenPublica } from '../common/ImagenPublica';
 
 interface MenuItem {
   label: string;
@@ -72,7 +73,7 @@ export const MobileMenu = ({ isOpen, onClose, menuItems }: MobileMenuProps) => {
       >
         <div className="flex flex-col h-full">
           {/* Header - Perfil del usuario */}
-          <div className="relative bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] p-6 pb-8">
+          <div className="relative bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] p-6 pb-6">
             {/* Botón cerrar */}
             <button
               onClick={onClose}
@@ -83,19 +84,20 @@ export const MobileMenu = ({ isOpen, onClose, menuItems }: MobileMenuProps) => {
             </button>
 
             {/* Avatar y datos */}
-            <div className="flex flex-col items-center gap-3 mt-2">
-              <AvatarPerfil
-                imagenUrl={usuario.img}
-                nombre={usuario.nombre}
-                size="md"
-                editable={false}
+            <div className="flex flex-row items-center gap-3 mt-2">
+              <ImagenPublica
+                src={usuario.img}
+                alt={`Avatar de ${usuario.nombre}`}
+                className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                width={60}
+                height={60}
               />
 
-              <div className="text-center">
-                <h3 className="text-white font-semibold text-lg">
+              <div className="flex-1 min-w-0">
+                <h3 className="text-white font-semibold text-lg truncate">
                   {usuario.nombre} {usuario.apellido}
                 </h3>
-                <p className="text-[var(--gray-200)] text-sm mt-0.5">
+                <p className="text-[var(--gray-200)] text-sm mt-0.5 truncate">
                   {usuario.email}
                 </p>
               </div>

@@ -1,9 +1,8 @@
 'use client';
 
-import { AlertTriangle, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import { BaseCard, CardHeader } from '../BaseCard';
 import { BaseCardTableSkeleton } from '../skeletons/BaseCardTableSkeleton';
-import Link from 'next/link';
 import { useSancionesHome } from '@/app/hooks/useSancionesHome';
 import { ISancion } from '@/app/hooks/useSanciones';
 import { ImagenPublica } from '../common/ImagenPublica';
@@ -11,25 +10,18 @@ import { ImagenPublica } from '../common/ImagenPublica';
 interface SancionesHomeProps {
   sanciones?: ISancion[];
   loading?: boolean;
-  linkSancionesCompleta?: string;
 }
 
 export const SancionesHome = ({ 
   sanciones, 
-  loading = false,
-  linkSancionesCompleta = '/sanciones'
+  loading = false
 }: SancionesHomeProps) => {
   const {
     sanciones: sancionesData,
-    sancionesPorPagina,
     loading: isLoading,
     error,
-    currentPage,
-    totalPaginas,
-    slideDirection,
-    handlePageChange,
     esMiSancion,
-  } = useSancionesHome({ sanciones, loading, limit: 5 });
+  } = useSancionesHome({ sanciones, loading, limit: undefined });
 
   // Manejar error
   if (error && !sanciones) {
@@ -47,7 +39,21 @@ export const SancionesHome = ({
     );
   }
 
-  // Casos vacíos
+  // Loading state - mostrar skeleton mientras carga
+  if (isLoading) {
+    return (
+      <BaseCard>
+        <CardHeader 
+          icon={<AlertTriangle size={18} className="text-yellow-500" />}
+          title="Sanciones activas"
+          subtitle="Cargando..."
+        />
+        <BaseCardTableSkeleton columns={4} rows={5} hasAvatar={true} />
+      </BaseCard>
+    );
+  }
+
+  // Casos vacíos - solo mostrar cuando NO está cargando y no hay datos
   if (!isLoading && (!sancionesData || sancionesData.length === 0)) {
     return (
       <BaseCard>
@@ -67,201 +73,109 @@ export const SancionesHome = ({
     );
   }
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <BaseCard>
-        <CardHeader 
-          icon={<AlertTriangle size={18} className="text-yellow-500" />}
-          title="Sanciones activas"
-          subtitle="Cargando..."
-        />
-        <BaseCardTableSkeleton 
-          columns={4} 
-          rows={5}
-          hasAvatar={true}
-        />
-      </BaseCard>
-    );
-  }
 
   return (
     <BaseCard>
-      <div className="rounded-t-2xl overflow-hidden">
-        <CardHeader 
-          icon={<AlertTriangle size={18} className="text-yellow-500" />}
-          title="Sanciones activas"
-          actions={
-            totalPaginas > 1 && (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 0}
-                  className="p-1 rounded-full bg-[#262626] hover:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  aria-label="Página anterior"
+      <CardHeader 
+        icon={<AlertTriangle size={18} className="text-yellow-500" />}
+        title="Sanciones activas"
+      />
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="border-b border-[#262626]">
+            <tr>
+              <th className="text-left py-2.5 px-3 text-[10px] font-medium text-[#737373] uppercase tracking-wider">
+                #
+              </th>
+              <th className="text-left py-2.5 px-3 text-[10px] font-medium text-[#737373] uppercase tracking-wider">
+                Jugador
+              </th>
+              <th className="text-center py-2.5 px-2 text-[10px] font-medium text-[#737373] uppercase tracking-wider">
+                FC/FT
+              </th>
+              <th className="text-left py-2.5 px-3 text-[10px] font-medium text-[#737373] uppercase tracking-wider">
+                Artículo
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#262626]">
+            {sancionesData.map((sancion, index) => {
+              const cumplidas = sancion.fechas_cumplidas;
+              const totales = sancion.fechas_totales;
+              const porcentaje = (cumplidas / totales) * 100;
+              const esMiSancionActual = esMiSancion(sancion);
+              
+              return (
+                <tr
+                  key={sancion.id}
+                  className={`transition-colors ${
+                    esMiSancionActual ? 'bg-green-500/10' : 'hover:bg-[#0a0a0a]'
+                  }`}
                 >
-                  <ChevronLeft size={16} className="text-white" />
-                </button>
-                <span className="text-xs text-[#737373] min-w-[40px] text-center">
-                  {currentPage + 1} / {totalPaginas}
-                </span>
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPaginas - 1}
-                  className="p-1 rounded-full bg-[#262626] hover:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  aria-label="Página siguiente"
-                >
-                  <ChevronRight size={16} className="text-white" />
-                </button>
-              </div>
-            )
-          }
-        />
-      </div>
-
-      {/* Tabla con animación */}
-      <div className="w-full overflow-hidden">
-        <div 
-          key={currentPage}
-          className={`w-full overflow-x-auto ${
-            slideDirection === 'left' ? 'animate-slide-in-left' : 'animate-slide-in-right'
-          }`}
-        >
-          <table className="w-full">
-            <thead className="border-b border-[#262626]">
-              <tr>
-                <th className="text-left py-2.5 px-3 text-[10px] font-medium text-[#737373] uppercase tracking-wider">
-                  #
-                </th>
-                <th className="text-left py-2.5 px-3 text-[10px] font-medium text-[#737373] uppercase tracking-wider">
-                  Jugador
-                </th>
-                <th className="text-center py-2.5 px-2 text-[10px] font-medium text-[#737373] uppercase tracking-wider">
-                  FC/FT
-                </th>
-                <th className="text-left py-2.5 px-3 text-[10px] font-medium text-[#737373] uppercase tracking-wider">
-                  Artículo
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#262626]">
-              {sancionesPorPagina.map((sancion, index) => {
-                const cumplidas = sancion.fechas_cumplidas;
-                const totales = sancion.fechas_totales;
-                const porcentaje = (cumplidas / totales) * 100;
-                const esMiSancionActual = esMiSancion(sancion);
-                
-                return (
-                  <tr
-                    key={sancion.id}
-                    className={`transition-colors ${
-                      esMiSancionActual ? 'bg-green-500/10' : 'hover:bg-[#0a0a0a]'
-                    }`}
-                  >
-                    <td className={`py-3 px-3 text-sm font-bold ${
+                  <td className={`py-3 px-3 text-sm font-bold ${
+                    esMiSancionActual ? 'text-green-400' : 'text-white'
+                  }`}>
+                    {index + 1}
+                  </td>
+                  <td className="py-3 px-3">
+                    <div className="flex items-center gap-2">
+                      {/* Foto de perfil */}
+                      <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                        <ImagenPublica
+                          src={sancion.foto_jugador}
+                          alt={`${sancion.nombre_jugador} ${sancion.apellido_jugador}`}
+                          width={40}
+                          height={40}
+                        />
+                      </div>
+                      {/* Info del jugador */}
+                      <div className="flex flex-col min-w-0">
+                        <span className={`text-sm font-medium truncate ${
+                          esMiSancionActual ? 'text-green-400' : 'text-white'
+                        }`}>
+                          {sancion.nombre_jugador} {sancion.apellido_jugador}
+                        </span>
+                        <span className="text-[#737373] text-[10px] truncate">
+                          {sancion.nombre_equipo} · {sancion.categoria_edicion}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="text-center py-3 px-2">
+                    <div className="flex flex-col items-center gap-1">
+                      <span className={`text-sm font-bold ${
+                        cumplidas === totales 
+                          ? esMiSancionActual ? 'text-green-400' : 'text-green-400'
+                          : esMiSancionActual ? 'text-green-400' : 'text-yellow-400'
+                      }`}>
+                        {cumplidas}/{totales}
+                      </span>
+                      {/* Barra de progreso */}
+                      <div className="w-12 h-1.5 bg-[#262626] rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full transition-all duration-300 ${
+                            cumplidas === totales 
+                              ? esMiSancionActual ? 'bg-green-400' : 'bg-green-400'
+                              : esMiSancionActual ? 'bg-green-400' : 'bg-yellow-400'
+                          }`}
+                          style={{ width: `${porcentaje}%` }}
+                        />
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-3 px-3">
+                    <span className={`text-xs ${
                       esMiSancionActual ? 'text-green-400' : 'text-white'
                     }`}>
-                      {currentPage * 5 + index + 1}
-                    </td>
-                    <td className="py-3 px-3">
-                      <div className="flex items-center gap-2">
-                        {/* Foto de perfil */}
-                        <div className="w-10 h-10 bg-[#262626] rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
-                          <ImagenPublica src={sancion.foto_jugador} alt={sancion.nombre_jugador} className="w-full h-full object-cover" />
-                        </div>
-                        {/* Info del jugador */}
-                        <div className="flex flex-col min-w-0">
-                          <span className={`text-sm font-medium truncate ${
-                            esMiSancionActual ? 'text-green-400' : 'text-white'
-                          }`}>
-                            {sancion.nombre_jugador} {sancion.apellido_jugador}
-                          </span>
-                          <span className="text-[#737373] text-[10px] truncate">
-                            {sancion.nombre_equipo} · {sancion.categoria_edicion}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="text-center py-3 px-2">
-                      <div className="flex flex-col items-center gap-1">
-                        <span className={`text-sm font-bold ${
-                          cumplidas === totales 
-                            ? esMiSancionActual ? 'text-green-400' : 'text-green-400'
-                            : esMiSancionActual ? 'text-green-400' : 'text-yellow-400'
-                        }`}>
-                          {cumplidas}/{totales}
-                        </span>
-                        {/* Barra de progreso */}
-                        <div className="w-12 h-1.5 bg-[#262626] rounded-full overflow-hidden">
-                          <div 
-                            className={`h-full transition-all duration-300 ${
-                              cumplidas === totales 
-                                ? esMiSancionActual ? 'bg-green-400' : 'bg-green-400'
-                                : esMiSancionActual ? 'bg-green-400' : 'bg-yellow-400'
-                            }`}
-                            style={{ width: `${porcentaje}%` }}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-3 px-3">
-                      <span className={`text-xs ${
-                        esMiSancionActual ? 'text-green-400' : 'text-white'
-                      }`}>
-                        {sancion.articulo}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                      {sancion.articulo}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
-
-      {/* Link para ver sanciones completas */}
-      <div className="border-t border-[#262626] p-4">
-        <Link 
-          href={linkSancionesCompleta}
-          className="flex items-center justify-center gap-2 text-sm text-yellow-500 hover:text-yellow-400 transition-colors font-medium"
-        >
-          Ver todas las sanciones
-          <ExternalLink size={14} />
-        </Link>
-      </div>
-
-      {/* CSS para la animación slide */}
-      <style jsx>{`
-        @keyframes slide-in-left {
-          from {
-            opacity: 0;
-            transform: translateX(-30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes slide-in-right {
-          from {
-            opacity: 0;
-            transform: translateX(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        .animate-slide-in-left {
-          animation: slide-in-left 0.3s ease-out;
-        }
-
-        .animate-slide-in-right {
-          animation: slide-in-right 0.3s ease-out;
-        }
-      `}</style>
     </BaseCard>
   );
 };

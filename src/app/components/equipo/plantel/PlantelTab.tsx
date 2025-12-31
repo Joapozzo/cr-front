@@ -67,12 +67,10 @@ export const PlantelTab: React.FC<PlantelTabProps> = ({
 
   const handleAcceptSolicitud = (id_solicitud: number) => {
     // TODO: Refrescar el plantel después de aceptar
-    console.log('Solicitud aceptada:', id_solicitud);
   };
 
   const handleRejectSolicitud = (id_solicitud: number) => {
     // TODO: Refrescar el plantel después de rechazar
-    console.log('Solicitud rechazada:', id_solicitud);
   };
 
   // Handler para solicitar baja propia

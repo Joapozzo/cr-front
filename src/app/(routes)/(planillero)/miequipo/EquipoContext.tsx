@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { ObtenerEquiposActualesDelJugadorResponse } from '@/app/types/jugador';
 
 interface EquipoContextType {

@@ -47,9 +47,15 @@ export default function PartidosPage() {
   useEffect(() => {
     if (partidosData?.partidos) {
       if (page === 1) {
+        // Si es la primera página, reemplazar todo
         setAllPartidos(partidosData.partidos);
       } else {
-        setAllPartidos(prev => [...prev, ...partidosData.partidos]);
+        // Si es una página posterior, agregar a los existentes (evitar duplicados)
+        setAllPartidos(prev => {
+          const existingIds = new Set(prev.map(p => p.id_partido));
+          const newPartidos = partidosData.partidos.filter(p => !existingIds.has(p.id_partido));
+          return [...prev, ...newPartidos];
+        });
       }
     }
   }, [partidosData, page]);
@@ -58,11 +64,12 @@ export default function PartidosPage() {
   const hasNextPage = partidosData ? (partidosData.offset + partidosData.limit) < partidosData.total : false;
   const isFetchingNextPage = isLoading && page > 1;
 
-  // Resetear cuando cambia la vista, jornada o categoría
+  // Resetear cuando cambia la vista o categoría (pero no cuando cambia jornada, ya que eso se maneja en el filtro)
   useEffect(() => {
     setPage(1);
     setAllPartidos([]);
-  }, [vistaActiva, jornadaSeleccionada, categoriaSeleccionada?.id]);
+    setJornadaSeleccionada(undefined);
+  }, [vistaActiva, categoriaSeleccionada?.id]);
 
   // Infinite scroll
   useEffect(() => {
@@ -128,8 +135,11 @@ export default function PartidosPage() {
 
   // Inicializar jornada seleccionada cuando se cargan las jornadas
   useEffect(() => {
-    if (vistaActiva === 'jornada' && !jornadaSeleccionada && jornadasDisponibles.length > 0) {
-      setJornadaSeleccionada(jornadasDisponibles[0]);
+    if (vistaActiva === 'jornada' && jornadasDisponibles.length > 0) {
+      // Si no hay jornada seleccionada o la jornada seleccionada no está en las disponibles, seleccionar la primera
+      if (!jornadaSeleccionada || !jornadasDisponibles.includes(jornadaSeleccionada)) {
+        setJornadaSeleccionada(jornadasDisponibles[0]);
+      }
     }
   }, [jornadasDisponibles, vistaActiva, jornadaSeleccionada]);
 

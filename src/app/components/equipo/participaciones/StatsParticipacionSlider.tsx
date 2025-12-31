@@ -88,7 +88,7 @@ export const StatsParticipacionSlider: React.FC<StatsParticipacionSliderProps> =
 
   return (
     <div className="space-y-3">
-      <h4 className="text-white font-semibold text-sm px-1">Estadísticas Destacadas</h4>
+      <h4 className="text-white font-semibold text-sm px-1">Estadísticas destacadas</h4>
       
       {/* Slider horizontal */}
       <div

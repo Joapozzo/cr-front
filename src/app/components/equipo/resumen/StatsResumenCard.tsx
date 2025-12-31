@@ -89,12 +89,12 @@ export const StatsResumenCard: React.FC<StatsResumenCardProps> = ({
             </div>
 
             {/* Foto a la derecha */}
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-[var(--black-800)] flex-shrink-0 border-2 border-[#262626] flex items-center justify-center">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-[var(--black-800)] flex-shrink-0 flex items-center justify-center">
               <ImagenPublica
                 src={jugadorDestacado.img || '/img/default-avatar.png'}
                 alt={`${jugadorDestacado.nombre} ${jugadorDestacado.apellido}`}
-                width={80}
-                height={80}
+                width={50}
+                height={50}
                 className="w-full h-full object-cover object-center"
                 fallbackIcon={<User className="w-8 h-8 sm:w-10 sm:h-10 text-[#737373]" />}
               />
@@ -109,14 +109,14 @@ export const StatsResumenCard: React.FC<StatsResumenCardProps> = ({
           {otrosJugadores.map((jugador) => (
             <div key={jugador.id_jugador} className="flex items-center gap-2 sm:gap-2.5">
               {/* Foto del jugador */}
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden bg-[var(--black-800)] flex-shrink-0">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden flex-shrink-0">
                 <ImagenPublica
                   src={jugador.img || '/img/default-avatar.png'}
                   alt={`${jugador.nombre} ${jugador.apellido}`}
-                  width={36}
-                  height={36}
+                  width={30}
+                  height={30}
                   className="w-full h-full object-cover"
-                  fallbackIcon={<User className="w-4 h-4 sm:w-5 sm:h-5 text-[#737373]" />}
+                  fallbackIcon={<User className="w-10 h-10 sm:w-15 sm:h-15 text-[#737373]" />}
                 />
               </div>
 
@@ -149,7 +149,7 @@ export const StatsResumenCard: React.FC<StatsResumenCardProps> = ({
       )}
 
       {/* Ver todos */}
-      {stats.jugadores.length > 2 && (
+      {/* {stats.jugadores.length > 2 && (
         <button
           onClick={onVerTodos}
           className="flex items-center justify-center gap-1.5 py-1 transition-colors text-[var(--green)] text-xs font-medium border-b border-[var(--green)] mx-auto"
@@ -157,7 +157,7 @@ export const StatsResumenCard: React.FC<StatsResumenCardProps> = ({
           <span>Ver todos</span>
           <ChevronRight className="w-3 h-3" />
         </button>
-      )}
+      )} */}
     </div>
   );
 };

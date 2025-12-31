@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { MapPin, Calendar } from 'lucide-react';
 import { EstadoPartido, IncidenciaGol, PartidoCompleto } from '@/app/types/partido';
 import { formatNombreJugador, formatTime } from '@/app/utils/cardPartido.helper';
 import BotoneraPartido from '../ButtonContainer';
-import { CardPartidoResultSkeleton } from '../skeletons/CardPartidoSkeleton';
 import { getEstadoInfo } from '@/app/utils/partido.helper';
 import { EscudoEquipo } from '../common/EscudoEquipo';
 import { TiempoPartido } from '../common/TiempoPartido';
@@ -66,8 +66,8 @@ const PartidoHeaderSticky: React.FC<PartidoHeaderStickyProps> = ({
         }
     });
 
-    if (isLoading || !partido) {
-        return <CardPartidoResultSkeleton />
+    if (!partido) {
+        return null;
     }
 
     // Validaciones para mostrar botón de penales
@@ -186,17 +186,34 @@ const PartidoHeaderSticky: React.FC<PartidoHeaderStickyProps> = ({
                 {/* Línea 2: Equipos y Resultado */}
                 <div className="flex items-center justify-between gap-2 sm:gap-6">
                     {/* Equipo Local */}
-                    <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-end min-w-0">
-                        <span className="text-white font-medium text-sm sm:text-lg text-right break-words">
-                            {partido.equipoLocal?.nombre || 'Local'}
-                        </span>
-                        <EscudoEquipo
-                            src={partido.equipoLocal?.img}
-                            alt={partido.equipoLocal?.nombre || 'Local'}
-                            size={30}
-                            className="flex-shrink-0"
-                        />
-                    </div>
+                    {partido.equipoLocal?.id_equipo ? (
+                        <Link 
+                            href={`/equipos/${partido.equipoLocal.id_equipo}`}
+                            className="flex items-center gap-2 sm:gap-3 flex-1 justify-end min-w-0 hover:opacity-80 transition-opacity"
+                        >
+                            <span className="text-white font-medium text-sm sm:text-lg text-right break-words">
+                                {partido.equipoLocal.nombre}
+                            </span>
+                            <EscudoEquipo
+                                src={partido.equipoLocal.img}
+                                alt={partido.equipoLocal.nombre}
+                                size={30}
+                                className="flex-shrink-0"
+                            />
+                        </Link>
+                    ) : (
+                        <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-end min-w-0">
+                            <span className="text-white font-medium text-sm sm:text-lg text-right break-words">
+                                Local
+                            </span>
+                            <EscudoEquipo
+                                src={undefined}
+                                alt="Local"
+                                size={30}
+                                className="flex-shrink-0"
+                            />
+                        </div>
+                    )}
 
                     {/* Resultado/Hora */}
                     <div className="flex items-center justify-center min-w-[80px] sm:min-w-[120px] flex-shrink-0">
@@ -218,17 +235,34 @@ const PartidoHeaderSticky: React.FC<PartidoHeaderStickyProps> = ({
                     </div>
 
                     {/* Equipo Visita */}
-                    <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                        <EscudoEquipo
-                            src={partido.equipoVisita?.img}
-                            alt={partido.equipoVisita?.nombre || 'Visitante'}
-                            size={30}
-                            className="flex-shrink-0"
-                        />
-                        <span className="text-white font-medium text-sm sm:text-lg break-words">
-                            {partido.equipoVisita?.nombre || 'Visitante'}
-                        </span>
-                    </div>
+                    {partido.equipoVisita?.id_equipo ? (
+                        <Link 
+                            href={`/equipos/${partido.equipoVisita.id_equipo}`}
+                            className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity"
+                        >
+                            <EscudoEquipo
+                                src={partido.equipoVisita.img}
+                                alt={partido.equipoVisita.nombre}
+                                size={30}
+                                className="flex-shrink-0"
+                            />
+                            <span className="text-white font-medium text-sm sm:text-lg break-words">
+                                {partido.equipoVisita.nombre}
+                            </span>
+                        </Link>
+                    ) : (
+                        <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                            <EscudoEquipo
+                                src={undefined}
+                                alt="Visitante"
+                                size={30}
+                                className="flex-shrink-0"
+                            />
+                            <span className="text-white font-medium text-sm sm:text-lg break-words">
+                                Visitante
+                            </span>
+                        </div>
+                    )}
                 </div>
 
                 {/* Línea 3: Goleadores - Horizontal y compacto */}

@@ -1,10 +1,12 @@
 'use client';
 
+import { useState, useMemo, useEffect } from 'react';
 import { JugadorEstadistica, TipoEstadistica } from '@/app/types/estadisticas';
 import { ImagenPublica } from '../common/ImagenPublica';
 import {  Target, AlertTriangle, XCircle, Award, Volleyball } from 'lucide-react';
 import { BaseCard } from '../BaseCard';
 import { BaseCardTableSkeleton } from '../skeletons/BaseCardTableSkeleton';
+import { Pagination } from '../legajos/shared/Pagination';
 
 interface TablaJugadoresEstadisticasProps {
   jugadores: JugadorEstadistica[];
@@ -49,8 +51,27 @@ export const TablaJugadoresEstadisticas: React.FC<TablaJugadoresEstadisticasProp
   isLoading = false,
   onRowClick
 }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  
   const config = getConfigByType(tipo);
   const Icon = config.icon;
+
+  // Calcular paginación
+  const totalPages = Math.ceil((jugadores?.length || 0) / itemsPerPage);
+  
+  // Obtener jugadores de la página actual
+  const jugadoresPaginados = useMemo(() => {
+    if (!jugadores || jugadores.length === 0) return [];
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return jugadores.slice(startIndex, endIndex);
+  }, [jugadores, currentPage, itemsPerPage]);
+
+  // Resetear a página 1 cuando cambian los jugadores
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [jugadores?.length]);
 
   if (isLoading) {
     return (
@@ -95,9 +116,11 @@ export const TablaJugadoresEstadisticas: React.FC<TablaJugadoresEstadisticasProp
             </tr>
           </thead>
           <tbody className="divide-y divide-[#262626]">
-            {jugadores.map((jugador, index) => (
+            {jugadoresPaginados.map((jugador, index) => {
+              const globalIndex = (currentPage - 1) * itemsPerPage + index;
+              return (
               <tr
-                key={`${jugador.id_jugador}-${index}`}
+                key={`${jugador.id_jugador}-${globalIndex}`}
                 onClick={() => onRowClick?.(jugador)}
                 className={`hover:bg-[var(--black-800)] transition-colors ${
                   onRowClick ? 'cursor-pointer' : ''
@@ -106,14 +129,14 @@ export const TablaJugadoresEstadisticas: React.FC<TablaJugadoresEstadisticasProp
                 {/* Posición */}
                 <td className="px-3 py-3 whitespace-nowrap">
                   <span className="text-xs font-semibold text-white">
-                    {index + 1}
+                    {globalIndex + 1}
                   </span>
                 </td>
 
                 {/* Jugador con equipo debajo */}
                 <td className="px-3 py-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-9 h-9 rounded-full overflow-hidden bg-[var(--black-800)] flex-shrink-0">
+                    <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0">
                       <ImagenPublica
                         src={jugador.img}
                         alt={`${jugador.nombre} ${jugador.apellido}`}
@@ -139,10 +162,21 @@ export const TablaJugadoresEstadisticas: React.FC<TablaJugadoresEstadisticasProp
                   </span>
                 </td>
               </tr>
-            ))}
+            );
+            })}
           </tbody>
         </table>
       </div>
+      {/* Paginación */}
+      {totalPages > 1 && (
+        <div className="px-4 py-4 border-t border-[#262626]">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
     </div>
   );
 };

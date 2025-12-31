@@ -319,10 +319,11 @@ export const usePartidosUsuario = (
             const response = await partidosService.obtenerPartidosUsuario(tipo, id_categoria_edicion, jornada, limit, page);
             return response as PartidosUsuarioResponse;
         },
-        staleTime: 2 * 60 * 1000, // 2 minutos
+        staleTime: 0, // Siempre considerar los datos como obsoletos para forzar refetch
         gcTime: 5 * 60 * 1000, // 5 minutos
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: 'always', // Siempre refetch cuando se monta el componente o cambian los parámetros
         enabled: !!tipo,
         ...options,
     });
@@ -362,10 +363,11 @@ export const usePartidosUsuarioPorEquipo = (
             const response = await partidosService.obtenerPartidosUsuarioPorEquipo(id_equipo!, tipo, id_categoria_edicion ?? undefined, jornada, limit, page);
             return response as PartidosUsuarioResponse;
         },
-        staleTime: 2 * 60 * 1000, // 2 minutos
+        staleTime: 0, // Siempre considerar los datos como obsoletos para forzar refetch
         gcTime: 5 * 60 * 1000, // 5 minutos
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: 'always', // Siempre refetch cuando se monta el componente o cambian los parámetros
         enabled: !!id_equipo && !!tipo, // Habilitar solo si id_equipo y tipo están presentes
         ...options,
     });

@@ -1,15 +1,18 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Shield } from 'lucide-react';
 import { usePlayerStore } from '@/app/stores/playerStore';
 import Image from 'next/image';
-import { useMemo } from 'react';
+import { useMemo, useEffect, useRef, Suspense } from 'react';
 import { EquipoProvider, useEquipoSeleccionado } from './EquipoContext';
 import { useEquiposUsuario } from '@/app/hooks/useEquiposUsuario';
 import SelectGeneral from '@/app/components/ui/SelectGeneral';
 import { SelectOption } from '@/app/components/ui/Select';
+import { LazyUnirseEquipoCard } from '@/app/components/home/LazyHomeComponents';
+import { EquipoTabs, TabEquipo } from '@/app/components/equipo/EquipoTabs';
+import { EscudoEquipo } from '@/app/components/common/EscudoEquipo';
 
 function EquipoLayoutContent({
     children,
@@ -17,9 +20,71 @@ function EquipoLayoutContent({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const equipoQueryProcessed = useRef(false);
     const { jugador, equipos } = usePlayerStore();
     const { equipoSeleccionado, setEquipoSeleccionado } = useEquipoSeleccionado();
     const { data: equiposUsuario } = useEquiposUsuario();
+
+    // Obtener id_equipo y tab de search params
+    const equipoIdFromQuery = useMemo(() => {
+        const equipoParam = searchParams.get('equipo');
+        if (!equipoParam) return null;
+        const parsed = parseInt(equipoParam, 10);
+        return isNaN(parsed) ? null : parsed;
+    }, [searchParams]);
+
+    const tabFromQuery = useMemo(() => {
+        const tabParam = searchParams.get('tab');
+        if (tabParam && ['resumen', 'plantel', 'stats', 'partidos', 'participaciones'].includes(tabParam)) {
+            return tabParam as TabEquipo;
+        }
+        return 'resumen' as TabEquipo;
+    }, [searchParams]);
+
+    // Sincronizar equipo seleccionado con query params
+    useEffect(() => {
+        if (!equiposUsuario || equiposUsuario.length === 0) {
+            return;
+        }
+
+        // Si hay un equipo en query params, sincronizar
+        if (equipoIdFromQuery) {
+            if (equipoSeleccionado?.id_equipo === equipoIdFromQuery) {
+                equipoQueryProcessed.current = true;
+                return;
+            }
+
+            const equipo = equiposUsuario.find(eq => eq.id_equipo === equipoIdFromQuery);
+            if (equipo && !equipoQueryProcessed.current) {
+                setEquipoSeleccionado(equipo);
+                equipoQueryProcessed.current = true;
+            }
+        } else {
+            // Si no hay equipo en query params, inicializar con el primero y actualizar URL
+            if (equipoSeleccionado && !equipoQueryProcessed.current) {
+                const params = new URLSearchParams();
+                params.set('equipo', equipoSeleccionado.id_equipo.toString());
+                if (!searchParams.has('tab')) {
+                    params.set('tab', 'resumen');
+                } else {
+                    params.set('tab', searchParams.get('tab') || 'resumen');
+                }
+                router.replace(`/miequipo?${params.toString()}`);
+                equipoQueryProcessed.current = true;
+            } else if (!equipoSeleccionado && equiposUsuario.length > 0) {
+                // Si no hay equipo seleccionado, usar el primero
+                const primerEquipo = equiposUsuario[0];
+                setEquipoSeleccionado(primerEquipo);
+                const params = new URLSearchParams();
+                params.set('equipo', primerEquipo.id_equipo.toString());
+                params.set('tab', 'resumen');
+                router.replace(`/miequipo?${params.toString()}`);
+                equipoQueryProcessed.current = true;
+            }
+        }
+    }, [equipoIdFromQuery, equiposUsuario, equipoSeleccionado, setEquipoSeleccionado, router, searchParams]);
 
     const edicionesDisponibles = useMemo(() => {
         if (!equipos || equipos.length === 0) {
@@ -85,16 +150,20 @@ function EquipoLayoutContent({
         const nuevoEquipo = equiposUsuario?.find(eq => eq.id_equipo === Number(nuevoIdEquipo));
         if (nuevoEquipo) {
             setEquipoSeleccionado(nuevoEquipo);
+            // Actualizar URL con el nuevo equipo manteniendo el tab
+            const params = new URLSearchParams(searchParams.toString());
+            params.set('equipo', nuevoIdEquipo.toString());
+            router.push(`/miequipo?${params.toString()}`);
         }
     };
 
-    // Si no hay equipos, mostrar mensaje
+    // Si no hay equipos, mostrar componente UnirseEquipoCard
     if (!equipos || equipos.length === 0) {
         return (
-            <div className="min-h-screen bg-[var(--background)] pb-20">
+            <div className="min-h-screen bg-[var(--background)]">
                 {/* Header con breadcrumb */}
-                <div className="bg-[var(--card-background)] border-b border-[var(--gray-300)] py-4">
-                    <div className="flex items-center space-x-2 max-w-[1400px] mx-auto px-10">
+                <div className="bg-[var(--card-background)] border-b border-[var(--gray-300)] py-3">
+                    <div className="flex items-center space-x-2 max-w-[1400px] mx-auto px-4 md:px-6 lg:px-10">
                         <Link
                             href="/"
                             className="flex items-center text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
@@ -107,43 +176,21 @@ function EquipoLayoutContent({
                     </div>
                 </div>
 
-                {/* Mensaje cuando no hay equipos */}
-                <div className="min-h-[60vh] flex items-center justify-center">
-                    <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-12 text-center w-full max-w-md">
-                        <div className="flex flex-col items-center justify-center gap-4">
-                            <div className="w-16 h-16 rounded-full bg-[#1a1a1a] border border-[#262626] flex items-center justify-center">
-                                <svg 
-                                    className="w-8 h-8 text-[#737373]" 
-                                    fill="none" 
-                                    stroke="currentColor" 
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path 
-                                        strokeLinecap="round" 
-                                        strokeLinejoin="round" 
-                                        strokeWidth={2} 
-                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" 
-                                    />
-                                </svg>
-                            </div>
-                            <div className="space-y-2">
-                                <p className="text-white text-base font-medium">Todavía no tienes ningún equipo asignado</p>
-                                <p className="text-[#737373] text-sm">Cuando te asignen a un equipo, aparecerá aquí</p>
-                            </div>
-                        </div>
-                    </div>
+                {/* Componente UnirseEquipoCard */}
+                <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-10 py-6 md:py-8">
+                    <LazyUnirseEquipoCard show={true} />
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[var(--background)] pb-20">
+        <div className="min-h-screen bg-[var(--background)]">
             {/* Header con breadcrumb */}
-            <div className="bg-[var(--card-background)] border-b border-[var(--gray-300)] py-4">
-                <div className="flex items-center space-x-2 max-w-[1400px] mx-auto px-10">
+            <div className="bg-[var(--card-background)] border-b border-[var(--gray-300)] py-3">
+                <div className="flex items-center space-x-2 max-w-[1400px] mx-auto px-4 md:px-6 lg:px-10">
                     <Link
-                        href="/"
+                        href="/home"
                         className="flex items-center text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4 mr-1" />
@@ -155,25 +202,15 @@ function EquipoLayoutContent({
             </div>
 
             {/* Información del equipo */}
-            <div className="bg-[var(--card-background)] border-b border-[var(--gray-300)] py-6">
-                <div className="flex items-center space-x-4 max-w-[1400px] mx-auto px-10">
+            <div className="bg-[var(--card-background)] border-b border-[var(--gray-300)] py-4 md:py-5">
+                <div className="flex items-center space-x-4 max-w-[1400px] mx-auto px-4 md:px-6 lg:px-10">
                     {/* Logo del equipo */}
-                    <div className="relative">
-                        {equipoInfo?.img_equipo ? (
-                            <div className="w-16 h-16">
-                                <Image
-                                    src={equipoInfo.img_equipo}
-                                    alt={equipoInfo.nombre_equipo}
-                                    width={80}
-                                    height={80}
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                        ) : (
-                            <div className="w-16 h-16 rounded-full overflow-hidden bg-[var(--gray-300)] flex items-center justify-center border-2 border-[var(--green)]">
-                                <Shield className="w-8 h-8 text-[var(--gray-100)]" />
-                            </div>
-                        )}
+                    <div className="relative flex-shrink-0">
+                        <EscudoEquipo
+                            src={equipoInfo?.img_equipo}
+                            alt={equipoInfo?.nombre_equipo || 'Equipo'}
+                            size={64}
+                        />
                     </div>
 
                     {/* Información del equipo */}
@@ -233,7 +270,7 @@ function EquipoLayoutContent({
                 {edicionesDisponibles.length > 0 ? (
                     <>
                         {/* Mobile: Scroll horizontal */}
-                        <nav className="flex md:hidden overflow-x-auto scrollbar-hide px-10">
+                        <nav className="flex md:hidden overflow-x-auto scrollbar-hide px-4 md:px-6 lg:px-10">
                             {edicionesDisponibles.map((edicion) => (
                                 <Link
                                     key={edicion.id_edicion}
@@ -280,8 +317,21 @@ function EquipoLayoutContent({
             </div>
 
             {/* Content */}
-            <div className="p-4 max-w-[1400px] mx-auto">
-                {children}
+            <div className="px-4 md:px-6 lg:px-10 py-4 md:py-6 max-w-[1400px] mx-auto">
+                <div className="w-full space-y-6">
+                    {/* Tabs */}
+                    {equipoSeleccionado && (
+                        <Suspense fallback={<div className="h-16 bg-[var(--black-800)] rounded-xl animate-pulse" />}>
+                            <EquipoTabs 
+                                activeTab={tabFromQuery}
+                                idEquipo={equipoSeleccionado.id_equipo}
+                            />
+                        </Suspense>
+                    )}
+                    <div className="min-h-[300px]">
+                        {children}
+                    </div>
+                </div>
             </div>
 
             {/* Estilos para ocultar scrollbar */}
@@ -307,9 +357,18 @@ export default function EquipoLayout({
     
     return (
         <EquipoProvider equiposUsuario={equiposUsuario}>
-            <EquipoLayoutContent>
-                {children}
-            </EquipoLayoutContent>
+            <Suspense fallback={
+                <div className="min-h-screen bg-[var(--background)]">
+                    <div className="px-4 md:px-6 lg:px-10 py-4 md:py-6 max-w-[1400px] mx-auto">
+                        <div className="h-16 bg-[var(--black-800)] rounded-xl animate-pulse" />
+                        <div className="h-64 bg-[var(--black-800)] rounded-xl animate-pulse mt-6" />
+                    </div>
+                </div>
+            }>
+                <EquipoLayoutContent>
+                    {children}
+                </EquipoLayoutContent>
+            </Suspense>
         </EquipoProvider>
     );
 }

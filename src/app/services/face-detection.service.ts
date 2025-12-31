@@ -12,8 +12,6 @@ export const descargarModelosFaciales = async (): Promise<void> => {
   try {
     const MODEL_URL = '/models'; // Los modelos deben estar en public/models/
 
-    console.log('Descargando modelos de detección facial...');
-
     await Promise.all([
       faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
       faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
@@ -21,7 +19,6 @@ export const descargarModelosFaciales = async (): Promise<void> => {
     ]);
 
     modelosDescargados = true;
-    console.log('Modelos faciales descargados exitosamente');
   } catch (error) {
     console.error('Error al descargar modelos faciales:', error);
     throw new Error('Error al cargar sistema de detección facial');
@@ -52,8 +49,6 @@ export const detectarRostro = async (
       .detectAllFaces(imagenElement, new faceapi.TinyFaceDetectorOptions())
       .withFaceLandmarks()
       .withFaceExpressions();
-
-    console.log('Detecciones:', detecciones);
 
     const advertencias: string[] = [];
 

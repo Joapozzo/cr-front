@@ -569,7 +569,7 @@ const FormatosPosicionStep = ({
                 {formatos.length > 0 && (
                     <div className="mt-4">
                         <h4 className="text-[var(--white)] font-medium mb-2 text-sm">
-                            Preview de Tabla de Posiciones
+                            Preview de Tabla de posiciones
                         </h4>
                         <div className="border border-[var(--gray-300)] rounded-lg overflow-hidden">
                             <table className="w-full text-left">

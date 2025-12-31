@@ -21,8 +21,8 @@ const PartidoLlave = ({ partido }: PartidoLlaveProps) => {
     );
 
     return (
-        <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-2 min-w-[280px]">
-            <div className="space-y-2">
+        <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-1.5 md:p-2 min-w-[240px] md:min-w-[280px]">
+            <div className="space-y-1.5 md:space-y-2">
                 <EquipoCard
                     equipo={partido.equipoLocal ?? undefined}
                     infoVacante={partido.info_vacante_local}
@@ -37,7 +37,7 @@ const PartidoLlave = ({ partido }: PartidoLlaveProps) => {
                         <div className="w-full border-t border-[var(--gray-300)]"></div>
                     </div>
                     <div className="relative flex justify-center">
-                        <span className="bg-[var(--gray-400)] px-2 text-[var(--gray-200)] text-[10px] uppercase">
+                        <span className="bg-[var(--gray-400)] px-1.5 md:px-2 text-[var(--gray-200)] text-[9px] md:text-[10px] uppercase">
                             vs
                         </span>
                     </div>
@@ -54,8 +54,8 @@ const PartidoLlave = ({ partido }: PartidoLlaveProps) => {
             </div>
 
             {partido.dia && (
-                <div className="mt-2 pt-2 border-t border-[var(--gray-300)] text-center">
-                    <span className="text-[var(--gray-200)] text-xs">
+                <div className="mt-1.5 md:mt-2 pt-1.5 md:pt-2 border-t border-[var(--gray-300)] text-center">
+                    <span className="text-[var(--gray-200)] text-[10px] md:text-xs">
                         {new Date(partido.dia).toLocaleDateString('es-AR')}
                         {partido.hora && ` - ${partido.hora}`}
                     </span>
