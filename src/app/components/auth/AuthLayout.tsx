@@ -70,7 +70,7 @@ export const AuthLayout = ({
   const InfoSection = () => (
     <div
       className="hidden lg:flex relative w-1/2 flex-col items-center justify-center px-24 bg-cover bg-center"
-      style={{ backgroundImage: "url('/imagen_log.png')" }}
+      style={{ backgroundImage: "url('/imagen_log.jpg')" }}
     >
       {/* Overlay oscuro */}
       <div className="absolute inset-0 bg-black/80 z-0" />
@@ -124,7 +124,7 @@ export const AuthLayout = ({
           <>
             <div 
               className="lg:hidden absolute inset-0 bg-cover bg-top z-0"
-              style={{ backgroundImage: "url('/imagen_log.png')" }}
+              style={{ backgroundImage: "url('/imagen_log.jpg')" }}
             ></div>
             {/* Overlay oscuro móvil */}
             <div className="lg:hidden absolute inset-0 bg-black/80 z-0"></div>

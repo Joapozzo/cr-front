@@ -15,7 +15,7 @@ import { BsGoogle } from 'react-icons/bs';
 import { useLoginGoogle } from '@/app/hooks/auth/useLoginGoogle';
 import { Loader2 } from 'lucide-react';
 import { LoadingScreen } from '../LoadingScreen';
-import { proximoPasoARuta } from '@/app/utils/authRedirect';
+import { determinarRutaRedireccion } from '@/app/utils/authRedirect';
 
 type LoginState = 'idle' | 'loading' | 'success' | 'error';
 
@@ -44,8 +44,8 @@ export const LoginForm = () => {
                     setLoginState('success');
 
                     setTimeout(() => {
-                        // Usar el proximoPaso del backend para determinar la ruta
-                        const ruta = proximoPasoARuta(data.proximoPaso, data.usuario?.rol);
+                        // Usar función centralizada para determinar ruta según el estado del usuario
+                        const { ruta } = determinarRutaRedireccion(data.usuario);
                         router.push(ruta);
                     }, 1200);
                 },
@@ -65,8 +65,8 @@ export const LoginForm = () => {
                 setLoginState('success');
                 
                 setTimeout(() => {
-                    // Usar el proximoPaso del backend para determinar la ruta
-                    const ruta = proximoPasoARuta(data.proximoPaso, data.usuario?.rol);
+                    // Usar función centralizada para determinar ruta según el estado del usuario
+                    const { ruta } = determinarRutaRedireccion(data.usuario);
                     router.push(ruta);
                 }, 1200);
             },

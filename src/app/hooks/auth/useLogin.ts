@@ -57,7 +57,11 @@ export const useLogin = () => {
     },
 
     onSuccess: (data) => {
-      toast.success('Inicio de sesión exitoso ✅');
+      // Mostrar mensaje de bienvenida personalizado con el nombre del usuario
+      const nombreUsuario = data.usuario?.nombre || data.usuario?.username || data.usuario?.email?.split('@')[0] || 'Usuario';
+      toast.success(`¡Bienvenido${nombreUsuario !== 'Usuario' ? `, ${nombreUsuario}` : ''}! 👋`, {
+        duration: 4000,
+      });
     },
 
     onError: (error: any) => {

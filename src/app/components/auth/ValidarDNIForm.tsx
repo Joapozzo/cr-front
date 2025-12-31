@@ -390,7 +390,10 @@ export const ValidarDniForm = () => {
 
             <button
               type="button"
-              onClick={() => setStep('scan')}
+              onClick={() => {
+                setIsScanning(false);
+                setStep('scan');
+              }}
               className="text-sm text-[var(--gray-200)] hover:text-[var(--green)] transition-colors text-center lg:text-left"
             >
               Volver a escanear DNI

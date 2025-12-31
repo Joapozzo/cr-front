@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { authService } from '../../services/auth.services';
 import { api } from '../../lib/api';
 import { useAuthStore } from '../../stores/authStore';
+import { toast } from 'react-hot-toast';
 // Removido import de jugadorService - los equipos se cargarán cuando se necesiten
 import { determinarRutaRedireccion } from '../../utils/authRedirect';
 
@@ -96,6 +97,12 @@ export const useLoginGoogle = () => {
         
         // Guardar en authStore con los datos que ya recibimos del login (sin hacer otra llamada)
         setAuthState(token, data.usuario);
+
+        // Mostrar mensaje de bienvenida personalizado con el nombre del usuario
+        const nombreUsuario = data.usuario?.nombre || data.usuario?.username || data.usuario?.email?.split('@')[0] || 'Usuario';
+        toast.success(`¡Bienvenido${nombreUsuario !== 'Usuario' ? `, ${nombreUsuario}` : ''}! 👋`, {
+          duration: 4000,
+        });
 
         // Los equipos se cargarán cuando se necesiten (en home o páginas que los requieran)
         // No cargar aquí para evitar llamadas innecesarias

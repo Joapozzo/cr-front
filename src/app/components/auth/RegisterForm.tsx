@@ -150,7 +150,8 @@ export const RegisterForm = () => {
 
     // Si el usuario está autenticado pero no tiene email verificado, mostrar la pantalla de verificación
     // Esto funciona tanto para usuarios que acaban de registrarse como para usuarios que vuelven después de verificar
-    if (usuario && !usuario.email_verificado && !usuario.cuenta_activada) {
+    // También mostrar si el registro fue exitoso (para cuando el usuario aún no está completamente en el store)
+    if ((usuario && !usuario.email_verificado && !usuario.cuenta_activada) || registroExitoso) {
         return (
             <div className="flex flex-col gap-6 w-full">
                 {/* Icono y mensaje */}
@@ -169,7 +170,7 @@ export const RegisterForm = () => {
                             Hemos enviado un email de verificación a:
                         </p>
                         <p className="text-sm font-medium text-[var(--green)] mt-1">
-                            {emailRegistrado || usuario.email}
+                            {emailRegistrado || usuario?.email || ''}
                         </p>
                     </div>
                 </div>
