@@ -28,6 +28,7 @@ interface TabOption {
 
 interface EstadisticasTabsProps {
   activeTab: EstadisticaTab;
+  onTabChange?: (tab: EstadisticaTab) => void;
 }
 
 const tabOptions: TabOption[] = [
@@ -65,7 +66,8 @@ const tabOptions: TabOption[] = [
 
 
 export const EstadisticasTabs: React.FC<EstadisticasTabsProps> = ({
-  activeTab
+  activeTab,
+  onTabChange
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
@@ -94,15 +96,31 @@ export const EstadisticasTabs: React.FC<EstadisticasTabsProps> = ({
           <div className="flex items-center gap-2 p-2 min-w-max">
             {tabOptions.map((tab) => {
               const isActive = activeTab === tab.id;
+              const className = `flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 whitespace-nowrap ${
+                isActive
+                  ? 'bg-[var(--green)] text-white'
+                  : 'text-[#737373] hover:text-white hover:bg-[var(--black-800)]'
+              }`;
+              
+              // Si hay onTabChange, usar botón; si no, usar Link
+              if (onTabChange) {
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => onTabChange(tab.id)}
+                    className={className}
+                  >
+                    {tab.icon}
+                    <span className="font-medium text-sm">{tab.label}</span>
+                  </button>
+                );
+              }
+              
               return (
                 <Link
                   key={tab.id}
                   href={getTabUrl(tab.id)}
-                  className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 whitespace-nowrap ${
-                    isActive
-                      ? 'bg-[var(--green)] text-white'
-                      : 'text-[#737373] hover:text-white hover:bg-[var(--black-800)]'
-                  }`}
+                  className={className}
                 >
                   {tab.icon}
                   <span className="font-medium text-sm">{tab.label}</span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, lazy } from "react";
+import { EstadoPartido } from "@/app/types/partido";
 import {
   CardPartidoHeaderFallback,
   JugadoresTabsUnifiedFallback,
@@ -52,7 +53,7 @@ export const LazyCardPartidoHeader = (props: LazyCardPartidoHeaderProps) => {
 
 interface LazyJugadoresTabsUnifiedProps {
   mode: 'view' | 'planillero';
-  estadoPartido?: string;
+  estadoPartido?: EstadoPartido;
   equipoLocal: any;
   equipoVisita: any;
   incidencias?: any[];
@@ -67,9 +68,14 @@ interface LazyJugadoresTabsUnifiedProps {
 export const LazyJugadoresTabsUnified = (props: LazyJugadoresTabsUnifiedProps) => {
   // Suspense manejará el loading del componente lazy
   // El componente se renderiza directamente cuando hay datos
+  // Proporcionar valores por defecto para props requeridas
   return (
     <Suspense fallback={<JugadoresTabsUnifiedFallback />}>
-      <JugadoresTabsUnified {...props} />
+      <JugadoresTabsUnified 
+        {...props}
+        incidencias={props.incidencias || []}
+        jugadorDestacado={props.jugadorDestacado ?? null}
+      />
     </Suspense>
   );
 };
@@ -89,9 +95,16 @@ interface LazyPreviaTabProps {
 export const LazyPreviaTab = (props: LazyPreviaTabProps) => {
   // Suspense manejará el loading del componente lazy
   // El componente PreviaTab manejará su propio estado interno
+  // Proporcionar valores por defecto para props requeridas
   return (
     <Suspense fallback={<PreviaTabFallback />}>
-      <PreviaTab {...props} />
+      <PreviaTab 
+        {...props}
+        ultimosPartidosLocal={props.ultimosPartidosLocal || []}
+        ultimosPartidosVisita={props.ultimosPartidosVisita || []}
+        nombreEquipoLocal={props.nombreEquipoLocal || 'Local'}
+        nombreEquipoVisita={props.nombreEquipoVisita || 'Visitante'}
+      />
     </Suspense>
   );
 };
@@ -110,9 +123,17 @@ interface LazyCaraACaraTabProps {
 export const LazyCaraACaraTab = (props: LazyCaraACaraTabProps) => {
   // Suspense manejará el loading del componente lazy
   // El componente CaraACaraTab manejará su propio estado interno
+  // Proporcionar valores por defecto para props requeridas
   return (
     <Suspense fallback={<CaraACaraTabFallback />}>
-      <CaraACaraTab {...props} />
+      <CaraACaraTab 
+        {...props}
+        historial={props.historial || []}
+        idEquipoLocal={props.idEquipoLocal || 0}
+        idEquipoVisita={props.idEquipoVisita || 0}
+        nombreEquipoLocal={props.nombreEquipoLocal || 'Local'}
+        nombreEquipoVisita={props.nombreEquipoVisita || 'Visitante'}
+      />
     </Suspense>
   );
 };

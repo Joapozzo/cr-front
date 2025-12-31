@@ -30,7 +30,7 @@ const FormacionesCardSkeleton: React.FC = () => {
                                     
                                     {/* Info jugador skeleton */}
                                     <div className="flex flex-col gap-1 min-w-0 flex-1">
-                                        <Skeleton width="100%" maxWidth={150} height={14} borderRadius={6} className="sm:max-w-[180px]" />
+                                        <Skeleton width="100%" height={14} borderRadius={6} className="max-w-[150px] sm:max-w-[180px]" />
                                     </div>
                                 </div>
 
