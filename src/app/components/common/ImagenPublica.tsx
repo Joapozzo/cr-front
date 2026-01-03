@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { User } from 'lucide-react';
+import { URI_IMG } from '@/app/components/ui/utils';
 
 interface ImagenPublicaProps {
   src?: string | null;
@@ -29,8 +30,11 @@ export const ImagenPublica = ({
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Construir la URL completa si hay src
+  const imgUrl = src ? (src.startsWith('http') ? src : `${URI_IMG}${src}`) : null;
+
   // Si no hay src o hubo error, mostrar fallback
-  if (!src || error) {
+  if (!imgUrl || error) {
     return (
       <div
         className={`flex items-center justify-center bg-[var(--gray-400)] text-[var(--gray-200)] ${className}`}
@@ -52,7 +56,7 @@ export const ImagenPublica = ({
 
       {/* Imagen */}
       <Image
-        src={src}
+        src={imgUrl}
         alt={alt}
         fill
         className={`${className} ${loading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300 object-cover`}

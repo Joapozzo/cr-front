@@ -59,7 +59,7 @@ const NavbarPlanillero: React.FC = () => {
                         className="flex items-center cursor-pointer"
                     >
                         <Image
-                            src="/Logos/logotipo.png"
+                            src="/logos/logotipo.png"
                             alt="Logo Copa Relampago"
                             width={120}
                             height={20}

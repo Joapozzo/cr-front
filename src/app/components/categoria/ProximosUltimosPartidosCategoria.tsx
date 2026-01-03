@@ -16,7 +16,7 @@ const ProximosUltimosPartidosCategoria = ({ proximosPartidos, ultimosPartidos }:
             {/* Próximos Partidos */}
             <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
                 <div className="p-6 border-b border-[var(--gray-300)]">
-                    <h3 className="text-lg font-semibold text-[var(--white)]">Próximos Partidos</h3>
+                    <h3 className="text-lg font-semibold text-[var(--white)]">Próximos partidos</h3>
                 </div>
                 <div className="p-6 space-y-4">
                     {proximos.length === 0 ? (
@@ -61,7 +61,7 @@ const ProximosUltimosPartidosCategoria = ({ proximosPartidos, ultimosPartidos }:
             {/* Últimos Resultados */}
             <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
                 <div className="p-6 border-b border-[var(--gray-300)]">
-                    <h3 className="text-lg font-semibold text-[var(--white)]">Últimos Resultados</h3>
+                    <h3 className="text-lg font-semibold text-[var(--white)]">Últimos resultados</h3>
                 </div>
                 <div className="p-6 space-y-4">
                     {ultimos.length === 0 ? (

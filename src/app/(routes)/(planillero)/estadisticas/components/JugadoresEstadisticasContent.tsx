@@ -22,14 +22,21 @@ function JugadoresEstadisticasContentInner({ tipo }: JugadoresEstadisticasConten
   const searchParams = useSearchParams();
   const { categoriaSeleccionada } = useEdicionCategoria();
 
+  // Memoizar el ID de categoría de forma más estable para evitar cambios innecesarios
   const categoriaId = useMemo(() => {
     const categoriaParam = searchParams.get('categoria');
     if (categoriaParam) {
       const parsed = parseInt(categoriaParam, 10);
-      return isNaN(parsed) ? null : parsed;
+      if (!isNaN(parsed) && parsed > 0) {
+        return parsed;
+      }
     }
-    return categoriaSeleccionada?.id || null;
-  }, [searchParams, categoriaSeleccionada]);
+    // Solo usar categoriaSeleccionada si tiene un ID válido
+    if (categoriaSeleccionada?.id && categoriaSeleccionada.id > 0) {
+      return categoriaSeleccionada.id;
+    }
+    return null;
+  }, [searchParams, categoriaSeleccionada?.id]); // Solo dependencia del ID, no del objeto completo
 
   const { data: goleadores, isLoading: loadingGoleadores, error: errorGoleadores } = 
     useGoleadoresPorCategoriaEdicion(categoriaId, { enabled: tipo === 'goleadores' && !!categoriaId });

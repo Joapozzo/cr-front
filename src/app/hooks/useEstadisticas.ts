@@ -20,14 +20,19 @@ export const usePosicionesPorCategoriaEdicion = (
     id_categoria_edicion: number | null,
     options?: Omit<UseQueryOptions<PosicionZona[], Error>, 'queryKey' | 'queryFn'>
 ) => {
+    // Usar un número estable para evitar cambios de key
+    const stableId = id_categoria_edicion ?? 0;
+    const isEnabled = !!id_categoria_edicion && id_categoria_edicion > 0;
+    
     return useQuery({
-        queryKey: estadisticasKeys.posiciones(id_categoria_edicion || 0),
+        queryKey: estadisticasKeys.posiciones(stableId),
         queryFn: () => estadisticasService.obtenerPosicionesPorCategoriaEdicion(id_categoria_edicion!),
-        staleTime: 3 * 60 * 1000, // 3 minutos
-        gcTime: 10 * 60 * 1000, // 10 minutos
+        staleTime: 5 * 60 * 1000, // 5 minutos (aumentado para mejor cache)
+        gcTime: 15 * 60 * 1000, // 15 minutos (aumentado para mantener cache más tiempo)
         retry: 2,
         refetchOnWindowFocus: false,
-        enabled: !!id_categoria_edicion,
+        refetchOnMount: false, // Evitar refetch si los datos están fresh
+        enabled: isEnabled,
         ...options,
     });
 };
@@ -39,14 +44,18 @@ export const useZonasPlayoffPorCategoriaEdicion = (
     id_categoria_edicion: number | null,
     options?: Omit<UseQueryOptions<any[], Error>, 'queryKey' | 'queryFn'>
 ) => {
+    const stableId = id_categoria_edicion ?? 0;
+    const isEnabled = !!id_categoria_edicion && id_categoria_edicion > 0;
+    
     return useQuery({
-        queryKey: estadisticasKeys.playoff(id_categoria_edicion || 0),
+        queryKey: estadisticasKeys.playoff(stableId),
         queryFn: () => estadisticasService.obtenerZonasPlayoffPorCategoriaEdicion(id_categoria_edicion!),
-        staleTime: 3 * 60 * 1000, // 3 minutos
-        gcTime: 10 * 60 * 1000, // 10 minutos
+        staleTime: 5 * 60 * 1000, // 5 minutos
+        gcTime: 15 * 60 * 1000, // 15 minutos
         retry: 2,
         refetchOnWindowFocus: false,
-        enabled: !!id_categoria_edicion,
+        refetchOnMount: false,
+        enabled: isEnabled,
         ...options,
     });
 };
@@ -58,14 +67,18 @@ export const useGoleadoresPorCategoriaEdicion = (
     id_categoria_edicion: number | null,
     options?: Omit<UseQueryOptions<JugadorEstadistica[], Error>, 'queryKey' | 'queryFn'>
 ) => {
+    const stableId = id_categoria_edicion ?? 0;
+    const isEnabled = !!id_categoria_edicion && id_categoria_edicion > 0;
+    
     return useQuery({
-        queryKey: estadisticasKeys.goleadores(id_categoria_edicion || 0),
+        queryKey: estadisticasKeys.goleadores(stableId),
         queryFn: () => estadisticasService.obtenerGoleadoresPorCategoriaEdicion(id_categoria_edicion!),
-        staleTime: 3 * 60 * 1000, // 3 minutos
-        gcTime: 10 * 60 * 1000, // 10 minutos
+        staleTime: 5 * 60 * 1000, // 5 minutos
+        gcTime: 15 * 60 * 1000, // 15 minutos
         retry: 2,
         refetchOnWindowFocus: false,
-        enabled: !!id_categoria_edicion,
+        refetchOnMount: false,
+        enabled: isEnabled,
         ...options,
     });
 };
@@ -77,14 +90,18 @@ export const useAsistenciasPorCategoriaEdicion = (
     id_categoria_edicion: number | null,
     options?: Omit<UseQueryOptions<JugadorEstadistica[], Error>, 'queryKey' | 'queryFn'>
 ) => {
+    const stableId = id_categoria_edicion ?? 0;
+    const isEnabled = !!id_categoria_edicion && id_categoria_edicion > 0;
+    
     return useQuery({
-        queryKey: estadisticasKeys.asistencias(id_categoria_edicion || 0),
+        queryKey: estadisticasKeys.asistencias(stableId),
         queryFn: () => estadisticasService.obtenerAsistenciasPorCategoriaEdicion(id_categoria_edicion!),
-        staleTime: 3 * 60 * 1000, // 3 minutos
-        gcTime: 10 * 60 * 1000, // 10 minutos
+        staleTime: 5 * 60 * 1000, // 5 minutos
+        gcTime: 15 * 60 * 1000, // 15 minutos
         retry: 2,
         refetchOnWindowFocus: false,
-        enabled: !!id_categoria_edicion,
+        refetchOnMount: false,
+        enabled: isEnabled,
         ...options,
     });
 };
@@ -96,14 +113,18 @@ export const useAmarillasPorCategoriaEdicion = (
     id_categoria_edicion: number | null,
     options?: Omit<UseQueryOptions<JugadorEstadistica[], Error>, 'queryKey' | 'queryFn'>
 ) => {
+    const stableId = id_categoria_edicion ?? 0;
+    const isEnabled = !!id_categoria_edicion && id_categoria_edicion > 0;
+    
     return useQuery({
-        queryKey: estadisticasKeys.amarillas(id_categoria_edicion || 0),
+        queryKey: estadisticasKeys.amarillas(stableId),
         queryFn: () => estadisticasService.obtenerAmarillasPorCategoriaEdicion(id_categoria_edicion!),
-        staleTime: 3 * 60 * 1000, // 3 minutos
-        gcTime: 10 * 60 * 1000, // 10 minutos
+        staleTime: 5 * 60 * 1000, // 5 minutos
+        gcTime: 15 * 60 * 1000, // 15 minutos
         retry: 2,
         refetchOnWindowFocus: false,
-        enabled: !!id_categoria_edicion,
+        refetchOnMount: false,
+        enabled: isEnabled,
         ...options,
     });
 };
@@ -115,14 +136,18 @@ export const useRojasPorCategoriaEdicion = (
     id_categoria_edicion: number | null,
     options?: Omit<UseQueryOptions<JugadorEstadistica[], Error>, 'queryKey' | 'queryFn'>
 ) => {
+    const stableId = id_categoria_edicion ?? 0;
+    const isEnabled = !!id_categoria_edicion && id_categoria_edicion > 0;
+    
     return useQuery({
-        queryKey: estadisticasKeys.rojas(id_categoria_edicion || 0),
+        queryKey: estadisticasKeys.rojas(stableId),
         queryFn: () => estadisticasService.obtenerRojasPorCategoriaEdicion(id_categoria_edicion!),
-        staleTime: 3 * 60 * 1000, // 3 minutos
-        gcTime: 10 * 60 * 1000, // 10 minutos
+        staleTime: 5 * 60 * 1000, // 5 minutos
+        gcTime: 15 * 60 * 1000, // 15 minutos
         retry: 2,
         refetchOnWindowFocus: false,
-        enabled: !!id_categoria_edicion,
+        refetchOnMount: false,
+        enabled: isEnabled,
         ...options,
     });
 };
@@ -134,14 +159,18 @@ export const useMVPsPorCategoriaEdicion = (
     id_categoria_edicion: number | null,
     options?: Omit<UseQueryOptions<JugadorEstadistica[], Error>, 'queryKey' | 'queryFn'>
 ) => {
+    const stableId = id_categoria_edicion ?? 0;
+    const isEnabled = !!id_categoria_edicion && id_categoria_edicion > 0;
+    
     return useQuery({
-        queryKey: estadisticasKeys.mvps(id_categoria_edicion || 0),
+        queryKey: estadisticasKeys.mvps(stableId),
         queryFn: () => estadisticasService.obtenerMVPsPorCategoriaEdicion(id_categoria_edicion!),
-        staleTime: 3 * 60 * 1000, // 3 minutos
-        gcTime: 10 * 60 * 1000, // 10 minutos
+        staleTime: 5 * 60 * 1000, // 5 minutos
+        gcTime: 15 * 60 * 1000, // 15 minutos
         retry: 2,
         refetchOnWindowFocus: false,
-        enabled: !!id_categoria_edicion,
+        refetchOnMount: false,
+        enabled: isEnabled,
         ...options,
     });
 };
@@ -174,14 +203,18 @@ export const useGoleadoresPorEquipo = (
     id_categoria_edicion?: number | null,
     options?: Omit<UseQueryOptions<JugadorEstadistica[], Error>, 'queryKey' | 'queryFn'>
 ) => {
+    const stableEquipoId = id_equipo ?? 0;
+    const isEnabled = !!id_equipo && id_equipo > 0;
+    
     return useQuery({
-        queryKey: estadisticasEquipoKeys.goleadores(id_equipo || 0, id_categoria_edicion),
+        queryKey: estadisticasEquipoKeys.goleadores(stableEquipoId, id_categoria_edicion),
         queryFn: () => estadisticasService.obtenerGoleadoresPorEquipo(id_equipo!, id_categoria_edicion ?? undefined),
-        staleTime: 3 * 60 * 1000, // 3 minutos
-        gcTime: 10 * 60 * 1000, // 10 minutos
+        staleTime: 5 * 60 * 1000, // 5 minutos
+        gcTime: 15 * 60 * 1000, // 15 minutos
         retry: 2,
         refetchOnWindowFocus: false,
-        enabled: !!id_equipo, // Solo requiere id_equipo, id_categoria_edicion es opcional
+        refetchOnMount: false,
+        enabled: isEnabled,
         ...options,
     });
 };
@@ -194,14 +227,18 @@ export const useAsistenciasPorEquipo = (
     id_categoria_edicion?: number | null,
     options?: Omit<UseQueryOptions<JugadorEstadistica[], Error>, 'queryKey' | 'queryFn'>
 ) => {
+    const stableEquipoId = id_equipo ?? 0;
+    const isEnabled = !!id_equipo && id_equipo > 0;
+    
     return useQuery({
-        queryKey: estadisticasEquipoKeys.asistencias(id_equipo || 0, id_categoria_edicion),
+        queryKey: estadisticasEquipoKeys.asistencias(stableEquipoId, id_categoria_edicion),
         queryFn: () => estadisticasService.obtenerAsistenciasPorEquipo(id_equipo!, id_categoria_edicion ?? undefined),
-        staleTime: 3 * 60 * 1000, // 3 minutos
-        gcTime: 10 * 60 * 1000, // 10 minutos
+        staleTime: 5 * 60 * 1000, // 5 minutos
+        gcTime: 15 * 60 * 1000, // 15 minutos
         retry: 2,
         refetchOnWindowFocus: false,
-        enabled: !!id_equipo,
+        refetchOnMount: false,
+        enabled: isEnabled,
         ...options,
     });
 };
@@ -214,14 +251,18 @@ export const useAmarillasPorEquipo = (
     id_categoria_edicion?: number | null,
     options?: Omit<UseQueryOptions<JugadorEstadistica[], Error>, 'queryKey' | 'queryFn'>
 ) => {
+    const stableEquipoId = id_equipo ?? 0;
+    const isEnabled = !!id_equipo && id_equipo > 0;
+    
     return useQuery({
-        queryKey: estadisticasEquipoKeys.amarillas(id_equipo || 0, id_categoria_edicion),
+        queryKey: estadisticasEquipoKeys.amarillas(stableEquipoId, id_categoria_edicion),
         queryFn: () => estadisticasService.obtenerAmarillasPorEquipo(id_equipo!, id_categoria_edicion ?? undefined),
-        staleTime: 3 * 60 * 1000, // 3 minutos
-        gcTime: 10 * 60 * 1000, // 10 minutos
+        staleTime: 5 * 60 * 1000, // 5 minutos
+        gcTime: 15 * 60 * 1000, // 15 minutos
         retry: 2,
         refetchOnWindowFocus: false,
-        enabled: !!id_equipo,
+        refetchOnMount: false,
+        enabled: isEnabled,
         ...options,
     });
 };
@@ -234,14 +275,18 @@ export const useRojasPorEquipo = (
     id_categoria_edicion?: number | null,
     options?: Omit<UseQueryOptions<JugadorEstadistica[], Error>, 'queryKey' | 'queryFn'>
 ) => {
+    const stableEquipoId = id_equipo ?? 0;
+    const isEnabled = !!id_equipo && id_equipo > 0;
+    
     return useQuery({
-        queryKey: estadisticasEquipoKeys.rojas(id_equipo || 0, id_categoria_edicion),
+        queryKey: estadisticasEquipoKeys.rojas(stableEquipoId, id_categoria_edicion),
         queryFn: () => estadisticasService.obtenerRojasPorEquipo(id_equipo!, id_categoria_edicion ?? undefined),
-        staleTime: 3 * 60 * 1000, // 3 minutos
-        gcTime: 10 * 60 * 1000, // 10 minutos
+        staleTime: 5 * 60 * 1000, // 5 minutos
+        gcTime: 15 * 60 * 1000, // 15 minutos
         retry: 2,
         refetchOnWindowFocus: false,
-        enabled: !!id_equipo,
+        refetchOnMount: false,
+        enabled: isEnabled,
         ...options,
     });
 };
@@ -254,14 +299,18 @@ export const useMVPsPorEquipo = (
     id_categoria_edicion?: number | null,
     options?: Omit<UseQueryOptions<JugadorEstadistica[], Error>, 'queryKey' | 'queryFn'>
 ) => {
+    const stableEquipoId = id_equipo ?? 0;
+    const isEnabled = !!id_equipo && id_equipo > 0;
+    
     return useQuery({
-        queryKey: estadisticasEquipoKeys.mvps(id_equipo || 0, id_categoria_edicion),
+        queryKey: estadisticasEquipoKeys.mvps(stableEquipoId, id_categoria_edicion),
         queryFn: () => estadisticasService.obtenerMVPsPorEquipo(id_equipo!, id_categoria_edicion ?? undefined),
-        staleTime: 3 * 60 * 1000, // 3 minutos
-        gcTime: 10 * 60 * 1000, // 10 minutos
+        staleTime: 5 * 60 * 1000, // 5 minutos
+        gcTime: 15 * 60 * 1000, // 15 minutos
         retry: 2,
         refetchOnWindowFocus: false,
-        enabled: !!id_equipo,
+        refetchOnMount: false,
+        enabled: isEnabled,
         ...options,
     });
 };

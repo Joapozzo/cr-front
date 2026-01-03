@@ -4,16 +4,11 @@ import {
     UpdatePartido, 
     PartidoResponse,
     PartidosPorJornadaResponse,
-    CrearPartidoResponse,
     ActualizarPartidoResponse,
     EliminarPartidoResponse,
     PostPartidoSchema,
     UpdatePartidoSchema,
     PartidoResponseSchema,
-    PartidosPorJornadaResponseSchema,
-    CrearPartidoResponseSchema,
-    ActualizarPartidoResponseSchema,
-    EliminarPartidoResponseSchema
 } from "../schemas/partidos.schema";
 import { UltimoYProximoPartidoResponse } from "../types/partido";
 

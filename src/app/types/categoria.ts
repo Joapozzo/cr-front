@@ -183,21 +183,13 @@ export interface StatsCategoriaResponse {
 }
 
 export interface GoleadoresResponse {
-  success: boolean;
-  message: string;
-  data: {
-    goleadores: Goleador[];
-    pagination: Pagination;
-  };
+  goleadores: Goleador[];
+  pagination: Pagination;
 }
 
 export interface ExpulsadosResponse {
-  success: boolean;
-  message: string;
-  data: {
-    expulsados: Expulsado[];
-    pagination: Pagination;
-  };
+  expulsados: Expulsado[];
+  pagination: Pagination;
 }
 
 export interface PosicionTabla {

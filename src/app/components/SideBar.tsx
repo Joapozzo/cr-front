@@ -177,17 +177,15 @@ export default function Sidebar() {
                     <>
                         <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 rounded-full bg-[var(--green)] flex items-center justify-center overflow-hidden">
-                                {usuario?.img ? (
-                                    <Image
-                                        src={usuario.img}
+                                <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+                                    <ImagenPublica
+                                        src={usuario?.img}
                                         alt="Avatar"
-                                        width={40}
-                                        height={40}
-                                        className="w-full h-full object-cover rounded-full"
+                                        width={80}
+                                        height={80}
+                                        className="w-full h-full object-contain object-center rounded-full"
                                     />
-                                ) : (
-                                    <User className="w-6 h-6 text-white" />
-                                )}
+                                </div>
                             </div>
                             <div className="flex-1">
                                 <h3 className="text-white font-medium text-md">{usuario?.nombre} {usuario?.apellido}</h3>

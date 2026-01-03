@@ -67,7 +67,6 @@ export const JugadorCard: React.FC<JugadorCardProps> = ({ jugador }) => {
                                     src={equipo.img}
                                     alt={equipo.nombre}
                                     size={32}
-                                    className="border border-[var(--gray-300)]"
                                 />
                             </div>
                         ))}

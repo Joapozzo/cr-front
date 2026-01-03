@@ -58,12 +58,12 @@ export default function EstadisticasPage() {
                 {
                     isLoadingGoleadores
                         ? <TablaGoleadoresSkeleton />
-                        : <TablaGoleadores goleadores={goleadores?.data?.goleadores || []} />
+                        : <TablaGoleadores goleadores={goleadores?.goleadores || []} />
                 }
                 {
                     isLoadingExpulsados
                         ? <TablaGoleadoresSkeleton />
-                        : <TablaExpulsados expulsados={expulsados?.data?.expulsados || []} />
+                        : <TablaExpulsados expulsados={expulsados?.expulsados || []} />
                 }
             </div>
         </div>

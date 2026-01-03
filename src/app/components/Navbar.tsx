@@ -24,6 +24,14 @@ const Navbar: React.FC = () => {
     // Obtener menú según rol del usuario
     const mobileMenuItems = usuario ? getMenuItemsByRole(usuario.rol) : [];
 
+    // Determinar la ruta home según el rol del usuario
+    const getHomeRoute = () => {
+        if (usuario?.rol === 'PLANILLERO') {
+            return '/planillero/home';
+        }
+        return '/home';
+    };
+
     return (
         <header className="w-full h-[80px] md:h-[80px] bg-[var(--gray-500)] flex justify-center sticky top-0 select-none z-[101]">
             <div className="flex justify-between items-center w-full h-full relative max-w-[1300px] mx-auto px-6">
@@ -41,7 +49,7 @@ const Navbar: React.FC = () => {
 
                     {/* Center - Mobile Logo */}
                     <Link
-                        href="/"
+                        href={getHomeRoute()}
                         className="absolute left-1/2 transform -translate-x-1/2 h-[30%] flex items-center cursor-pointer"
                     >
                         <div className="relative h-full w-[100px]">
@@ -64,11 +72,11 @@ const Navbar: React.FC = () => {
                 <div className="hidden md:flex justify-between items-center w-full">
                     {/* Desktop Logo */}
                     <Link
-                        href="/planillero/home"
+                        href={getHomeRoute()}
                         className="flex items-center cursor-pointer"
                     >
                         <Image
-                            src="/Logos/logotipo.png"
+                            src="/logos/logotipo.png"
                             alt="Logo Copa Relampago"
                             width={160}
                             height={20}

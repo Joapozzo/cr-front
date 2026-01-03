@@ -20,10 +20,29 @@ export interface ApiOptions extends RequestInit {
     timeout?: number;
 }
 
+// Mapa para almacenar peticiones en curso y evitar duplicados
+const pendingRequests = new Map<string, Promise<any>>();
+
+/**
+ * Crea una clave única para una petición basada en endpoint
+ * Solo para GET requests, para evitar peticiones duplicadas simultáneas
+ */
+const createRequestKey = (endpoint: string): string => {
+  return `GET:${endpoint}`;
+};
+
 export const apiFetch = async <T>(
   endpoint: string,
   options: ApiOptions = {}
 ): Promise<T> => {
+  // Para GET requests, usar deduplicación (evitar peticiones simultáneas duplicadas)
+  const isGetRequest = !options.method || options.method === 'GET';
+  const requestKey = isGetRequest ? createRequestKey(endpoint) : '';
+  
+  // Si es GET y ya hay una petición en curso con la misma key, reutilizarla
+  if (isGetRequest && requestKey && pendingRequests.has(requestKey)) {
+    return pendingRequests.get(requestKey)!;
+  }
   // Obtener token fresco de Firebase (siempre actualizado)
   let token: string | null = null;
   try {
@@ -62,41 +81,56 @@ export const apiFetch = async <T>(
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-  try {
-    const response = await fetch(url, {
-      ...fetchOptions,
-      headers: defaultHeaders,
-      signal: controller.signal,
-    });
+  // Crear la promesa de la petición
+  const requestPromise = (async () => {
+    try {
+      const response = await fetch(url, {
+        ...fetchOptions,
+        headers: defaultHeaders,
+        signal: controller.signal,
+      });
 
-    clearTimeout(timeoutId);
+      clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      let errorMessage;
-      let errorData: any = {};
-      try {
-        errorData = await response.json();
-        errorMessage = errorData.error || errorData.message || `Error ${response.status}`;
-      } catch {
-        errorMessage = `Error ${response.status}: ${response.statusText}`;
+      if (!response.ok) {
+        let errorMessage;
+        let errorData: any = {};
+        try {
+          errorData = await response.json();
+          errorMessage = errorData.error || errorData.message || `Error ${response.status}`;
+        } catch {
+          errorMessage = `Error ${response.status}: ${response.statusText}`;
+        }
+
+        const error = new Error(errorMessage);
+        (error as any).status = response.status;
+        (error as any).response = { status: response.status, data: errorData };
+        throw error;
       }
 
-      const error = new Error(errorMessage);
-      (error as any).status = response.status;
-      (error as any).response = { status: response.status, data: errorData };
+      return response.json();
+    } catch (error) {
+      clearTimeout(timeoutId);
+
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Request timeout');
+      }
+
       throw error;
+    } finally {
+      // Limpiar la petición del mapa cuando termine (solo para GET)
+      if (isGetRequest && requestKey) {
+        pendingRequests.delete(requestKey);
+      }
     }
+  })();
 
-    return response.json();
-  } catch (error) {
-    clearTimeout(timeoutId);
-
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error('Request timeout');
-    }
-
-    throw error;
+  // Almacenar la petición en el mapa (solo para GET)
+  if (isGetRequest && requestKey) {
+    pendingRequests.set(requestKey, requestPromise);
   }
+
+  return requestPromise;
 };
 
 

@@ -38,6 +38,7 @@ export default function AdminDashboard() {
                 title="Dashboard"
                 description="Vista general del sistema y estadísticas principales"
             />
+            <p>En desarrollo...</p>
         </div>
     );
 }

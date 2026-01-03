@@ -1,10 +1,10 @@
 'use client';
 
 import { use, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useNoticiaPorSlug } from '@/app/hooks/useNoticias';
 import { UserPageWrapper } from '@/app/components/layouts/UserPageWrapper';
 import { Clock, Eye, ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { formatearFechaNoticia } from '@/app/utils/fechas';
 import { NoticiaCardSkeleton2 } from '@/app/components/skeletons/NoticiaCardSkeleton';
@@ -16,6 +16,7 @@ interface NoticiaPageProps {
 
 export default function NoticiaPage({ params }: NoticiaPageProps) {
     const { slug } = use(params);
+    const router = useRouter();
     const { data: noticia, isLoading, error } = useNoticiaPorSlug(slug);
 
     // Convertir contenido JSON de Tiptap a HTML sanitizado
@@ -66,13 +67,13 @@ export default function NoticiaPage({ params }: NoticiaPageProps) {
                         <p className="text-red-400 text-sm">
                             {error?.message || 'Noticia no encontrada'}
                         </p>
-                        <Link
-                            href="/noticias"
+                        <button
+                            onClick={() => router.back()}
                             className="mt-4 inline-flex items-center gap-2 text-[var(--green)] hover:text-[var(--green)]/80 transition-colors"
                         >
                             <ArrowLeft size={16} />
-                            Volver a noticias
-                        </Link>
+                            Volver
+                        </button>
                     </div>
                 </div>
             </UserPageWrapper>
@@ -83,13 +84,13 @@ export default function NoticiaPage({ params }: NoticiaPageProps) {
         <UserPageWrapper>
             <div className="w-full space-y-6">
                 {/* Botón volver */}
-                <Link
-                    href="/noticias"
+                <button
+                    onClick={() => router.back()}
                     className="inline-flex items-center gap-2 text-[#737373] hover:text-white transition-colors text-sm"
                 >
                     <ArrowLeft size={16} />
-                    Volver a noticias
-                </Link>
+                    Volver
+                </button>
 
                 {/* Contenedor de la noticia */}
                 <article className="bg-[var(--black-900)] border border-[#262626] rounded-xl overflow-hidden">

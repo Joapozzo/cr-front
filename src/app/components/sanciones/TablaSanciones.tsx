@@ -147,7 +147,15 @@ export default function TablaSanciones({
                                     <tr key={sancion.id_expulsion} className="hover:bg-[var(--gray-300)] transition-colors">
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-3">
-                                                <ImagenPublica src={sancion.jugador?.usuario?.img} alt={`${sancion.jugador?.usuario?.nombre} ${sancion.jugador?.usuario?.apellido}`}/>
+                                                <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                                                    <ImagenPublica 
+                                                        src={sancion.jugador?.usuario?.img} 
+                                                        alt={`${sancion.jugador?.usuario?.nombre} ${sancion.jugador?.usuario?.apellido}`}
+                                                        width={40}
+                                                        height={40}
+                                                        className="rounded-full"
+                                                    />
+                                                </div>
                                                 <div>
                                                     <p className="text-[var(--white)] font-medium">
                                                         {sancion.jugador?.usuario?.nombre} {sancion.jugador?.usuario?.apellido}

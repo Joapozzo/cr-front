@@ -119,19 +119,43 @@ export const PartidosTab: React.FC<PartidosTabProps> = ({
     return allPartidos.reduce((acc, partido) => {
       const fecha = partido.dia;
       if (!fecha) return acc;
-      if (!acc[fecha]) {
-        acc[fecha] = [];
+      // Normalizar la fecha: extraer solo la parte de la fecha (YYYY-MM-DD) si viene como ISO string
+      const fechaNormalizada = fecha.includes('T') ? fecha.split('T')[0] : fecha;
+      if (!acc[fechaNormalizada]) {
+        acc[fechaNormalizada] = [];
       }
-      acc[fecha].push(partido);
+      acc[fechaNormalizada].push(partido);
       return acc;
     }, {} as Record<string, Partido[]>);
   }, [allPartidos]);
 
-  // Ordenar fechas de más reciente a más antigua
+  // Ordenar fechas: primero las más cercanas a hoy (futuras/presente), luego las pasadas
   const fechasOrdenadas = useMemo(() => {
-    return Object.keys(partidosPorDia).sort((a, b) => 
-      new Date(b).getTime() - new Date(a).getTime()
-    );
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    const hoyTime = hoy.getTime();
+
+    const fechas = Object.keys(partidosPorDia);
+    
+    // Separar fechas futuras/presente y pasadas
+    const fechasFuturas = fechas.filter(fecha => {
+      const fechaTime = new Date(fecha).getTime();
+      return fechaTime >= hoyTime;
+    });
+    
+    const fechasPasadas = fechas.filter(fecha => {
+      const fechaTime = new Date(fecha).getTime();
+      return fechaTime < hoyTime;
+    });
+
+    // Ordenar futuras ascendente (más cercana primero)
+    fechasFuturas.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+    
+    // Ordenar pasadas descendente (más reciente primero)
+    fechasPasadas.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+
+    // Combinar: futuras primero, luego pasadas
+    return [...fechasFuturas, ...fechasPasadas];
   }, [partidosPorDia]);
 
   // Obtener jornadas disponibles
@@ -273,7 +297,9 @@ export const PartidosTab: React.FC<PartidosTabProps> = ({
           )
         ) : (
           // Vista por Fecha (Día)
-          fechasOrdenadas.length > 0 ? (
+          isLoading && page === 1 ? (
+            <FixtureSkeleton />
+          ) : fechasOrdenadas.length > 0 ? (
             <>
               {fechasOrdenadas.map((fecha) => (
                 <ListaPartidos
@@ -290,13 +316,13 @@ export const PartidosTab: React.FC<PartidosTabProps> = ({
                 </div>
               )}
             </>
-          ) : (
+          ) : !isLoading ? (
             <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center">
               <p className="text-[#737373] text-sm">
                 No hay partidos disponibles
               </p>
             </div>
-          )
+          ) : null
         )}
       </div>
     </div>

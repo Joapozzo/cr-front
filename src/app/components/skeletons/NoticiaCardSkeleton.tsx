@@ -144,9 +144,9 @@ export const NoticiasHeaderSkeleton: React.FC = () => {
 
 export const NoticiaCardSkeleton2: React.FC = () => {
     return (
-        <div className="flex gap-4 justify-center px-2">
+        <div className="flex gap-2 -mx-4 px-4 sm:mx-0 sm:px-2 sm:justify-start">
             {[1, 2].map((i) => (
-                <div key={i} className="flex-shrink-0 w-[250px] sm:w-[380px]">
+                <div key={i} className={`flex-shrink-0 w-full sm:w-[380px] ${i === 2 ? 'hidden sm:block' : ''}`}>
                     <div className="bg-[#0a0a0a] rounded-xl overflow-hidden border border-[#262626] h-full flex flex-col">
                         {/* Imagen skeleton */}
                         <div className="relative h-44 bg-[#262626] overflow-hidden">

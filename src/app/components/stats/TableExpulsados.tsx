@@ -1,5 +1,6 @@
 import { Expulsado } from '@/app/types/jugador';
-import { Shield, UserX, AlertTriangle } from 'lucide-react';
+import { UserX, AlertTriangle } from 'lucide-react';
+import { ImagenPublica } from '@/app/components/common/ImagenPublica';
 
 export const EXPULSADOS_MOCK = [
     {
@@ -70,8 +71,14 @@ const TablaExpulsados = ({ expulsados }: TablaExpulsadosProps) => {
                                 <tr key={expulsado.id_expulsion} className="hover:bg-[var(--gray-300)] transition-colors">
                                     <td className="px-4 py-3">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-6 h-6 bg-[var(--gray-200)] rounded-full flex items-center justify-center">
-                                                <Shield className="w-4 h-4 text-[var(--gray-100)]" />
+                                            <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                                                <ImagenPublica
+                                                    src={expulsado.jugador.img}
+                                                    alt={`${expulsado.jugador.nombre} ${expulsado.jugador.apellido}`}
+                                                    width={40}
+                                                    height={40}
+                                                    className="rounded-full"
+                                                />
                                             </div>
                                             <div className="flex flex-col">
                                                 <span className="text-[var(--white)] font-medium">

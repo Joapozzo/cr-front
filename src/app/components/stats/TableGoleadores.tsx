@@ -1,5 +1,6 @@
-import { Shield, Volleyball } from 'lucide-react';
+import { Volleyball } from 'lucide-react';
 import { Goleador } from '@/app/types/jugador';
+import { ImagenPublica } from '@/app/components/common/ImagenPublica';
 
 interface GoleadoresProps {
     goleadores: Goleador[];
@@ -34,33 +35,39 @@ const TablaGoleadores = ({ goleadores }: GoleadoresProps) => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[var(--gray-300)]">
-                            {goleadores.map((jugador) => (
-                                <tr key={jugador.jugador.id_jugador} className="hover:bg-[var(--gray-300)] transition-colors">
+                            {goleadores.map((goleador) => (
+                                <tr key={goleador.jugador.id_jugador} className="hover:bg-[var(--gray-300)] transition-colors">
                                     <td className="px-4 py-3">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-6 h-6 bg-[var(--gray-200)] rounded-full flex items-center justify-center">
-                                                <Shield className="w-4 h-4 text-[var(--gray-100)]" />
+                                            <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                                                <ImagenPublica
+                                                    src={goleador.jugador.img}
+                                                    alt={`${goleador.jugador.nombre} ${goleador.jugador.apellido}`}
+                                                    width={40}
+                                                    height={40}
+                                                    className="rounded-full"
+                                                />
                                             </div>
                                             <div className="flex flex-col">
                                                 <span className="text-[var(--white)] font-medium">
-                                                    {jugador.jugador.nombre} {jugador.jugador.apellido}
+                                                    {goleador.jugador.nombre} {goleador.jugador.apellido}
                                                 </span>
                                                 <span className="text-xs text-[var(--gray-100)]">
-                                                    {jugador.equipo.nombre}
+                                                    {goleador.equipo.nombre}
                                                 </span>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-4 py-3 text-center">
                                         <span className="text-[var(--green)] font-bold text-lg">
-                                            {jugador.stats.goles}
+                                            {goleador.stats.goles}
                                         </span>
                                     </td>
                                     <td className="px-4 py-3 text-center text-[var(--gray-100)]">
-                                        {jugador.stats.partidos}
+                                        {goleador.stats.partidos}
                                     </td>
                                     <td className="px-4 py-3 text-center text-[var(--gray-100)]">
-                                        {jugador.stats.promedio}
+                                        {goleador.stats.promedio}
                                     </td>
                                 </tr>
                             ))}

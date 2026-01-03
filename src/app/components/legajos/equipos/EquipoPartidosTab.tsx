@@ -311,7 +311,7 @@ export const EquipoPartidosTab = ({
                     {/* Próximos Partidos */}
                     {tieneProximos && (
                         <div>
-                            <h3 className="text-lg font-semibold text-[var(--white)] mb-4">Próximos Partidos</h3>
+                            <h3 className="text-lg font-semibold text-[var(--white)] mb-4">Próximos partidos</h3>
                             {isLoadingProximos ? (
                                 <SkeletonTheme baseColor="#1f1f1f" highlightColor="#333333">
                                     <Skeleton height={100} borderRadius={6} />
