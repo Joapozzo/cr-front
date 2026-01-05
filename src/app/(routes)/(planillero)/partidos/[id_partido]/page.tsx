@@ -5,7 +5,6 @@ import { useParams } from 'next/navigation';
 import BackButton from '@/app/components/ui/BackButton';
 import { PartidoTabs, TabPartido } from '@/app/components/partido/PartidoTabs';
 import { PartidoCompleto, IncidenciaGol, EstadoPartido } from '@/app/types/partido';
-import { PartidoDetalleSkeleton } from '@/app/components/skeletons/PartidoDetalleSkeleton';
 import {
   LazyCardPartidoHeader,
   LazyJugadoresTabsUnified,
@@ -20,7 +19,7 @@ import {
 } from '@/app/components/partido/partidoFallbacks';
 import { usePartidoDetalleUsuario } from '@/app/hooks/usePartidos';
 import { useCronometroPartido } from '@/app/hooks/useCronometroPartido';
-import usePartidoStore from '@/app/stores/partidoStore';
+import { useSyncPartidoToStore } from '@/app/hooks/useSyncPartidoToStore';
 
 export default function PartidoPageUsuario() {
   const params = useParams();
@@ -40,39 +39,12 @@ export default function PartidoPageUsuario() {
   // Si hay datos pero está fetching, no bloquear renderizado
   const isInitialLoading = isLoadingData && !datosPartido;
 
-  // Store para calcular el cronómetro
-  const {
-    setEstadoPartido,
-    setHoraInicio,
-    setHoraInicioSegundoTiempo,
-    setMinutosPorTiempo,
-    setMinutosEntretiempo
-  } = usePartidoStore();
-
   // Hook para calcular el cronómetro
   const cronometro = useCronometroPartido();
 
-  // Configurar el store con los datos del partido cuando se cargan
-  useEffect(() => {
-    if (datosPartido?.partido) {
-      const partido = datosPartido.partido;
-      if (partido.estado) {
-        setEstadoPartido(partido.estado as EstadoPartido);
-      }
-      if (partido.categoriaEdicion?.duracion_tiempo) {
-        setMinutosPorTiempo(partido.categoriaEdicion.duracion_tiempo);
-      }
-      if (partido.categoriaEdicion?.duracion_entretiempo) {
-        setMinutosEntretiempo(partido.categoriaEdicion.duracion_entretiempo);
-      }
-      if (['C1', 'C2', 'T'].includes(partido.estado) && partido.hora_inicio) {
-        setHoraInicio(new Date(partido.hora_inicio));
-      }
-      if (['C2', 'T'].includes(partido.estado) && partido.hora_inicio_segundo_tiempo) {
-        setHoraInicioSegundoTiempo(new Date(partido.hora_inicio_segundo_tiempo));
-      }
-    }
-  }, [datosPartido, setEstadoPartido, setHoraInicio, setHoraInicioSegundoTiempo, setMinutosPorTiempo, setMinutosEntretiempo]);
+  // Sync the partido to the store
+  useSyncPartidoToStore({ partido: datosPartido?.partido });
+
 
   if (!idPartido) {
     return (

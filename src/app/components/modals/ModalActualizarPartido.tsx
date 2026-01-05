@@ -561,8 +561,6 @@ export default function ModalActualizarPartido({
             setPromiseResolvers(null);
             resetMutation();
         }
-        // Solo ejecutar cuando isOpen cambia a true o cuando cambia el ID del partido
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, partido?.id_partido]);
 
     return (

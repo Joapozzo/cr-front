@@ -239,7 +239,6 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
                         <div className="relative inline-block">
                             <div className="w-32 h-32 rounded-full bg-[var(--gray-200)] flex items-center justify-center overflow-hidden border-2 border-[var(--gray-300)]">
                                 {imagenPreview && (imagenPreview.startsWith('data:') || imagenPreview.startsWith('http')) ? (
-                                    // eslint-disable-next-line @next/next/no-img-element
                                     <Image
                                         src={imagenPreview}
                                         alt="Preview"

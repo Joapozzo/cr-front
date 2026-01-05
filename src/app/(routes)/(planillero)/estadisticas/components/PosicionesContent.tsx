@@ -2,7 +2,7 @@
 
 import { useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { TablaPosicionesCompleta } from '@/app/components/estadisticas/TablaPosicionesCompleta';
+import { TablaPosiciones } from '@/app/components/posiciones/TablaPosiciones';
 import {
   usePosicionesPorCategoriaEdicion,
   useZonasPlayoffPorCategoriaEdicion
@@ -115,7 +115,8 @@ function PosicionesContentInner() {
             <h3 className="text-white font-semibold text-sm px-2">
               {zona.nombre_zona}
             </h3>
-            <TablaPosicionesCompleta
+            <TablaPosiciones
+              variant="completa"
               posiciones={zona.posiciones.map(pos => ({
                 id_equipo: pos.id_equipo,
                 nombre_equipo: pos.nombre_equipo,
@@ -145,7 +146,8 @@ function PosicionesContentInner() {
   }
 
   return (
-    <TablaPosicionesCompleta
+    <TablaPosiciones
+      variant="completa"
       posiciones={posicionesAplanadas}
       zonasPlayoff={zonasPlayoffData || []}
       isLoading={false}

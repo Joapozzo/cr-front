@@ -8,11 +8,10 @@ import { determinarRutaRedireccion } from '@/app/utils/authRedirect';
 /**
  * Hook que valida el estado del usuario y redirige si no puede acceder
  * Usa la función centralizada determinarRutaRedireccion para mantener consistencia
+ * Ahora todo el flujo de registro está unificado en /registro
  * Estados:
- * - Sin email verificado → /registro
- * - Estado 'S' sin DNI → /validar-dni
- * - Estado 'V' sin selfie → /selfie
- * - Estado 'A' → puede acceder
+ * - Sin completar registro → /registro (el stepper maneja el step correcto)
+ * - Estado 'A' completo → puede acceder
  */
 export const useValidateUserState = () => {
   const router = useRouter();
@@ -33,8 +32,6 @@ export const useValidateUserState = () => {
 
     // Rutas que NO deben ser bloqueadas (públicas o de autenticación)
     const rutasPermitidas = [
-      '/validar-dni', 
-      '/selfie', 
       '/registro',
       '/login',
       '/recuperar-password',

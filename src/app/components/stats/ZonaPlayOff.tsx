@@ -1,6 +1,6 @@
 import { Trophy } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import TablaPosiciones from './TablePosiciones';
+import { TablaPosiciones } from '../posiciones/TablaPosiciones';
 import { useZonaStore } from '@/app/stores/zonaStore';
 import { PosicionTabla } from '@/app/types/categoria';
 import { Zona, FormatoPosicion } from '@/app/types/zonas';
@@ -181,7 +181,39 @@ const ZonasPlayoff = ({ zonasPlayoff, zonasTodosContraTodos, posiciones, isLoadi
                     isLoading ? (
                         <TablaPosicionesSkeleton />
                     ) : posiciones && Array.isArray(posiciones) && posiciones.length > 0 ? (
-                        <TablaPosiciones posiciones={posiciones} formatosPosicion={formatosPosicion} />
+                        <TablaPosiciones 
+                          variant="simple"
+                          posiciones={posiciones
+                            ?.sort((a, b) => a.posicion - b.posicion)
+                            ?.map(pos => ({
+                            id_equipo: pos.equipo.id_equipo,
+                            nombre_equipo: pos.equipo.nombre,
+                            img_equipo: pos.equipo.img || undefined,
+                            partidos_jugados: pos.partidos_jugados,
+                            ganados: pos.ganados,
+                            empatados: pos.empatados,
+                            perdidos: pos.perdidos,
+                            goles_favor: pos.goles_favor,
+                            goles_contra: pos.goles_contra,
+                            diferencia_goles: pos.diferencia_goles,
+                            puntos: pos.puntos,
+                            puntos_descontados: pos.puntos_descontados,
+                            puntos_finales: pos.puntos_finales ?? pos.puntos,
+                            apercibimientos: pos.apercibimientos,
+                            ultima_actualizacion: pos.ultima_actualizacion,
+                            puntos_live: pos.puntos_live,
+                            goles_favor_live: pos.goles_favor_live,
+                            goles_contra_live: pos.goles_contra_live,
+                            diferencia_goles_live: pos.diferencia_goles_live,
+                            puntos_finales_live: pos.puntos_finales_live,
+                            partidos_jugados_live: pos.partidos_jugados_live,
+                            partidos_ganados_live: pos.partidos_ganados_live,
+                            partidos_empatados_live: pos.partidos_empatados_live,
+                            partidos_perdidos_live: pos.partidos_perdidos_live,
+                            en_vivo: pos.en_vivo
+                          })) || []}
+                          formatosPosicion={formatosPosicion}
+                        />
                     ) : (
                         <div className="p-8 text-center">
                             <p className="text-[var(--gray-200)] italic">

@@ -5,13 +5,12 @@ import { ITablaPosicion } from '../types/posiciones';
 
 interface UseTablasPosicionesHomeProps {
     tablas?: ITablaPosicion[];
-    loading?: boolean;
+    loading?: boolean; // Mantener por compatibilidad pero no se usa
     limitPosiciones?: number;
 }
 
 interface UseTablasPosicionesHomeReturn {
-    tablas: ITablaPosicion[];
-    loading: boolean;
+    tablas: ITablaPosicion[] | undefined; // undefined cuando está cargando, [] cuando no hay datos, array con datos cuando hay datos
     error: Error | null;
     currentTablaIndex: number;
     slideDirection: 'left' | 'right';
@@ -59,10 +58,16 @@ export const useTablasPosicionesHome = ({
     );
 
     // Procesar tablas: usar prop o datos del hook
+    // Si está cargando (tablasData es undefined), retornar undefined para que el componente retorne null
+    // Si hay datos vacíos, retornar array vacío para que el componente muestre "no hay disponibles"
     const tablas = useMemo(() => {
         if (tablasProp) return tablasProp;
 
-        if (!tablasData || !tablasData.tablas) return [];
+        // Si aún no hay datos (está cargando), retornar undefined
+        if (!tablasData) return undefined;
+
+        // Si hay datos pero el array está vacío, retornar array vacío
+        if (!tablasData.tablas || tablasData.tablas.length === 0) return [];
 
         // Mapear los datos del backend al formato esperado por el componente
         return tablasData.tablas.map((tabla) => ({
@@ -75,27 +80,20 @@ export const useTablasPosicionesHome = ({
         }));
     }, [tablasProp, tablasData]);
 
-    // Estado de loading: usar prop, o estado del hook considerando carga inicial
-    // Si no se ha recibido data (undefined) significa que aún no terminó la carga inicial
-    // También considerar isFetching cuando no hay datos aún (pero no si ya hay datos - refetch en background)
-    // Solo mostrar como "no hay datos" cuando data ya existe pero está vacío
-    const hasDataLoaded = tablasData !== undefined;
-    const loading = loadingProp ?? (isLoadingTablas || (!hasDataLoaded && (isFetchingTablas || !tablasProp)));
-
     // Estado del tab activo y dirección de slide
     const [currentTablaIndex, setCurrentTablaIndex] = useState(0);
     const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
 
     // Resetear índice cuando cambien las tablas
     useEffect(() => {
-        if (tablas.length > 0 && currentTablaIndex >= tablas.length) {
+        if (tablas && tablas.length > 0 && currentTablaIndex >= tablas.length) {
             setCurrentTablaIndex(0);
         }
     }, [tablas, currentTablaIndex]);
 
     // Manejar cambio de tabla con dirección de animación
     const handleTablaChange = (newIndex: number) => {
-        if (newIndex < 0 || newIndex >= tablas.length || newIndex === currentTablaIndex) return;
+        if (!tablas || newIndex < 0 || newIndex >= tablas.length || newIndex === currentTablaIndex) return;
 
         // Determinar dirección del slide
         setSlideDirection(newIndex > currentTablaIndex ? 'left' : 'right');
@@ -104,7 +102,6 @@ export const useTablasPosicionesHome = ({
 
     return {
         tablas,
-        loading,
         error: errorTablas,
         currentTablaIndex,
         slideDirection,

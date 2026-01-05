@@ -101,7 +101,7 @@ export const JugadorInfoTab = ({ jugadorInfo, estadisticas, isLoading }: Jugador
                 </div>
             </div>
 
-            {/* Estadísticas Generales - Background diferente */}
+            {/* Estadísticas generales - Background diferente */}
             {estadisticas && (
                 <div className="bg-[var(--gray-300)] rounded-lg border border-[var(--gray-300)] p-6">
                     <div className="flex items-center gap-2 mb-4">

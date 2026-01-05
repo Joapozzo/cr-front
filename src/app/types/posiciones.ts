@@ -14,6 +14,17 @@ export interface EquipoPosicion {
     ultima_actualizacion: string;
     img_equipo?: string;
     apercibimientos?: number;
+    // Campos para datos en vivo
+    puntos_live?: number;
+    goles_favor_live?: number;
+    goles_contra_live?: number;
+    diferencia_goles_live?: number;
+    puntos_finales_live?: number;
+    partidos_jugados_live?: number;
+    partidos_ganados_live?: number;
+    partidos_empatados_live?: number;
+    partidos_perdidos_live?: number;
+    en_vivo?: boolean;
 }
 
 export interface IEquipoPosicion {
@@ -32,6 +43,17 @@ export interface IEquipoPosicion {
     goles_contra: number;
     diferencia_goles: number;
     apercibimientos?: number;
+    // Campos para datos en vivo
+    puntos_live?: number;
+    goles_favor_live?: number;
+    goles_contra_live?: number;
+    diferencia_goles_live?: number;
+    puntos_finales_live?: number;
+    partidos_jugados_live?: number;
+    partidos_ganados_live?: number;
+    partidos_empatados_live?: number;
+    partidos_perdidos_live?: number;
+    en_vivo?: boolean;
 }
 
 import { FormatoPosicion } from './zonas';

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, startTransition } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast, Toaster } from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
@@ -27,11 +27,15 @@ import {
 import { useAuth } from '@/app/hooks/auth/useAuth';
 import { useValidarDniContext } from '@/app/contexts/ValidarDniContext';
 import { useAuthStore, isDniDataExpired } from '@/app/stores/authStore';
+import { useRegistrationContext } from '@/app/contexts/RegistrationContext';
+import { UsuarioAuth } from '@/app/services/auth.services';
 
 export const ValidarDniForm = () => {
   const router = useRouter();
   const { step, setStep } = useValidarDniContext();
   const { dniEscaneado, setDniEscaneado, clearDniEscaneado } = useAuthStore();
+  const { setUsuario: setContextUsuario, goToNextStep } = useRegistrationContext();
+  const { login } = useAuthStore();
 
   // ✅ Todos los hooks PRIMERO (antes de cualquier return)
   // Usar requireAuth: false para no bloquear la navegación, la validación se hace en el layout
@@ -117,7 +121,7 @@ export const ValidarDniForm = () => {
       // Si están expirados, limpiarlos
       clearDniEscaneado();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Solo ejecutar al montar el componente
 
   // Handler cuando se escanea el código
@@ -213,16 +217,33 @@ export const ValidarDniForm = () => {
         nombre: data.nombre,
         apellido: data.apellido,
         fechaNacimiento: data.fechaNacimiento,
-        username: data.username,
         telefono: data.telefono,
         id_posicion: data.id_posicion, // Posición del jugador
       },
       {
-        onSuccess: () => {
-          // Redirigir inmediatamente al siguiente paso (selfie) sin bloquear
-          startTransition(() => {
-            router.replace('/selfie');
-          });
+        onSuccess: async (response: unknown) => {
+          // Tipo de respuesta esperada
+          const data = response as { usuario?: UsuarioAuth; mensaje?: string };
+          
+          // Actualizar usuario en store si viene en la respuesta
+          if (data?.usuario) {
+            const user = authService.obtenerUsuarioActual();
+            if (user) {
+              try {
+                const token = await user.getIdToken();
+                login(token, data.usuario);
+                setContextUsuario(data.usuario);
+              } catch (error) {
+                console.error('Error al obtener token:', error);
+              }
+            } else {
+              // Si no hay usuario de Firebase, actualizar solo el contexto
+              setContextUsuario(data.usuario);
+            }
+          }
+          
+          toast.success('DNI validado correctamente');
+          // La navegación se maneja en DniValidationStep mediante useEffect
         },
         onError: (error) => {
           toast.error(error.message);
@@ -314,14 +335,6 @@ export const ValidarDniForm = () => {
             <p className="text-sm font-medium text-white">
               Completa tus datos
             </p>
-
-            <Input
-              placeholder="Nombre de usuario"
-              icon={<MdPerson size={20} />}
-              error={errors.username?.message}
-              {...register('username')}
-              autoComplete="username"
-            />
 
             <Input
               type="tel"

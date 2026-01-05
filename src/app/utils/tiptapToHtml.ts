@@ -5,7 +5,6 @@ import Link from '@tiptap/extension-link';
 import TextAlign from '@tiptap/extension-text-align';
 
 // Importación dinámica de DOMPurify para evitar problemas en SSR
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let DOMPurify: any = null;
 if (typeof window !== 'undefined') {
     // eslint-disable-next-line @typescript-eslint/no-require-imports

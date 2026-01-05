@@ -226,7 +226,6 @@ const TabSeleccionManual = ({
                                             >
                                                 <div className="flex items-center gap-3">
                                                     {equipo.img ? (
-                                                        // eslint-disable-next-line @next/next/no-img-element
                                                         <Image
                                                             src={equipo.img}
                                                             alt={equipo.nombre}

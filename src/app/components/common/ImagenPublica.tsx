@@ -116,7 +116,7 @@ export const ImagenPublica = ({
     return (
       <div className={`relative ${width || height ? '' : 'w-full h-full'}`} style={{ width, height }}>
         {/* Imagen desde blob URL */}
-        <img
+        <Image
           src={blobUrl}
           alt={alt}
           className={`${className} ${loading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300 object-cover`}

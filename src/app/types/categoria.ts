@@ -208,6 +208,17 @@ export interface PosicionTabla {
   apercibimientos?: number;
   ultima_actualizacion: string;
   equipo: Equipo;
+  // Campos para datos en vivo
+  puntos_live?: number;
+  goles_favor_live?: number;
+  goles_contra_live?: number;
+  diferencia_goles_live?: number;
+  puntos_finales_live?: number;
+  partidos_jugados_live?: number;
+  partidos_ganados_live?: number;
+  partidos_empatados_live?: number;
+  partidos_perdidos_live?: number;
+  en_vivo?: boolean;
 }
 
 export interface EstadisticasVacantes {

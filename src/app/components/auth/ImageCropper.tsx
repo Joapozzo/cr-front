@@ -109,9 +109,9 @@ export const ImageCropper = ({ image, onCropComplete, onCancel }: ImageCropperPr
     try {
       // Convertir imagen base64 a blob URL si es necesario
       const imageUrl = image.startsWith('data:') ? image : `data:image/jpeg;base64,${image}`;
-      
+
       const croppedImageBase64 = await getCroppedImg(imageUrl, croppedAreaPixels);
-      
+
       onCropComplete(croppedImageBase64);
     } catch (error) {
       console.error('Error al recortar imagen:', error);
@@ -128,11 +128,11 @@ export const ImageCropper = ({ image, onCropComplete, onCancel }: ImageCropperPr
       <div className="w-full h-full flex flex-col">
         {/* Header */}
         <div className="p-4 bg-[var(--gray-400)] border-b border-[var(--gray-300)]">
-          <h2 className="text-lg font-semibold text-[var(--gray-200)] text-center">
-            Recortar DNI
+          <h2 className="text-lg font-bold text-[var(--gray-200)] text-center flex items-center justify-center gap-2">
+            Recortar código de barras
           </h2>
-          <p className="text-xs text-[var(--gray-300)] text-center mt-1">
-            Ajusta el recuadro para mostrar solo el DNI
+          <p className="text-xs text-[var(--gray-200)] text-center mt-1 max-w-xs mx-auto">
+            Ajustá el recuadro para encuadrar <span className="text-[var(--green)] font-semibold">SOLO</span> el código de barras. No incluyas el resto del DNI.
           </p>
         </div>
 
@@ -142,7 +142,7 @@ export const ImageCropper = ({ image, onCropComplete, onCancel }: ImageCropperPr
             image={imageUrl}
             crop={crop}
             zoom={zoom}
-            aspect={16 / 10}
+            aspect={3.5 / 1}
             onCropChange={onCropChange}
             onZoomChange={onZoomChange}
             onCropComplete={onCropCompleteCallback}

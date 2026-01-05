@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { EstadisticasTabs, EstadisticaTab } from '@/app/components/estadisticas/EstadisticasTabs';
-import { TablaPosicionesCompleta } from '@/app/components/estadisticas/TablaPosicionesCompleta';
+import { TablaPosiciones } from '@/app/components/posiciones/TablaPosiciones';
 import { TablaJugadoresEstadisticas } from '@/app/components/estadisticas/TablaJugadoresEstadisticas';
 import { EquipoPosicion } from '@/app/types/posiciones';
 import {
@@ -143,7 +143,8 @@ export const StatsTab: React.FC<StatsTabProps> = ({
                     <h3 className="text-white font-semibold text-sm px-2">
                       {zona.nombre_zona}
                     </h3>
-                    <TablaPosicionesCompleta
+                    <TablaPosiciones
+                      variant="completa"
                       posiciones={zona.posiciones.map(pos => ({
                         id_equipo: pos.id_equipo,
                         nombre_equipo: pos.nombre_equipo,
@@ -170,7 +171,8 @@ export const StatsTab: React.FC<StatsTabProps> = ({
                 ))}
               </div>
             ) : (
-              <TablaPosicionesCompleta
+              <TablaPosiciones
+                variant="completa"
                 posiciones={posicionesAplanadas}
                 zonasPlayoff={zonasPlayoffData || []}
                 isLoading={loadingPosiciones || loadingPlayoff}
@@ -186,9 +188,6 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             jugadores={goleadores || []}
             tipo="goleadores"
             isLoading={loadingGoleadores}
-            onRowClick={(jugador) => {
-              // TODO: Navegar a perfil del jugador o mostrar detalles
-            }}
           />
         )}
 
@@ -197,9 +196,6 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             jugadores={asistencias || []}
             tipo="asistencias"
             isLoading={loadingAsistencias}
-            onRowClick={(jugador) => {
-              // TODO: Navegar a perfil del jugador o mostrar detalles
-            }}
           />
         )}
 
@@ -208,9 +204,6 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             jugadores={amarillas || []}
             tipo="amarillas"
             isLoading={loadingAmarillas}
-            onRowClick={(jugador) => {
-              // TODO: Navegar a perfil del jugador o mostrar detalles
-            }}
           />
         )}
 
@@ -219,9 +212,6 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             jugadores={rojas || []}
             tipo="rojas"
             isLoading={loadingRojas}
-            onRowClick={(jugador) => {
-              // TODO: Navegar a perfil del jugador o mostrar detalles
-            }}
           />
         )}
 
@@ -230,9 +220,6 @@ export const StatsTab: React.FC<StatsTabProps> = ({
             jugadores={mvps || []}
             tipo="mvps"
             isLoading={loadingMVPs}
-            onRowClick={(jugador) => {
-              // TODO: Navegar a perfil del jugador o mostrar detalles
-            }}
           />
         )}
       </div>

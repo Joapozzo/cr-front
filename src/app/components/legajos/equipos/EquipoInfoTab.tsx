@@ -104,7 +104,7 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
                 </div>
             </div>
 
-            {/* Estadísticas Generales - Background diferente */}
+            {/* Estadísticas generales - Background diferente */}
             {isLoadingEstadisticas ? (
                 <SkeletonTheme baseColor="#1f1f1f" highlightColor="#333333">
                     <Skeleton height={300} borderRadius={6} />

@@ -42,12 +42,7 @@ export const validarDniYDatosSchema = z.object({
   apellido: z.string().min(2, 'Apellido inválido'),
   fechaNacimiento: z.string().regex(/^\d{2}\/\d{2}\/\d{4}$/, 'Formato de fecha inválido (DD/MM/YYYY)'),
 
-  // Datos ingresados por el usuario
-  username: z
-    .string()
-    .min(3, 'El username debe tener al menos 3 caracteres')
-    .max(20, 'El username no puede tener más de 20 caracteres')
-    .regex(/^[a-zA-Z0-9_]+$/, 'Solo letras, números y guión bajo'),
+  // Datos ingresados por el usuario (username se genera automáticamente)
   telefono: z
     .string()
     .regex(/^[0-9]{10}$/, 'El teléfono debe tener 10 dígitos'),

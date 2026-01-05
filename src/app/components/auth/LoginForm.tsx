@@ -1,81 +1,168 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { toast, Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import { AiOutlineLock } from 'react-icons/ai';
 import { MdEmail } from 'react-icons/md';
 import { FaAngleRight } from 'react-icons/fa6';
-import { useLogin } from '@/app/hooks/auth/useLogin';
-import { useAuth } from '@/app/hooks/auth/useAuth';
+import { Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
-import { BsGoogle } from 'react-icons/bs';
-import { useLoginGoogle } from '@/app/hooks/auth/useLoginGoogle';
-import { Loader2 } from 'lucide-react';
+import { GoogleAuthButton } from '../ui/GoogleAuthButton';
+import { EmailAuthButton } from '../ui/EmailAuthButton';
+import { useLoginController } from '@/app/hooks/auth/useLoginController';
 import { LoadingScreen } from '../LoadingScreen';
-import { determinarRutaRedireccion } from '@/app/utils/authRedirect';
 
-type LoginState = 'idle' | 'loading' | 'success' | 'error';
+interface LoginFormProps {
+    email: string;
+    setEmail: (value: string) => void;
+    password: string;
+    setPassword: (value: string) => void;
+    isFormValid: boolean;
+    isPending: boolean;
+    isPendingGoogle: boolean;
+    handleSubmit: (e: React.FormEvent) => void;
+    handleLoginGoogle: () => void;
+}
+
+const LoginFormUI = ({
+    email,
+    setEmail,
+    password,
+    setPassword,
+    isFormValid,
+    isPending,
+    isPendingGoogle,
+    handleSubmit,
+    handleLoginGoogle,
+}: LoginFormProps) => {
+    const [isEmailExpanded, setIsEmailExpanded] = useState(false);
+
+    return (
+        <div className="w-full flex flex-col items-center">
+
+            {/* Cards Container */}
+            <motion.div
+                layout
+                className="w-full grid grid-cols-1 gap-4 mb-6"
+                animate={{
+                    scale: isEmailExpanded ? 0.95 : 1,
+                    opacity: isEmailExpanded ? 0.8 : 1,
+                }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+            >
+                {/* 1. Google Card (Principal) */}
+                <GoogleAuthButton
+                    onClick={handleLoginGoogle}
+                    disabled={isPendingGoogle}
+                    isPending={isPendingGoogle}
+                    isEmailExpanded={isEmailExpanded}
+                    label="Ingresá con Google"
+                />
+
+                {/* 2. Email Card (Secundaria) */}
+                <EmailAuthButton
+                    onClick={() => setIsEmailExpanded(true)}
+                    disabled={isEmailExpanded}
+                    isEmailExpanded={isEmailExpanded}
+                    label="Ingresá con tu mail"
+                />
+            </motion.div>
+
+            {/* Expandable Email Form Section */}
+            <AnimatePresence>
+                {isEmailExpanded && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0, y: 20 }}
+                        animate={{ opacity: 1, height: 'auto', y: 0 }}
+                        exit={{ opacity: 0, height: 0, y: 20 }}
+                        transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
+                        className="w-full overflow-hidden"
+                    >
+                        <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full bg-[var(--gray-400)]/30 border border-[var(--gray-300)] rounded-2xl p-6 lg:p-8 mb-6">
+                            <div className="flex flex-col gap-4">
+                                <Input
+                                    type="text"
+                                    placeholder="Email"
+                                    icon={<MdEmail size={20} />}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    autoComplete="email"
+                                    required
+                                    className="h-12 text-base"
+                                />
+
+                                <Input
+                                    type="password"
+                                    placeholder="Contraseña"
+                                    icon={<AiOutlineLock size={20} />}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    autoComplete="current-password"
+                                    required
+                                    className="h-12 text-base"
+                                />
+
+                                <div className="flex justify-end">
+                                    <Link
+                                        href="/recuperar-password"
+                                        className="text-sm text-[var(--gray-200)] hover:text-[var(--green)] transition-colors"
+                                    >
+                                        ¿Olvidaste tu contraseña?
+                                    </Link>
+                                </div>
+                            </div>
+
+                            <Button
+                                type="submit"
+                                disabled={!isFormValid || isPending}
+                                className="h-12 text-base flex items-center justify-center gap-2 w-full mt-2"
+                            >
+                                {isPending ? (
+                                    <>
+                                        Iniciando <Loader2 className="animate-spin w-5 h-5" />
+                                    </>
+                                ) : (
+                                    <>
+                                        Iniciar sesión <FaAngleRight />
+                                    </>
+                                )}
+                            </Button>
+                        </form>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Link to Register - Keeping it accessible */}
+            <div className="flex justify-center mt-2">
+                <Link
+                    href="/registro"
+                    className="text-sm text-[var(--gray-200)] hover:text-[var(--green)] transition-colors"
+                >
+                    ¿No tenes cuenta? <span className="font-semibold text-white">Regístrate</span>
+                </Link>
+            </div>
+
+            <Toaster position="top-center" />
+        </div>
+    );
+};
 
 export const LoginForm = () => {
-    const router = useRouter();
-    
-    // 🔒 Redirigir si ya está autenticado
-    useAuth({ redirectIfAuthenticated: true });
-    
-    const { mutate: login, isPending } = useLogin();
-    const { mutate: loginGoogle, isPending: isPendingGoogle } = useLoginGoogle();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [loginState, setLoginState] = useState<LoginState>('idle');
-
-    const isFormValid = email.trim() !== '' && password.trim() !== '';
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoginState('loading');
-
-        login(
-            { email, password },
-            {
-                onSuccess: (data) => {
-                    setLoginState('success');
-
-                    setTimeout(() => {
-                        // Usar función centralizada para determinar ruta según el estado del usuario
-                        const { ruta } = determinarRutaRedireccion(data.usuario);
-                        router.push(ruta);
-                    }, 1200);
-                },
-                onError: (error) => {
-                    setLoginState('idle');
-                    toast.error(error.message);
-                },
-            }
-        );
-    };
-
-    const handleLoginGoogle = () => {
-        setLoginState('loading');
-        
-        loginGoogle(undefined, {
-            onSuccess: (data) => {
-                setLoginState('success');
-                
-                setTimeout(() => {
-                    // Usar función centralizada para determinar ruta según el estado del usuario
-                    const { ruta } = determinarRutaRedireccion(data.usuario);
-                    router.push(ruta);
-                }, 1200);
-            },
-            onError: (error) => {
-                setLoginState('idle');
-                toast.error(error.message);
-            },
-        });
-    }
+    const {
+        email,
+        setEmail,
+        password,
+        setPassword,
+        loginState,
+        isFormValid,
+        isPending,
+        isPendingGoogle,
+        handleSubmit,
+        handleLoginGoogle,
+    } = useLoginController();
 
     // Mostrar LoadingScreen si está en proceso de login
     if (loginState === 'loading' || loginState === 'success') {
@@ -89,91 +176,16 @@ export const LoginForm = () => {
     }
 
     return (
-        <div className="flex flex-col gap-4 lg:gap-6 w-full">
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4 lg:gap-5 w-full flex-shrink-0">
-                <div className="flex flex-col gap-3 lg:gap-4">
-                    <Input
-                        type="text"
-                        placeholder="Email"
-                        icon={<MdEmail size={20} />}
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        autoComplete="email"
-                        required
-                    />
-
-                    <Input
-                        type="password"
-                        placeholder="Contraseña"
-                        icon={<AiOutlineLock size={20} />}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        autoComplete="current-password"
-                        required
-                    />
-
-                    <div className="flex justify-end">
-                        <Link
-                            href="/recuperar-password"
-                            className="text-xs lg:text-sm text-[var(--gray-300)] hover:text-[var(--green)] transition-colors"
-                        >
-                            ¿Olvidaste tu contraseña?
-                        </Link>
-                    </div>
-                </div>
-
-                <Button
-                    type="submit"
-                    disabled={!isFormValid || isPending}
-                    className="flex items-center justify-center gap-2 w-full"
-                >
-                    {isPending ? (
-                        <>
-                            Iniciando <Loader2 className="animate-spin w-4 h-4" />
-                        </>
-                    ) : (
-                        <>
-                            Iniciar sesión <FaAngleRight />
-                        </>
-                    )}
-                </Button>
-            </form>
-
-            <div className="flex items-center gap-3 lg:gap-4 w-full">
-                <div className="flex-1 border-t border-[var(--gray-300)]"></div>
-                <span className="text-xs lg:text-sm text-[var(--gray-300)] whitespace-nowrap">
-                    O inicia con
-                </span>
-                <div className="flex-1 border-t border-[var(--gray-300)]"></div>
-            </div>
-
-            <Button
-                onClick={handleLoginGoogle}
-                disabled={isPendingGoogle}
-                className="flex items-center justify-center gap-2 w-full"
-            >
-                {isPendingGoogle ? (
-                    <>
-                        Iniciando <Loader2 className="animate-spin w-4 h-4" />
-                    </>
-                ) : (
-                    <>
-                        <BsGoogle size={18} />
-                        {/* Continuar con Google */}
-                    </>
-                )}
-            </Button>
-
-            <div className="flex justify-center pt-1 lg:pt-2">
-                <Link
-                    href="/registro"
-                    className="text-xs lg:text-sm text-[var(--gray-200)] hover:text-[var(--green)] transition-colors"
-                >
-                    ¿No tenes cuenta? Regístrate
-                </Link>
-            </div>
-
-            <Toaster position="top-center" />
-        </div>
+        <LoginFormUI
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            isFormValid={isFormValid}
+            isPending={isPending}
+            isPendingGoogle={isPendingGoogle}
+            handleSubmit={handleSubmit}
+            handleLoginGoogle={handleLoginGoogle}
+        />
     );
 };

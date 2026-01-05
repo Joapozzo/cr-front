@@ -71,7 +71,7 @@ export const ModalPoliticasPrivacidad: React.FC<ModalPoliticasPrivacidadProps> =
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#262626]">
-          <h3 className="text-white font-bold text-lg">Términos y Condiciones de Uso</h3>
+          <h3 className="text-white font-bold text-lg">Términos y condiciones de uso</h3>
           {/* No mostrar botón de cerrar - no se puede cerrar sin aceptar */}
         </div>
 
@@ -88,7 +88,7 @@ export const ModalPoliticasPrivacidad: React.FC<ModalPoliticasPrivacidadProps> =
 
             <div className="space-y-4">
               <section>
-                <h3 className="text-white font-semibold mb-2">1. Datos que Recolectamos</h3>
+                <h3 className="text-white font-semibold mb-2">1. Datos que recolectamos</h3>
                 <p className="text-[var(--gray-200)] leading-relaxed">
                   Para participar en torneos, necesitamos:
                 </p>
@@ -176,7 +176,7 @@ export const ModalPoliticasPrivacidad: React.FC<ModalPoliticasPrivacidadProps> =
                 htmlFor="acepta-terminos"
                 className="text-sm text-[var(--gray-200)] leading-relaxed cursor-pointer flex-1"
               >
-                Acepto los términos y condiciones de uso y autorizo el uso de mi DNI y foto para los fines mencionados.
+                Acepto los Términos y condiciones de uso y autorizo el uso de mi DNI y foto para los fines mencionados.
               </label>
             </div>
             <Button

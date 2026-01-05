@@ -46,7 +46,7 @@ export const useNoticiasPublicadas = (
         gcTime: 5 * 60 * 1000, // 5 minutos
         retry: 2,
         refetchOnWindowFocus: false,
-        refetchOnMount: true,
+        refetchOnMount: false, // Usar cache si los datos están frescos (dentro de staleTime)
         refetchOnReconnect: true,
         ...options,
     });

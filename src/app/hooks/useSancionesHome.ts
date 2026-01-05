@@ -4,14 +4,13 @@ import { useAuthStore } from '../stores/authStore';
 
 interface UseSancionesHomeProps {
     sanciones?: ISancion[];
-    loading?: boolean;
+    loading?: boolean; // Mantener por compatibilidad pero no se usa
     limit?: number;
 }
 
 interface UseSancionesHomeReturn {
-    sanciones: ISancion[];
-    sancionesPorPagina: ISancion[];
-    loading: boolean;
+    sanciones: ISancion[] | undefined; // undefined cuando está cargando, [] cuando no hay datos, array con datos cuando hay datos
+    sancionesPorPagina: ISancion[] | undefined; // undefined cuando está cargando
     error: Error | null;
     currentPage: number;
     totalPaginas: number;
@@ -51,42 +50,43 @@ export const useSancionesHome = ({
     );
 
     // Procesar sanciones: usar prop o datos del hook
+    // Si está cargando (sancionesData es undefined), retornar undefined para que el componente retorne el fallback
+    // Si hay datos vacíos, retornar array vacío para que el componente muestre "no hay sanciones"
     const sanciones = useMemo(() => {
         if (sancionesProp) return sancionesProp;
-        if (!sancionesData || !sancionesData.sanciones) return [];
+        
+        // Si aún no hay datos (está cargando), retornar undefined
+        if (!sancionesData) return undefined;
+        
+        // Si hay datos pero el array está vacío, retornar array vacío
+        if (!sancionesData.sanciones || sancionesData.sanciones.length === 0) return [];
+        
         return sancionesData.sanciones;
     }, [sancionesProp, sancionesData]);
-
-    // Estado de loading: usar prop, o estado del hook considerando carga inicial
-    // Si no se ha recibido data (undefined) significa que aún no terminó la carga inicial
-    // También considerar isFetching cuando no hay datos aún (pero no si ya hay datos - refetch en background)
-    // Solo mostrar como "no hay datos" cuando data ya existe pero está vacío
-    const hasDataLoaded = sancionesData !== undefined;
-    const loading = loadingProp ?? (isLoadingSanciones || (!hasDataLoaded && (isFetchingSanciones || !sancionesProp)));
 
     // Estado de paginación
     const [currentPage, setCurrentPage] = useState(0);
     const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
 
-    // Calcular paginación
-    const totalPaginas = Math.ceil(sanciones.length / limit);
+    // Calcular paginación (solo si hay sanciones)
+    const totalPaginas = sanciones ? Math.ceil(sanciones.length / limit) : 0;
     const inicio = currentPage * limit;
     const fin = inicio + limit;
-    const sancionesPorPagina = useMemo(
-        () => sanciones.slice(inicio, fin),
-        [sanciones, inicio, fin]
-    );
+    const sancionesPorPagina = useMemo(() => {
+        if (!sanciones) return undefined;
+        return sanciones.slice(inicio, fin);
+    }, [sanciones, inicio, fin]);
 
     // Resetear página cuando cambien las sanciones
     useEffect(() => {
-        if (sanciones.length > 0 && currentPage >= totalPaginas) {
+        if (sanciones && sanciones.length > 0 && currentPage >= totalPaginas) {
             setCurrentPage(0);
         }
     }, [sanciones, currentPage, totalPaginas]);
 
     // Manejar cambio de página con dirección de animación
     const handlePageChange = (newPage: number) => {
-        if (newPage < 0 || newPage >= totalPaginas || newPage === currentPage) return;
+        if (!sanciones || newPage < 0 || newPage >= totalPaginas || newPage === currentPage) return;
 
         setSlideDirection(newPage > currentPage ? 'left' : 'right');
         setCurrentPage(newPage);
@@ -100,7 +100,6 @@ export const useSancionesHome = ({
     return {
         sanciones,
         sancionesPorPagina,
-        loading,
         error: errorSanciones,
         currentPage,
         totalPaginas,

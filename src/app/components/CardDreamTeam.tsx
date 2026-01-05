@@ -136,7 +136,6 @@ const DreamTeamField = ({
     // Notificar cambio de formación inicial
     useEffect(() => {
         onFormacionChange?.(formacionNombre);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleAbrirModalEliminar = (jugador: JugadorDreamTeam) => {

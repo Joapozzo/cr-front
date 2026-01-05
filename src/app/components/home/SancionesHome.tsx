@@ -2,10 +2,10 @@
 
 import { AlertTriangle } from 'lucide-react';
 import { BaseCard, CardHeader } from '../BaseCard';
-import { BaseCardTableSkeleton } from '../skeletons/BaseCardTableSkeleton';
 import { useSancionesHome } from '@/app/hooks/useSancionesHome';
 import { ISancion } from '@/app/hooks/useSanciones';
 import { ImagenPublica } from '../common/ImagenPublica';
+import { SancionesHomeFallback } from './homeFallbacks';
 
 interface SancionesHomeProps {
   sanciones?: ISancion[];
@@ -18,10 +18,15 @@ export const SancionesHome = ({
 }: SancionesHomeProps) => {
   const {
     sanciones: sancionesData,
-    loading: isLoading,
+    sancionesPorPagina,
     error,
     esMiSancion,
   } = useSancionesHome({ sanciones, loading, limit: undefined });
+
+  // Si no hay datos aún (undefined), mostrar skeleton para mantener el espacio en el layout
+  if (sancionesData === undefined) {
+    return <SancionesHomeFallback />;
+  }
 
   // Manejar error
   if (error && !sanciones) {
@@ -39,22 +44,8 @@ export const SancionesHome = ({
     );
   }
 
-  // Loading state - mostrar skeleton mientras carga
-  if (isLoading) {
-    return (
-      <BaseCard>
-        <CardHeader 
-          icon={<AlertTriangle size={18} className="text-yellow-500" />}
-          title="Sanciones activas"
-          subtitle="Cargando..."
-        />
-        <BaseCardTableSkeleton columns={4} rows={5} hasAvatar={true} />
-      </BaseCard>
-    );
-  }
-
-  // Casos vacíos - solo mostrar cuando NO está cargando y no hay datos
-  if (!isLoading && (!sancionesData || sancionesData.length === 0)) {
+  // Casos vacíos - solo mostrar cuando realmente no hay datos (array vacío)
+  if (!sancionesData || sancionesData.length === 0) {
     return (
       <BaseCard>
         <CardHeader 

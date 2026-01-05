@@ -18,8 +18,8 @@ const PartidosEquipoCard = lazy(() =>
   import("./PartidosEquipoCard").then((module) => ({ default: module.PartidosEquipoCard }))
 );
 
-const TablaPosicionesHome = lazy(() =>
-  import("./TablaPosicionesHome").then((module) => ({ default: module.TablaPosicionesHome }))
+const TablaPosiciones = lazy(() =>
+  import("../posiciones/TablaPosiciones").then((module) => ({ default: module.TablaPosiciones }))
 );
 
 const SancionesHome = lazy(() =>
@@ -65,7 +65,7 @@ interface LazyTablaPosicionesHomeProps {
 export const LazyTablaPosicionesHome = ({ linkTablaCompleta = "/estadisticas" }: LazyTablaPosicionesHomeProps) => {
   return (
     <Suspense fallback={<TablaPosicionesHomeFallback />}>
-      <TablaPosicionesHome linkTablaCompleta={linkTablaCompleta} />
+      <TablaPosiciones variant="home" linkTablaCompleta={linkTablaCompleta} limitPosiciones={6} />
     </Suspense>
   );
 };

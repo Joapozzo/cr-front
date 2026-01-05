@@ -45,7 +45,7 @@ export const useTablasPosicionesPorEquipos = (
         gcTime: 10 * 60 * 1000, // 10 minutos - mantener en cache más tiempo
         retry: 2,
         refetchOnWindowFocus: false, // No refetch automático al volver a la ventana
-        refetchOnMount: true, // Refetch al montar el componente (para datos actualizados)
+        refetchOnMount: false, // Usar cache si los datos están frescos (dentro de staleTime)
         refetchOnReconnect: true, // Refetch al reconectar
         ...options,
     });

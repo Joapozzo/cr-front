@@ -5,9 +5,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BaseCard, CardHeader } from '../BaseCard';
 import { Noticia } from '@/app/types/noticia';
-import { NoticiaCardSkeleton2 } from '../skeletons/NoticiaCardSkeleton';
 import { formatearFechaNoticia } from '@/app/utils/fechas';
 import { useNoticiasHome } from '@/app/hooks/useNoticiasHome';
+import { NoticiasHomeFallback } from './homeFallbacks';
 
 interface NoticiasHomeProps {
   noticias?: Noticia[];
@@ -107,7 +107,6 @@ export const NoticiasHome = ({
 }: NoticiasHomeProps) => {
   const {
     noticias: noticiasData,
-    loading: isLoading,
     error,
     activeDot,
     scrollContainerRef,
@@ -116,6 +115,11 @@ export const NoticiasHome = ({
     scrollToPage,
     totalPaginas,
   } = useNoticiasHome({ noticias, loading });
+
+  // Si no hay datos aún (undefined), mostrar skeleton para mantener el espacio en el layout
+  if (noticiasData === undefined) {
+    return <NoticiasHomeFallback />;
+  }
 
   // Manejar error
   if (error && !noticias) {
@@ -133,8 +137,8 @@ export const NoticiasHome = ({
     );
   }
 
-  // Casos vacíos
-  if (!isLoading && (!noticiasData || noticiasData.length === 0)) {
+  // Casos vacíos - solo mostrar cuando realmente no hay datos (array vacío)
+  if (!noticiasData || noticiasData.length === 0) {
     return (
       <BaseCard>
         <CardHeader
@@ -148,22 +152,6 @@ export const NoticiasHome = ({
           <p className="text-[#737373] text-sm text-center">
             No hay noticias disponibles
           </p>
-        </div>
-      </BaseCard>
-    );
-  }
-
-  // Loading state
-  if (isLoading) {
-    return (
-      <BaseCard>
-        <CardHeader
-          icon={<Newspaper size={18} className="text-[var(--green)]" />}
-          title="Noticias"
-          subtitle="Cargando..."
-        />
-        <div className="px-4 py-4">
-          <NoticiaCardSkeleton2 />
         </div>
       </BaseCard>
     );

@@ -4,13 +4,12 @@ import { Noticia } from '../types/noticia';
 
 interface UseNoticiasHomeProps {
     noticias?: Noticia[];
-    loading?: boolean;
+    loading?: boolean; // Mantener por compatibilidad pero no se usa
     limit?: number;
 }
 
 interface UseNoticiasHomeReturn {
-    noticias: Noticia[];
-    loading: boolean;
+    noticias: Noticia[] | undefined; // undefined cuando está cargando, [] cuando no hay datos, array con datos cuando hay datos
     error: Error | null;
     activeDot: number;
     scrollContainerRef: React.RefObject<HTMLDivElement | null>;
@@ -53,22 +52,23 @@ export const useNoticiasHome = ({
     );
 
     // Procesar noticias: usar prop o datos del hook
+    // Si está cargando (noticiasData es undefined), retornar undefined para que el componente retorne el fallback
+    // Si hay datos vacíos, retornar array vacío para que el componente muestre "no hay noticias"
     const noticias = useMemo(() => {
         if (noticiasProp) return noticiasProp;
-        if (!noticiasData || !noticiasData.noticias) return [];
+        
+        // Si aún no hay datos (está cargando), retornar undefined
+        if (!noticiasData) return undefined;
+        
+        // Si hay datos pero el array está vacío, retornar array vacío
+        if (!noticiasData.noticias || noticiasData.noticias.length === 0) return [];
+        
         return noticiasData.noticias;
     }, [noticiasProp, noticiasData]);
 
-    // Estado de loading: usar prop, o estado del hook considerando carga inicial
-    // Si no se ha recibido data (undefined) significa que aún no terminó la carga inicial
-    // También considerar isFetching cuando no hay datos aún (pero no si ya hay datos - refetch en background)
-    // Solo mostrar como "no hay datos" cuando data ya existe pero está vacío
-    const hasDataLoaded = noticiasData !== undefined;
-    const loading = loadingProp ?? (isLoadingNoticias || (!hasDataLoaded && (isFetchingNoticias || !noticiasProp)));
-
     // Calcular paginación visual (2 noticias por página)
     const noticiasPorPagina = 2;
-    const totalPaginas = Math.ceil(noticias.length / noticiasPorPagina);
+    const totalPaginas = noticias ? Math.ceil(noticias.length / noticiasPorPagina) : 0;
 
     // Detectar scroll para actualizar dot activo
     const handleScroll = () => {
@@ -104,7 +104,6 @@ export const useNoticiasHome = ({
 
     return {
         noticias,
-        loading,
         error: errorNoticias,
         activeDot,
         scrollContainerRef,

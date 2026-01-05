@@ -457,8 +457,6 @@ const ConfiguracionPage = () => {
                         <div className="flex items-start gap-4">
                             <div className="relative w-32 h-32 rounded-lg overflow-hidden bg-[var(--gray-300)] border-2 border-[var(--gray-200)]">
                                 {(imagenPreview || edicionSeleccionada?.img) ? (
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    // eslint-disable-next-line @next/next/no-img-element
                                     <Image
                                         src={imagenPreview || edicionSeleccionada?.img || '/logo-edicion.png'}
                                         alt="Preview de edición"

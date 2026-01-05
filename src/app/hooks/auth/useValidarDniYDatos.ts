@@ -8,7 +8,6 @@ export interface ValidarDniYDatosInput {
   nombre: string;
   apellido: string;
   fechaNacimiento: string; // DD/MM/YYYY
-  username: string;
   telefono: string;
   id_posicion?: number; // Posición del jugador (opcional)
 }

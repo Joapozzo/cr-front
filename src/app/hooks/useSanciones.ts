@@ -68,7 +68,7 @@ export const useSancionesActivasUsuario = (
         gcTime: 10 * 60 * 1000, // 10 minutos
         retry: 2,
         refetchOnWindowFocus: false,
-        refetchOnMount: true,
+        refetchOnMount: false, // Usar cache si los datos están frescos (dentro de staleTime)
         refetchOnReconnect: true,
         ...options,
     });

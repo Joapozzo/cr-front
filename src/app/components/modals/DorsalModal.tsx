@@ -112,6 +112,8 @@ const DorsalModal: React.FC<DorsalModalProps> = ({
                 (error as { message?: string })?.message ||
                 'Error desconocido';
             setError(errorMessage);
+            // También mostrar toast de error
+            toast.error(errorMessage);
         }
     };
 
