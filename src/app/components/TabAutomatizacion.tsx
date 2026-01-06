@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useFasesPorCategoria } from '../hooks/useFases';
 import { useZonasPorFase } from '../hooks/useZonas';
 import { useOcuparVacanteConAutomatizacion, useConfigurarAutomatizacionPartido } from '../hooks/useAutomatizaciones';
@@ -151,7 +151,7 @@ const TabAutomatizacion = ({
         return (
             <div className="flex items-center justify-center py-12">
                 <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 border-2 border-[var(--green)] border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
                     <span className="text-[var(--gray-100)]">Cargando fases...</span>
                 </div>
             </div>
@@ -195,7 +195,7 @@ const TabAutomatizacion = ({
                     </label>
                     {loadingZonas ? (
                         <div className="flex items-center gap-2 text-[var(--gray-100)] text-sm">
-                            <div className="w-4 h-4 border-2 border-[var(--green)] border-t-transparent rounded-full animate-spin" />
+                            <div className="w-4 h-4 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
                             Cargando zonas...
                         </div>
                     ) : (

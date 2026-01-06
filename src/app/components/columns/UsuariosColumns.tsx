@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { User, Mail, Calendar, Shield, Image as ImageIcon, ExternalLink, KeyRound, UserX, UserCheck } from "lucide-react";
 import { UsuarioAdmin } from "@/app/types/user";
@@ -23,7 +23,7 @@ const UsuarioImageCell = ({ row }: { row: UsuarioAdmin }) => {
                     alt={nombreCompleto}
                     width={40}
                     height={40}
-                    className="w-10 h-10 rounded-full object-cover border-2 border-[var(--green)]"
+                    className="w-10 h-10 rounded-full object-cover border-2 border-[var(--color-primary)]"
                     fallbackIcon={<ImageIcon className="w-5 h-5 text-[var(--gray-100)]" />}
                 />
             ) : row.img ? (
@@ -61,7 +61,7 @@ export const getUsuariosColumns = (
         render: (_: unknown, row: UsuarioAdmin) => {
             return (
                 <div className="flex items-center space-x-2">
-                    <User className="w-4 h-4 text-[var(--green)]" />
+                    <User className="w-4 h-4 text-[var(--color-primary)]" />
                     <span className="font-medium text-[var(--white)]">
                         {`${row.nombre} ${row.apellido}`}
                     </span>
@@ -71,7 +71,7 @@ export const getUsuariosColumns = (
                             className="ml-2 p-1 hover:bg-[var(--gray-300)] rounded transition-colors"
                             title="Ver perfil en legajos"
                         >
-                            <ExternalLink className="w-4 h-4 text-[var(--green)]" />
+                            <ExternalLink className="w-4 h-4 text-[var(--color-primary)]" />
                         </Link>
                     )}
                 </div>
@@ -98,8 +98,8 @@ export const getUsuariosColumns = (
             const rolNombre = row.rol.nombre.toUpperCase();
             const rolConfig: Record<string, { bg: string; text: string }> = {
                 'PLANILLERO': { bg: 'bg-blue-500', text: 'text-white' },
-                'USER': { bg: 'bg-[var(--green)]', text: 'text-white' },
-                'JUGADOR': { bg: 'bg-[var(--green)]', text: 'text-white' },
+                'USER': { bg: 'bg-[var(--color-primary)]', text: 'text-white' },
+                'JUGADOR': { bg: 'bg-[var(--color-primary)]', text: 'text-white' },
                 'INVITADO': { bg: 'bg-yellow-500', text: 'text-white' },
             };
             const config = rolConfig[rolNombre] || { bg: 'bg-[var(--gray-200)]', text: 'text-[var(--gray-100)]' };

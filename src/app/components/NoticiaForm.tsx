@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { Button } from './ui//Button';
@@ -105,14 +105,14 @@ export const NoticiaForm: React.FC<NoticiaFormProps> = ({
             {/* Contenido */}
             <div>
                 <label className="block text-sm font-medium text-[var(--white)] mb-2">
-                    Contenido <span className="text-[var(--red)]">*</span>
+                    Contenido <span className="text-[var(--color-secondary)]">*</span>
                 </label>
                 <TiptapEditor
                     content={formData.contenido}
                     onChange={(content) => setFormData({ ...formData, contenido: content })}
                 />
                 {errors.contenido && (
-                    <p className="mt-1 text-sm text-[var(--red)]">{errors.contenido}</p>
+                    <p className="mt-1 text-sm text-[var(--color-secondary)]">{errors.contenido}</p>
                 )}
             </div>
 
@@ -141,15 +141,15 @@ export const NoticiaForm: React.FC<NoticiaFormProps> = ({
                             <label
                                 key={cat.id_categoria_edicion}
                                 className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-colors text-xs border ${formData.categorias.includes(cat.id_categoria_edicion)
-                                        ? 'bg-[var(--green)]/20 border-[var(--green)] text-[var(--green)]'
-                                        : 'bg-[var(--gray-300)] border-[var(--gray-200)] text-[var(--gray-100)] hover:border-[var(--green)]'
+                                        ? 'bg-[var(--color-primary)]/20 border-[var(--color-primary)] text-[var(--color-primary)]'
+                                        : 'bg-[var(--gray-300)] border-[var(--gray-200)] text-[var(--gray-100)] hover:border-[var(--color-primary)]'
                                     }`}
                             >
                                 <input
                                     type="checkbox"
                                     checked={formData.categorias.includes(cat.id_categoria_edicion)}
                                     onChange={() => toggleCategoria(cat.id_categoria_edicion)}
-                                    className="w-3 h-3 accent-[var(--green)] rounded flex-shrink-0"
+                                    className="w-3 h-3 accent-[var(--color-primary)] rounded flex-shrink-0"
                                 />
                                 <div className="flex flex-col min-w-0">
                                     <span className="font-medium truncate">{cat.nombre}</span>
@@ -188,8 +188,8 @@ export const NoticiaForm: React.FC<NoticiaFormProps> = ({
                     type="button"
                     onClick={() => setFormData({ ...formData, publicada: !formData.publicada })}
                     className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${formData.publicada
-                            ? 'bg-[var(--green)]/20 border-[var(--green)] text-[var(--green)]'
-                            : 'bg-[var(--gray-300)] border-[var(--gray-200)] text-[var(--gray-100)] hover:border-[var(--green)]'
+                            ? 'bg-[var(--color-primary)]/20 border-[var(--color-primary)] text-[var(--color-primary)]'
+                            : 'bg-[var(--gray-300)] border-[var(--gray-200)] text-[var(--gray-100)] hover:border-[var(--color-primary)]'
                         }`}
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

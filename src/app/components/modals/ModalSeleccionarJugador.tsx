@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { X, Search, Filter, Star, TrendingUp, Loader2, Users } from 'lucide-react';
@@ -146,7 +146,7 @@ const ModalSeleccionarJugador = ({
                     }`}
                 onClick={onClose}
             />
-            <div className={`relative bg-[var(--gray-400)] rounded-xl border-2 border-[var(--green)] shadow-2xl w-full max-w-5xl transform transition-all duration-300 ${isAnimating
+            <div className={`relative bg-[var(--gray-400)] rounded-xl border-2 border-[var(--color-primary)] shadow-2xl w-full max-w-5xl transform transition-all duration-300 ${isAnimating
                 ? 'opacity-100 scale-100 translate-y-0'
                 : 'opacity-0 scale-95 translate-y-4'
                 }`}
@@ -154,8 +154,8 @@ const ModalSeleccionarJugador = ({
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-[var(--gray-300)]">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[var(--green)]/20 rounded-lg flex items-center justify-center">
-                            <Star className="w-5 h-5 text-[var(--green)]" />
+                        <div className="w-10 h-10 bg-[var(--color-primary)]/20 rounded-lg flex items-center justify-center">
+                            <Star className="w-5 h-5 text-[var(--color-primary)]" />
                         </div>
                         <div>
                             <h2 className="text-xl font-semibold text-[var(--white)]">
@@ -197,7 +197,7 @@ const ModalSeleccionarJugador = ({
                             <select
                                 value={filtroOrden}
                                 onChange={(e) => setFiltroOrden(e.target.value as any)}
-                                className="px-4 py-2 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] focus:outline-none focus:border-[var(--green)] transition-colors"
+                                className="px-4 py-2 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                             >
                                 <option value="goles">Más goles</option>
                                 <option value="asistencias">Más asistencias</option>
@@ -213,7 +213,7 @@ const ModalSeleccionarJugador = ({
                             {jugadoresFiltrados.length} jugadores disponibles
                         </span>
                         {isLoading && (
-                            <span className="flex items-center gap-2 text-[var(--green)]">
+                            <span className="flex items-center gap-2 text-[var(--color-primary)]">
                                 <Loader2 className="w-4 h-4 animate-spin" />
                                 Actualizando...
                             </span>
@@ -226,7 +226,7 @@ const ModalSeleccionarJugador = ({
                     {/* Loading state */}
                     {isLoading && jugadores.length === 0 && (
                         <div className="flex flex-col items-center justify-center py-12">
-                            <Loader2 className="w-12 h-12 text-[var(--green)] animate-spin mb-4" />
+                            <Loader2 className="w-12 h-12 text-[var(--color-primary)] animate-spin mb-4" />
                             <p className="text-[var(--gray-100)]">Cargando jugadores destacados...</p>
                         </div>
                     )}
@@ -234,10 +234,10 @@ const ModalSeleccionarJugador = ({
                     {/* Error state */}
                     {isError && (
                         <div className="text-center py-12">
-                            <div className="w-16 h-16 bg-[var(--red)]/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Star className="w-8 h-8 text-[var(--red)]" />
+                            <div className="w-16 h-16 bg-[var(--color-secondary)]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Star className="w-8 h-8 text-[var(--color-secondary)]" />
                             </div>
-                            <p className="text-[var(--red)] mb-2 font-medium text-lg">
+                            <p className="text-[var(--color-secondary)] mb-2 font-medium text-lg">
                                 Error al cargar los jugadores destacados
                             </p>
                             <p className="text-[var(--gray-100)] text-sm mb-6 max-w-md mx-auto">

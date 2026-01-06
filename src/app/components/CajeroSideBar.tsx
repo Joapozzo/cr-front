@@ -1,9 +1,10 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useTenant } from '@/app/contexts/TenantContext';
 import {
     ChevronLeft,
     ChevronRight,
@@ -42,28 +43,28 @@ const menuItems: MenuItemWithDisabled[] = [
         label: 'Dashboard',
         icon: LayoutDashboard,
         href: '/cajero/dashboard',
-        color: 'text-[var(--green)]'
+        color: 'text-[var(--color-primary)]'
     },
     {
         id: 'caja',
         label: 'Caja',
         icon: Wallet,
         href: '/cajero/caja',
-        color: 'text-[var(--green)]'
+        color: 'text-[var(--color-primary)]'
     },
     {
         id: 'ingresos',
         label: 'Ingresos',
         icon: ArrowDownCircle,
         href: '/cajero/ingresos',
-        color: 'text-[var(--green)]'
+        color: 'text-[var(--color-primary)]'
     },
     {
         id: 'egresos',
         label: 'Egresos',
         icon: ArrowUpCircle,
         href: '/cajero/egresos',
-        color: 'text-[var(--green)]',
+        color: 'text-[var(--color-primary)]',
         disabled: true // Deshabilitado para futuras features
     },
     {
@@ -71,7 +72,7 @@ const menuItems: MenuItemWithDisabled[] = [
         label: 'Pagos a Personal',
         icon: DollarSign,
         href: '/cajero/pagos-personal',
-        color: 'text-[var(--green)]',
+        color: 'text-[var(--color-primary)]',
         disabled: true // Deshabilitado para futuras features
     },
     {
@@ -79,7 +80,7 @@ const menuItems: MenuItemWithDisabled[] = [
         label: 'Consultas Rápidas',
         icon: Search,
         href: '/cajero/consultas',
-        color: 'text-[var(--green)]',
+        color: 'text-[var(--color-primary)]',
         disabled: true // Deshabilitado para futuras features
     },
     {
@@ -87,7 +88,7 @@ const menuItems: MenuItemWithDisabled[] = [
         label: 'Reportes',
         icon: FileText,
         href: '/cajero/reportes',
-        color: 'text-[var(--green)]',
+        color: 'text-[var(--color-primary)]',
         disabled: true // Deshabilitado para futuras features
     },
     {
@@ -95,7 +96,7 @@ const menuItems: MenuItemWithDisabled[] = [
         label: 'Utilidades',
         icon: Calculator,
         href: '/cajero/utilidades',
-        color: 'text-[var(--green)]',
+        color: 'text-[var(--color-primary)]',
         disabled: true // Deshabilitado para futuras features
     }
 ];
@@ -106,6 +107,7 @@ export default function CajeroSideBar() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const pathname = usePathname();
     const isLoggingOut = logoutState === 'loading';
+    const tenant = useTenant();
 
     const toggleSidebar = () => {
         setIsCollapsed(!isCollapsed);
@@ -125,8 +127,8 @@ export default function CajeroSideBar() {
                 <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'justify-between'} w-full`}>
                     {!isCollapsed ? (
                         <Image
-                            src="/logos/logotipo.png"
-                            alt="Logo"
+                            src={tenant.branding.logo_principal}
+                            alt={tenant.nombre_empresa}
                             width={200}
                             height={40}
                             className="h-4 w-auto object-contain"
@@ -134,8 +136,8 @@ export default function CajeroSideBar() {
                         />
                     ) : (
                         <Image
-                            src="/logos/isologo-reducido.png"
-                            alt="Logo"
+                            src={tenant.branding.logo_header}
+                            alt={tenant.nombre_empresa}
                             width={200}
                             height={40}
                             className="h-8 w-auto object-contain"
@@ -159,7 +161,7 @@ export default function CajeroSideBar() {
             <div className="p-4 border-b border-[var(--black-900)]">
                 {isCollapsed ? (
                     <div className="flex flex-col items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-[var(--green)] flex items-center justify-center overflow-hidden">
+                        <div className="w-10 h-10 rounded-full bg-[var(--color-primary)] flex items-center justify-center overflow-hidden">
                             {usuario?.img ? (
                                 <Image
                                     src={usuario.img}
@@ -184,7 +186,7 @@ export default function CajeroSideBar() {
                 ) : (
                     <>
                         <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 rounded-full bg-[var(--green)] flex items-center justify-center overflow-hidden">
+                            <div className="w-10 h-10 rounded-full bg-[var(--color-primary)] flex items-center justify-center overflow-hidden">
                                 {usuario?.img ? (
                                     <Image
                                         src={usuario.img}
@@ -204,7 +206,7 @@ export default function CajeroSideBar() {
                         </div>
 
                         <div className="mt-3 flex space-x-2">
-                            <Link href="/cajero/perfil" className="flex-1 bg-[var(--green)] text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-300 transition-colors flex items-center justify-center space-x-2">
+                            <Link href="/cajero/perfil" className="flex-1 bg-[var(--color-primary)] text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-300 transition-colors flex items-center justify-center space-x-2">
                                 <User className="w-4 h-4" />
                                 <span>Perfil</span>
                             </Link>
@@ -230,20 +232,20 @@ export default function CajeroSideBar() {
                             <li className={isCollapsed ? 'w-full' : ''}>
                                 <Link
                                     href="/adm/dashboard"
-                                    className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg transition-colors group relative border border-[var(--green)] ${pathname?.startsWith('/adm') ? "bg-[var(--black-900)] text-white" : "hover:bg-[var(--black-900)]"}`}
+                                    className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} p-3 rounded-lg transition-colors group relative border border-[var(--color-primary)] ${pathname?.startsWith('/adm') ? "bg-[var(--black-900)] text-white" : "hover:bg-[var(--black-900)]"}`}
                                     title={isCollapsed ? "Panel de Administración" : undefined}
                                 >
                                     <Shield
                                         className={`w-5 h-5 flex-shrink-0 ${pathname?.startsWith('/adm')
-                                            ? "text-[var(--green)]"
-                                            : "text-[var(--green)]"
+                                            ? "text-[var(--color-primary)]"
+                                            : "text-[var(--color-primary)]"
                                             } group-hover:scale-110 transition-transform`}
                                     />
                                     {!isCollapsed && (
                                         <span
                                             className={`transition-colors flex-1 ${pathname?.startsWith('/adm')
-                                                ? "text-[var(--green)] font-medium"
-                                                : "text-[var(--green)] group-hover:text-white"
+                                                ? "text-[var(--color-primary)] font-medium"
+                                                : "text-[var(--color-primary)] group-hover:text-white"
                                                 }`}
                                         >
                                             Panel Admin
@@ -270,7 +272,7 @@ export default function CajeroSideBar() {
                                     >
                                     <item.icon
                                         className={`w-5 h-5 flex-shrink-0 ${isActive
-                                            ? "text-[var(--green)]"
+                                            ? "text-[var(--color-primary)]"
                                             : item.color || "text-gray-400"
                                             } group-hover:scale-110 transition-transform`}
                                     />
@@ -278,7 +280,7 @@ export default function CajeroSideBar() {
                                         <>
                                             <span
                                                 className={`transition-colors flex-1 ${isActive
-                                                    ? "text-[var(--green)] font-medium"
+                                                    ? "text-[var(--color-primary)] font-medium"
                                                     : "text-gray-300 group-hover:text-white"
                                                     }`}
                                             >
@@ -305,7 +307,7 @@ export default function CajeroSideBar() {
                                     >
                                         <item.icon
                                             className={`w-5 h-5 flex-shrink-0 ${isActive
-                                                ? "text-[var(--green)]"
+                                                ? "text-[var(--color-primary)]"
                                                 : item.color || "text-gray-400"
                                                 } group-hover:scale-110 transition-transform`}
                                         />
@@ -313,7 +315,7 @@ export default function CajeroSideBar() {
                                             <>
                                                 <span
                                                     className={`transition-colors flex-1 ${isActive
-                                                        ? "text-[var(--green)] font-medium"
+                                                        ? "text-[var(--color-primary)] font-medium"
                                                         : "text-gray-300 group-hover:text-white"
                                                         }`}
                                                 >

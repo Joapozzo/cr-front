@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { MdCameraAlt, MdPhotoLibrary } from 'react-icons/md';
 import { Loader2, ArrowRight, Info } from 'lucide-react';
@@ -85,11 +85,11 @@ export const ScannerIdleView = ({
       </div>
 
       {error && (
-        <div className="bg-[var(--red)]/20 border border-[var(--red)] rounded-lg p-4">
-          <p className="text-sm text-[var(--red)] mb-3 text-center">{error}</p>
+        <div className="bg-[var(--color-secondary)]/20 border border-[var(--color-secondary)] rounded-lg p-4">
+          <p className="text-sm text-[var(--color-secondary)] mb-3 text-center">{error}</p>
           <button
             onClick={onRetry}
-            className="w-full py-3 bg-[var(--green)] text-[var(--black)] rounded-lg text-sm font-medium"
+            className="w-full py-3 bg-[var(--color-primary)] text-[var(--black)] rounded-lg text-sm font-medium"
           >
             Intentar nuevamente
           </button>
@@ -99,13 +99,13 @@ export const ScannerIdleView = ({
       <button
         onClick={onStartScanning}
         disabled={!isSecureContext || !isMediaDevicesAvailable}
-        className="w-full h-56 lg:h-48 bg-[var(--gray-400)] rounded-lg border-2 border-dashed border-[var(--gray-300)] flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-[var(--gray-300)] hover:border-[var(--green)] transition-all disabled:opacity-50 overflow-hidden relative"
+        className="w-full h-56 lg:h-48 bg-[var(--gray-400)] rounded-lg border-2 border-dashed border-[var(--gray-300)] flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-[var(--gray-300)] hover:border-[var(--color-primary)] transition-all disabled:opacity-50 overflow-hidden relative"
       >
         {/* SKELETON DNI */}
-        <div className="relative w-56 lg:w-52 h-36 lg:h-32 bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] rounded-xl shadow-2xl border-2 border-[var(--green)]/30 overflow-hidden">
+        <div className="relative w-56 lg:w-52 h-36 lg:h-32 bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] rounded-xl shadow-2xl border-2 border-[var(--color-primary)]/30 overflow-hidden">
   {/* Efecto de barra de escaneo */}
   <div className="absolute inset-0">
-    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--green)] to-transparent animate-scan-line" />
+    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent animate-scan-line" />
   </div>
   
   {/* Contenido del DNI */}
@@ -146,12 +146,12 @@ export const ScannerIdleView = ({
       </div>
       
       {/* Indicador de pulso en el código de barras */}
-      <div className="absolute inset-0 rounded border-2 border-[var(--green)] animate-pulse opacity-80" />
+      <div className="absolute inset-0 rounded border-2 border-[var(--color-primary)] animate-pulse opacity-80" />
     </div>
     
     {/* Flecha señalando el código de barras */}
     <div className="absolute bottom-6 right-28 animate-bounce">
-      <ArrowRight className="w-6 h-6 text-[var(--green)] drop-shadow-lg" strokeWidth={3} />
+      <ArrowRight className="w-6 h-6 text-[var(--color-primary)] drop-shadow-lg" strokeWidth={3} />
     </div>
   </div>
 
@@ -169,7 +169,7 @@ export const ScannerIdleView = ({
         <div className="flex flex-col lg:flex-row gap-2 lg:gap-3">
           <button
             onClick={onOpenCamera}
-            className="w-full lg:flex-1 py-3 bg-[var(--green)] text-[var(--black)] rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-[var(--green)]/90 transition-colors"
+            className="w-full lg:flex-1 py-3 bg-[var(--color-primary)] text-[var(--black)] rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-[var(--color-primary)]/90 transition-colors"
           >
             <MdCameraAlt size={20} />
             <span className="hidden lg:inline">Tomar foto</span>
@@ -240,7 +240,7 @@ export const ScannerActiveView = ({
 
       {isRequestingPermission && (
         <div className="flex flex-col items-center gap-2 p-4 bg-[var(--gray-400)] rounded-lg">
-          <Loader2 className="w-6 h-6 animate-spin text-[var(--green)]" />
+          <Loader2 className="w-6 h-6 animate-spin text-[var(--color-primary)]" />
           <p className="text-sm text-[var(--gray-200)]">
             Solicitando acceso a la cámara...
           </p>
@@ -249,7 +249,7 @@ export const ScannerActiveView = ({
 
       {isProcessingPhoto && (
         <div className="flex flex-col items-center gap-2 p-4 bg-[var(--gray-400)] rounded-lg">
-          <Loader2 className="w-6 h-6 animate-spin text-[var(--green)]" />
+          <Loader2 className="w-6 h-6 animate-spin text-[var(--color-primary)]" />
           <p className="text-sm text-[var(--gray-200)]">
             Procesando foto... Esto puede tardar unos segundos.
           </p>
@@ -258,7 +258,7 @@ export const ScannerActiveView = ({
 
       {!error && !isRequestingPermission && !isProcessingPhoto && (
         <>
-          <div className="flex items-center justify-center gap-2 text-[var(--green)]">
+          <div className="flex items-center justify-center gap-2 text-[var(--color-primary)]">
             <Loader2 className="w-4 h-4 animate-spin" />
             <p className="text-sm">Buscando código...</p>
           </div>
@@ -282,7 +282,7 @@ export const ScannerActiveView = ({
               </div>
               <button
                 onClick={onOpenCamera}
-                className="w-full py-3 bg-[var(--green)] text-[var(--black)] rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-[var(--green)]/90 transition-colors"
+                className="w-full py-3 bg-[var(--color-primary)] text-[var(--black)] rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-[var(--color-primary)]/90 transition-colors"
               >
                 <MdCameraAlt size={20} />
                 Tomar foto del código de barras
@@ -301,7 +301,7 @@ export const ScannerActiveView = ({
 
       <button
         onClick={onCancel}
-        className="text-sm text-[var(--gray-200)] hover:text-[var(--red)] transition-colors text-center"
+        className="text-sm text-[var(--gray-200)] hover:text-[var(--color-secondary)] transition-colors text-center"
       >
         Cancelar
       </button>

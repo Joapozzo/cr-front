@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -258,7 +258,7 @@ export const ValidarDniForm = () => {
     return (
       <div className="w-full flex flex-col gap-4 lg:gap-5 flex-1 lg:flex-none justify-start">
         <div className="w-full h-56 lg:h-48 bg-[var(--gray-400)] rounded-lg border-2 border-dashed border-[var(--gray-300)] flex flex-col items-center justify-center gap-3 animate-pulse">
-          <div className="relative w-56 lg:w-52 h-36 lg:h-32 bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] rounded-xl border-2 border-[var(--green)]/30" />
+          <div className="relative w-56 lg:w-52 h-36 lg:h-32 bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] rounded-xl border-2 border-[var(--color-primary)]/30" />
         </div>
       </div>
     );
@@ -284,8 +284,8 @@ export const ValidarDniForm = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 lg:gap-5 w-full flex-1 lg:flex-none justify-center lg:justify-start">
           {/* Datos extraídos (readonly) */}
           <div className="flex flex-col gap-4">
-            <div className="bg-[var(--green)]/10 border border-[var(--green)] rounded-lg p-4">
-              <p className="text-xs text-[var(--green)]">
+            <div className="bg-[var(--color-primary)]/10 border border-[var(--color-primary)] rounded-lg p-4">
+              <p className="text-xs text-[var(--color-primary)]">
                 ✓ Datos extraídos de tu DNI
               </p>
             </div>
@@ -352,7 +352,7 @@ export const ValidarDniForm = () => {
                   <GiSoccerBall size={18} />
                 </div>
                 <select
-                  className="w-full h-12 pl-10 pr-4 bg-[var(--gray-400)] border border-[var(--gray-300)] rounded-lg text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--green)] focus:border-transparent transition-all"
+                  className="w-full h-12 pl-10 pr-4 bg-[var(--gray-400)] border border-[var(--gray-300)] rounded-lg text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                   {...register('id_posicion', { 
                     setValueAs: (v) => v === '' ? undefined : Number(v) 
                   })}
@@ -407,7 +407,7 @@ export const ValidarDniForm = () => {
                 setIsScanning(false);
                 setStep('scan');
               }}
-              className="text-sm text-[var(--gray-200)] hover:text-[var(--green)] transition-colors text-center lg:text-left"
+              className="text-sm text-[var(--gray-200)] hover:text-[var(--color-primary)] transition-colors text-center lg:text-left"
             >
               Volver a escanear DNI
             </button>

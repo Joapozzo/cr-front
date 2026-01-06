@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { MdEmail } from 'react-icons/md';
 
 interface EmailAuthButtonProps {
@@ -34,13 +34,13 @@ export const EmailAuthButton = ({
                 bg-[var(--gray-400)] rounded-2xl 
                 border transition-colors
                 ${isEmailExpanded
-                    ? 'border-[var(--green)] ring-1 ring-[var(--green)]'
+                    ? 'border-[var(--color-primary)] ring-1 ring-[var(--color-primary)]'
                     : 'border-[var(--gray-300)] hover:border-white cursor-pointer'}
                 shadow-lg shadow-black/20
             `}
         >
             <div className={`p-3 rounded-full border border-white/5 shadow-inner transition-colors
-                ${isEmailExpanded ? 'bg-[var(--green)]/10 text-[var(--green)]' : 'bg-white/5 text-[var(--gray-100)]'}
+                ${isEmailExpanded ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]' : 'bg-white/5 text-[var(--gray-100)]'}
             `}>
                 <MdEmail size={28} />
             </div>
@@ -49,7 +49,7 @@ export const EmailAuthButton = ({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     className={`text-base font-medium transition-colors
-                        ${isEmailExpanded ? 'text-[var(--green)]' : 'text-[var(--gray-100)]'}
+                        ${isEmailExpanded ? 'text-[var(--color-primary)]' : 'text-[var(--gray-100)]'}
                     `}
                 >
                     {label}

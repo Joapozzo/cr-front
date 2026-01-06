@@ -1,16 +1,18 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { getWhatsAppLink } from '@/constants/contact';
 import { Button } from '@/app/components/ui/Button';
+import { useTenant } from '@/app/contexts/TenantContext';
 
 import Image from 'next/image';
 
 const  Hero = () => {
     const { scrollY } = useScroll();
     const y = useTransform(scrollY, [0, 500], [0, 150]);
+    const tenant = useTenant();
 
     return (
         <section id="hero" className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -42,14 +44,24 @@ const  Hero = () => {
                     transition={{ duration: 0.8 }}
                 >
                     <h1 className="text-4xl md:text-7xl font-extrabold text-[var(--white)] mb-6 tracking-tight">
-                        Copa <span className="text-[var(--green)]">Relámpago</span>
+                        {tenant.nombre_empresa ? (
+                            tenant.nombre_empresa.split(' ').map((word: string, i: number) => 
+                                i === 0 ? (
+                                    <React.Fragment key={i}>{word}</React.Fragment>
+                                ) : (
+                                    <span key={i} className="text-[var(--color-primary)]"> {word}</span>
+                                )
+                            )
+                        ) : (
+                            <span>Bienvenido</span>
+                        )}
                     </h1>
                     <p className="text-lg md:text-2xl text-[var(--gray-100)] mb-8 max-w-2xl mx-auto font-light">
-                        El mejor torneo de fútbol 7 de Córdoba. Pasión, competencia y profesionalismo en cada partido.
+                        {tenant.seo.description}
                     </p>
 
                     <div className="flex flex-col md:flex-row gap-4 justify-center items-center w-full md:w-auto">
-                        <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="w-full md:w-auto">
+                        <a href={getWhatsAppLink(undefined, tenant.nombre_empresa)} target="_blank" rel="noopener noreferrer" className="w-full md:w-auto">
                             <Button variant="footer" size="md" className="gap-2 font-bold shadow-lg shadow-green-900/20 rounded-full w-full md:w-auto md:px-8 md:py-4 md:text-lg">
                                 Empezá a Jugar <ArrowRight size={20} />
                             </Button>

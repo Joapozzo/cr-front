@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 
 interface Column<T extends Record<string, unknown> = Record<string, unknown>> {
     key: string;
@@ -70,7 +70,7 @@ export const DataTable = <T extends Record<string, unknown>>({
                 {/* Loading indicator */}
                 {/* <div className="p-4 text-center border-t border-[var(--gray-300)]">
                     <div className="flex items-center justify-center gap-2">
-                        <div className="w-4 h-4 border-2 border-[var(--green)] border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-4 h-4 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin"></div>
                         <span className="text-[var(--gray-100)] text-sm">Cargando datos...</span>
                     </div>
                 </div> */}

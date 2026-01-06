@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useMemo, useEffect } from 'react';
 import { HistorialPartidosEquipoResponse, FixtureEquipo, PartidoEquipo as PartidoEquipoLegajo } from '@/app/types/legajos';
@@ -281,7 +281,7 @@ export const EquipoPartidosTab = ({
                         className={`
                             whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2
                             ${tabActivo === 'fixture'
-                                ? 'border-[var(--green)] text-[var(--green)]'
+                                ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                                 : 'border-transparent text-[var(--gray-100)] hover:text-[var(--white)] hover:border-[var(--gray-200)]'
                             }
                         `}
@@ -294,7 +294,7 @@ export const EquipoPartidosTab = ({
                         className={`
                             whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2
                             ${tabActivo === 'historial'
-                                ? 'border-[var(--green)] text-[var(--green)]'
+                                ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                                 : 'border-transparent text-[var(--gray-100)] hover:text-[var(--white)] hover:border-[var(--gray-200)]'
                             }
                         `}
@@ -328,7 +328,7 @@ export const EquipoPartidosTab = ({
                                                 }}
                                                 className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
                                                     vistaActiva === 'jornada'
-                                                        ? 'bg-[var(--green)] text-white'
+                                                        ? 'bg-[var(--color-primary)] text-white'
                                                         : 'text-[#737373] hover:text-white'
                                                 }`}
                                             >
@@ -338,7 +338,7 @@ export const EquipoPartidosTab = ({
                                                 onClick={() => setVistaActiva('fecha')}
                                                 className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
                                                     vistaActiva === 'fecha'
-                                                        ? 'bg-[var(--green)] text-white'
+                                                        ? 'bg-[var(--color-primary)] text-white'
                                                         : 'text-[#737373] hover:text-white'
                                                 }`}
                                             >

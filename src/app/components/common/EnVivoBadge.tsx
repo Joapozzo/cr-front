@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 
 interface EnVivoBadgeProps {
     size?: 'sm' | 'md' | 'lg';
@@ -32,10 +32,10 @@ export const EnVivoBadge: React.FC<EnVivoBadgeProps> = ({
     return (
         <div className={`flex items-center ${classes.container} bg-[#1a1a1a] rounded-full border border-[#262626] ${className}`}>
             <div className="relative flex items-center justify-center">
-                <div className={`absolute ${classes.dot} bg-[var(--green)] rounded-full animate-ping opacity-75`} />
-                <div className={`relative ${classes.dot} bg-[var(--green)] rounded-full`} />
+                <div className={`absolute ${classes.dot} bg-[var(--color-primary)] rounded-full animate-ping opacity-75`} />
+                <div className={`relative ${classes.dot} bg-[var(--color-primary)] rounded-full`} />
             </div>
-            <span className={`text-[var(--green)] ${classes.text} font-semibold uppercase`}>
+            <span className={`text-[var(--color-primary)] ${classes.text} font-semibold uppercase`}>
                 En Vivo
             </span>
         </div>

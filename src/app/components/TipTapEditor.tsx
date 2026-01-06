@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
@@ -53,7 +53,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
                     onClick={() => editor.chain().focus().toggleBold().run()}
                     className={`px-3 py-1.5 rounded transition-colors text-[var(--white)] ${
                         editor.isActive('bold')
-                            ? 'bg-[var(--green)] hover:bg-[var(--green-win)]'
+                            ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)]'
                             : 'bg-[var(--gray-300)] hover:bg-[var(--gray-200)]'
                     }`}
                 >
@@ -64,7 +64,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
                     onClick={() => editor.chain().focus().toggleItalic().run()}
                     className={`px-3 py-1.5 rounded transition-colors text-[var(--white)] ${
                         editor.isActive('italic')
-                            ? 'bg-[var(--green)] hover:bg-[var(--green-win)]'
+                            ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)]'
                             : 'bg-[var(--gray-300)] hover:bg-[var(--gray-200)]'
                     }`}
                 >
@@ -75,7 +75,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
                     onClick={() => editor.chain().focus().toggleStrike().run()}
                     className={`px-3 py-1.5 rounded transition-colors text-[var(--white)] ${
                         editor.isActive('strike')
-                            ? 'bg-[var(--green)] hover:bg-[var(--green-win)]'
+                            ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)]'
                             : 'bg-[var(--gray-300)] hover:bg-[var(--gray-200)]'
                     }`}
                 >
@@ -89,7 +89,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
                     onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
                     className={`px-3 py-1.5 rounded transition-colors text-[var(--white)] ${
                         editor.isActive('heading', { level: 1 })
-                            ? 'bg-[var(--green)] hover:bg-[var(--green-win)]'
+                            ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)]'
                             : 'bg-[var(--gray-300)] hover:bg-[var(--gray-200)]'
                     }`}
                 >
@@ -100,7 +100,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
                     onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
                     className={`px-3 py-1.5 rounded transition-colors text-[var(--white)] ${
                         editor.isActive('heading', { level: 2 })
-                            ? 'bg-[var(--green)] hover:bg-[var(--green-win)]'
+                            ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)]'
                             : 'bg-[var(--gray-300)] hover:bg-[var(--gray-200)]'
                     }`}
                 >
@@ -111,7 +111,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
                     onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
                     className={`px-3 py-1.5 rounded transition-colors text-[var(--white)] ${
                         editor.isActive('heading', { level: 3 })
-                            ? 'bg-[var(--green)] hover:bg-[var(--green-win)]'
+                            ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)]'
                             : 'bg-[var(--gray-300)] hover:bg-[var(--gray-200)]'
                     }`}
                 >
@@ -125,7 +125,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
                     onClick={() => editor.chain().focus().toggleBulletList().run()}
                     className={`px-3 py-1.5 rounded transition-colors text-[var(--white)] ${
                         editor.isActive('bulletList')
-                            ? 'bg-[var(--green)] hover:bg-[var(--green-win)]'
+                            ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)]'
                             : 'bg-[var(--gray-300)] hover:bg-[var(--gray-200)]'
                     }`}
                 >
@@ -136,7 +136,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
                     onClick={() => editor.chain().focus().toggleOrderedList().run()}
                     className={`px-3 py-1.5 rounded transition-colors text-[var(--white)] ${
                         editor.isActive('orderedList')
-                            ? 'bg-[var(--green)] hover:bg-[var(--green-win)]'
+                            ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)]'
                             : 'bg-[var(--gray-300)] hover:bg-[var(--gray-200)]'
                     }`}
                 >
@@ -150,7 +150,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
                     onClick={() => editor.chain().focus().setTextAlign('left').run()}
                     className={`px-3 py-1.5 rounded transition-colors text-[var(--white)] ${
                         editor.isActive({ textAlign: 'left' })
-                            ? 'bg-[var(--green)] hover:bg-[var(--green-win)]'
+                            ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)]'
                             : 'bg-[var(--gray-300)] hover:bg-[var(--gray-200)]'
                     }`}
                 >
@@ -161,7 +161,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
                     onClick={() => editor.chain().focus().setTextAlign('center').run()}
                     className={`px-3 py-1.5 rounded transition-colors text-[var(--white)] ${
                         editor.isActive({ textAlign: 'center' })
-                            ? 'bg-[var(--green)] hover:bg-[var(--green-win)]'
+                            ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)]'
                             : 'bg-[var(--gray-300)] hover:bg-[var(--gray-200)]'
                     }`}
                 >
@@ -172,7 +172,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
                     onClick={() => editor.chain().focus().setTextAlign('right').run()}
                     className={`px-3 py-1.5 rounded transition-colors text-[var(--white)] ${
                         editor.isActive({ textAlign: 'right' })
-                            ? 'bg-[var(--green)] hover:bg-[var(--green-win)]'
+                            ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)]'
                             : 'bg-[var(--gray-300)] hover:bg-[var(--gray-200)]'
                     }`}
                 >

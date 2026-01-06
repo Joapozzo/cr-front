@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Plus, X, Loader2 } from 'lucide-react';
@@ -79,7 +79,7 @@ const HelperCrearNombreCategoria = ({ onSuccess }: HelperCrearNombreCategoriaPro
     }
 
     return (
-        <div className="mb-4 p-4 bg-[var(--gray-300)] rounded-lg border border-[var(--green)]">
+        <div className="mb-4 p-4 bg-[var(--gray-300)] rounded-lg border border-[var(--color-primary)]">
             <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-medium text-[var(--white)]">
                     Crear nuevo nombre de categoría
@@ -98,7 +98,7 @@ const HelperCrearNombreCategoria = ({ onSuccess }: HelperCrearNombreCategoriaPro
                 <div>
                     <label className="block text-xs font-medium text-[var(--white)] mb-1">
                         Nombre
-                        <span className="text-[var(--red)] ml-1">*</span>
+                        <span className="text-[var(--color-secondary)] ml-1">*</span>
                     </label>
                     <Input
                         type="text"

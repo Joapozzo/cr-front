@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { IncidenciaPartido, JugadorPlantel } from '@/app/types/partido';
 import { TbCircleLetterCFilled, TbRectangleVerticalFilled } from "react-icons/tb";
 import { GiSoccerKick } from "react-icons/gi";
@@ -57,7 +57,7 @@ const IncidentIcon: React.FC<{ tipo: string; cantidad?: number }> = ({ tipo, can
     const renderIcono = () => {
         switch (tipo) {
             case 'gol':
-                return <PiSoccerBallFill className="w-4 h-4 text-[var(--green)] fill-current" />;
+                return <PiSoccerBallFill className="w-4 h-4 text-[var(--color-primary)] fill-current" />;
             case 'amarilla':
                 return <TbRectangleVerticalFilled className="w-4 h-4 text-yellow-500" />;
             case 'roja':
@@ -70,7 +70,7 @@ const IncidentIcon: React.FC<{ tipo: string; cantidad?: number }> = ({ tipo, can
                     </div>
                 );
             case 'asistencia':
-                return <GiSoccerKick className="w-4 h-4 text-[var(--green)]" />;
+                return <GiSoccerKick className="w-4 h-4 text-[var(--color-primary)]" />;
             default:
                 return null;
         }
@@ -121,7 +121,7 @@ const JugadorRow: React.FC<{
                         : jugador.eventual === 'S'
                             ? 'bg-yellow-500 text-black'
                             : jugador.dorsal
-                                ? 'bg-[var(--green)] text-black'
+                                ? 'bg-[var(--color-primary)] text-black'
                                 : 'bg-[#404040] text-[#737373]'
                     }
                 `}
@@ -166,7 +166,7 @@ const IncidenciaRow: React.FC<{
     const getIcono = () => {
         switch (incidencia.tipo) {
             case 'gol':
-                return <PiSoccerBallFill className="w-5 h-5 text-[var(--green)] fill-current" />;
+                return <PiSoccerBallFill className="w-5 h-5 text-[var(--color-primary)] fill-current" />;
             case 'amarilla':
                 return <TbRectangleVerticalFilled className="w-5 h-5 text-yellow-500" />;
             case 'roja':
@@ -179,7 +179,7 @@ const IncidenciaRow: React.FC<{
                     </div>
                 );
             case 'asistencia':
-                return <GiSoccerKick className="w-5 h-5 text-[var(--green)]" />;
+                return <GiSoccerKick className="w-5 h-5 text-[var(--color-primary)]" />;
             default:
                 return null;
         }
@@ -283,7 +283,7 @@ const PartidoTabs: React.FC<PartidoTabsProps> = ({
                         className={`
                             flex-1 py-4 text-sm font-semibold transition-all duration-200 border-b-2
                             ${activeTab === 'local'
-                                ? 'border-[var(--green)] text-[var(--green)]'
+                                ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                                 : 'border-transparent text-[#737373] hover:text-white hover:border-[#404040]'
                             }
                         `}
@@ -297,7 +297,7 @@ const PartidoTabs: React.FC<PartidoTabsProps> = ({
                         className={`
                             flex-1 py-4 text-sm font-semibold transition-all duration-200 border-b-2
                             ${activeTab === 'incidencias'
-                                ? 'border-[var(--green)] text-[var(--green)]'
+                                ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                                 : 'border-transparent text-[#737373] hover:text-white hover:border-[#404040]'
                             }
                         `}
@@ -311,7 +311,7 @@ const PartidoTabs: React.FC<PartidoTabsProps> = ({
                         className={`
                             flex-1 py-4 text-sm font-semibold transition-all duration-200 border-b-2
                             ${activeTab === 'visita'
-                                ? 'border-[var(--green)] text-[var(--green)]'
+                                ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                                 : 'border-transparent text-[#737373] hover:text-white hover:border-[#404040]'
                             }
                         `}

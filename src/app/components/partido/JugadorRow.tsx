@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { JugadorPlantel } from "@/app/types/partido";
 import { Loader2, MoreVertical, Trash2, RefreshCw, ArrowRight, ArrowLeft } from 'lucide-react';
 import { TbCircleLetterCFilled } from "react-icons/tb";
@@ -91,7 +91,7 @@ const JugadorRow: React.FC<JugadorRowProps> = ({
                 <div
                     className={`
                         flex items-center justify-center w-8 h-10 font-bold text-sm rounded
-                        ${jugador.dorsal ? 'bg-[var(--green)] text-black' : 'bg-[#404040] text-[#737373]'}
+                        ${jugador.dorsal ? 'bg-[var(--color-primary)] text-black' : 'bg-[#404040] text-[#737373]'}
                     `}
                 >
                     {estaCargando ? <Loader2 size={16} className="animate-spin" /> : jugador.dorsal || '-'}
@@ -190,7 +190,7 @@ const JugadorRow: React.FC<JugadorRowProps> = ({
                             className="w-8 h-8 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
                             disabled={esInhabilitado}
                         >
-                            <Trash2 size={16} className="text-[var(--red)]" />
+                            <Trash2 size={16} className="text-[var(--color-secondary)]" />
                         </button>
                     </div>
                 )}

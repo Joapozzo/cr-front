@@ -1,4 +1,4 @@
-import { UseMutationResult } from "@tanstack/react-query";
+﻿import { UseMutationResult } from "@tanstack/react-query";
 import { Noticia } from "../types/noticia";
 import { Button } from "./ui/Button";
 import Image from 'next/image';
@@ -15,12 +15,12 @@ const CardNoticiaAdmin = ({ noticia, handleEdit, handleTogglePublish, handleDele
 
     const getBadgeClasses = (publicada?: boolean) => {
         return publicada
-            ? 'px-2 py-1 text-xs rounded bg-[var(--green)]/20 text-[var(--green)]'
+            ? 'px-2 py-1 text-xs rounded bg-[var(--color-primary)]/20 text-[var(--color-primary)]'
             : 'px-2 py-1 text-xs rounded bg-[var(--gray-300)] text-[var(--gray-100)]';
     };
 
     return (
-        <div key={noticia.id_noticia} className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] overflow-hidden hover:border-[var(--green)] transition-colors">
+        <div key={noticia.id_noticia} className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] overflow-hidden hover:border-[var(--color-primary)] transition-colors">
             {/* Imagen */}
             <div className="relative h-48 bg-[var(--gray-300)]">
                 {(noticia.img_portada || noticia.img) ? (

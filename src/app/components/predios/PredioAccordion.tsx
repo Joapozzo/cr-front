@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, MapPin, Edit2, Trash2, Plus, ExternalLink } from 'lucide-react';
@@ -59,10 +59,10 @@ const PredioAccordion: React.FC<PredioAccordionProps> = ({
             >
                 <div className="flex items-center gap-4 flex-1 text-left">
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        isOpen ? 'bg-[var(--green)]/20' : 'bg-[var(--gray-300)]'
+                        isOpen ? 'bg-[var(--color-primary)]/20' : 'bg-[var(--gray-300)]'
                     }`}>
                         {isOpen ? (
-                            <ChevronUp className="w-5 h-5 text-[var(--green)]" />
+                            <ChevronUp className="w-5 h-5 text-[var(--color-primary)]" />
                         ) : (
                             <ChevronDown className="w-5 h-5 text-[var(--gray-100)]" />
                         )}
@@ -80,7 +80,7 @@ const PredioAccordion: React.FC<PredioAccordionProps> = ({
                             }`}>
                                 {predio.estado === 'A' ? 'Activo' : 'Inactivo'}
                             </span>
-                            <span className="px-2 py-1 rounded-full text-xs font-medium bg-[var(--green)]/20 text-[var(--green)] border border-[var(--green)]/30">
+                            <span className="px-2 py-1 rounded-full text-xs font-medium bg-[var(--color-primary)]/20 text-[var(--color-primary)] border border-[var(--color-primary)]/30">
                                 {canchasActivas.length} cancha{canchasActivas.length !== 1 ? 's' : ''}
                             </span>
                         </div>
@@ -93,7 +93,7 @@ const PredioAccordion: React.FC<PredioAccordionProps> = ({
                                             href={predio.direccion}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="flex items-center gap-1 text-[var(--green)] hover:text-[var(--green)]/80 transition-colors underline"
+                                            className="flex items-center gap-1 text-[var(--color-primary)] hover:text-[var(--color-primary)]/80 transition-colors underline"
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             <span>Ver en Google Maps</span>

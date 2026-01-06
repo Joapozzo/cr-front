@@ -7,6 +7,7 @@ import { EdicionLayout } from '@/app/components/layouts/EdicionLayout';
 import { SelectorEdicionCategoria } from '@/app/components/estadisticas/SelectorEdicionCategoria';
 import { EstadisticasTabs, EstadisticaTab } from '@/app/components/estadisticas/EstadisticasTabs';
 import { useEdicionCategoria } from '@/app/contexts/EdicionCategoriaContext';
+import { useTenant } from '@/app/contexts/TenantContext';
 
 interface EstadisticasLayoutProps {
   children: React.ReactNode;
@@ -15,6 +16,7 @@ interface EstadisticasLayoutProps {
 function EstadisticasLayoutContent({ children }: EstadisticasLayoutProps) {
   const searchParams = useSearchParams();
   const categoriaQueryProcessed = useRef(false);
+  const tenant = useTenant();
 
   const {
     categoriaSeleccionada,
@@ -64,7 +66,7 @@ function EstadisticasLayoutContent({ children }: EstadisticasLayoutProps) {
   return (
     <UserPageWrapper>
       <EdicionLayout
-        nombreEdicion={edicionActual?.nombre || 'Copa Relámpago'}
+        nombreEdicion={edicionActual?.nombre || tenant.nombre_empresa}
         temporada={edicionActual?.temporada?.toString() || '2025'}
         nombreCategoria={categoriaSeleccionada?.nombre}
         logoEdicion={edicionActual?.img || undefined}

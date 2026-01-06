@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useMemo } from 'react';
 import { Edit2, Trash2, MoreVertical, Loader2 } from 'lucide-react';
@@ -330,7 +330,7 @@ const CardCancha: React.FC<CardCanchaProps> = ({
                 {cargandoPartidos && (
                     <div className="absolute top-2 left-2 z-20">
                         <div className="bg-[var(--black-900)]/90 backdrop-blur-sm px-2 py-1 rounded-lg border border-[var(--gray-300)]/30">
-                            <Loader2 className="w-4 h-4 animate-spin text-[var(--green)]" />
+                            <Loader2 className="w-4 h-4 animate-spin text-[var(--color-primary)]" />
                         </div>
                     </div>
                 )}

@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion';
+﻿import { motion, AnimatePresence } from 'framer-motion';
 import { PlayCircle, Clock } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -37,7 +37,7 @@ export const PartidosEnVivoSection: React.FC<PartidosEnVivoSectionProps> = ({ da
 
     if (error) {
         return (
-            <div className="bg-[var(--red-500)]/10 border border-[var(--red-500)]/20 rounded-xl p-6 text-center text-[var(--red-500)]">
+            <div className="bg-[var(--color-secondary-500)]/10 border border-[var(--color-secondary-500)]/20 rounded-xl p-6 text-center text-[var(--color-secondary-500)]">
                 <PlayCircle className="mx-auto mb-2" size={24} />
                 <p>Error al cargar partidos en vivo</p>
             </div>
@@ -60,7 +60,7 @@ export const PartidosEnVivoSection: React.FC<PartidosEnVivoSectionProps> = ({ da
                 <motion.div
                     animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
                     transition={{ repeat: Infinity, duration: 2 }}
-                    className="w-3 h-3 rounded-full bg-[var(--red-500)]"
+                    className="w-3 h-3 rounded-full bg-[var(--color-secondary-500)]"
                 />
                 <h2 className="text-xl font-bold text-white tracking-tight">EN VIVO</h2>
                 <Badge variant="danger" className="ml-2">{data.length} {data.length > 1 ? 'PARTIDOS' : 'PARTIDO'}</Badge>
@@ -98,7 +98,7 @@ export const PartidosEnVivoSection: React.FC<PartidosEnVivoSectionProps> = ({ da
                                 <motion.div
                                     animate={{ opacity: [1, 0.7, 1] }}
                                     transition={{ repeat: Infinity, duration: 1.5 }}
-                                    className="bg-[var(--red-500)] text-white text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1 shadow-[0_0_10px_rgba(239,68,68,0.5)]"
+                                    className="bg-[var(--color-secondary-500)] text-white text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1 shadow-[0_0_10px_rgba(239,68,68,0.5)]"
                                 >
                                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
                                     {getEstadoLabel(partido.estado)}
@@ -128,7 +128,7 @@ export const PartidosEnVivoSection: React.FC<PartidosEnVivoSectionProps> = ({ da
                                             {partido.goles_local ?? 0}-{partido.goles_visita ?? 0}
                                         </div>
                                         {tiempoTranscurrido !== null && tiempoTranscurrido >= 0 && (
-                                            <div className="text-[10px] text-[var(--green)] mt-1 font-mono flex items-center gap-1">
+                                            <div className="text-[10px] text-[var(--color-primary)] mt-1 font-mono flex items-center gap-1">
                                                 <Clock size={10} />
                                                 {tiempoTranscurrido}&apos;
                                             </div>
@@ -158,7 +158,7 @@ export const PartidosEnVivoSection: React.FC<PartidosEnVivoSectionProps> = ({ da
                             </div>
 
                             {/* Decorative gradient */}
-                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--red-500)] via-[var(--orange-500)] to-[var(--red-500)] opacity-50"></div>
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--color-secondary-500)] via-[var(--orange-500)] to-[var(--color-secondary-500)] opacity-50"></div>
                                 </motion.div>
                             </Link>
                         );

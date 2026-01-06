@@ -1,4 +1,4 @@
-import DropdownMenu from "./DropDownMenu";
+﻿import DropdownMenu from "./DropDownMenu";
 import { Button } from "./ui/Button";
 import { MoreHorizontal, Plus, Trash2 } from 'lucide-react';
 import ZonaCard from "./ZonaCard";
@@ -205,17 +205,17 @@ const FaseSection = ({ fase, idCatEdicion }: FaseSectionProps) => {
             {loadingZonas ? (
                 <div className="flex items-center justify-center py-12 w-full min-h-[200px]">
                     <div className="flex items-center gap-3 text-[var(--gray-100)]">
-                        <div className="w-6 h-6 border-2 border-[var(--green)] border-t-transparent rounded-full animate-spin" />
+                        <div className="w-6 h-6 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
                         <span>Cargando zonas...</span>
                     </div>
                 </div>
             ) : (
                 <div className="flex flex-wrap gap-4 items-start">
                     {errorZonas ? (
-                        <div className="w-full text-center py-12 bg-[var(--gray-400)] rounded-lg border border-[var(--red)]">
+                        <div className="w-full text-center py-12 bg-[var(--gray-400)] rounded-lg border border-[var(--color-secondary)]">
                             <div className="flex flex-col items-center gap-4">
                                 <div>
-                                    <h3 className="text-[var(--red)] font-medium mb-2">
+                                    <h3 className="text-[var(--color-secondary)] font-medium mb-2">
                                         Error al cargar las zonas
                                     </h3>
                                     <p className="text-[var(--gray-100)] text-sm">

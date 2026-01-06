@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { TablaPosiciones } from '@/app/types/legajos';
@@ -79,7 +79,7 @@ export const EquipoTablaTab = ({ tabla, isLoading, categoriaSeleccionada, idEqui
                         className={`
                             whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2
                             ${tabActivo === 'posiciones'
-                                ? 'border-[var(--green)] text-[var(--green)]'
+                                ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                                 : 'border-transparent text-[var(--gray-100)] hover:text-[var(--white)] hover:border-[var(--gray-200)]'
                             }
                         `}
@@ -92,7 +92,7 @@ export const EquipoTablaTab = ({ tabla, isLoading, categoriaSeleccionada, idEqui
                         className={`
                             whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2
                             ${tabActivo === 'playoff'
-                                ? 'border-[var(--green)] text-[var(--green)]'
+                                ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                                 : 'border-transparent text-[var(--gray-100)] hover:text-[var(--white)] hover:border-[var(--gray-200)]'
                             }
                         `}
@@ -136,20 +136,20 @@ export const EquipoTablaTab = ({ tabla, isLoading, categoriaSeleccionada, idEqui
                                                     <tr
                                                         key={equipo.equipo.id_equipo}
                                                         className={`border-b border-[var(--gray-300)] ${equipo.equipo.id_equipo === idEquipo
-                                                                ? 'bg-[var(--green)]/20'
+                                                                ? 'bg-[var(--color-primary)]/20'
                                                                 : ''
                                                             }`}
                                                     >
                                                         <td className="py-2 px-4 text-[var(--white)] font-semibold">{index + 1}</td>
                                                         <td className="py-2 px-4 text-[var(--white)]">{equipo.equipo.nombre}</td>
                                                         <td className="py-2 px-4 text-center text-[var(--gray-100)]">{equipo.partidos_jugados}</td>
-                                                        <td className="py-2 px-4 text-center text-[var(--green)]">{equipo.ganados}</td>
+                                                        <td className="py-2 px-4 text-center text-[var(--color-primary)]">{equipo.ganados}</td>
                                                         <td className="py-2 px-4 text-center text-[var(--yellow)]">{equipo.empatados}</td>
-                                                        <td className="py-2 px-4 text-center text-[var(--red)]">{equipo.perdidos}</td>
+                                                        <td className="py-2 px-4 text-center text-[var(--color-secondary)]">{equipo.perdidos}</td>
                                                         <td className="py-2 px-4 text-center text-[var(--gray-100)]">{equipo.goles_favor}</td>
                                                         <td className="py-2 px-4 text-center text-[var(--gray-100)]">{equipo.goles_contra}</td>
                                                         <td className="py-2 px-4 text-center text-[var(--gray-100)]">{equipo.diferencia_goles}</td>
-                                                        <td className="py-2 px-4 text-center text-[var(--green)] font-bold">{equipo.puntos}</td>
+                                                        <td className="py-2 px-4 text-center text-[var(--color-primary)] font-bold">{equipo.puntos}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>

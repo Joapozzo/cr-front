@@ -4,11 +4,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { FaWhatsapp } from 'react-icons/fa';
 import { getWhatsAppLink } from '@/constants/contact';
+import { useTenant } from '@/app/contexts/TenantContext';
 
 const FloatingWhatsApp = () => {
+    const tenant = useTenant();
+    
     return (
         <motion.a
-            href={getWhatsAppLink()}
+            href={getWhatsAppLink(undefined, tenant.nombre_empresa)}
             target="_blank"
             rel="noopener noreferrer"
             className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:bg-[#20bd5a] transition-colors flex items-center justify-center"

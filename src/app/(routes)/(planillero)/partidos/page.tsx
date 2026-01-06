@@ -11,6 +11,7 @@ import { Partido } from '@/app/types/partido';
 import { formatearFechaCompleta } from '@/app/utils/fechas';
 import { usePartidosUsuario } from '@/app/hooks/usePartidos';
 import { useEdicionCategoria } from '@/app/contexts/EdicionCategoriaContext';
+import { useTenant } from '@/app/contexts/TenantContext';
 
 type VistaType = 'fecha' | 'jornada';
 
@@ -21,6 +22,7 @@ export default function PartidosPage() {
   const [allPartidos, setAllPartidos] = useState<Partido[]>([]);
   const observerTarget = useRef<HTMLDivElement>(null);
   const limit = 20;
+  const tenant = useTenant();
 
   // Usar el contexto de edición y categoría
   const { 
@@ -146,7 +148,7 @@ export default function PartidosPage() {
   return (
     <UserPageWrapper>
       <EdicionLayout
-        nombreEdicion={edicionActual?.nombre || 'Copa Relámpago'}
+        nombreEdicion={edicionActual?.nombre || tenant.nombre_empresa}
         temporada={edicionActual?.temporada?.toString() || '2025'}
         nombreCategoria={categoriaSeleccionada?.nombre}
         logoEdicion={edicionActual?.img || undefined}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Search } from 'lucide-react';
@@ -68,7 +68,7 @@ export const CategoriaSelector: React.FC<CategoriaSelectorProps> = ({
       {/* Botón selector */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between gap-3 bg-[var(--black-900)] border border-[#262626] rounded-xl px-4 py-3 hover:border-[var(--green)] transition-colors"
+        className="w-full flex items-center justify-between gap-3 bg-[var(--black-900)] border border-[#262626] rounded-xl px-4 py-3 hover:border-[var(--color-primary)] transition-colors"
       >
         <div className="flex-1 text-left">
           {categoriaSeleccionada ? (
@@ -98,7 +98,7 @@ export const CategoriaSelector: React.FC<CategoriaSelectorProps> = ({
                 placeholder="Buscar categoría..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-[var(--black-900)] border border-[#262626] text-white text-sm pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--green)]"
+                className="w-full bg-[var(--black-900)] border border-[#262626] text-white text-sm pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
             </div>
           </div>
@@ -115,7 +115,7 @@ export const CategoriaSelector: React.FC<CategoriaSelectorProps> = ({
                   }`}
                 >
                   <p className={`text-sm font-medium ${
-                    categoriaSeleccionada?.id === categoria.id ? 'text-[var(--green)]' : 'text-white'
+                    categoriaSeleccionada?.id === categoria.id ? 'text-[var(--color-primary)]' : 'text-white'
                   }`}>
                     {categoria.nombre}
                   </p>

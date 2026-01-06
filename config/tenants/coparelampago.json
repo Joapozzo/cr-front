@@ -2,18 +2,40 @@
     "id": "coparelampago",
     "nombre_empresa": "Copa Relámpago",
     "nombre_corto": "CR",
+    "tipo_futbol": "futbol-7",
     
     "branding": {
       "logo_principal": "/logos/coparelampago-logo.png",
       "logo_header": "/logos/coparelampago-header.png",
-      "favicon": "/favicons/coparelampago.ico",
-      "titulo_pagina": "Copa Relámpago - Gestión de Torneos"
+      "favicon": "/favicons/coparelampago/favicon.ico",
+      "favicons_path": "/favicons/coparelampago",
+      "titulo_pagina": "Copa Relámpago - F7 Córdoba"
+    },
+    
+    "seo": {
+      "keywords": [
+        "copa relampago",
+        "futbol 7",
+        "futbol 7 cordoba",
+        "torneo futbol 7",
+        "futbol 7 amateur",
+        "liga futbol 7",
+        "torneo futbol cordoba",
+        "competencias futbol 7",
+        "equipos futbol 7",
+        "categorias futbol 7",
+        "torneo amateur cordoba",
+        "futbol 7 profesional",
+        "copa relampago cordoba"
+      ],
+      "description": "Copa Relámpago es el torneo de fútbol 7 más importante de Córdoba. Categorías para todas las edades, competencias profesionales y la mejor experiencia futbolística en fútbol 7.",
+      "tipo_torneo": "torneo de fútbol 7"
     },
     
     "colores": {
-      "primario": "#00985f",
-      "secundario": "#2ad174",
-      "acento": "#ef4444",
+      "primary": "#2ad174",
+      "primaryStrong": "#00985f",
+      "secondary": "#ef4444",
       "success": "#22c55e",
       "danger": "#ef4444",
       "warning": "#e2b000"

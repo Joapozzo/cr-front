@@ -1,7 +1,8 @@
-'use client';
+﻿'use client';
 
 import { Shield } from 'lucide-react';
 import Image from 'next/image';
+import { useTenant } from '@/app/contexts/TenantContext';
 
 interface EdicionHeaderProps {
   nombreEdicion?: string;
@@ -15,11 +16,13 @@ interface EdicionHeaderProps {
  * Se muestra arriba de las secciones de estadísticas
  */
 export const EdicionHeader: React.FC<EdicionHeaderProps> = ({
-  nombreEdicion = 'Copa Relámpago',
+  nombreEdicion,
   logoEdicion,
   nombreCategoria,
   loading = false
 }) => {
+  const tenant = useTenant();
+  const finalNombreEdicion = nombreEdicion || tenant.nombre_empresa;
   
   if (loading) {
     return (
@@ -40,19 +43,19 @@ export const EdicionHeader: React.FC<EdicionHeaderProps> = ({
         {logoEdicion ? (
           <Image 
             src={logoEdicion} 
-            alt={nombreEdicion}
+            alt={finalNombreEdicion}
             width={64}
             height={64}
             className="object-cover"
           />
         ) : (
-          <Shield className="text-[var(--green)]" size={32} />
+          <Shield className="text-[var(--color-primary)]" size={32} />
         )}
       </div>
 
       {/* Nombre de la edición */}
       <div>
-        <h1 className="text-white font-bold text-2xl">{nombreEdicion}</h1>
+        <h1 className="text-white font-bold text-2xl">{finalNombreEdicion}</h1>
         {nombreCategoria && (
           <p className="text-[#737373] text-sm mt-1">{nombreCategoria}</p>
         )}

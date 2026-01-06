@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useMemo } from 'react';
 import { Plus, Search, AlertCircle } from 'lucide-react';
@@ -187,7 +187,7 @@ export default function NoticiasPage() {
       ) : isError ? (
         <div className="flex items-center justify-center h-64 bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
           <div className="text-center">
-            <AlertCircle className="w-12 h-12 text-[var(--red)] mx-auto mb-4" />
+            <AlertCircle className="w-12 h-12 text-[var(--color-secondary)] mx-auto mb-4" />
             <p className="text-[var(--white)] font-semibold mb-2">Error al cargar noticias</p>
             <p className="text-[var(--gray-100)]">{error instanceof Error ? error.message : 'Error desconocido'}</p>
           </div>

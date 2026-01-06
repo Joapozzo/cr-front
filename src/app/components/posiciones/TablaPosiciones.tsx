@@ -126,7 +126,7 @@ export const TablaPosiciones: React.FC<TablaPosicionesProps> = ({
       return (
         <BaseCard>
           <CardHeader
-            icon={<Trophy size={18} className="text-[var(--green)]" />}
+            icon={<Trophy size={18} className="text-[var(--color-primary)]" />}
             title="Tabla de posiciones"
             subtitle="Error al cargar"
           />
@@ -141,7 +141,7 @@ export const TablaPosiciones: React.FC<TablaPosicionesProps> = ({
       return (
         <BaseCard>
           <CardHeader
-            icon={<Trophy size={18} className="text-[var(--green)]" />}
+            icon={<Trophy size={18} className="text-[var(--color-primary)]" />}
             title="Tabla de posiciones"
           />
           <div className="flex flex-col items-center justify-center py-12 px-6">
@@ -160,7 +160,7 @@ export const TablaPosiciones: React.FC<TablaPosicionesProps> = ({
       <BaseCard className={className}>
         <div className="rounded-t-2xl overflow-hidden">
           <CardHeader
-            icon={<Trophy size={18} className="text-[var(--green)]" />}
+            icon={<Trophy size={18} className="text-[var(--color-primary)]" />}
             title="Tabla de posiciones"
             subtitle={tablaActual?.categoria_edicion}
             actions={
@@ -169,7 +169,7 @@ export const TablaPosiciones: React.FC<TablaPosicionesProps> = ({
                   <button
                     onClick={() => handleTablaChange(currentTablaIndex - 1)}
                     disabled={currentTablaIndex === 0}
-                    className="p-1 rounded-full bg-[#262626] hover:bg-[var(--green)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-1 rounded-full bg-[#262626] hover:bg-[var(--color-primary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     aria-label="Tabla anterior"
                   >
                     <ChevronLeft size={16} className="text-white" />
@@ -180,7 +180,7 @@ export const TablaPosiciones: React.FC<TablaPosicionesProps> = ({
                   <button
                     onClick={() => handleTablaChange(currentTablaIndex + 1)}
                     disabled={currentTablaIndex === totalTablas - 1}
-                    className="p-1 rounded-full bg-[#262626] hover:bg-[var(--green)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-1 rounded-full bg-[#262626] hover:bg-[var(--color-primary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     aria-label="Tabla siguiente"
                   >
                     <ChevronRight size={16} className="text-white" />
@@ -233,7 +233,7 @@ export const TablaPosiciones: React.FC<TablaPosicionesProps> = ({
               ? `${linkTablaCompleta}?categoria=${tablaActual.id_categoria_edicion}&tipo=posiciones`
               : `${linkTablaCompleta}?tipo=posiciones`
             }
-            className="flex items-center justify-center gap-2 text-sm text-[var(--green)] hover:text-[var(--green)]/80 transition-colors font-medium"
+            className="flex items-center justify-center gap-2 text-sm text-[var(--color-primary)] hover:text-[var(--color-primary)]/80 transition-colors font-medium"
           >
             Ver tabla completa
             <ExternalLink size={14} />

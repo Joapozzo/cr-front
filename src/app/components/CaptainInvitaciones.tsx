@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Send, Search, Plus, Clock, User, AlertCircle } from "lucide-react";
 import { memo, useCallback, useState } from "react";
@@ -139,7 +139,7 @@ const InvitacionesCapitan: React.FC<InvitacionesCapitanProps> = ({
             <div className="rounded-2xl border border-[var(--gray-300)]">
                 {/* Header */}
                 <div className="flex items-center gap-2 bg-[var(--black-900)] p-4 rounded-t-2xl">
-                    <Send className="text-[var(--green)]" size={16} />
+                    <Send className="text-[var(--color-primary)]" size={16} />
                     <h3 className="text-[var(--white)] font-bold text-sm">Invitar Jugadores</h3>
                 </div>
 
@@ -337,7 +337,7 @@ const InvitacionesCapitan: React.FC<InvitacionesCapitanProps> = ({
                 {jugadorSeleccionado && (
                     <div className="text-left space-y-2">
                         <p className="text-[var(--gray-100)] text-sm">
-                            Jugador: <span className="text-[var(--green)] font-medium">
+                            Jugador: <span className="text-[var(--color-primary)] font-medium">
                                 {jugadorSeleccionado.nombre} {jugadorSeleccionado.apellido}
                             </span>
                         </p>

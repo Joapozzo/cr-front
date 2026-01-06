@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Calendar } from 'lucide-react';
 import { BaseCard, CardHeader } from '../BaseCard';
@@ -35,7 +35,7 @@ export const PartidosEquipoCard = ({
     return (
       <BaseCard>
         <CardHeader
-          icon={<Calendar size={18} className="text-[var(--green)]" />}
+          icon={<Calendar size={18} className="text-[var(--color-primary)]" />}
           title="Mis partidos"
           subtitle="Error al cargar"
         />
@@ -51,7 +51,7 @@ export const PartidosEquipoCard = ({
     return (
       <BaseCard>
         <CardHeader
-          icon={<Calendar size={18} className="text-[var(--green)]" />}
+          icon={<Calendar size={18} className="text-[var(--color-primary)]" />}
           title="Mis partidos"
           subtitle="Últimos y Próximos"
         />
@@ -75,7 +75,7 @@ export const PartidosEquipoCard = ({
     return (
       <BaseCard>
         <CardHeader
-          icon={<Calendar size={18} className="text-[var(--green)]" />}
+          icon={<Calendar size={18} className="text-[var(--color-primary)]" />}
           title="Mis partidos"
           subtitle="Cargando..."
         />
@@ -89,7 +89,7 @@ export const PartidosEquipoCard = ({
     <BaseCard>
       <div className="rounded-t-2xl overflow-hidden">
         <CardHeader
-          icon={<Calendar size={18} className="text-[var(--green)]" />}
+          icon={<Calendar size={18} className="text-[var(--color-primary)]" />}
           title="Mis partidos"
         />
       </div>
@@ -100,7 +100,7 @@ export const PartidosEquipoCard = ({
           onClick={() => handleTabChange('ultimos')}
           className={`flex-1 py-3 text-sm font-medium transition-colors ${
             activeTab === 'ultimos'
-              ? 'text-[var(--green)] border-b-2 border-[var(--green)]'
+              ? 'text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]'
               : partidosPasados.length === 0
               ? 'text-[#525252] cursor-pointer'
               : 'text-[#737373] hover:text-white'
@@ -112,7 +112,7 @@ export const PartidosEquipoCard = ({
           onClick={() => handleTabChange('proximos')}
           className={`flex-1 py-3 text-sm font-medium transition-colors ${
             activeTab === 'proximos'
-              ? 'text-[var(--green)] border-b-2 border-[var(--green)]'
+              ? 'text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]'
               : partidosFuturos.length === 0
               ? 'text-[#525252] cursor-pointer'
               : 'text-[#737373] hover:text-white'
@@ -127,7 +127,7 @@ export const PartidosEquipoCard = ({
         {partidosActivos.length > 0 ? (
           <div
             key={activeTab}
-            className={`flex flex-col divide-y divide-[#262626] max-h-[540px] overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--green)] scrollbar-track-[#1a1a1a] ${
+            className={`flex flex-col divide-y divide-[#262626] max-h-[540px] overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--color-primary)] scrollbar-track-[#1a1a1a] ${
               slideDirection === 'left' ? 'animate-slide-in-left' : 'animate-slide-in-right'
             }`}
           >

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -166,7 +166,7 @@ function EquipoLayoutContent({
                     <div className="flex items-center space-x-2 max-w-[1400px] mx-auto px-4 md:px-6 lg:px-10">
                         <Link
                             href="/"
-                            className="flex items-center text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
+                            className="flex items-center text-[var(--color-primary)] hover:text-[var(--color-primary-strong)] transition-colors"
                         >
                             <ArrowLeft className="w-4 h-4 mr-1" />
                             Inicio
@@ -191,7 +191,7 @@ function EquipoLayoutContent({
                 <div className="flex items-center space-x-2 max-w-[1400px] mx-auto px-4 md:px-6 lg:px-10">
                     <Link
                         href="/home"
-                        className="flex items-center text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
+                        className="flex items-center text-[var(--color-primary)] hover:text-[var(--color-primary-strong)] transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4 mr-1" />
                         Inicio
@@ -244,10 +244,10 @@ function EquipoLayoutContent({
                                         </div>
                                     ) : (
                                         <div className="flex items-center gap-1.5 px-3 py-1 bg-[var(--black-800)] border border-[#262626] rounded-lg">
-                                            <svg className="w-4 h-4 text-[var(--green)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-4 h-4 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
-                                            <span className="text-[var(--green)] text-xs font-medium">Jugador</span>
+                                            <span className="text-[var(--color-primary)] text-xs font-medium">Jugador</span>
                                         </div>
                                     )}
                                 </>
@@ -257,7 +257,7 @@ function EquipoLayoutContent({
                             {jugador?.nombre} {jugador?.apellido}
                         </p>
                         {edicionesDisponibles.length > 0 && (
-                            <p className="text-xs text-[var(--green)] mt-1">
+                            <p className="text-xs text-[var(--color-primary)] mt-1">
                                 {edicionesDisponibles.length} {edicionesDisponibles.length === 1 ? 'torneo' : 'torneos'} participado{edicionesDisponibles.length === 1 ? '' : 's'}
                             </p>
                         )}
@@ -279,7 +279,7 @@ function EquipoLayoutContent({
                 flex-shrink-0 py-3 px-6 flex items-center justify-center
                 transition-colors border-b-2 text-sm font-semibold
                 ${isActiveTab(edicion.id_edicion)
-                                            ? 'border-[var(--green)] text-[var(--green)]'
+                                            ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                                             : 'border-transparent text-[var(--gray-100)] hover:text-[var(--white)] hover:border-[var(--gray-200)]'
                                         }
             `}
@@ -299,7 +299,7 @@ function EquipoLayoutContent({
                 flex-1 py-4 flex items-center justify-center
                 transition-colors border-b-2 text-base font-semibold
                 ${isActiveTab(edicion.id_edicion)
-                                            ? 'border-[var(--green)] text-[var(--green)]'
+                                            ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                                             : 'border-transparent text-[var(--gray-100)] hover:text-[var(--white)] hover:border-[var(--gray-200)]'
                                         }
             `}

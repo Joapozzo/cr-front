@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { Shield, ChevronDown, Search, Trophy } from 'lucide-react';
@@ -79,7 +79,7 @@ export const EdicionLayout: React.FC<EdicionLayoutProps> = ({
     <div className="space-y-6 w-full">
       {/* Header con edición y categoría */}
       <div className="relative flex items-center gap-3 p-4 bg-[var(--black-900)] rounded-xl border border-[#262626]">
-        <div className="w-10 h-10 bg-[var(--green)] rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+        <div className="w-10 h-10 bg-[var(--color-primary)] rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
           {logoEdicion ? (
             <ImagenPublica
               src={logoEdicion}
@@ -128,7 +128,7 @@ export const EdicionLayout: React.FC<EdicionLayoutProps> = ({
                   placeholder="Buscar edición..."
                   value={searchTermEdicion}
                   onChange={(e) => setSearchTermEdicion(e.target.value)}
-                  className="w-full bg-[var(--black-900)] border border-[#262626] text-white text-sm pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--green)]"
+                  className="w-full bg-[var(--black-900)] border border-[#262626] text-white text-sm pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                 />
               </div>
             </div>
@@ -151,12 +151,12 @@ export const EdicionLayout: React.FC<EdicionLayoutProps> = ({
                       />
                     )}
                     {!edicion.img && (
-                      <div className="w-8 h-8 rounded-full bg-[var(--green)] flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-full bg-[var(--color-primary)] flex items-center justify-center">
                         <Trophy size={16} className="text-white" />
                       </div>
                     )}
                     <div className="flex-1">
-                      <p className={`text-sm font-medium ${edicionSeleccionada?.id_edicion === edicion.id_edicion ? 'text-[var(--green)]' : 'text-white'
+                      <p className={`text-sm font-medium ${edicionSeleccionada?.id_edicion === edicion.id_edicion ? 'text-[var(--color-primary)]' : 'text-white'
                         }`}>
                         {edicion.nombre}
                       </p>

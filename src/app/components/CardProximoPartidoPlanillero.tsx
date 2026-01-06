@@ -1,4 +1,4 @@
-import {
+﻿import {
     Clock,
     Calendar,
     MapPin,
@@ -75,7 +75,7 @@ const CardProximoPartido: React.FC<ProximoPartidoProps> = ({ partido }) => {
     return (
         <BaseCard>
             <CardHeader
-                icon={<Calendar className="text-[var(--green)]" size={16} />}
+                icon={<Calendar className="text-[var(--color-primary)]" size={16} />}
                 title="Próximo Partido"
                 subtitle={partido.fecha}
             />
@@ -84,7 +84,7 @@ const CardProximoPartido: React.FC<ProximoPartidoProps> = ({ partido }) => {
                     {/* Fecha y Jornada */}
                     <div className="space-y-2">
                         <div className="flex items-center justify-center gap-2">
-                            <span className="px-2 py-0.5 bg-[var(--green)]/20 text-[var(--green)] text-xs font-medium rounded border border-[var(--green)]/30">
+                            <span className="px-2 py-0.5 bg-[var(--color-primary)]/20 text-[var(--color-primary)] text-xs font-medium rounded border border-[var(--color-primary)]/30">
                                 Fecha {partido.jornada || 1}
                             </span>
                         </div>
@@ -108,8 +108,8 @@ const CardProximoPartido: React.FC<ProximoPartidoProps> = ({ partido }) => {
 
                         {/* VS */}
                         <div className="flex flex-col items-center gap-2">
-                            <div className="w-8 h-8 bg-[var(--green)]/20 rounded-lg flex items-center justify-center">
-                                <Play className="text-[var(--green)]" size={16} />
+                            <div className="w-8 h-8 bg-[var(--color-primary)]/20 rounded-lg flex items-center justify-center">
+                                <Play className="text-[var(--color-primary)]" size={16} />
                             </div>
                             {/* <span className="text-[#737373] text-xs font-medium">VS</span> */}
                         </div>

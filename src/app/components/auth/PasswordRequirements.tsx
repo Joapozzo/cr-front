@@ -1,12 +1,12 @@
-// Componente auxiliar para los requisitos de password
+﻿// Componente auxiliar para los requisitos de password
 const PasswordRequirement = ({ met, text }: { met: boolean; text: string }) => (
     <div className="flex items-center gap-2">
         <div
-            className={`w-1.5 h-1.5 rounded-full ${met ? 'bg-[var(--green)]' : 'bg-[var(--gray-200)]'
+            className={`w-1.5 h-1.5 rounded-full ${met ? 'bg-[var(--color-primary)]' : 'bg-[var(--gray-200)]'
                 }`}
         />
         <span
-            className={`text-xs ${met ? 'text-[var(--green)]' : 'text-[var(--gray-200)]'
+            className={`text-xs ${met ? 'text-[var(--color-primary)]' : 'text-[var(--gray-200)]'
                 }`}
         >
             {text}

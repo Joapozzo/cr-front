@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
@@ -69,7 +69,7 @@ export const FiltrosNoticias: React.FC<FiltrosNoticiasProps> = ({
             placeholder="Buscar noticias..."
             value={busqueda}
             onChange={(e) => onBusquedaChange(e.target.value)}
-            className="w-full bg-[var(--black-900)] border border-[#262626] rounded-lg pl-10 pr-10 py-2.5 text-white text-sm placeholder:text-[#737373] focus:outline-none focus:border-[var(--green)] transition-colors"
+            className="w-full bg-[var(--black-900)] border border-[#262626] rounded-lg pl-10 pr-10 py-2.5 text-white text-sm placeholder:text-[#737373] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
           />
           {busqueda && (
             <button
@@ -85,7 +85,7 @@ export const FiltrosNoticias: React.FC<FiltrosNoticiasProps> = ({
         <div className="relative w-full sm:w-48" ref={dropdownRef}>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="w-full flex items-center justify-between gap-2 px-3 py-2.5 bg-[var(--black-900)] border border-[#262626] rounded-lg hover:border-[var(--green)] transition-colors text-sm"
+            className="w-full flex items-center justify-between gap-2 px-3 py-2.5 bg-[var(--black-900)] border border-[#262626] rounded-lg hover:border-[var(--color-primary)] transition-colors text-sm"
           >
             <div className="flex items-center gap-2">
               <SlidersHorizontal size={14} className="text-[#737373]" />
@@ -113,7 +113,7 @@ export const FiltrosNoticias: React.FC<FiltrosNoticiasProps> = ({
                   }}
                   className={`w-full px-3 py-2.5 text-left text-xs hover:bg-[var(--black-800)] transition-colors ${
                     orden === opcion.value
-                      ? 'bg-[var(--black-800)] text-[var(--green)] font-medium'
+                      ? 'bg-[var(--black-800)] text-[var(--color-primary)] font-medium'
                       : 'text-white'
                   }`}
                 >
@@ -131,8 +131,8 @@ export const FiltrosNoticias: React.FC<FiltrosNoticiasProps> = ({
           onClick={() => onDestacadasChange(!destacadas)}
           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
             destacadas
-              ? 'bg-[var(--green)] text-white'
-              : 'bg-[var(--black-900)] border border-[#262626] text-[#737373] hover:text-white hover:border-[var(--green)]'
+              ? 'bg-[var(--color-primary)] text-white'
+              : 'bg-[var(--black-900)] border border-[#262626] text-[#737373] hover:text-white hover:border-[var(--color-primary)]'
           }`}
         >
           ⭐ Solo destacadas

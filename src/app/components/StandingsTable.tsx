@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useTablaPosiciones } from '../hooks/useTablas';
 import { TablaPosiciones } from './posiciones/TablaPosiciones';
@@ -24,7 +24,7 @@ const StandingsTable = ({ id_categoria_edicion, id_zona }: StandingsTableProps) 
     if (error) {
         return (
             <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-4">
-                <p className="text-[var(--red)] text-sm">Error al cargar la tabla de posiciones</p>
+                <p className="text-[var(--color-secondary)] text-sm">Error al cargar la tabla de posiciones</p>
             </div>
         );
     }

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { EstadisticasCaraACara as EstadisticasCaraACaraType } from '@/app/types/partidoDetalle';
@@ -47,7 +47,7 @@ export const EstadisticasCaraACara: React.FC<EstadisticasCaraACaraProps> = ({
             {estadisticas.victorias_local}
           </p>
           {/* Porcentaje */}
-          <p className="text-[var(--green)] text-sm sm:text-base font-medium mb-1">
+          <p className="text-[var(--color-primary)] text-sm sm:text-base font-medium mb-1">
             {estadisticas.porcentaje_victorias_local}%
           </p>
           {/* Label */}
@@ -61,7 +61,7 @@ export const EstadisticasCaraACara: React.FC<EstadisticasCaraACaraProps> = ({
             {estadisticas.empates}
           </p>
           {/* Porcentaje */}
-          <p className="text-[var(--green)] text-sm sm:text-base font-medium mb-1">
+          <p className="text-[var(--color-primary)] text-sm sm:text-base font-medium mb-1">
             {estadisticas.porcentaje_empates}%
           </p>
           {/* Label */}
@@ -82,7 +82,7 @@ export const EstadisticasCaraACara: React.FC<EstadisticasCaraACaraProps> = ({
             {estadisticas.victorias_visita}
           </p>
           {/* Porcentaje */}
-          <p className="text-[var(--green)] text-sm sm:text-base font-medium mb-1">
+          <p className="text-[var(--color-primary)] text-sm sm:text-base font-medium mb-1">
             {estadisticas.porcentaje_victorias_visita}%
           </p>
           {/* Label */}

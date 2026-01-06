@@ -1,46 +1,66 @@
 {
-    "id": "ucfa",
-    "nombre_empresa": "UCFA Fútbol",
-    "nombre_corto": "UCFA",
-    
-    "branding": {
-      "logo_principal": "/logos/ucfa-logo.png",
-      "logo_header": "/logos/ucfa-header.png",
-      "favicon": "/favicons/ucfa.ico",
-      "titulo_pagina": "UCFA - Unión Cordobesa de Fútbol Amateur"
-    },
-    
-    "colores": {
-      "primario": "#dc2626",
-      "secundario": "#ef4444",
-      "acento": "#3b82f6",
-      "success": "#10b981",
-      "danger": "#dc2626",
-      "warning": "#f59e0b"
-    },
+  "id": "ucfa",
+  "nombre_empresa": "UCFA Fútbol",
+  "nombre_corto": "UCFA",
+  "tipo_futbol": "futbol-11",
+  "branding": {
+    "logo_principal": "/logos/ucfa-logo.png",
+    "logo_header": "/logos/ucfa-logo.png",
+    "favicon": "/favicons/ucfa/favicon.ico",
+    "favicons_path": "/favicons/ucfa",
+    "titulo_pagina": "UCFA - Unión Cordobesa de Fútbol Amateur"
+  },
+  
+  "seo": {
+    "keywords": [
+      "ucfa",
+      "union cordobesa futbol amateur",
+      "futbol 11",
+      "futbol 11 cordoba",
+      "torneo futbol 11",
+      "futbol 11 amateur",
+      "liga futbol 11",
+      "torneo futbol cordoba",
+      "competencias futbol 11",
+      "equipos futbol 11",
+      "categorias futbol 11",
+      "torneo amateur cordoba",
+      "futbol 11 masivo",
+      "ucfa cordoba",
+      "union cordobesa"
+    ],
+    "description": "UCFA es la Unión Cordobesa de Fútbol Amateur, el torneo de fútbol 11 más masivo de Córdoba. Competencias profesionales, múltiples categorías y la mejor experiencia en fútbol 11 amateur.",
+    "tipo_torneo": "torneo de fútbol 11"
+  },
+  "colores": {
+    "primary": "#3BAFDA",
+    "primaryStrong": "#1E6FA8",
+    "secondary": "#0F172A",
+    "success": "#10b981",
+    "danger": "#dc2626",
+    "warning": "#f59e0b"
+  },
     
     "features": {
-      "sistema_pagos": true,
-      "mercado_jugadores": true,
-      "dreamteam": false,
-      "inscripciones_online": true,
-      "validacion_dni_biometrica": false,
-      "caja_diaria": false
-    },
-    
-    "reglas_negocio": {
-      "requiere_validacion_dni": false,
-      "permite_cambios_durante_partido": false,
-      "calculo_tabla_custom": true
-    },
-    
-    "contacto": {
-      "email": "info@ucfa.com.ar",
-      "telefono": "+54 351 987 6543",
-      "direccion": "Córdoba, Argentina",
-      "redes": {
-        "instagram": "@ucfa_oficial",
-        "facebook": "ucfaoficial"
-      }
+    "sistema_pagos": true,
+    "mercado_jugadores": true,
+    "dreamteam": false,
+    "inscripciones_online": true,
+    "validacion_dni_biometrica": false,
+    "caja_diaria": false
+  },
+  "reglas_negocio": {
+    "requiere_validacion_dni": false,
+    "permite_cambios_durante_partido": false,
+    "calculo_tabla_custom": true
+  },
+  "contacto": {
+    "email": "info@ucfa.com.ar",
+    "telefono": "+54 351 987 6543",
+    "direccion": "Córdoba, Argentina",
+    "redes": {
+      "instagram": "@ucfa_oficial",
+      "facebook": "ucfaoficial"
     }
   }
+}

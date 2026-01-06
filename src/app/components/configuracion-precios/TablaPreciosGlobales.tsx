@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { ConfiguracionPrecio, TipoConcepto } from '@/app/services/configuracionPrecio.services';
 import { Edit, Trash2, Calendar, CheckCircle } from 'lucide-react';
@@ -58,7 +58,7 @@ export default function TablaPreciosGlobales({
                             >
                                 <td className="py-3 px-4">
                                     <div className="flex items-center gap-2">
-                                        <div className="text-[var(--green)]">
+                                        <div className="text-[var(--color-primary)]">
                                             {getIconoTipo(precio.tipo_concepto)}
                                         </div>
                                         <span className="text-white font-medium">
@@ -70,7 +70,7 @@ export default function TablaPreciosGlobales({
                                     {precio.unidad.replace('_', ' ')}
                                 </td>
                                 <td className="py-3 px-4">
-                                    <span className="text-[var(--green)] font-bold">
+                                    <span className="text-[var(--color-primary)] font-bold">
                                         {formatPrecio(precio.monto)}
                                     </span>
                                 </td>

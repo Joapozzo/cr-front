@@ -239,11 +239,11 @@ const DreamTeamField = ({
                                                     {/* Indicador visual de acción */}
                                                     {!dreamteam?.publicado && (
                                                         jugador ? (
-                                                            <div className="absolute -top-2 -right-2 bg-[var(--red)] text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-10 pointer-events-none flex items-center justify-center">
+                                                            <div className="absolute -top-2 -right-2 bg-[var(--color-secondary)] text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-10 pointer-events-none flex items-center justify-center">
                                                                 <X className="w-3 h-3" />
                                                             </div>
                                                         ) : (
-                                                            <div className="absolute -top-1 -left-1 w-6 h-6 bg-[var(--green)] hover:bg-[var(--green-win)] text-white rounded-full transition-all duration-200 shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none flex items-center justify-center">
+                                                            <div className="absolute -top-1 -left-1 w-6 h-6 bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)] text-white rounded-full transition-all duration-200 shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none flex items-center justify-center">
                                                                 <Plus className="w-3 h-3" />
                                                             </div>
                                                         )
@@ -274,7 +274,7 @@ const DreamTeamField = ({
                 {/* Estadísticas rápidas */}
                 <div className="absolute top-4 right-4 bg-[var(--gray-400)] border border-[var(--gray-300)] text-[var(--white)] px-3 py-2 rounded-lg text-sm shadow-lg">
                     <div className="flex items-center gap-2">
-                        <span className="text-[var(--green)] text-lg">●</span>
+                        <span className="text-[var(--color-primary)] text-lg">●</span>
                         <span>{dreamteam?.jugadores?.length || 0}/{formacionActual.reduce((a, b) => a + b, 0)}</span>
                     </div>
                 </div>
@@ -289,7 +289,7 @@ const DreamTeamField = ({
                             dreamteam?.publicado
                                 ? 'bg-[var(--gray-300)] text-[var(--gray-100)] cursor-not-allowed opacity-50'
                                 : formacionNombre === nombre
-                                    ? 'bg-[var(--green)] text-white shadow-lg'
+                                    ? 'bg-[var(--color-primary)] text-white shadow-lg'
                                     : 'bg-[var(--gray-300)] text-[var(--gray-100)] hover:bg-[var(--gray-200)] border border-[var(--gray-200)]'
                         }`}
                         onClick={() => !dreamteam?.publicado && cambiarFormacion(nombre, formacion)}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { imagenFallBack, URI_IMG } from './ui/utils';
@@ -135,7 +135,7 @@ export const NextMatch: React.FC<NextMatchProps> = ({
                             <Link
                                 href={`/equipo/${partido.equipoLocal.id_equipo}`}
                                 className={`text-2xl font-semibold ${miEquipo === partido.id_equipolocal
-                                    ? "text-[var(--green)]"
+                                    ? "text-[var(--color-primary)]"
                                     : "text-white"
                                     } hover:underline hover:underline-offset-4 hover:decoration-current`}
                             >
@@ -145,7 +145,7 @@ export const NextMatch: React.FC<NextMatchProps> = ({
                             <Link
                                 href={`/equipo/${partido.equipoVisita.id_equipo}`}
                                 className={`text-2xl font-semibold ${miEquipo === partido.id_equipovisita
-                                    ? "text-[var(--green)]"
+                                    ? "text-[var(--color-primary)]"
                                     : "text-white"
                                     } hover:underline hover:underline-offset-4 hover:decoration-current`}
                             >
@@ -156,7 +156,7 @@ export const NextMatch: React.FC<NextMatchProps> = ({
 
                     {/* Cancha */}
                     <div className="flex flex-col items-center justify-center text-center">
-                        <LandPlot className="text-[var(--green)] text-3xl mb-1" />
+                        <LandPlot className="text-[var(--color-primary)] text-3xl mb-1" />
                         <span className="text-xs uppercase">
                             {typeof partido.cancha === 'object' && partido.cancha !== null
                                 ? (partido.cancha as any).nombre || 'a conf.'

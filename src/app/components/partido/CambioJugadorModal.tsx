@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+﻿import React, { useState, useMemo, useEffect } from 'react';
 import { ArrowDown } from 'lucide-react';
 import { JugadorPlantel, EstadoPartido } from '@/app/types/partido';
 import { FormModal } from '../modals/ModalAdmin';
@@ -162,13 +162,13 @@ const CambioJugadorModal: React.FC<CambioJugadorModalProps> = ({
             {/* Selección de jugador que sale (en edición) o que entra (en creación) */}
             <div className="mb-4">
                 <label className="block text-sm font-light text-[var(--white)] mb-2">
-                    {modoEdicion ? 'Jugador que sale' : 'Jugador que entra'} <span className="text-[var(--red)]">*</span>
+                    {modoEdicion ? 'Jugador que sale' : 'Jugador que entra'} <span className="text-[var(--color-secondary)]">*</span>
                 </label>
                 <select
                     value={jugadorSeleccionado || ''}
                     onChange={(e) => setJugadorSeleccionado(e.target.value ? Number(e.target.value) : null)}
                     disabled={isLoading || suplentesDisponibles.length === 0}
-                    className="w-full px-3 py-2 bg-[#171717] border border-[#262626] rounded-lg text-white focus:outline-none focus:border-[var(--green)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-3 py-2 bg-[#171717] border border-[#262626] rounded-lg text-white focus:outline-none focus:border-[var(--color-primary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <option value="">Seleccione un jugador</option>
                     {suplentesDisponibles.map(suplente => (
@@ -185,7 +185,7 @@ const CambioJugadorModal: React.FC<CambioJugadorModalProps> = ({
             {/* Input minuto */}
             <div className="mb-4">
                 <label className="block text-sm font-light text-[var(--white)] mb-2">
-                    Minuto <span className="text-[var(--red)]">*</span>
+                    Minuto <span className="text-[var(--color-secondary)]">*</span>
                 </label>
                 <Input
                     type="number"

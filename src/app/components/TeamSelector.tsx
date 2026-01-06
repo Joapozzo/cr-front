@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Select, { SelectOption } from '@/app/components/ui/Select';
 import { Shield } from 'lucide-react';
@@ -32,12 +32,12 @@ export default function TeamSelector() {
                             </div>
                         ) : (
                             <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-[var(--gray-300)] flex-shrink-0">
-                                <Shield size={24} className="text-[var(--green)]" />
+                                <Shield size={24} className="text-[var(--color-primary)]" />
                             </div>
                         )}
                         <div className="flex flex-col">
-                            <span className="text-xs text-[var(--green)]">Equipo actual</span>
-                            <span className="text-xl font-medium text-[var(--green)]">
+                            <span className="text-xs text-[var(--color-primary)]">Equipo actual</span>
+                            <span className="text-xl font-medium text-[var(--color-primary)]">
                                 {team.nombre_equipo}
                             </span>
                         </div>

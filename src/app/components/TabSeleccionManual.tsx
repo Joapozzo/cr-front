@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Search, Plus, Loader2, AlertTriangle, Shield } from 'lucide-react';
 import Image from 'next/image';
 import { useEquiposPorCategoriaEdicion, useBuscarEquiposDisponibles, useCrearEquipo } from '../hooks/useEquipos';
@@ -157,7 +157,7 @@ const TabSeleccionManual = ({
         return (
             <div className="flex items-center justify-center py-12">
                 <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 border-2 border-[var(--green)] border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
                     <span className="text-[var(--gray-100)]">Cargando equipos...</span>
                 </div>
             </div>
@@ -192,13 +192,13 @@ const TabSeleccionManual = ({
                             {isSearching ? (
                                 <div className="flex items-center justify-center py-8">
                                     <div className="flex items-center gap-3">
-                                        <Loader2 className="w-5 h-5 animate-spin text-[var(--green)]" />
+                                        <Loader2 className="w-5 h-5 animate-spin text-[var(--color-primary)]" />
                                         <span className="text-[var(--gray-100)]">Buscando equipos...</span>
                                     </div>
                                 </div>
                             ) : searchError ? (
-                                <div className="p-3 bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg">
-                                    <p className="text-[var(--red)] text-sm flex items-center gap-2">
+                                <div className="p-3 bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg">
+                                    <p className="text-[var(--color-secondary)] text-sm flex items-center gap-2">
                                         <AlertTriangle className="w-4 h-4" />
                                         Error al buscar equipos: {searchError instanceof Error ? searchError.message : 'Error desconocido'}
                                     </p>
@@ -220,8 +220,8 @@ const TabSeleccionManual = ({
                                                 className={`p-3 rounded-lg border transition-colors ${isDisabled
                                                         ? 'border-[var(--gray-400)] bg-[var(--gray-400)]/10 opacity-50 cursor-not-allowed'
                                                         : equipoBeingProcessed === equipo.id_equipo
-                                                            ? 'border-[var(--green)] bg-[var(--green)]/10 cursor-pointer'
-                                                            : 'border-[var(--gray-300)] hover:border-[var(--green)] hover:bg-[var(--green)]/5 cursor-pointer'
+                                                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10 cursor-pointer'
+                                                            : 'border-[var(--gray-300)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 cursor-pointer'
                                                     }`}
                                             >
                                                 <div className="flex items-center gap-3">
@@ -243,15 +243,15 @@ const TabSeleccionManual = ({
                                                             {equipo.nombre}
                                                         </p>
                                                         {!isApto && (
-                                                            <p className="text-xs text-[var(--red)] mt-1">
+                                                            <p className="text-xs text-[var(--color-secondary)] mt-1">
                                                                 No disponible (ya está asignado o expulsado)
                                                             </p>
                                                         )}
                                                     </div>
                                                     {equipoBeingProcessed === equipo.id_equipo ? (
-                                                        <Loader2 className="w-4 h-4 animate-spin text-[var(--green)]" />
+                                                        <Loader2 className="w-4 h-4 animate-spin text-[var(--color-primary)]" />
                                                     ) : !isApto && (
-                                                        <AlertTriangle className="w-4 h-4 text-[var(--red)]" />
+                                                        <AlertTriangle className="w-4 h-4 text-[var(--color-secondary)]" />
                                                     )}
                                                 </div>
                                             </div>

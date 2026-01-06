@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Search, User, Loader2, X, UserPlus, AlertTriangle } from 'lucide-react';
@@ -124,14 +124,14 @@ export default function AgregarJugadorModal({
                 <div className="p-6 space-y-4">
                     {/* Error Message */}
                     {errorMessage && (
-                        <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-4">
+                        <div className="bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg p-4">
                             <div className="flex items-center gap-3">
-                                <AlertTriangle className="w-5 h-5 text-[var(--red)] flex-shrink-0" />
+                                <AlertTriangle className="w-5 h-5 text-[var(--color-secondary)] flex-shrink-0" />
                                 <div>
-                                    <h4 className="text-[var(--red)] font-medium text-sm">
+                                    <h4 className="text-[var(--color-secondary)] font-medium text-sm">
                                         Error al agregar jugador
                                     </h4>
-                                    <p className="text-[var(--red)]/80 text-sm mt-1">
+                                    <p className="text-[var(--color-secondary)]/80 text-sm mt-1">
                                         {errorMessage}
                                     </p>
                                 </div>
@@ -177,8 +177,8 @@ export default function AgregarJugadorModal({
 
                             {/* Error state */}
                             {searchError && (
-                                <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-4 text-center">
-                                    <p className="text-[var(--red)] text-sm">
+                                <div className="bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg p-4 text-center">
+                                    <p className="text-[var(--color-secondary)] text-sm">
                                         Error al buscar jugadores. Intenta nuevamente.
                                     </p>
                                 </div>
@@ -202,7 +202,7 @@ export default function AgregarJugadorModal({
                                 <div
                                     key={jugador.id_jugador}
                                     className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedJugador?.id_jugador === jugador.id_jugador
-                                            ? 'border-[var(--green)] bg-[var(--green)]/10'
+                                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10'
                                             : 'border-[var(--gray-300)] bg-[var(--gray-300)] hover:border-[var(--gray-200)]'
                                         }`}
                                     onClick={() => setSelectedJugador(jugador)}
@@ -225,7 +225,7 @@ export default function AgregarJugadorModal({
                                         </div>
 
                                         {selectedJugador?.id_jugador === jugador.id_jugador && (
-                                            <div className="w-5 h-5 bg-[var(--green)] rounded-full flex items-center justify-center">
+                                            <div className="w-5 h-5 bg-[var(--color-primary)] rounded-full flex items-center justify-center">
                                                 <div className="w-2 h-2 bg-white rounded-full" />
                                             </div>
                                         )}
@@ -264,10 +264,10 @@ export default function AgregarJugadorModal({
                             <h3 className="text-sm font-medium text-[var(--white)]">
                                 Jugador seleccionado
                             </h3>
-                            <div className="bg-[var(--green)]/10 border border-[var(--green)]/30 rounded-lg p-4">
+                            <div className="bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/30 rounded-lg p-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-[var(--green)]/20 rounded-lg">
-                                        <User className="w-5 h-5 text-[var(--green)]" />
+                                    <div className="p-2 bg-[var(--color-primary)]/20 rounded-lg">
+                                        <User className="w-5 h-5 text-[var(--color-primary)]" />
                                     </div>
                                     <div>
                                         <h4 className="text-[var(--white)] font-medium">

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { TabType } from '../types';
 
 interface TabNavigationProps {
@@ -21,7 +21,7 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({
                 className={`
                     flex-1 py-4 text-sm font-semibold transition-all border-b-2
                     ${activeTab === 'local'
-                        ? 'border-[var(--green)] text-[var(--green)]'
+                        ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                         : 'border-transparent text-[#737373] hover:text-white'
                     }
                 `}
@@ -34,7 +34,7 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({
                 className={`
                     flex-1 py-4 text-sm font-semibold transition-all border-b-2
                     ${activeTab === 'incidencias'
-                        ? 'border-[var(--green)] text-[var(--green)]'
+                        ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                         : 'border-transparent text-[#737373] hover:text-white'
                     }
                 `}
@@ -47,7 +47,7 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({
                 className={`
                     flex-1 py-4 text-sm font-semibold transition-all border-b-2
                     ${activeTab === 'visita'
-                        ? 'border-[var(--green)] text-[var(--green)]'
+                        ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                         : 'border-transparent text-[#737373] hover:text-white'
                     }
                 `}

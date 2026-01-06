@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { PageHeader } from '@/app/components/ui/PageHeader';
 import Link from 'next/link';
@@ -113,7 +113,7 @@ export default function IngresosPage() {
                             className={`group bg-[var(--black-900)] border border-[var(--gray-300)] rounded-lg p-6 transition-all duration-200 ${
                                 isDisabled 
                                     ? 'opacity-50 cursor-not-allowed relative' 
-                                    : 'hover:border-[var(--green)] hover:shadow-lg'
+                                    : 'hover:border-[var(--color-primary)] hover:shadow-lg'
                             }`}
                             title={isDisabled ? 'Funcionalidad en desarrollo' : undefined}
                         >
@@ -156,9 +156,9 @@ export default function IngresosPage() {
                                         {badgeCount}
                                     </span>
                                 )}
-                                <ArrowRight className={`w-5 h-5 text-[var(--gray-300)] group-hover:text-[var(--green)] transition-colors`} />
+                                <ArrowRight className={`w-5 h-5 text-[var(--gray-300)] group-hover:text-[var(--color-primary)] transition-colors`} />
                             </div>
-                            <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-[var(--green)] transition-colors">
+                            <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-[var(--color-primary)] transition-colors">
                                 {card.title}
                             </h3>
                                     <p className="text-sm text-[var(--gray-100)]">
@@ -183,7 +183,7 @@ export default function IngresosPage() {
                     </p>
                     <Link 
                         href="/cajero/ingresos/validar-transferencias"
-                        className="text-sm text-[var(--green)] hover:underline mt-2 inline-block"
+                        className="text-sm text-[var(--color-primary)] hover:underline mt-2 inline-block"
                     >
                         Ver todas →
                     </Link>

@@ -1,4 +1,4 @@
-import { CheckCircle, PenTool } from "lucide-react";
+﻿import { CheckCircle, PenTool } from "lucide-react";
 
 interface TabNavigationProps {
     activeTab: 'pendientes' | 'planillados';
@@ -42,7 +42,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
                     <CheckCircle size={16} />
                     Planillados
                     {planilladosCount > 0 && (
-                        <span className={`px-2 py-0.5 rounded-full text-xs ${activeTab === 'planillados' ? 'bg-[var(--green)]/40 text-green-800' : 'bg-[var(--green)]/40 text-white'
+                        <span className={`px-2 py-0.5 rounded-full text-xs ${activeTab === 'planillados' ? 'bg-[var(--color-primary)]/40 text-green-800' : 'bg-[var(--color-primary)]/40 text-white'
                             }`}>
                             {planilladosCount}
                         </span>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
 import { StatsResumenCard } from '@/app/components/equipo/resumen/StatsResumenCard';
@@ -122,7 +122,7 @@ export const StatsParticipacionSlider: React.FC<StatsParticipacionSliderProps> =
               onClick={() => scrollToIndex(index)}
               className={`h-1.5 rounded-full transition-all duration-300 ${
                 index === currentIndex
-                  ? 'w-6 bg-[var(--green)]'
+                  ? 'w-6 bg-[var(--color-primary)]'
                   : 'w-1.5 bg-[#262626] hover:bg-[#525252]'
               }`}
               aria-label={`Ir a estadística ${index + 1}`}

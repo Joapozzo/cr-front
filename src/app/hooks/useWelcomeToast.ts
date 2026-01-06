@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { toast } from "react-hot-toast";
+import { useTenant } from "@/app/contexts/TenantContext";
 
 type WelcomeToastOptions = {
   appName?: string;
@@ -11,10 +12,12 @@ type WelcomeToastOptions = {
 };
 
 export function useWelcomeToast({
-  appName = "Copa Relámpago",
+  appName,
   storageFlag = "registro_completo",
   storageNameKey = "usuario_nombre",
 }: WelcomeToastOptions = {}) {
+  const tenant = useTenant();
+  const finalAppName = appName || tenant.nombre_empresa;
   const pathname = usePathname();
 
   useEffect(() => {
@@ -32,15 +35,15 @@ export function useWelcomeToast({
 
       const nombre = usuarioNombre || "Usuario";
 
-      toast.success(`¡Bienvenido a ${appName}, ${nombre}! 🎉`, {
+      toast.success(`¡Bienvenido a ${finalAppName}, ${nombre}! 🎉`, {
         duration: 5000,
         icon: "👋",
         style: {
           background: "var(--gray-400)",
           color: "white",
-          border: "1px solid var(--green)",
+          border: "1px solid var(--color-primary)",
         },
       });
     }
-  }, [appName, storageFlag, storageNameKey, pathname]);
+  }, [finalAppName, storageFlag, storageNameKey, pathname]);
 }

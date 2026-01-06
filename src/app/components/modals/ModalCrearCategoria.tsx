@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { X, Plus, Loader2 } from 'lucide-react';
@@ -103,7 +103,7 @@ const ModalCrearCategoria = ({ isOpen, onClose, onSuccess }: ModalCrearCategoria
                         <div>
                             <label className="block text-sm font-medium text-[var(--white)] mb-2">
                                 Nombre de la categoría
-                                <span className="text-[var(--red)] ml-1">*</span>
+                                <span className="text-[var(--color-secondary)] ml-1">*</span>
                             </label>
                             <Input
                                 type="text"

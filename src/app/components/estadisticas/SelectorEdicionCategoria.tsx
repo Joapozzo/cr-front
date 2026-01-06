@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
@@ -75,7 +75,7 @@ export const SelectorEdicionCategoria = () => {
         <div className="relative w-full max-w-md" ref={categoriaDropdownRef}>
           <button
             onClick={() => setIsOpenCategoria(!isOpenCategoria)}
-            className="w-full flex items-center justify-between gap-2 bg-[var(--black-900)] border border-[#262626] rounded-lg px-3 py-2 hover:border-[var(--green)] transition-colors text-sm"
+            className="w-full flex items-center justify-between gap-2 bg-[var(--black-900)] border border-[#262626] rounded-lg px-3 py-2 hover:border-[var(--color-primary)] transition-colors text-sm"
           >
             <span className="text-[#737373]">
               {categoriaSeleccionada && categoriaSeleccionada.id_edicion === edicionSeleccionada.id_edicion 
@@ -98,7 +98,7 @@ export const SelectorEdicionCategoria = () => {
                       placeholder="Buscar categoría..."
                       value={searchTermCategoria}
                       onChange={(e) => setSearchTermCategoria(e.target.value)}
-                      className="w-full bg-[var(--black-900)] border border-[#262626] text-white text-sm pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--green)]"
+                      className="w-full bg-[var(--black-900)] border border-[#262626] text-white text-sm pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                     />
                   </div>
                 </div>
@@ -113,7 +113,7 @@ export const SelectorEdicionCategoria = () => {
                         }`}
                       >
                         <p className={`text-sm font-medium flex-1 ${
-                          categoriaSeleccionada?.id === categoria.id ? 'text-[var(--green)]' : 'text-white'
+                          categoriaSeleccionada?.id === categoria.id ? 'text-[var(--color-primary)]' : 'text-white'
                         }`}>
                           {categoria.nombre}
                         </p>

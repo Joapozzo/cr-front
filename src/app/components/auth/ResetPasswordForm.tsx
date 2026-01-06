@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -97,8 +97,8 @@ export const ResetPasswordForm = () => {
   if (!oobCode) {
     return (
       <div className="flex flex-col gap-6 w-full">
-        <div className="bg-[var(--red)]/10 border border-[var(--red)] rounded-lg p-4">
-          <p className="text-sm text-[var(--red)] text-center">
+        <div className="bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)] rounded-lg p-4">
+          <p className="text-sm text-[var(--color-secondary)] text-center">
             Enlace inválido o expirado
           </p>
         </div>
@@ -177,7 +177,7 @@ export const ResetPasswordForm = () => {
       <div className="flex justify-center pt-2">
         <button
           onClick={() => router.push('/login')}
-          className="text-sm text-[var(--gray-200)] hover:text-[var(--green)] transition-colors"
+          className="text-sm text-[var(--gray-200)] hover:text-[var(--color-primary)] transition-colors"
         >
           Volver al inicio de sesión
         </button>
@@ -193,12 +193,12 @@ const PasswordRequirement = ({ met, text }: { met: boolean; text: string }) => (
   <div className="flex items-center gap-2">
     <div
       className={`w-1.5 h-1.5 rounded-full ${
-        met ? 'bg-[var(--green)]' : 'bg-[var(--gray-200)]'
+        met ? 'bg-[var(--color-primary)]' : 'bg-[var(--gray-200)]'
       }`}
     />
     <span
       className={`text-xs ${
-        met ? 'text-[var(--green)]' : 'text-[var(--gray-200)]'
+        met ? 'text-[var(--color-primary)]' : 'text-[var(--gray-200)]'
       }`}
     >
       {text}

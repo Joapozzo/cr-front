@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Mail, Send, Check, X, Inbox, Loader2, Shield } from "lucide-react";
@@ -131,8 +131,8 @@ export default function PanelSolicitudesAdmin({
             {/* Header de Solicitudes */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-[var(--green)]/20 rounded-lg">
-                        <Mail className="w-5 h-5 text-[var(--green)]" />
+                    <div className="p-2 bg-[var(--color-primary)]/20 rounded-lg">
+                        <Mail className="w-5 h-5 text-[var(--color-primary)]" />
                     </div>
                     <div>
                         <h3 className="text-lg font-semibold text-[var(--white)]">
@@ -152,7 +152,7 @@ export default function PanelSolicitudesAdmin({
                     className={`
                         px-4 py-3 text-sm font-medium 
                         ${tab === 'solicitudes' 
-                            ? 'text-[var(--white)] border-b-2 border-[var(--green)]' 
+                            ? 'text-[var(--white)] border-b-2 border-[var(--color-primary)]' 
                             : 'text-[var(--gray-100)] border-b-2 border-transparent hover:text-[var(--white)]'
                         }
                     `}
@@ -167,7 +167,7 @@ export default function PanelSolicitudesAdmin({
                     className={`
                         px-4 py-3 text-sm font-medium 
                         ${tab === 'invitaciones' 
-                            ? 'text-[var(--white)] border-b-2 border-[var(--green)]' 
+                            ? 'text-[var(--white)] border-b-2 border-[var(--color-primary)]' 
                             : 'text-[var(--gray-100)] border-b-2 border-transparent hover:text-[var(--white)]'
                         }
                     `}
@@ -234,12 +234,12 @@ export default function PanelSolicitudesAdmin({
                         <div className="flex items-center gap-2 text-sm text-[var(--gray-100)] pl-12"> 
                             {sol.tipo_solicitud === 'B' ? (
                                 <>
-                                    <X size={14} className="text-[var(--red)]" />
+                                    <X size={14} className="text-[var(--color-secondary)]" />
                                     <span>Solicita darse de baja de:</span>
                                 </>
                             ) : sol.tipo_solicitud === 'J' ? (
                                 <>
-                                    <Send size={14} className="text-[var(--green)]" />
+                                    <Send size={14} className="text-[var(--color-primary)]" />
                                     <span>Solicita unirse a:</span>
                                 </>
                             ) : (

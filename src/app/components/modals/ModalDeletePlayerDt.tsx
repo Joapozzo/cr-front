@@ -1,4 +1,4 @@
-import { AlertTriangle, Loader2, Trash2 } from "lucide-react";
+﻿import { AlertTriangle, Loader2, Trash2 } from "lucide-react";
 import { BaseModal } from "./ModalAdmin";
 
 interface DeleteDreamTeamPlayerModalProps {
@@ -40,8 +40,8 @@ const ModalDeletePlayerDt = ({
     return (
         <BaseModal isOpen={isOpen} onClose={onClose} title="Eliminar Jugador del DreamTeam" type="delete">
             <div className="space-y-4">
-                <div className="flex items-center gap-3 p-4 bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg">
-                    <AlertTriangle className="w-6 h-6 text-[var(--red)] flex-shrink-0" />
+                <div className="flex items-center gap-3 p-4 bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg">
+                    <AlertTriangle className="w-6 h-6 text-[var(--color-secondary)] flex-shrink-0" />
                     <div>
                         <p className="text-[var(--white)] font-medium">
                             ¿Estás seguro de eliminar este jugador del DreamTeam?
@@ -60,10 +60,10 @@ const ModalDeletePlayerDt = ({
                 {/* Mostrar error si existe */}
                 {error && (
                     <div className="mb-4">
-                        <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-3">
+                        <div className="bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg p-3">
                             <div className="flex items-center gap-2">
-                                <AlertTriangle className="w-4 h-4 text-[var(--red)] flex-shrink-0" />
-                                <p className="text-[var(--red)] text-sm">
+                                <AlertTriangle className="w-4 h-4 text-[var(--color-secondary)] flex-shrink-0" />
+                                <p className="text-[var(--color-secondary)] text-sm">
                                     {error.message || 'Error al eliminar el jugador'}
                                 </p>
                             </div>
@@ -87,7 +87,7 @@ const ModalDeletePlayerDt = ({
                 <button
                     onClick={handleConfirm}
                     disabled={isPending || !jugador}
-                    className="px-6 py-2 bg-[var(--red)] text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-6 py-2 bg-[var(--color-secondary)] text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {isPending ? (
                         <>

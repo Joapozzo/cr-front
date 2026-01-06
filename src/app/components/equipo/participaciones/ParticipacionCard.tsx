@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { ParticipacionEquipo } from '@/app/types/participacionEquipo';
@@ -181,7 +181,7 @@ export const ParticipacionCard: React.FC<ParticipacionCardProps> = ({
               </div>
             )}
             {instanciaTexto && (
-              <p className="text-[var(--green)] text-xs sm:text-sm font-medium">
+              <p className="text-[var(--color-primary)] text-xs sm:text-sm font-medium">
                 {instanciaTexto}
               </p>
             )}
@@ -193,7 +193,7 @@ export const ParticipacionCard: React.FC<ParticipacionCardProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <BaseCard className="p-3 sm:p-4">
           <div className="flex items-center gap-2 mb-2">
-            <Target className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--green)]" />
+            <Target className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--color-primary)]" />
             <h4 className="text-white font-semibold text-xs sm:text-sm">Goles anotados</h4>
           </div>
           <p className="text-white font-bold text-xl sm:text-2xl">
@@ -272,12 +272,12 @@ export const ParticipacionCard: React.FC<ParticipacionCardProps> = ({
                     <tr
                       key={equipo.id_equipo}
                       className={`hover:bg-[var(--black-800)] transition-colors ${
-                        isUserTeam ? 'bg-[var(--green)]/5' : ''
+                        isUserTeam ? 'bg-[var(--color-primary)]/5' : ''
                       }`}
                     >
                       <td className="px-4 py-3 whitespace-nowrap">
                         <span className={`text-sm font-semibold ${
-                          isUserTeam ? 'text-[var(--green)]' : 'text-white'
+                          isUserTeam ? 'text-[var(--color-primary)]' : 'text-white'
                         }`}>
                           {posicionReal}
                         </span>
@@ -291,7 +291,7 @@ export const ParticipacionCard: React.FC<ParticipacionCardProps> = ({
                             className="flex-shrink-0"
                           />
                           <span className={`text-sm font-medium ${
-                            isUserTeam ? 'text-[var(--green)]' : 'text-white'
+                            isUserTeam ? 'text-[var(--color-primary)]' : 'text-white'
                           }`}>
                             {equipo.nombre_equipo}
                           </span>
@@ -318,7 +318,7 @@ export const ParticipacionCard: React.FC<ParticipacionCardProps> = ({
                       <td className="px-4 py-3 text-center">
                         <span className={`text-sm font-medium ${
                           equipo.diferencia_goles > 0 
-                            ? 'text-[var(--green)]' 
+                            ? 'text-[var(--color-primary)]' 
                             : equipo.diferencia_goles < 0 
                               ? 'text-red-400' 
                               : 'text-[#737373]'

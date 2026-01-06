@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Search, User, Plus, Crown, Loader2, AlertTriangle } from 'lucide-react';
@@ -88,14 +88,14 @@ export default function JugadorSelectionModal({
             <div className="space-y-4">
                     {/* Error Message */}
                     {errorMessage && (
-                        <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-4">
+                        <div className="bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg p-4">
                             <div className="flex items-center gap-3">
-                                <AlertTriangle className="w-5 h-5 text-[var(--red)] flex-shrink-0" />
+                                <AlertTriangle className="w-5 h-5 text-[var(--color-secondary)] flex-shrink-0" />
                                 <div>
-                                    <h4 className="text-[var(--red)] font-medium text-sm">
+                                    <h4 className="text-[var(--color-secondary)] font-medium text-sm">
                                         Error en la operación
                                     </h4>
-                                    <p className="text-[var(--red)]/80 text-sm mt-1">
+                                    <p className="text-[var(--color-secondary)]/80 text-sm mt-1">
                                         {errorMessage}
                                     </p>
                                 </div>
@@ -140,8 +140,8 @@ export default function JugadorSelectionModal({
                             )}
 
                             {searchError && (
-                                <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-4 text-center">
-                                    <p className="text-[var(--red)] text-sm">
+                                <div className="bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg p-4 text-center">
+                                    <p className="text-[var(--color-secondary)] text-sm">
                                         Error al buscar jugadores. Intenta nuevamente.
                                     </p>
                                 </div>
@@ -161,7 +161,7 @@ export default function JugadorSelectionModal({
                                     key={jugador.id_jugador}
                                     className={`p-4 border rounded-lg cursor-pointer transition-all ${
                                         selectedJugador?.id_jugador === jugador.id_jugador
-                                            ? 'border-[var(--green)] bg-[var(--green)]/10'
+                                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10'
                                             : 'border-[var(--gray-300)] bg-[var(--gray-300)] hover:border-[var(--gray-200)]'
                                     }`}
                                     onClick={() => setSelectedJugador(jugador)}
@@ -198,7 +198,7 @@ export default function JugadorSelectionModal({
                                         </div>
 
                                         {selectedJugador?.id_jugador === jugador.id_jugador && (
-                                            <div className="w-5 h-5 bg-[var(--green)] rounded-full flex items-center justify-center">
+                                            <div className="w-5 h-5 bg-[var(--color-primary)] rounded-full flex items-center justify-center">
                                                 <div className="w-2 h-2 bg-white rounded-full" />
                                             </div>
                                         )}
@@ -236,7 +236,7 @@ export default function JugadorSelectionModal({
                             <h3 className="text-sm font-medium text-[var(--white)]">
                                 Jugador seleccionado
                             </h3>
-                            <div className="bg-[var(--green)]/10 border border-[var(--green)]/30 rounded-lg p-4">
+                            <div className="bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/30 rounded-lg p-4">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
                                         <ImagenPublica
@@ -245,7 +245,7 @@ export default function JugadorSelectionModal({
                                             width={40}
                                             height={40}
                                             className="w-10 h-10 object-cover"
-                                            fallbackIcon={<User className="w-5 h-5 text-[var(--green)]" />}
+                                            fallbackIcon={<User className="w-5 h-5 text-[var(--color-primary)]" />}
                                         />
                                     </div>
                                     <div>

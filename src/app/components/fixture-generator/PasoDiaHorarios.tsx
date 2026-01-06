@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { DateInput, TimeInput } from '../ui/Input';
 import Select from '../ui/Select';
@@ -125,13 +125,13 @@ export default function PasoDiaHorarios({
                     {loadingCanchas ? (
                         <p className="text-[var(--gray-100)]">Cargando canchas...</p>
                     ) : canchas.length === 0 ? (
-                        <p className="text-[var(--red)]">No hay canchas disponibles en este predio</p>
+                        <p className="text-[var(--color-secondary)]">No hay canchas disponibles en este predio</p>
                     ) : (
                         <div className="flex flex-wrap gap-2">
                             {canchas.map((cancha) => (
                                 <label
                                     key={cancha.id_cancha}
-                                    className="flex items-center px-3 py-2 bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] cursor-pointer hover:border-[var(--green)] transition-colors flex-shrink-0"
+                                    className="flex items-center px-3 py-2 bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] cursor-pointer hover:border-[var(--color-primary)] transition-colors flex-shrink-0"
                                 >
                                     <input
                                         type="checkbox"

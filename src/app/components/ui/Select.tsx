@@ -1,4 +1,4 @@
-// components/ui/Select.tsx
+﻿// components/ui/Select.tsx
 
 'use client';
 
@@ -104,7 +104,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 </div>
 
                 {error && (
-                    <p className="text-[var(--red)] text-xs mt-1.5 ml-1">{error}</p>
+                    <p className="text-[var(--color-secondary)] text-xs mt-1.5 ml-1">{error}</p>
                 )}
             </div>
         );

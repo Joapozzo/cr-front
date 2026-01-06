@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { LucideIcon } from 'lucide-react';
 import React from 'react';
 import { LoadingSkeleton } from './LoadingSkeleton';
@@ -52,7 +52,7 @@ export const DataCard: React.FC<DataCardProps> = ({
                     </div>
                 ) : error ? (
                     <div className="p-8 text-center flex flex-col items-center justify-center text-[#737373] h-full">
-                        <div className="bg-[var(--red-500)]/10 text-[var(--red-500)] p-3 rounded-full mb-3">
+                        <div className="bg-[var(--color-secondary-500)]/10 text-[var(--color-secondary-500)] p-3 rounded-full mb-3">
                             {Icon ? <Icon size={24} /> : <span className="text-xl font-bold">!</span>}
                         </div>
                         <p className="text-sm">Error al cargar datos</p>

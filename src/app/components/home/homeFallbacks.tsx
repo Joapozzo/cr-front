@@ -1,4 +1,4 @@
-import { BaseCard, CardHeader } from "@/app/components/BaseCard";
+﻿import { BaseCard, CardHeader } from "@/app/components/BaseCard";
 import { BaseCardTableSkeleton } from "@/app/components/skeletons/BaseCardTableSkeleton";
 import MatchCardSkeleton from "@/app/components/skeletons/CardPartidoGenericoSkeleton";
 import { NoticiaCardSkeleton2 } from "@/app/components/skeletons/NoticiaCardSkeleton";
@@ -7,7 +7,7 @@ import { Calendar, Shield, AlertTriangle, Newspaper, Trophy } from "lucide-react
 export const PartidosEquipoCardFallback = () => (
   <BaseCard>
     <CardHeader
-      icon={<Calendar size={18} className="text-[var(--green)]" />}
+      icon={<Calendar size={18} className="text-[var(--color-primary)]" />}
       title="Mis partidos"
       subtitle="Cargando..."
     />
@@ -19,7 +19,7 @@ export const PartidosEquipoCardFallback = () => (
 export const TablaPosicionesHomeFallback = () => (
   <BaseCard>
     <CardHeader
-      icon={<Trophy size={18} className="text-[var(--green)]" />}
+      icon={<Trophy size={18} className="text-[var(--color-primary)]" />}
       title="Tabla de posiciones"
       subtitle="Cargando..."
     />
@@ -53,7 +53,7 @@ export const SancionesHomeFallback = () => (
 export const NoticiasHomeFallback = () => (
   <BaseCard>
     <CardHeader
-      icon={<Newspaper size={18} className="text-[var(--green)]" />}
+      icon={<Newspaper size={18} className="text-[var(--color-primary)]" />}
       title="Noticias"
       subtitle="Cargando..."
     />

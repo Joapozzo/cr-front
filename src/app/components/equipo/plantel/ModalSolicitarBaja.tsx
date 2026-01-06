@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
@@ -56,7 +56,7 @@ export const ModalSolicitarBaja: React.FC<ModalSolicitarBajaProps> = ({
                         }
                     </p>
                     <p className="text-[var(--white)] font-medium text-sm">
-                        {esPropiaBaja ? 'Jugador:' : 'Jugador a dar de baja:'} <span className="text-[var(--red)]">{jugadorNombre}</span>
+                        {esPropiaBaja ? 'Jugador:' : 'Jugador a dar de baja:'} <span className="text-[var(--color-secondary)]">{jugadorNombre}</span>
                     </p>
                 </div>
 
@@ -85,7 +85,7 @@ export const ModalSolicitarBaja: React.FC<ModalSolicitarBajaProps> = ({
                         value={observaciones}
                         onChange={(e) => setObservaciones(e.target.value)}
                         placeholder="Información adicional sobre la solicitud..."
-                        className="w-full px-4 py-3 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] placeholder-[var(--gray-100)] focus:outline-none focus:border-[var(--green)] transition-colors resize-none"
+                        className="w-full px-4 py-3 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] placeholder-[var(--gray-100)] focus:outline-none focus:border-[var(--color-primary)] transition-colors resize-none"
                         rows={4}
                         maxLength={500}
                     />

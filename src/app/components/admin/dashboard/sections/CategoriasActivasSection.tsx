@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { Trophy, Activity, Users, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
@@ -47,7 +47,7 @@ export const CategoriasActivasSection: React.FC<CategoriasActivasSectionProps> =
 
     if (error) {
         return (
-            <div className="bg-[var(--red-500)]/10 border border-[var(--red-500)]/20 rounded-xl p-6 text-center text-[var(--red-500)]">
+            <div className="bg-[var(--color-secondary-500)]/10 border border-[var(--color-secondary-500)]/20 rounded-xl p-6 text-center text-[var(--color-secondary-500)]">
                 <Activity className="mx-auto mb-2" size={24} />
                 <p>Error al cargar categorías activas</p>
             </div>
@@ -81,10 +81,10 @@ export const CategoriasActivasSection: React.FC<CategoriasActivasSectionProps> =
                         variants={item}
                         whileHover={{ scale: 1.03, y: -4 }}
                         transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                        className="bg-[var(--black-900)] border border-[#262626] hover:border-[var(--green)]/30 rounded-xl p-5 flex flex-col justify-between group cursor-pointer h-full"
+                        className="bg-[var(--black-900)] border border-[#262626] hover:border-[var(--color-primary)]/30 rounded-xl p-5 flex flex-col justify-between group cursor-pointer h-full"
                     >
                     <div className="flex justify-between items-start mb-3">
-                        <div className="p-2 bg-[var(--black-800)] rounded-lg text-white group-hover:bg-[var(--green)] group-hover:text-black transition-colors duration-300">
+                        <div className="p-2 bg-[var(--black-800)] rounded-lg text-white group-hover:bg-[var(--color-primary)] group-hover:text-black transition-colors duration-300">
                             <Trophy size={18} />
                         </div>
                         <Badge variant="success">Activa</Badge>
@@ -103,7 +103,7 @@ export const CategoriasActivasSection: React.FC<CategoriasActivasSectionProps> =
                     <div className="mt-4 pt-3 border-t border-[#262626] flex justify-between items-center text-xs text-[#a3a3a3]">
                         <span>ID: {cat.id_categoria_edicion}</span>
                         <div className="flex items-center gap-1">
-                            <span className="w-2 h-2 rounded-full bg-[var(--green)] animate-pulse"></span>
+                            <span className="w-2 h-2 rounded-full bg-[var(--color-primary)] animate-pulse"></span>
                             Online
                         </div>
                     </div>

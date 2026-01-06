@@ -1,4 +1,4 @@
-import { Shield, User, TableProperties } from "lucide-react";
+﻿import { Shield, User, TableProperties } from "lucide-react";
 import { Button } from "../ui/Button";
 import { EscudoEquipo } from "../common/EscudoEquipo";
 
@@ -63,7 +63,7 @@ export const getEdicionesColumns = (
             label: "JUGADORES",
             render: (value: number) => (
                 <div className="flex items-center space-x-2">
-                    <User size={20} className="text-[var(--green)]" />
+                    <User size={20} className="text-[var(--color-primary)]" />
                     <span className="text-white font-medium">{value}</span>
                 </div>
             ),
@@ -73,7 +73,7 @@ export const getEdicionesColumns = (
             label: "EQUIPOS",
             render: (value: number) => (
                 <div className="flex items-center space-x-2">
-                    <Shield size={20} className="text-[var(--green)]" />
+                    <Shield size={20} className="text-[var(--color-primary)]" />
                     <span className="text-white font-medium">{value}</span>
                 </div>
             ),
@@ -83,7 +83,7 @@ export const getEdicionesColumns = (
             label: "CATEGORÍAS",
             render: (value: number) => (
                 <div className="flex items-center space-x-2">
-                    <TableProperties size={20} className="text-[var(--green)]" />
+                    <TableProperties size={20} className="text-[var(--color-primary)]" />
                     <span className="text-white font-medium">{value}</span>
                 </div>
             ),

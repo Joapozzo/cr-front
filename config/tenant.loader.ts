@@ -5,16 +5,23 @@ export interface TenantConfig {
     id: string;
     nombre_empresa: string;
     nombre_corto: string;
+    tipo_futbol: "futbol-7" | "futbol-11";
     branding: {
         logo_principal: string;
         logo_header: string;
         favicon: string;
         titulo_pagina: string;
+        favicons_path: string;
+    };
+    seo: {
+        keywords: string[];
+        description: string;
+        tipo_torneo: string;
     };
     colores: {
-        primario: string;
-        secundario: string;
-        acento: string;
+        primary: string;
+        primaryStrong: string;
+        secondary: string;
         success: string;
         danger: string;
         warning: string;
@@ -50,11 +57,14 @@ export const loadTenantConfig = (): TenantConfig => {
         return tenantConfig;
     }
 
-    // Lee de variable de entorno
-    const tenantId = process.env.TENANT_ID || 'coparelampago';
+    // Lee de variable de entorno (NEXT_PUBLIC_ para acceso en cliente)
+    const tenantId = process.env.NEXT_PUBLIC_TENANT_ID || process.env.TENANT_ID || 'coparelampago';
 
+    // Usar process.cwd() en lugar de __dirname para Next.js/Turbopack
+    // process.cwd() apunta al directorio raíz del proyecto (client/)
     const configPath = path.join(
-        __dirname,
+        process.cwd(),
+        'config',
         'tenants',
         `${tenantId}.json`
     );

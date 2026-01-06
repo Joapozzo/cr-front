@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { ConfiguracionPrecio, TipoConcepto } from '@/app/services/configuracionPrecio.services';
 import { Edit, Trash2, Calendar, CheckCircle, Tag } from 'lucide-react';
@@ -49,7 +49,7 @@ export default function TablaPreciosCategoria({
                         className="bg-[var(--black-900)] border border-[var(--gray-300)] rounded-lg p-6"
                     >
                         <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                            <Tag className="w-5 h-5 text-[var(--green)]" />
+                            <Tag className="w-5 h-5 text-[var(--color-primary)]" />
                             {nombreCategoria}
                         </h3>
 
@@ -82,7 +82,7 @@ export default function TablaPreciosCategoria({
                                         >
                                             <td className="py-3 px-4">
                                                 <div className="flex items-center gap-2">
-                                                    <div className="text-[var(--green)]">
+                                                    <div className="text-[var(--color-primary)]">
                                                         {getIconoTipo(precio.tipo_concepto)}
                                                     </div>
                                                     <span className="text-white font-medium">
@@ -94,7 +94,7 @@ export default function TablaPreciosCategoria({
                                                 {precio.unidad.replace('_', ' ')}
                                             </td>
                                             <td className="py-3 px-4">
-                                                <span className="text-[var(--green)] font-bold">
+                                                <span className="text-[var(--color-primary)] font-bold">
                                                     {formatPrecio(precio.monto)}
                                                 </span>
                                             </td>

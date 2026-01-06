@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Button } from '../ui/Button';
@@ -130,7 +130,7 @@ export const ModalPoliticasPrivacidad: React.FC<ModalPoliticasPrivacidadProps> =
                 </ul>
                 <p className="text-[var(--gray-300)] text-xs mt-2">
                   <strong>Contacto:</strong> 
-                  <a href={`mailto:${EMAIL_SUPPORT}`} className="text-[var(--gray-200)] hover:text-[var(--green)]">
+                  <a href={`mailto:${EMAIL_SUPPORT}`} className="text-[var(--gray-200)] hover:text-[var(--color-primary)]">
                     {EMAIL_SUPPORT}
                   </a>
                 </p>
@@ -170,7 +170,7 @@ export const ModalPoliticasPrivacidad: React.FC<ModalPoliticasPrivacidadProps> =
                 id="acepta-terminos"
                 checked={aceptaTerminos}
                 onChange={(e) => setAceptaTerminos(e.target.checked)}
-                className="mt-1 w-4 h-4 rounded border-[var(--gray-300)] bg-[var(--gray-400)] text-[var(--green)] focus:ring-2 focus:ring-[var(--green)] focus:ring-offset-0 focus:ring-offset-[var(--gray-400)] cursor-pointer"
+                className="mt-1 w-4 h-4 rounded border-[var(--gray-300)] bg-[var(--gray-400)] text-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-0 focus:ring-offset-[var(--gray-400)] cursor-pointer"
               />
               <label
                 htmlFor="acepta-terminos"

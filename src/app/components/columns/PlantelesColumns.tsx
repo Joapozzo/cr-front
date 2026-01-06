@@ -1,4 +1,4 @@
-import { User, LogOut, Ban } from "lucide-react";
+﻿import { User, LogOut, Ban } from "lucide-react";
 import { ImagenPublica } from "../common/ImagenPublica";
 import { Button } from "../ui/Button";
 
@@ -13,8 +13,8 @@ const getPlantelColumns = (actions?: PlantelActions) => {
         sancionado: string;
     }) => {
         const getEstadoColor = () => {
-            if (sancionado === 'Inactivo') return 'bg-[var(--red)] text-white';
-            return 'bg-[var(--green)] text-[var(--gray-400)]';
+            if (sancionado === 'Inactivo') return 'bg-[var(--color-secondary)] text-white';
+            return 'bg-[var(--color-primary)] text-[var(--gray-400)]';
         };
 
         const getEstadoTexto = () => {
@@ -70,7 +70,7 @@ const getPlantelColumns = (actions?: PlantelActions) => {
         //                     e.stopPropagation();
         //                     ('Eliminar jugador', row.id_jugador);
         //                 }}
-        //                 className="p-2 rounded-md bg-[var(--red)] text-white hover:opacity-70 transition"
+        //                 className="p-2 rounded-md bg-[var(--color-secondary)] text-white hover:opacity-70 transition"
         //                 title="Eliminar jugador"
         //             >
         //                 <Trash2 className="w-4 h-4" />
@@ -85,7 +85,7 @@ const getPlantelColumns = (actions?: PlantelActions) => {
                 const dniValue = String(value);
                 return (
                     <span className={`font-mono text-sm ${dniValue === 'Sin DNI'
-                        ? 'text-[var(--red)] font-medium'
+                        ? 'text-[var(--color-secondary)] font-medium'
                         : 'text-[var(--white)]'
                         }`}>
                         {dniValue}

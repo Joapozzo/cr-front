@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Info } from 'lucide-react';
@@ -19,7 +19,7 @@ export default function Tooltip({ content, children }: TooltipProps) {
                 className="cursor-help"
             >
                 {children || (
-                    <Info size={16} className="text-[var(--gray-100)] hover:text-[var(--green)] transition-colors" />
+                    <Info size={16} className="text-[var(--gray-100)] hover:text-[var(--color-primary)] transition-colors" />
                 )}
             </div>
             {isVisible && (

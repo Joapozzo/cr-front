@@ -3,6 +3,7 @@ import { Mulish } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./provider";
 import { Toaster } from "react-hot-toast";
+import { getTenantConfig } from "@/config/tenant.loader";
 
 // Configuración de Mulish con todos los pesos
 const mulish = Mulish({
@@ -12,30 +13,60 @@ const mulish = Mulish({
   display: "swap",
 });
 
-// Configuración completa de SEO
+// Cargar configuración del tenant
+const tenantConfig = getTenantConfig();
+
+// Función helper para convertir hex a rgba
+const hexToRgba = (hex: string, alpha: number = 1): string => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+// Generar variables CSS del tenant
+const generateTenantCSSVariables = (config: typeof tenantConfig): string => {
+  const { colores } = config;
+  
+  return `
+    :root {
+      /* Colores principales del tenant - inyectados dinámicamente */
+      --color-primary: ${colores.primary};
+      --color-primary-strong: ${colores.primaryStrong};
+      --color-primary-opacity: ${hexToRgba(colores.primary, 0.2)};
+      --color-secondary: ${colores.secondary};
+      --color-success: ${colores.success};
+      --color-danger: ${colores.danger};
+      --color-warning: ${colores.warning};
+      
+      /* Variables derivadas para mantener compatibilidad */
+      --color-primary-300: ${hexToRgba(colores.primary, 0.3)};
+      --color-primary-400: ${hexToRgba(colores.primary, 0.4)};
+      --color-primary-500: ${colores.success};
+      --color-primary-800: ${colores.primaryStrong};
+      
+      --color-secondary-100: ${hexToRgba(colores.secondary, 0.1)};
+      --color-secondary-300: ${hexToRgba(colores.secondary, 0.3)};
+      --color-secondary-400: ${hexToRgba(colores.secondary, 0.4)};
+      --color-secondary-500: ${colores.secondary};
+      --color-secondary-600: ${colores.danger};
+      --color-secondary-700: ${colores.danger};
+    }
+  `;
+};
+
+// Generar metadata dinámicamente basado en el tenant
 export const metadata: Metadata = {
   title: {
-    template: "%s | Copa Relámpago",
-    default: "Copa Relámpago | El Mejor Torneo de Fútbol 7 de Córdoba",
+    template: `%s | ${tenantConfig.nombre_empresa}`,
+    default: tenantConfig.branding.titulo_pagina,
   },
-  description: "Copa Relámpago es el torneo de fútbol 7 más importante de Córdoba. Categorías para todas las edades, competencias profesionales y la mejor experiencia futbolística.",
-  keywords: [
-    "copa relampago",
-    "futbol 7",
-    "torneo futbol",
-    "cordoba",
-    "futbol cordoba",
-    "competencias deportivas",
-    "equipos futbol",
-    "categorias futbol",
-    "liga futbol",
-    "torneo amateur",
-    "futbol 7 cordoba"
-  ],
-  authors: [{ name: "Copa Relámpago" }],
-  creator: "Copa Relámpago",
-  publisher: "Copa Relámpago",
-  metadataBase: new URL('https://coparelampago.com'),
+  description: tenantConfig.seo.description,
+  keywords: tenantConfig.seo.keywords,
+  authors: [{ name: tenantConfig.nombre_empresa }],
+  creator: tenantConfig.nombre_empresa,
+  publisher: tenantConfig.nombre_empresa,
+  metadataBase: new URL(`https://${tenantConfig.id}.com`),
 
   // Configuración de robots
   robots: {
@@ -54,16 +85,16 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "es_AR",
-    url: "https://coparelampago.com",
-    siteName: "Copa Relámpago",
-    title: "Copa Relámpago | El Mejor Torneo de Fútbol 7 de Córdoba",
-    description: "Participá en el torneo de fútbol 7 más profesional de Córdoba. Estadísticas en vivo, premios increíbles y la mejor comunidad.",
+    url: `https://${tenantConfig.id}.com`,
+    siteName: tenantConfig.nombre_empresa,
+    title: tenantConfig.branding.titulo_pagina,
+    description: tenantConfig.seo.description,
     images: [
       {
-        url: "/logos/isologo.png",
+        url: tenantConfig.branding.logo_principal,
         width: 1200,
         height: 630,
-        alt: "Copa Relámpago - Logo",
+        alt: `${tenantConfig.nombre_empresa} - Logo`,
       },
     ],
   },
@@ -71,30 +102,31 @@ export const metadata: Metadata = {
   // Twitter Cards
   twitter: {
     card: "summary_large_image",
-    site: "@coparelampago",
-    creator: "@coparelampago",
-    title: "Copa Relámpago | Torneo de Fútbol 7",
-    description: "El mejor torneo de fútbol 7 de Córdoba. ¡Inscribí a tu equipo!",
-    images: ["/logos/isologo.png"],
+    site: `@${tenantConfig.contacto.redes.instagram.replace('@', '')}`,
+    creator: `@${tenantConfig.contacto.redes.instagram.replace('@', '')}`,
+    title: tenantConfig.branding.titulo_pagina,
+    description: tenantConfig.seo.description,
+    images: [tenantConfig.branding.logo_principal],
   },
 
-  // Favicons e iconos
+  // Favicons e iconos - usando la carpeta específica del tenant
   icons: {
     icon: [
-      { url: "/logos/isologo.png" },
-      { url: "/logos/isologo.png", sizes: "32x32", type: "image/png" },
-      { url: "/logos/isologo.png", sizes: "16x16", type: "image/png" },
+      { url: `${tenantConfig.branding.favicons_path}/favicon.ico` },
+      { url: `${tenantConfig.branding.favicons_path}/icon1.png`, sizes: "32x32", type: "image/png" },
+      { url: `${tenantConfig.branding.favicons_path}/icon1.png`, sizes: "16x16", type: "image/png" },
+      { url: `${tenantConfig.branding.favicons_path}/icon0.svg`, type: "image/svg+xml" },
     ],
     apple: [
-      { url: "/logos/isologo.png", sizes: "180x180" },
+      { url: `${tenantConfig.branding.favicons_path}/apple-icon.png`, sizes: "180x180" },
     ],
     other: [
-      { rel: "mask-icon", url: "/logos/isologo.png", color: "#2AD174" },
+      { rel: "mask-icon", url: `${tenantConfig.branding.favicons_path}/icon0.svg`, color: tenantConfig.colores.primary },
     ],
   },
 
-  // Manifest para PWA
-  manifest: "/manifest.json",
+  // Manifest para PWA - usando el manifest específico del tenant
+  manifest: `${tenantConfig.branding.favicons_path}/manifest.json`,
 
   // Configuración adicional
   category: "sports",
@@ -102,17 +134,17 @@ export const metadata: Metadata = {
 
   // Datos estructurados básicos
   other: {
-    "application-name": "Copa Relámpago",
-    "msapplication-TileColor": "#2AD174",
-    "msapplication-TileImage": "/logos/isologo.png",
-    "theme-color": "#2AD174",
+    "application-name": tenantConfig.nombre_empresa,
+    "msapplication-TileColor": tenantConfig.colores.primary,
+    "msapplication-TileImage": tenantConfig.branding.logo_principal,
+    "theme-color": tenantConfig.colores.primary,
   },
 
   // Configuración para motores de búsqueda
   alternates: {
-    canonical: "https://coparelampago.com",
+    canonical: `https://${tenantConfig.id}.com`,
     languages: {
-      "es-AR": "https://coparelampago.com",
+      "es-AR": `https://${tenantConfig.id}.com`,
     },
   },
 };
@@ -125,6 +157,13 @@ export default function RootLayout({
   return (
     <html lang="es-AR" className={mulish.variable}>
       <head>
+        {/* Inyectar variables CSS del tenant dinámicamente */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html: generateTenantCSSVariables(tenantConfig),
+          }}
+        />
+
         {/* Structured Data - JSON-LD */}
         <script
           type="application/ld+json"
@@ -132,28 +171,27 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "SportsOrganization",
-              name: "Copa Relámpago",
-              description: "El torneo de fútbol 7 más importante de Córdoba",
-              url: "https://coparelampago.com",
-              logo: "https://coparelampago.com/logos/isologo.png",
+              name: tenantConfig.nombre_empresa,
+              description: tenantConfig.seo.description,
+              url: `https://${tenantConfig.id}.com`,
+              logo: `https://${tenantConfig.id}.com${tenantConfig.branding.logo_principal}`,
               sameAs: [
-                "https://www.instagram.com/coparelampago/",
-                "https://www.facebook.com/coparelampagocba/",
-                "https://www.youtube.com/channel/UC-2-3-5-6-7"
+                `https://www.instagram.com/${tenantConfig.contacto.redes.instagram.replace('@', '')}/`,
+                `https://www.facebook.com/${tenantConfig.contacto.redes.facebook}/`,
               ],
               address: {
                 "@type": "PostalAddress",
-                addressLocality: "Córdoba",
+                addressLocality: tenantConfig.contacto.direccion.split(',')[0],
                 addressRegion: "Córdoba",
                 addressCountry: "AR"
               },
               contactPoint: {
                 "@type": "ContactPoint",
-                telephone: "+54-351-818-2129",
+                telephone: tenantConfig.contacto.telefono,
                 contactType: "customer service",
                 availableLanguage: "Spanish"
               },
-              sport: "Soccer"
+              sport: tenantConfig.tipo_futbol === "futbol-7" ? "Fútbol 7" : "Fútbol 11"
             }),
           }}
         />
@@ -175,7 +213,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${mulish.className} antialiased font-mulish`}>
-        <Providers>
+        <Providers tenantConfig={tenantConfig}>
           {children}
         </Providers>
         <Toaster />

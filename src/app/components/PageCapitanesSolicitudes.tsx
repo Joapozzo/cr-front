@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useMemo } from 'react';
 import { Crown, User as UserIcon } from 'lucide-react';
@@ -96,7 +96,7 @@ export default function SolicitudesCapitanPage({  equipoSeleccionado, esCapitan 
                 <div className="flex items-center gap-2">
                     <span className={`flex items-center gap-1 px-3 py-1 rounded-full border transition-colors cursor-pointer ${
                         activeTab === 'capitan' 
-                            ? 'bg-[var(--green)]/20 text-[var(--green)] border-[var(--green)]/30' 
+                            ? 'bg-[var(--color-primary)]/20 text-[var(--color-primary)] border-[var(--color-primary)]/30' 
                             : 'bg-[var(--gray-400)]/20 text-[var(--gray-200)] border-[var(--gray-300)]/30'
                     }`}
                     onClick={() => setActiveTab('capitan')}

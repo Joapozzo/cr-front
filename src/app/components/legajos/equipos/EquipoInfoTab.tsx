@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { EquipoInformacionBasica, EstadisticasEquipo } from '@/app/types/legajos';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
@@ -50,13 +50,13 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
             {/* Información Básica - Background diferente */}
             <div className="bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] p-6">
                 <div className="flex items-center gap-2 mb-4">
-                    <FileText className="w-5 h-5 text-[var(--green)]" />
+                    <FileText className="w-5 h-5 text-[var(--color-primary)]" />
                     <h2 className="text-xl font-bold text-[var(--white)]">Información básica</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex items-start gap-3">
                         <div className="p-2 bg-[var(--gray-400)] rounded-lg">
-                            <Users className="w-4 h-4 text-[var(--green)]" />
+                            <Users className="w-4 h-4 text-[var(--color-primary)]" />
                         </div>
                         <div>
                             <p className="text-sm text-[var(--gray-100)] mb-1">Nombre</p>
@@ -66,7 +66,7 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
                     {equipoInfo.descripcion && (
                         <div className="flex items-start gap-3">
                             <div className="p-2 bg-[var(--gray-400)] rounded-lg">
-                                <FileText className="w-4 h-4 text-[var(--green)]" />
+                                <FileText className="w-4 h-4 text-[var(--color-primary)]" />
                             </div>
                             <div>
                                 <p className="text-sm text-[var(--gray-100)] mb-1">Descripción</p>
@@ -85,7 +85,7 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
                     </div>
                     <div className="flex items-start gap-3">
                         <div className="p-2 bg-[var(--gray-400)] rounded-lg">
-                            <Users className="w-4 h-4 text-[var(--green)]" />
+                            <Users className="w-4 h-4 text-[var(--color-primary)]" />
                         </div>
                         <div>
                             <p className="text-sm text-[var(--gray-100)] mb-1">Total de jugadores</p>
@@ -112,7 +112,7 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
             ) : estadisticas ? (
                 <div className="bg-[var(--gray-300)] rounded-lg border border-[var(--gray-200)] p-6 space-y-6">
                     <div className="flex items-center gap-2">
-                        <Activity className="w-5 h-5 text-[var(--green)]" />
+                        <Activity className="w-5 h-5 text-[var(--color-primary)]" />
                         <h2 className="text-xl font-bold text-[var(--white)]">Estadísticas generales</h2>
                     </div>
                     
@@ -125,12 +125,12 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
                             </div>
                             <p className="text-2xl font-bold text-[var(--white)]">{estadisticas.estadisticas_generales.partidos_jugados}</p>
                         </div>
-                        <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--green)]/30">
+                        <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--color-primary)]/30">
                             <div className="flex items-center gap-2 mb-2">
-                                <TrendingUp className="w-4 h-4 text-[var(--green)]" />
+                                <TrendingUp className="w-4 h-4 text-[var(--color-primary)]" />
                                 <p className="text-sm text-[var(--gray-100)]">Ganados</p>
                             </div>
-                            <p className="text-2xl font-bold text-[var(--green)]">{estadisticas.estadisticas_generales.partidos_ganados}</p>
+                            <p className="text-2xl font-bold text-[var(--color-primary)]">{estadisticas.estadisticas_generales.partidos_ganados}</p>
                         </div>
                         <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--yellow)]/30">
                             <div className="flex items-center gap-2 mb-2">
@@ -139,23 +139,23 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
                             </div>
                             <p className="text-2xl font-bold text-[var(--yellow)]">{estadisticas.estadisticas_generales.partidos_empatados}</p>
                         </div>
-                        <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--red)]/30">
+                        <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--color-secondary)]/30">
                             <div className="flex items-center gap-2 mb-2">
-                                <TrendingUp className="w-4 h-4 text-[var(--red)] rotate-180" />
+                                <TrendingUp className="w-4 h-4 text-[var(--color-secondary)] rotate-180" />
                                 <p className="text-sm text-[var(--gray-100)]">Perdidos</p>
                             </div>
-                            <p className="text-2xl font-bold text-[var(--red)]">{estadisticas.estadisticas_generales.partidos_perdidos}</p>
+                            <p className="text-2xl font-bold text-[var(--color-secondary)]">{estadisticas.estadisticas_generales.partidos_perdidos}</p>
                         </div>
-                        <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--green)]/30">
+                        <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--color-primary)]/30">
                             <div className="flex items-center gap-2 mb-2">
-                                <FaFutbol className="w-4 h-4 text-[var(--green)]" />
+                                <FaFutbol className="w-4 h-4 text-[var(--color-primary)]" />
                                 <p className="text-sm text-[var(--gray-100)]">Goles a Favor</p>
                             </div>
                             <p className="text-2xl font-bold text-[var(--white)]">{estadisticas.estadisticas_generales.goles_favor}</p>
                         </div>
-                        <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--red)]/30">
+                        <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--color-secondary)]/30">
                             <div className="flex items-center gap-2 mb-2">
-                                <FaFutbol className="w-4 h-4 text-[var(--red)]" />
+                                <FaFutbol className="w-4 h-4 text-[var(--color-secondary)]" />
                                 <p className="text-sm text-[var(--gray-100)]">Goles en Contra</p>
                             </div>
                             <p className="text-2xl font-bold text-[var(--white)]">{estadisticas.estadisticas_generales.goles_contra}</p>
@@ -167,12 +167,12 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
                             </div>
                             <p className="text-2xl font-bold text-[var(--white)]">{estadisticas.estadisticas_generales.diferencia_goles}</p>
                         </div>
-                        <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--green)]/30">
+                        <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--color-primary)]/30">
                             <div className="flex items-center gap-2 mb-2">
-                                <Award className="w-4 h-4 text-[var(--green)]" />
+                                <Award className="w-4 h-4 text-[var(--color-primary)]" />
                                 <p className="text-sm text-[var(--gray-100)]">Puntos</p>
                             </div>
-                            <p className="text-2xl font-bold text-[var(--green)]">{estadisticas.estadisticas_generales.puntos}</p>
+                            <p className="text-2xl font-bold text-[var(--color-primary)]">{estadisticas.estadisticas_generales.puntos}</p>
                         </div>
                     </div>
                 </div>
@@ -184,7 +184,7 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
             {estadisticas && (
                 <div className="bg-[var(--black-900)] rounded-lg border border-[#262626] p-6 space-y-6">
                     <div className="flex items-center gap-2">
-                        <FaChartLine className="w-5 h-5 text-[var(--green)]" />
+                        <FaChartLine className="w-5 h-5 text-[var(--color-primary)]" />
                         <h2 className="text-xl font-bold text-[var(--white)]">Gráficos</h2>
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -192,7 +192,7 @@ export const EquipoInfoTab = ({ equipoInfo, estadisticas, isLoading, isLoadingEs
                         {datosResultados.length > 0 && (
                             <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-6">
                                 <div className="flex items-center gap-2 mb-4">
-                                    <PieChartIcon className="w-5 h-5 text-[var(--green)]" />
+                                    <PieChartIcon className="w-5 h-5 text-[var(--color-primary)]" />
                                     <h3 className="text-lg font-semibold text-[var(--white)]">Resultados</h3>
                                 </div>
                                 <ResponsiveContainer width="100%" height={300}>

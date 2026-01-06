@@ -1,4 +1,4 @@
-import { Shield, Users } from "lucide-react";
+﻿import { Shield, Users } from "lucide-react";
 import { Button } from "../ui/Button";
 
 type Column = {
@@ -47,7 +47,7 @@ export const getCategoriasColumns = (
         label: "EQUIPOS",
         render: (value: string, row: any) => (
             <div className="flex items-center space-x-2">
-                <Shield className="text-[var(--green)]" size={18} />
+                <Shield className="text-[var(--color-primary)]" size={18} />
                 <span className="text-white font-medium">
                     {row.estadisticas.equipos}
                 </span>
@@ -59,7 +59,7 @@ export const getCategoriasColumns = (
         label: "JUGADORES",
         render: (value: string, row: any) => (
             <div className="flex items-center space-x-2">
-                <Users className="text-[var(--green)]" size={18} />
+                <Users className="text-[var(--color-primary)]" size={18} />
                 <span className="text-white font-medium">{row.estadisticas.jugadores}</span>
             </div>
         ),
@@ -75,7 +75,7 @@ export const getCategoriasColumns = (
                     e.stopPropagation();
                     handleIngresarCategoria(row.categoria.id_categoria);
                 }}
-                className="text-[var(--green)] hover:text-[var(--green)] hover:bg-[var(--green-opacity)]"
+                className="text-[var(--color-primary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary-opacity)]"
             >
                 Ingresar
             </Button>

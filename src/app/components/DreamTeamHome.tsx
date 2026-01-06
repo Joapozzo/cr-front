@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import Select, { SelectOption } from './ui/Select';
@@ -215,7 +215,7 @@ export const DreamTeam: React.FC<DreamTeamProps> = ({
                 <div className="flex flex-col items-center w-full text-white relative py-5 gap-5 min-h-[410px]">
                     {/* Formación */}
                     <div className="text-center mb-2 z-10">
-                        <span className="text-[var(--green)] font-medium">{dreamteam.formacion}</span>
+                        <span className="text-[var(--color-primary)] font-medium">{dreamteam.formacion}</span>
                     </div>
 
                     {/* Filas de jugadores */}

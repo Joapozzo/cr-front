@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Loader2, MoreVertical, Trash2, Plus } from "lucide-react";
 import { BaseCard, CardHeader } from './BaseCard';
 import { Equipo } from '../types/equipo';
@@ -184,7 +184,7 @@ const FormacionesCard: React.FC<FormacionesProps> = ({
                                             ? 'bg-red-500 text-white'
                                             : jugador.eventual === 'S'
                                                 ? 'bg-yellow-500 text-black'
-                                                : 'bg-[var(--green)] text-black'
+                                                : 'bg-[var(--color-primary)] text-black'
                                             }`}>
                                             {estaCargando ? (
                                                 <Loader2 size={16} className="animate-spin" />
@@ -302,7 +302,7 @@ const FormacionesCard: React.FC<FormacionesProps> = ({
                                                     ? 'text-red-400'
                                                     : jugador.eventual === 'S'
                                                         ? 'text-yellow-400'
-                                                        : 'text-[var(--red)]'
+                                                        : 'text-[var(--color-secondary)]'
                                                     }`}
                                             />
                                         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import Link from 'next/link';
 import { MapPin, Calendar } from 'lucide-react';
 import { EstadoPartido, IncidenciaGol, PartidoCompleto } from '@/app/types/partido';
@@ -156,7 +156,7 @@ const PartidoHeaderSticky: React.FC<PartidoHeaderStickyProps> = ({
                 <div className="flex justify-center">
                     {(estaEnVivo(partido.estado as EstadoPartido) || (partido.estado === 'T' && esPlanillero)) ? (
                         <div className="flex items-center gap-2">
-                            <div className="px-3 py-1. bg-[var(--green)] rounded-md animate-pulse">
+                            <div className="px-3 py-1. bg-[var(--color-primary)] rounded-md animate-pulse">
                                 {cronometro && cronometro.fase ? (
                                     <span className="text-white font-medium text-xs">
                                         {cronometro.fase} {cronometro.tiempoFormateado}

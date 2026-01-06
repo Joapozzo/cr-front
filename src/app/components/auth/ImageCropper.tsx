@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useCallback } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
@@ -132,7 +132,7 @@ export const ImageCropper = ({ image, onCropComplete, onCancel }: ImageCropperPr
             Recortar código de barras
           </h2>
           <p className="text-xs text-[var(--gray-200)] text-center mt-1 max-w-xs mx-auto">
-            Ajustá el recuadro para encuadrar <span className="text-[var(--green)] font-semibold">SOLO</span> el código de barras. No incluyas el resto del DNI.
+            Ajustá el recuadro para encuadrar <span className="text-[var(--color-primary)] font-semibold">SOLO</span> el código de barras. No incluyas el resto del DNI.
           </p>
         </div>
 
@@ -172,7 +172,7 @@ export const ImageCropper = ({ image, onCropComplete, onCancel }: ImageCropperPr
               step={0.1}
               value={zoom}
               onChange={(e) => setZoom(Number(e.target.value))}
-              className="w-full h-2 bg-[var(--gray-300)] rounded-lg appearance-none cursor-pointer accent-[var(--green)]"
+              className="w-full h-2 bg-[var(--gray-300)] rounded-lg appearance-none cursor-pointer accent-[var(--color-primary)]"
             />
           </div>
 
@@ -188,7 +188,7 @@ export const ImageCropper = ({ image, onCropComplete, onCancel }: ImageCropperPr
             <button
               onClick={handleConfirm}
               disabled={isProcessing || !croppedAreaPixels}
-              className="flex-1 py-3 bg-[var(--green)] text-[var(--black)] rounded-lg text-sm font-medium hover:bg-[var(--green)]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 py-3 bg-[var(--color-primary)] text-[var(--black)] rounded-lg text-sm font-medium hover:bg-[var(--color-primary)]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isProcessing ? (
                 <>

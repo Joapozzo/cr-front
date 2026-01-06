@@ -36,7 +36,7 @@ export const TablaPosicionesHeader: React.FC<TablaPosicionesHeaderProps> = ({
       <div className="p-4 border-b border-[#262626]">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <h3 className="text-white font-semibold text-lg flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-[var(--green)]" />
+            <Trophy className="w-5 h-5 text-[var(--color-primary)]" />
             {activeTab === 'posiciones' ? 'Tabla de posiciones' : 'Playoffs'}
           </h3>
           <div className="flex gap-2">
@@ -44,7 +44,7 @@ export const TablaPosicionesHeader: React.FC<TablaPosicionesHeaderProps> = ({
               onClick={() => setActiveTab('posiciones')}
               className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
                 activeTab === 'posiciones'
-                  ? 'bg-[var(--green)] text-white'
+                  ? 'bg-[var(--color-primary)] text-white'
                   : 'bg-[#262626] text-[#737373] hover:text-white hover:bg-[#2a2a2a]'
               }`}
             >
@@ -54,7 +54,7 @@ export const TablaPosicionesHeader: React.FC<TablaPosicionesHeaderProps> = ({
               onClick={() => setActiveTab('playoff')}
               className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
                 activeTab === 'playoff'
-                  ? 'bg-[var(--green)] text-white'
+                  ? 'bg-[var(--color-primary)] text-white'
                   : 'bg-[#262626] text-[#737373] hover:text-white hover:bg-[#2a2a2a]'
               }`}
             >
@@ -68,7 +68,7 @@ export const TablaPosicionesHeader: React.FC<TablaPosicionesHeaderProps> = ({
             <select
               value={zonaSeleccionada}
               onChange={(e) => setZonaSeleccionada(Number(e.target.value))}
-              className="w-full px-4 py-2 bg-[#262626] text-white rounded-lg border border-[#2a2a2a] focus:outline-none focus:border-[var(--green)] transition-colors"
+              className="w-full px-4 py-2 bg-[#262626] text-white rounded-lg border border-[#2a2a2a] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
             >
               {zonasTodosContraTodos.map((zona) => (
                 <option key={zona.id_zona} value={zona.id_zona}>
@@ -87,7 +87,7 @@ export const TablaPosicionesHeader: React.FC<TablaPosicionesHeaderProps> = ({
                 onClick={() => setEtapaPlayoffActiva(etapa.id_etapa)}
                 className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
                   etapaPlayoffActiva === etapa.id_etapa
-                    ? 'bg-[var(--green)] text-white'
+                    ? 'bg-[var(--color-primary)] text-white'
                     : 'bg-[#262626] text-[#737373] hover:text-white hover:bg-[#2a2a2a]'
                 }`}
               >

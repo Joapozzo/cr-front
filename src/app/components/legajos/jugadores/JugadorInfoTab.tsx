@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { JugadorInformacionBasica, EstadisticasJugador } from '@/app/types/legajos';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
@@ -52,13 +52,13 @@ export const JugadorInfoTab = ({ jugadorInfo, estadisticas, isLoading }: Jugador
             {/* Información Básica - Background diferente */}
             <div className="bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] p-6">
                 <div className="flex items-center gap-2 mb-4">
-                    <FileText className="w-5 h-5 text-[var(--green)]" />
+                    <FileText className="w-5 h-5 text-[var(--color-primary)]" />
                     <h2 className="text-xl font-bold text-[var(--white)]">Información básica</h2>
                 </div>
                 <div className="flex flex-wrap gap-x-8 gap-y-3">
                     <div className="flex items-start gap-2 max-w-xs">
                         <div className="p-2 bg-[var(--gray-400)] rounded-lg flex-shrink-0">
-                            <User className="w-4 h-4 text-[var(--green)]" />
+                            <User className="w-4 h-4 text-[var(--color-primary)]" />
                         </div>
                         <div className="min-w-0">
                             <p className="text-xs text-[var(--gray-100)] mb-0.5">Nombre completo</p>
@@ -68,7 +68,7 @@ export const JugadorInfoTab = ({ jugadorInfo, estadisticas, isLoading }: Jugador
                     {jugadorInfo.usuario.dni && (
                         <div className="flex items-start gap-2 max-w-xs">
                             <div className="p-2 bg-[var(--gray-400)] rounded-lg flex-shrink-0">
-                                <FileText className="w-4 h-4 text-[var(--green)]" />
+                                <FileText className="w-4 h-4 text-[var(--color-primary)]" />
                             </div>
                             <div className="min-w-0">
                                 <p className="text-xs text-[var(--gray-100)] mb-0.5">DNI</p>
@@ -105,7 +105,7 @@ export const JugadorInfoTab = ({ jugadorInfo, estadisticas, isLoading }: Jugador
             {estadisticas && (
                 <div className="bg-[var(--gray-300)] rounded-lg border border-[var(--gray-300)] p-6">
                     <div className="flex items-center gap-2 mb-4">
-                        <Activity className="w-5 h-5 text-[var(--green)]" />
+                        <Activity className="w-5 h-5 text-[var(--color-primary)]" />
                         <h2 className="text-xl font-bold text-[var(--white)]">Estadísticas generales</h2>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -118,7 +118,7 @@ export const JugadorInfoTab = ({ jugadorInfo, estadisticas, isLoading }: Jugador
                         </div>
                         <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--gray-300)]">
                             <div className="flex items-center gap-2 mb-2">
-                                <Target className="w-4 h-4 text-[var(--green)]" />
+                                <Target className="w-4 h-4 text-[var(--color-primary)]" />
                                 <p className="text-xs text-[var(--gray-100)]">Goles</p>
                             </div>
                             <p className="text-2xl font-bold text-[var(--white)]">{estadisticas.goles_totales}</p>
@@ -139,14 +139,14 @@ export const JugadorInfoTab = ({ jugadorInfo, estadisticas, isLoading }: Jugador
                         </div>
                         <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--gray-300)]">
                             <div className="flex items-center gap-2 mb-2">
-                                <Activity className="w-4 h-4 text-[var(--red)]" />
+                                <Activity className="w-4 h-4 text-[var(--color-secondary)]" />
                                 <p className="text-xs text-[var(--gray-100)]">Rojas</p>
                             </div>
                             <p className="text-2xl font-bold text-[var(--white)]">{estadisticas.rojas}</p>
                         </div>
                         <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--gray-300)]">
                             <div className="flex items-center gap-2 mb-2">
-                                <Trophy className="w-4 h-4 text-[var(--green)]" />
+                                <Trophy className="w-4 h-4 text-[var(--color-primary)]" />
                                 <p className="text-xs text-[var(--gray-100)]">Destacado</p>
                             </div>
                             <p className="text-2xl font-bold text-[var(--white)]">{estadisticas.destacado}</p>
@@ -159,7 +159,7 @@ export const JugadorInfoTab = ({ jugadorInfo, estadisticas, isLoading }: Jugador
             {estadisticas && (datosGoles.length > 0 || datosPartidos.length > 0) && (
                 <div className="bg-[var(--black-900)] rounded-lg border border-[var(--gray-300)] p-6">
                     <div className="flex items-center gap-2 mb-6">
-                        <FaChartLine className="w-5 h-5 text-[var(--green)]" />
+                        <FaChartLine className="w-5 h-5 text-[var(--color-primary)]" />
                         <h2 className="text-xl font-bold text-[var(--white)]">Gráficos</h2>
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

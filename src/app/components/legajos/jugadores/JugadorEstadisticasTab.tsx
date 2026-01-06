@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { EstadisticasJugador } from '@/app/types/legajos';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -57,7 +57,7 @@ export const JugadorEstadisticasTab = ({
         <div className="space-y-6">
             <div className="bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] p-6">
                 <div className="flex items-center gap-2 mb-4">
-                    <BarChart3 className="w-5 h-5 text-[var(--green)]" />
+                    <BarChart3 className="w-5 h-5 text-[var(--color-primary)]" />
                     <h2 className="text-xl font-bold text-[var(--white)]">Estadísticas detalladas</h2>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -67,7 +67,7 @@ export const JugadorEstadisticasTab = ({
                     </div>
                     <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--gray-300)]">
                         <p className="text-xs text-[var(--gray-100)] mb-1">Goles totales</p>
-                        <p className="text-2xl font-bold text-[var(--green)]">{estadisticas.goles_totales}</p>
+                        <p className="text-2xl font-bold text-[var(--color-primary)]">{estadisticas.goles_totales}</p>
                     </div>
                     <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--gray-300)]">
                         <p className="text-xs text-[var(--gray-100)] mb-1">Asistencias</p>
@@ -82,7 +82,7 @@ export const JugadorEstadisticasTab = ({
 
             <div className="bg-[var(--black-900)] rounded-lg border border-[var(--gray-300)] p-6">
                 <div className="flex items-center gap-2 mb-6">
-                    <TrendingUp className="w-5 h-5 text-[var(--green)]" />
+                    <TrendingUp className="w-5 h-5 text-[var(--color-primary)]" />
                     <h2 className="text-xl font-bold text-[var(--white)]">Gráficos</h2>
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

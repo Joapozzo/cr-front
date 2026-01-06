@@ -31,6 +31,56 @@ const createRequestKey = (endpoint: string): string => {
   return `GET:${endpoint}`;
 };
 
+/**
+ * Obtiene el token de autenticación según el entorno
+ * - Servidor: usa cookies de Next.js
+ * - Cliente: usa Firebase auth
+ */
+async function getAuthToken(): Promise<string | null> {
+  // Detectar si estamos en servidor
+  const isServer = typeof window === 'undefined';
+  
+  if (isServer) {
+    try {
+      // En servidor: usar cookies de Next.js
+      const { cookies } = await import('next/headers');
+      const cookieStore = await cookies();
+      const token = cookieStore.get('auth-token')?.value;
+      return token || null;
+    } catch (error) {
+      // Si cookies() falla, no estamos en un Server Component
+      // Esto puede pasar en algunos contextos, retornar null
+      return null;
+    }
+  } else {
+    // En cliente: usar Firebase auth
+    let token: string | null = null;
+    try {
+      if (auth.currentUser) {
+        // Obtener token fresco, forzando renovación si está por expirar
+        token = await obtenerToken(false); // false = solo renovar si está por expirar
+      } else {
+        // Si no hay usuario actual, intentar usar el token guardado como fallback
+        const { token: storedToken } = useAuthStore.getState();
+        token = storedToken;
+      }
+    } catch (error) {
+      console.error('Error al obtener token:', error);
+      // Fallback al token guardado si falla obtener uno fresco
+      const { token: storedToken } = useAuthStore.getState();
+      token = storedToken;
+    }
+    
+    // Si aún no hay token, intentar obtenerlo del store
+    if (!token) {
+      const { token: storedToken } = useAuthStore.getState();
+      token = storedToken;
+    }
+    
+    return token;
+  }
+}
+
 export const apiFetch = async <T>(
   endpoint: string,
   options: ApiOptions = {}
@@ -43,29 +93,9 @@ export const apiFetch = async <T>(
   if (isGetRequest && requestKey && pendingRequests.has(requestKey)) {
     return pendingRequests.get(requestKey)!;
   }
-  // Obtener token fresco de Firebase (siempre actualizado)
-  let token: string | null = null;
-  try {
-    if (auth.currentUser) {
-      // Obtener token fresco, forzando renovación si está por expirar
-      token = await obtenerToken(false); // false = solo renovar si está por expirar
-    } else {
-      // Si no hay usuario actual, intentar usar el token guardado como fallback
-      const { token: storedToken } = useAuthStore.getState();
-      token = storedToken;
-    }
-  } catch (error) {
-    console.error('Error al obtener token:', error);
-    // Fallback al token guardado si falla obtener uno fresco
-    const { token: storedToken } = useAuthStore.getState();
-    token = storedToken;
-  }
   
-  // Si aún no hay token, intentar obtenerlo del store
-  if (!token) {
-    const { token: storedToken } = useAuthStore.getState();
-    token = storedToken;
-  }
+  // Obtener token según el entorno (servidor o cliente)
+  const token = await getAuthToken();
 
   const { timeout = 10000, ...fetchOptions } = options;
   // Obtener la URL dinámicamente en cada request (por si cambió la ubicación)
@@ -84,10 +114,13 @@ export const apiFetch = async <T>(
   // Crear la promesa de la petición
   const requestPromise = (async () => {
     try {
+      const isServer = typeof window === 'undefined';
       const response = await fetch(url, {
         ...fetchOptions,
         headers: defaultHeaders,
         signal: controller.signal,
+        // En servidor: no cachear
+        ...(isServer ? { cache: 'no-store' as RequestCache } : {}),
       });
 
       clearTimeout(timeoutId);

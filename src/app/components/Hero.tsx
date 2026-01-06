@@ -1,13 +1,18 @@
+﻿'use client';
+
 import React from 'react';
 import { Button } from './ui/Button';
 import { getWhatsAppLink } from '@/constants/contact';
+import { useTenant } from '@/app/contexts/TenantContext';
 
 const Hero: React.FC = () => {
+    const tenant = useTenant();
+    
     return (
         <div
             className="w-full flex justify-center bg-cover bg-top bg-no-repeat relative"
             style={{
-                backgroundImage: 'url(/logos/hero.jpg)'
+                backgroundImage: `url(${tenant.branding.logo_principal.replace('.png', '-hero.jpg')})`
             }}
         >
             {/* Overlay gradient */}
@@ -17,14 +22,14 @@ const Hero: React.FC = () => {
                 <div className="w-full md:w-[50%] flex flex-col gap-5">
                     <h2 className="font-bold text-xl sm:text-2xl md:text-4xl uppercase text-white">
                         ¡No TE pierdas la oportunidad de jugar en el{' '}
-                        <span className="font-bold text-[var(--green)]">mejor torneo</span>{' '}
+                        <span className="font-bold text-[var(--color-primary)]">mejor torneo</span>{' '}
                         de F7 de Córdoba!
                     </h2>
                     <p className="text-white text-sm md:text-base">
                         Contamos con un equipo de trabajo para brindarte esa experiencia que necesitas en un torneo de futbol.
                     </p>
                     <div className="flex gap-4">
-                        <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer">
+                        <a href={getWhatsAppLink(undefined, tenant.nombre_empresa)} target="_blank" rel="noopener noreferrer">
                             <Button variant="footer" size="lg">
                                 Empezá a Jugar
                             </Button>

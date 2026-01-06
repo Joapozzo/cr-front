@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { FileText, Users, Calendar, BarChart3, Shield, Mail } from 'lucide-react';
 
@@ -29,7 +29,7 @@ export const JugadorTabs = ({ activeTab, onTabChange }: JugadorTabsProps) => {
                         className={`
                             whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2
                             ${activeTab === tab.id
-                                ? 'border-[var(--green)] text-[var(--green)]'
+                                ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                                 : 'border-transparent text-[var(--gray-100)] hover:text-[var(--white)] hover:border-[var(--gray-200)]'
                             }
                         `}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useCajaActual } from '@/app/hooks/useCaja';
 import { Button } from '../ui/Button';
@@ -17,7 +17,7 @@ export default function ResumenCajaActual() {
         return (
             <div className="bg-[var(--black-900)] border border-[var(--gray-300)] rounded-lg p-8">
                 <div className="flex items-center justify-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-[var(--green)]" />
+                    <Loader2 className="w-8 h-8 animate-spin text-[var(--color-primary)]" />
                 </div>
             </div>
         );
@@ -76,7 +76,7 @@ export default function ResumenCajaActual() {
                 </div>
                 <div className="text-right">
                     <p className="text-sm text-[var(--gray-100)] mb-1">Saldo físico</p>
-                    <p className="text-3xl font-bold text-[var(--green)]">
+                    <p className="text-3xl font-bold text-[var(--color-primary)]">
                         ${saldoFisico.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>
                     {saldoDigital !== 0 && (
@@ -104,9 +104,9 @@ export default function ResumenCajaActual() {
                 <div className="bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
                         <p className="text-sm text-[var(--gray-100)]">Saldo físico (efectivo)</p>
-                        <Wallet className="w-4 h-4 text-[var(--green)]" />
+                        <Wallet className="w-4 h-4 text-[var(--color-primary)]" />
                     </div>
-                    <p className="text-xl font-semibold text-[var(--green)]">
+                    <p className="text-xl font-semibold text-[var(--color-primary)]">
                         ${saldoFisico.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>
                 </div>

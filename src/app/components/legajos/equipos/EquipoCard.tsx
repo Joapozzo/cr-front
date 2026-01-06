@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { ArrowRight, Users } from 'lucide-react';
@@ -15,7 +15,7 @@ export const EquipoCard: React.FC<EquipoCardProps> = ({ equipo }) => {
             href={`/adm/legajos/equipos/${equipo.id_equipo}`}
             className="group block"
         >
-            <div className="bg-[var(--gray-400)] border border-[var(--gray-300)] rounded-lg p-4 hover:shadow-md transition-shadow hover:border-[var(--green)] min-h-[130px]">
+            <div className="bg-[var(--gray-400)] border border-[var(--gray-300)] rounded-lg p-4 hover:shadow-md transition-shadow hover:border-[var(--color-primary)] min-h-[130px]">
                 <div className="flex items-start gap-4">
                     {/* Logo del equipo */}
                     <div className="flex-shrink-0">
@@ -39,7 +39,7 @@ export const EquipoCard: React.FC<EquipoCardProps> = ({ equipo }) => {
                                     {equipo.categorias.slice(0, 2).map((cat, idx) => (
                                         <span
                                             key={idx}
-                                            className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-[var(--green)] text-[var(--white)]"
+                                            className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-[var(--color-primary)] text-[var(--white)]"
                                         >
                                             {cat.categoria.nombre || cat.edicion.nombre}
                                         </span>
@@ -61,7 +61,7 @@ export const EquipoCard: React.FC<EquipoCardProps> = ({ equipo }) => {
 
                     {/* Botón ver legajo */}
                     <div className="flex-shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <ArrowRight className="h-5 w-5 text-[var(--gray-100)] group-hover:text-[var(--green)]" />
+                        <ArrowRight className="h-5 w-5 text-[var(--gray-100)] group-hover:text-[var(--color-primary)]" />
                     </div>
                 </div>
             </div>

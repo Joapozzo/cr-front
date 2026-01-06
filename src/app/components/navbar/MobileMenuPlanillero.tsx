@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -117,7 +117,7 @@ export const MobileMenuPlanillero = ({ isOpen, onClose }: MobileMenuPlanilleroPr
             </div>
 
             {/* Decoración - Línea verde */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--green)] to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent" />
           </div>
 
           {/* Navigation Links */}
@@ -137,11 +137,11 @@ export const MobileMenuPlanillero = ({ isOpen, onClose }: MobileMenuPlanilleroPr
                     onClick={onClose}
                     className="flex items-center gap-3 px-4 py-3 rounded-lg text-white hover:bg-[var(--gray-400)] transition-all duration-200 group"
                   >
-                    <div className="text-[var(--gray-200)] group-hover:text-[var(--green)] transition-colors duration-200">
+                    <div className="text-[var(--gray-200)] group-hover:text-[var(--color-primary)] transition-colors duration-200">
                       {item.icon}
                     </div>
                     <span className="flex-1 font-medium">{item.label}</span>
-                    <ChevronRight className="w-4 h-4 text-[var(--gray-300)] group-hover:text-[var(--green)] group-hover:translate-x-1 transition-all duration-200" />
+                    <ChevronRight className="w-4 h-4 text-[var(--gray-300)] group-hover:text-[var(--color-primary)] group-hover:translate-x-1 transition-all duration-200" />
                   </Link>
                 </li>
               ))}

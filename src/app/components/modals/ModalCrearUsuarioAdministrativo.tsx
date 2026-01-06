@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { RefreshCw } from 'lucide-react';
@@ -17,11 +17,11 @@ interface ModalCrearUsuarioAdministrativoProps {
 const PasswordRequirement = ({ met, text }: { met: boolean; text: string }) => (
     <div className="flex items-center gap-2">
         <div
-            className={`w-1.5 h-1.5 rounded-full ${met ? 'bg-[var(--green)]' : 'bg-[var(--gray-200)]'
+            className={`w-1.5 h-1.5 rounded-full ${met ? 'bg-[var(--color-primary)]' : 'bg-[var(--gray-200)]'
                 }`}
         />
         <span
-            className={`text-xs ${met ? 'text-[var(--green)]' : 'text-[var(--gray-200)]'
+            className={`text-xs ${met ? 'text-[var(--color-primary)]' : 'text-[var(--gray-200)]'
                 }`}
         >
             {text}
@@ -210,7 +210,7 @@ export default function ModalCrearUsuarioAdministrativo({
                 {/* Email con prefijo editable */}
                 <div className="space-y-2">
                     <label className="block text-sm font-light text-[var(--white)]">
-                        Email <span className="text-[var(--red)]">*</span>
+                        Email <span className="text-[var(--color-secondary)]">*</span>
                     </label>
                     <div className="flex items-center gap-2">
                         <Input
@@ -233,7 +233,7 @@ export default function ModalCrearUsuarioAdministrativo({
                 {/* Password con botón de generar integrado */}
                 <div className="space-y-2">
                     <label className="block text-sm font-light text-[var(--white)]">
-                        Contraseña <span className="text-[var(--red)]">*</span>
+                        Contraseña <span className="text-[var(--color-secondary)]">*</span>
                     </label>
                     <div className="relative">
                         <Input
@@ -251,7 +251,7 @@ export default function ModalCrearUsuarioAdministrativo({
                             type="button"
                             onClick={handleGenerarPassword}
                             disabled={generarPassword.isPending}
-                            className="absolute right-12 top-1/2 -translate-y-1/2 text-[var(--gray-200)] hover:text-[var(--green)] transition-colors flex items-center gap-1.5 disabled:opacity-50 z-10"
+                            className="absolute right-12 top-1/2 -translate-y-1/2 text-[var(--gray-200)] hover:text-[var(--color-primary)] transition-colors flex items-center gap-1.5 disabled:opacity-50 z-10"
                             title="Generar contraseña segura"
                         >
                             <RefreshCw className={`w-4 h-4 ${generarPassword.isPending ? 'animate-spin' : ''}`} />

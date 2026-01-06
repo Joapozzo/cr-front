@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import BaseModal from "./ModalPlanillero";
@@ -325,7 +325,7 @@ const AccionModal: React.FC<AccionModalProps> = ({
                         {/* Indicador de pasos */}
                         <div className="ml-3 flex items-center gap-2 text-xs text-[#737373]">
                             <div className="flex items-center gap-1">
-                                <div className="w-6 h-6 rounded-full bg-[var(--green)] flex items-center justify-center text-black text-xs font-medium">
+                                <div className="w-6 h-6 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-black text-xs font-medium">
                                     1
                                 </div>
                                 <span className="hidden sm:inline">Acción</span>
@@ -399,9 +399,9 @@ const AccionModal: React.FC<AccionModalProps> = ({
                                             relative w-5 h-5 cursor-pointer
                                             appearance-none rounded-full border-2 border-[#262626] bg-[#171717]
                                             transition-colors duration-300 ease-in-out
-                                            checked:border-[var(--green)]
+                                            checked:border-[var(--color-primary)]
                                             before:content-[''] before:absolute before:inset-1
-                                            before:rounded-full before:bg-[var(--green)]
+                                            before:rounded-full before:bg-[var(--color-primary)]
                                             before:scale-0 before:transition-transform before:duration-300 before:ease-in-out
                                             checked:before:scale-100
                                         `}

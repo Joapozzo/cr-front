@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Componente de paginación reutilizable
  */
 'use client';
@@ -85,7 +85,7 @@ export const Pagination: React.FC<PaginationProps> = ({
                         onClick={() => onPageChange(pageNumber)}
                         className={`px-4 py-2 rounded-lg border transition-colors ${
                             isActive
-                                ? 'bg-[var(--green)] text-[var(--white)] border-[var(--green)]'
+                                ? 'bg-[var(--color-primary)] text-[var(--white)] border-[var(--color-primary)]'
                                 : 'border-[var(--gray-300)] bg-[var(--gray-300)] text-[var(--white)] hover:bg-[var(--gray-200)]'
                         }`}
                         aria-label={`Ir a página ${pageNumber}`}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { PageHeader } from '@/app/components/ui/PageHeader';
@@ -120,7 +120,7 @@ export default function ConfiguracionPreciosPage() {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-[var(--green)]" />
+                <Loader2 className="w-8 h-8 animate-spin text-[var(--color-primary)]" />
             </div>
         );
     }

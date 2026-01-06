@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import React from 'react';
 
 type BadgeVariant = 'success' | 'warning' | 'danger' | 'info' | 'neutral';
@@ -10,9 +10,9 @@ interface BadgeProps {
 }
 
 const variants: Record<BadgeVariant, string> = {
-    success: 'bg-[var(--green-opacity)] text-[var(--green)] border-[var(--green)]',
-    warning: 'bg-[var(--yellow-300)]/10 text-[var(--yellow-400)] border-[var(--yellow-400)]',
-    danger: 'bg-[var(--red-500)]/10 text-[var(--red-500)] border-[var(--red-500)]',
+    success: 'bg-[var(--color-primary-opacity)] text-[var(--color-primary)] border-[var(--color-primary)]',
+    warning: 'bg-[var(--color-warning)]/10 text-[var(--color-warning)] border-[var(--color-warning)]',
+    danger: 'bg-[var(--color-secondary-500)]/10 text-[var(--color-secondary-500)] border-[var(--color-secondary-500)]',
     info: 'bg-[var(--blue-500)]/10 text-[var(--blue-500)] border-[var(--blue-500)]',
     neutral: 'bg-[var(--gray-700)] text-[var(--gray-100)] border-[var(--gray-600)]'
 };

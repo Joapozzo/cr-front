@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { MovimientoCaja } from '@/app/services/movimientoCaja.service';
 // Función simple para formatear fecha
@@ -165,7 +165,7 @@ export default function TablaMovimientos({ movimientos, isLoading, onRefresh }: 
                                         <div className="flex items-center gap-2">
                                             {movimiento.afecta_saldo_fisico ? (
                                                 <span title="Dinero físico">
-                                                    <Wallet className="w-4 h-4 text-[var(--green)]" />
+                                                    <Wallet className="w-4 h-4 text-[var(--color-primary)]" />
                                                 </span>
                                             ) : (
                                                 <span title="Dinero digital">
@@ -173,7 +173,7 @@ export default function TablaMovimientos({ movimientos, isLoading, onRefresh }: 
                                                 </span>
                                             )}
                                             <span className={`text-sm ${
-                                                movimiento.afecta_saldo_fisico ? 'text-[var(--green)]' : 'text-blue-400'
+                                                movimiento.afecta_saldo_fisico ? 'text-[var(--color-primary)]' : 'text-blue-400'
                                             }`}>
                                                 {movimiento.metodo_pago}
                                             </span>

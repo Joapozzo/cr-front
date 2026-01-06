@@ -1,4 +1,4 @@
-import { MoreHorizontal } from "lucide-react";
+﻿import { MoreHorizontal } from "lucide-react";
 import { Equipo } from "../types/equipo";
 import DropdownMenu from "./DropDownMenu";
 import DropdownItem from "./DrowDownItem";
@@ -122,7 +122,7 @@ const CardVacanteZona = ({
                 style={{
                     borderColor:
                         vacanteInfo.tipo === 'equipo_directo'
-                            ? 'var(--green)'
+                            ? 'var(--color-primary)'
                             : vacanteInfo.tipo === 'automatizacion_posicion' || vacanteInfo.tipo === 'automatizacion_partido'
                                 ? 'var(--yellow)'
                                 : 'var(--gray-300)',
@@ -140,7 +140,7 @@ const CardVacanteZona = ({
                         {isOcupada ? (
                             <>
                                 <div className={`text-xs font-medium mb-1 ${vacanteInfo.tipo === 'equipo_directo'
-                                    ? 'text-[var(--green)]'
+                                    ? 'text-[var(--color-primary)]'
                                     : 'text-[var(--yellow)]'
                                     }`}>
                                     {nomenclatura

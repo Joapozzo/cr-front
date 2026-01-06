@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { ChevronDown, MoreHorizontal, Trash2, Edit3 } from 'lucide-react';
 import DropdownMenu from "./DropDownMenu";
 import DropdownItem from "./DrowDownItem";
@@ -49,7 +49,7 @@ const ZonaEditTabs = ({
                     onClick={() => setActiveTab('info')}
                     className={`px-4 py-2 text-sm font-medium transition-colors ${
                         activeTab === 'info'
-                            ? 'text-[var(--white)] border-b-2 border-[var(--green)]'
+                            ? 'text-[var(--white)] border-b-2 border-[var(--color-primary)]'
                             : 'text-[var(--gray-100)] hover:text-[var(--white)]'
                     }`}
                 >
@@ -59,7 +59,7 @@ const ZonaEditTabs = ({
                     onClick={() => setActiveTab('formatos')}
                     className={`px-4 py-2 text-sm font-medium transition-colors ${
                         activeTab === 'formatos'
-                            ? 'text-[var(--white)] border-b-2 border-[var(--green)]'
+                            ? 'text-[var(--white)] border-b-2 border-[var(--color-primary)]'
                             : 'text-[var(--gray-100)] hover:text-[var(--white)]'
                     }`}
                 >
@@ -286,7 +286,7 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
                 {isDeleting && (
                     <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-10">
                         <div className="bg-[var(--gray-400)] border border-[var(--gray-300)] rounded-lg px-4 py-3 flex items-center gap-3">
-                            <div className="w-5 h-5 border-2 border-[var(--red)] border-t-transparent rounded-full animate-spin" />
+                            <div className="w-5 h-5 border-2 border-[var(--color-secondary)] border-t-transparent rounded-full animate-spin" />
                             <span className="text-[var(--white)] text-sm font-medium">
                                 Eliminando zona...
                             </span>
@@ -335,11 +335,11 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
                                     {getTipoZonaLabel(zona.tipoZona?.nombre)}
                                 </p>
                                 <div className="flex items-center gap-4 mt-2">
-                                    <span className={`text-sm ${isCompleto ? 'text-[var(--green)]' : 'text-[var(--orange)]'}`}>
+                                    <span className={`text-sm ${isCompleto ? 'text-[var(--color-primary)]' : 'text-[var(--orange)]'}`}>
                                         {vacantesOcupadas} / {zona.cantidad_equipos} vacantes ocupadas
                                     </span>
                                     {zona.tipoZona?.nombre === 'todos-contra-todos' && (
-                                        <span className={`text-sm ${zona.terminada === 'S' ? 'text-[var(--green)]' : 'text-[var(--gray-100)]'}`}>
+                                        <span className={`text-sm ${zona.terminada === 'S' ? 'text-[var(--color-primary)]' : 'text-[var(--gray-100)]'}`}>
                                             {zona.terminada === 'S' ? 'Zona terminada' : 'Zona sin terminar'}
                                         </span>
                                     )}
@@ -382,7 +382,7 @@ const ZonaCard = ({ zona }: { zona: Zona }) => {
                             >
                                 {isDeleting ? (
                                     <>
-                                        <div className="w-4 h-4 border-2 border-[var(--red)] border-t-transparent rounded-full animate-spin inline mr-2" />
+                                        <div className="w-4 h-4 border-2 border-[var(--color-secondary)] border-t-transparent rounded-full animate-spin inline mr-2" />
                                         Eliminando...
                                     </>
                                 ) : (

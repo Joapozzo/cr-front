@@ -1,9 +1,9 @@
-const InstruccionesDreamTeam = () => {
+﻿const InstruccionesDreamTeam = () => {
     return (
         <div className="bg-[var(--gray-400)] rounded-lg p-6 border border-[var(--gray-300)]">
             <div className="mb-4">
                 <h3 className="text-lg font-semibold text-[var(--white)] mb-2">
-                    ¡Armá el <span className="text-[var(--green)]">dreamteam</span> de la fecha!
+                    ¡Armá el <span className="text-[var(--color-primary)]">dreamteam</span> de la fecha!
                 </h3>
                 <div className="w-full h-px bg-[var(--gray-300)]"></div>
             </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 
 interface StatsCardTemplateProps {
     title: string;
@@ -12,7 +12,7 @@ const StatsCardTemplate: React.FC<StatsCardTemplateProps> = ({
     children
 }) => {
     return (
-        <div className="bg-[var(--black)] border border-[var(--gray-300)] rounded-lg p-4 md:p-5 hover:border-[var(--green)] transition-all duration-300">
+        <div className="bg-[var(--black)] border border-[var(--gray-300)] rounded-lg p-4 md:p-5 hover:border-[var(--color-primary)] transition-all duration-300">
             {/* Header con título e icono */}
             <div className="flex items-center space-x-2 mb-4">
                 {/* <div

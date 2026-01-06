@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Shield, Star } from "lucide-react";
 import { JugadorDestacadoDt } from "../types/jugador";
@@ -16,13 +16,13 @@ const JugadorModalDreamTeam = ({ jugador, jugadorSeleccionado, handleSeleccionar
             key={jugador.id_jugador}
             onClick={() => handleSeleccionarJugador(jugador)}
             className={`relative p-4 rounded-xl border-2 transition-all hover:scale-[1.02] ${jugadorSeleccionado === jugador.id_jugador
-                ? 'border-[var(--green)] bg-[var(--green)]/10'
+                ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10'
                 : 'border-[var(--gray-300)] bg-[var(--gray-300)] hover:border-[var(--gray-200)]'
                 }`}
         >
             {/* Badge de seleccionado */}
             {jugadorSeleccionado === jugador.id_jugador && (
-                <div className="absolute top-2 right-2 w-6 h-6 bg-[var(--green)] rounded-full flex items-center justify-center">
+                <div className="absolute top-2 right-2 w-6 h-6 bg-[var(--color-primary)] rounded-full flex items-center justify-center">
                     <Star className="w-4 h-4 text-white fill-white" />
                 </div>
             )}
@@ -42,7 +42,7 @@ const JugadorModalDreamTeam = ({ jugador, jugadorSeleccionado, handleSeleccionar
                         {jugador.apellido}
                     </p>
                     <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs px-2 py-0.5 bg-[var(--green)]/20 text-[var(--green)] rounded-full font-medium">
+                        <span className="text-xs px-2 py-0.5 bg-[var(--color-primary)]/20 text-[var(--color-primary)] rounded-full font-medium">
                             #{jugador.dorsal}
                         </span>
                         <span className="text-xs text-[var(--gray-100)]">
@@ -65,7 +65,7 @@ const JugadorModalDreamTeam = ({ jugador, jugadorSeleccionado, handleSeleccionar
             {/* Estadísticas */}
             <div className="grid grid-cols-3 gap-2">
                 <div className="text-center p-2 bg-[var(--gray-400)] rounded-lg">
-                    <p className="text-2xl font-bold text-[var(--green)]">
+                    <p className="text-2xl font-bold text-[var(--color-primary)]">
                         {jugador.estadisticas.goles}
                     </p>
                     <p className="text-xs text-[var(--gray-100)]">Goles</p>

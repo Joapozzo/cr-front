@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Shield, Zap } from 'lucide-react';
 import TabSeleccionManual from '../TabSeleccionManual';
 import TabAutomatizacion from '../TabAutomatizacion';
@@ -53,7 +53,7 @@ const ModalSeleccionarEquipo = ({
                         onClick={() => setActiveTab('manual')}
                         className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                             activeTab === 'manual'
-                                ? 'bg-[var(--green)] text-white'
+                                ? 'bg-[var(--color-primary)] text-white'
                                 : 'text-[var(--gray-100)] hover:text-[var(--white)]'
                         }`}
                     >
@@ -64,7 +64,7 @@ const ModalSeleccionarEquipo = ({
                         onClick={() => setActiveTab('automatizacion')}
                         className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                             activeTab === 'automatizacion'
-                                ? 'bg-[var(--green)] text-white'
+                                ? 'bg-[var(--color-primary)] text-white'
                                 : 'text-[var(--gray-100)] hover:text-[var(--white)]'
                         }`}
                     >

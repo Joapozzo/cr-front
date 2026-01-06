@@ -1,4 +1,4 @@
-import { FileText, Trash2, Users, Mail } from "lucide-react";
+﻿import { FileText, Trash2, Users, Mail } from "lucide-react";
 import { Button } from "../ui/Button";
 import { EscudoEquipo } from "../common/EscudoEquipo";
 
@@ -9,7 +9,7 @@ const getEquiposColumns = (
         return (
             <span
                 className={`px-3 py-1 rounded-full text-xs font-medium ${estado
-                    ? "bg-[var(--green)] text-white"
+                    ? "bg-[var(--color-primary)] text-white"
                     : "bg-[var(--gray-200)] text-[var(--gray-100)]"
                     }`}
             >
@@ -41,7 +41,7 @@ const getEquiposColumns = (
             label: "LISTA DE BUENA FE",
             render: (value: unknown, row: any) => (
                 <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-[var(--green)]" />
+                    <Users className="w-4 h-4 text-[var(--color-primary)]" />
                     <span className="text-[var(--white)] font-medium">
                         {row.lista_de_buena_fe}
                     </span>

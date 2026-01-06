@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useMemo, useEffect } from 'react';
 import { useEdicionesConCategorias } from '@/app/hooks/useEdiciones';
@@ -111,7 +111,7 @@ const EquiposPage = () => {
                 {/* Grid de equipos */}
                 {error ? (
                     <div className="text-center py-12 bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
-                        <p className="text-[var(--red)]">
+                        <p className="text-[var(--color-secondary)]">
                             Error al cargar los equipos. Por favor, intenta nuevamente.
                         </p>
                     </div>

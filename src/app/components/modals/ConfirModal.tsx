@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { X, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -83,14 +83,14 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         switch (variant) {
             case 'success':
                 return {
-                    iconBg: 'bg-[var(--green-500)]/10',
-                    iconColor: 'text-[var(--green-400)]',
+                    iconBg: 'bg-[var(--color-primary-500)]/10',
+                    iconColor: 'text-[var(--color-primary-400)]',
                     buttonVariant: 'success' as const
                 };
             case 'danger':
                 return {
-                    iconBg: 'bg-[var(--red-500)]/10',
-                    iconColor: 'text-[var(--red-400)]',
+                    iconBg: 'bg-[var(--color-secondary-500)]/10',
+                    iconColor: 'text-[var(--color-secondary-400)]',
                     buttonVariant: 'danger' as const
                 };
             default:

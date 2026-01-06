@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import BaseModal from '../modals/ModalPlanillero';
@@ -176,12 +176,12 @@ export default function PagarCanchaModal({ isOpen, onClose, pago, onPagoRegistra
                                 onClick={() => setMetodoPago('efectivo')}
                                 className={`p-4 rounded-lg border-2 transition-all relative ${
                                     metodoPago === 'efectivo'
-                                        ? 'border-[var(--green)] bg-[var(--green)]/10'
-                                        : 'border-[var(--gray-300)] bg-[var(--black-950)] hover:border-[var(--green)]'
+                                        ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10'
+                                        : 'border-[var(--gray-300)] bg-[var(--black-950)] hover:border-[var(--color-primary)]'
                                 }`}
                             >
-                                <DollarSign className={`w-6 h-6 mx-auto mb-2 ${metodoPago === 'efectivo' ? 'text-[var(--green)]' : 'text-[var(--gray-100)]'}`} />
-                                <p className={`text-xs font-medium ${metodoPago === 'efectivo' ? 'text-[var(--green)]' : 'text-[var(--gray-100)]'}`}>
+                                <DollarSign className={`w-6 h-6 mx-auto mb-2 ${metodoPago === 'efectivo' ? 'text-[var(--color-primary)]' : 'text-[var(--gray-100)]'}`} />
+                                <p className={`text-xs font-medium ${metodoPago === 'efectivo' ? 'text-[var(--color-primary)]' : 'text-[var(--gray-100)]'}`}>
                                     Efectivo
                                 </p>
                                 {(metodoPago === 'efectivo' || metodoPago === 'transferencia') && !cajaActual && (
@@ -192,12 +192,12 @@ export default function PagarCanchaModal({ isOpen, onClose, pago, onPagoRegistra
                                 onClick={() => setMetodoPago('transferencia')}
                                 className={`p-4 rounded-lg border-2 transition-all ${
                                     metodoPago === 'transferencia'
-                                        ? 'border-[var(--green)] bg-[var(--green)]/10'
-                                        : 'border-[var(--gray-300)] bg-[var(--black-950)] hover:border-[var(--green)]'
+                                        ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10'
+                                        : 'border-[var(--gray-300)] bg-[var(--black-950)] hover:border-[var(--color-primary)]'
                                 }`}
                             >
-                                <CreditCard className={`w-6 h-6 mx-auto mb-2 ${metodoPago === 'transferencia' ? 'text-[var(--green)]' : 'text-[var(--gray-100)]'}`} />
-                                <p className={`text-xs font-medium ${metodoPago === 'transferencia' ? 'text-[var(--green)]' : 'text-[var(--gray-100)]'}`}>
+                                <CreditCard className={`w-6 h-6 mx-auto mb-2 ${metodoPago === 'transferencia' ? 'text-[var(--color-primary)]' : 'text-[var(--gray-100)]'}`} />
+                                <p className={`text-xs font-medium ${metodoPago === 'transferencia' ? 'text-[var(--color-primary)]' : 'text-[var(--gray-100)]'}`}>
                                     Transferencia
                                 </p>
                             </button>
@@ -205,12 +205,12 @@ export default function PagarCanchaModal({ isOpen, onClose, pago, onPagoRegistra
                                 onClick={() => setMetodoPago('mercadopago')}
                                 className={`p-4 rounded-lg border-2 transition-all ${
                                     metodoPago === 'mercadopago'
-                                        ? 'border-[var(--green)] bg-[var(--green)]/10'
-                                        : 'border-[var(--gray-300)] bg-[var(--black-950)] hover:border-[var(--green)]'
+                                        ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10'
+                                        : 'border-[var(--gray-300)] bg-[var(--black-950)] hover:border-[var(--color-primary)]'
                                 }`}
                             >
-                                <QrCode className={`w-6 h-6 mx-auto mb-2 ${metodoPago === 'mercadopago' ? 'text-[var(--green)]' : 'text-[var(--gray-100)]'}`} />
-                                <p className={`text-xs font-medium ${metodoPago === 'mercadopago' ? 'text-[var(--green)]' : 'text-[var(--gray-100)]'}`}>
+                                <QrCode className={`w-6 h-6 mx-auto mb-2 ${metodoPago === 'mercadopago' ? 'text-[var(--color-primary)]' : 'text-[var(--gray-100)]'}`} />
+                                <p className={`text-xs font-medium ${metodoPago === 'mercadopago' ? 'text-[var(--color-primary)]' : 'text-[var(--gray-100)]'}`}>
                                     MercadoPago
                                 </p>
                             </button>

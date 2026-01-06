@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { ArrowLeft, Users, Calendar, Trophy, Eye, Ban, LogOut } from 'lucide-react';
 import { Button } from '@/app/components/ui/Button';
@@ -83,7 +83,7 @@ export const JugadorHeader = ({ jugadorInfo, onBack }: JugadorHeaderProps) => {
                             <div className="relative flex-shrink-0 overflow-visible">
                                 {jugadorInfo.usuario.foto_selfie_url ? (
                                     <>
-                                        <div className="relative w-24 h-24 rounded-lg overflow-hidden bg-[var(--gray-300)] border-2 border-[var(--green)]">
+                                        <div className="relative w-24 h-24 rounded-lg overflow-hidden bg-[var(--gray-300)] border-2 border-[var(--color-primary)]">
                                             <ImagenPublica
                                                 src={jugadorInfo.usuario.foto_selfie_url}
                                                 alt={`${nombreCompleto} - Selfie`}
@@ -145,7 +145,7 @@ export const JugadorHeader = ({ jugadorInfo, onBack }: JugadorHeaderProps) => {
                                 )}
                                 {estaExpulsado && (
                                     <div className="mb-4">
-                                        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold bg-[var(--red)] text-[var(--white)]">
+                                        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold bg-[var(--color-secondary)] text-[var(--white)]">
                                             <Ban className="w-4 h-4" />
                                             Jugador Expulsado
                                         </span>

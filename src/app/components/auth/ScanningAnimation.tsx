@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
@@ -24,10 +24,10 @@ export const ScanningAnimation = ({ message = 'Escaneando DNI...' }: ScanningAni
   return (
     <div className="w-full flex flex-col items-center justify-center gap-6 py-12">
       {/* Animación de tarjeta siendo escaneada */}
-      <div className="relative w-64 h-40 bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] rounded-xl shadow-2xl border-2 border-[var(--green)]/30 overflow-hidden">
+      <div className="relative w-64 h-40 bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] rounded-xl shadow-2xl border-2 border-[var(--color-primary)]/30 overflow-hidden">
         {/* Efecto de barra de escaneo */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--green)] to-transparent animate-scan-line" />
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent animate-scan-line" />
         </div>
         
         {/* Líneas de tarjeta (simulando DNI) */}
@@ -44,7 +44,7 @@ export const ScanningAnimation = ({ message = 'Escaneando DNI...' }: ScanningAni
 
       {/* Indicador de carga */}
       <div className="flex flex-col items-center gap-3">
-        <Loader2 className="w-8 h-8 animate-spin text-[var(--green)]" />
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--color-primary)]" />
         <p className="text-sm text-[var(--gray-200)] font-medium">
           {message}{dots}
         </p>

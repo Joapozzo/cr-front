@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Mail, Check, X } from "lucide-react";
 import { useState } from "react";
@@ -177,7 +177,7 @@ const SolicitudesCapitan: React.FC<SolicitudesCapitanProps> = ({
         <>
             <SlideCard
                 items={solicitudesPendientes}
-                icon={<Mail className="text-[var(--green)]" size={16} />}
+                icon={<Mail className="text-[var(--color-primary)]" size={16} />}
                 title="Solicitudes de jugadores"
                 renderItem={renderSolicitud}
                 autoSlideInterval={6000}

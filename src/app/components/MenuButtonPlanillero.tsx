@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from 'react';
 import Link from 'next/link';
@@ -53,10 +53,10 @@ const BottomNavigationPlanillero: React.FC = () => {
                                         className="group"
                                     >
                                         <div className={`p-2 rounded-full transition-all duration-300 ${active
-                                            ? 'text-[var(--green)] text-white shadow-lg transform scale-110'
-                                            : 'text-[var(--black-400)] hover:text-[var(--green)] hover:scale-105'
+                                            ? 'text-[var(--color-primary)] text-white shadow-lg transform scale-110'
+                                            : 'text-[var(--black-400)] hover:text-[var(--color-primary)] hover:scale-105'
                                             }`}>
-                                            <Icon size={20} className={`${active ? 'text-[var(--green)]' : ''}`} />
+                                            <Icon size={20} className={`${active ? 'text-[var(--color-primary)]' : ''}`} />
                                         </div>
                                     </Link>
                                 );
@@ -66,8 +66,8 @@ const BottomNavigationPlanillero: React.FC = () => {
                         {/* Botón Home central - Sobresale */}
                         <Link href="/planillero/home" className="relative z-[1] pointer-events-auto">
                             <div className={`p-3 rounded-full transition-all duration-300 shadow-2xl transform -translate-y-5 ${isHomeActive
-                                ? 'bg-[var(--green)] text-white scale-110 shadow-[var(--green)]/40'
-                                : 'bg-[var(--green)] text-white hover:scale-105 hover:shadow-[var(--green)]/30'
+                                ? 'bg-[var(--color-primary)] text-white scale-110 shadow-[var(--color-primary)]/40'
+                                : 'bg-[var(--color-primary)] text-white hover:scale-105 hover:shadow-[var(--color-primary)]/30'
                                 }`}>
                                 <Home size={30} />
 
@@ -91,9 +91,9 @@ const BottomNavigationPlanillero: React.FC = () => {
                                     >
                                         <div className={`p-2 rounded-full transition-all duration-300 ${active
                                             ? 'text-white shadow-lg transform scale-110'
-                                            : 'text-[var(--black-400)] hover:text-[var(--green)] hover:scale-105'
+                                            : 'text-[var(--black-400)] hover:text-[var(--color-primary)] hover:scale-105'
                                             }`}>
-                                            <Icon size={20} className={`${active ? 'text-[var(--green)]' : ''}`} />
+                                            <Icon size={20} className={`${active ? 'text-[var(--color-primary)]' : ''}`} />
                                         </div>
                                     </Link>
                                 );

@@ -1,4 +1,4 @@
-// src/components/auth/ImageUpload.tsx
+﻿// src/components/auth/ImageUpload.tsx
 import { useState, useRef } from 'react';
 import { MdCloudUpload, MdCheckCircle } from 'react-icons/md';
 import { Loader2 } from 'lucide-react';
@@ -61,8 +61,8 @@ export const ImageUpload = ({
                 onClick={() => inputRef.current?.click()}
                 className={`
           relative w-full h-40 rounded-lg border-2 border-dashed 
-          ${error ? 'border-[var(--red)]' : 'border-[var(--gray-300)]'}
-          ${imageUrl ? 'border-[var(--green)]' : ''}
+          ${error ? 'border-[var(--color-secondary)]' : 'border-[var(--gray-300)]'}
+          ${imageUrl ? 'border-[var(--color-primary)]' : ''}
           bg-[var(--gray-400)] cursor-pointer
           hover:bg-[var(--gray-300)] transition-all
           flex flex-col items-center justify-center gap-2
@@ -70,15 +70,15 @@ export const ImageUpload = ({
             >
                 {isUploading ? (
                     <>
-                        <Loader2 className="w-8 h-8 text-[var(--green)] animate-spin" />
+                        <Loader2 className="w-8 h-8 text-[var(--color-primary)] animate-spin" />
                         <p className="text-xs text-[var(--gray-200)]">
                             Subiendo... {progress}%
                         </p>
                     </>
                 ) : imageUrl ? (
                     <>
-                        <MdCheckCircle className="w-8 h-8 text-[var(--green)]" />
-                        <p className="text-xs text-[var(--green)]">Imagen subida</p>
+                        <MdCheckCircle className="w-8 h-8 text-[var(--color-primary)]" />
+                        <p className="text-xs text-[var(--color-primary)]">Imagen subida</p>
                     </>
                 ) : preview ? (
                     <Image
@@ -109,7 +109,7 @@ export const ImageUpload = ({
             </div>
 
             {error && (
-                <span className="text-xs text-[var(--red)] ml-2">{error}</span>
+                <span className="text-xs text-[var(--color-secondary)] ml-2">{error}</span>
             )}
         </div>
     );

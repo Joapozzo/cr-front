@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 interface ZonaElegible {
     id_zona: number;
@@ -29,7 +29,7 @@ export default function PasoSeleccionZonas({
                 {loadingZonas ? (
                     <p className="text-[var(--gray-100)]">Cargando zonas...</p>
                 ) : zonasElegibles.length === 0 ? (
-                    <p className="text-[var(--red)]">
+                    <p className="text-[var(--color-secondary)]">
                         No hay zonas de tipo &quot;todos contra todos&quot; disponibles
                     </p>
                 ) : (
@@ -37,7 +37,7 @@ export default function PasoSeleccionZonas({
                         {zonasElegibles.map((zona) => (
                             <label
                                 key={zona.id_zona}
-                                className="flex items-center p-3 bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] cursor-pointer hover:border-[var(--green)] transition-colors"
+                                className="flex items-center p-3 bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] cursor-pointer hover:border-[var(--color-primary)] transition-colors"
                             >
                                 <input
                                     type="checkbox"
@@ -52,7 +52,7 @@ export default function PasoSeleccionZonas({
                                     <p className="text-sm text-[var(--gray-100)]">
                                         {zona.cantidad_equipos} equipos
                                         {zona.es_impar && (
-                                            <span className="ml-2 text-[var(--red)]">
+                                            <span className="ml-2 text-[var(--color-secondary)]">
                                                 (impar - requiere fecha libre)
                                             </span>
                                         )}

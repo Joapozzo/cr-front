@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { User, Calendar, Shield, AlertTriangle, FileText, Clock, CheckCircle, XCircle, Gavel, Hash } from 'lucide-react';
 import { Sancion } from '@/app/types/sancion';
 import { formatearFechaCorta } from '@/app/utils/fechas';
@@ -15,9 +15,9 @@ export default function ModalDetallesSancion({ sancion, onClose }: ModalDetalles
 
     const getEstadoIcon = () => {
         if (sancion.estado === 'I' || sancion.estado === 'R') return <XCircle className="w-5 h-5 text-[var(--gray-100)]" />;
-        if (sancion.estado === 'C' || (sancion.fechas_restantes || 0) === 0) return <CheckCircle className="w-5 h-5 text-[var(--green)]" />;
+        if (sancion.estado === 'C' || (sancion.fechas_restantes || 0) === 0) return <CheckCircle className="w-5 h-5 text-[var(--color-primary)]" />;
         if (sancion.estado === 'A' && (sancion.fechas_restantes || 0) > 0) return <AlertTriangle className="w-5 h-5 text-red-400" />;
-        return <CheckCircle className="w-5 h-5 text-[var(--green)]" />;
+        return <CheckCircle className="w-5 h-5 text-[var(--color-primary)]" />;
     };
 
     const getEstadoText = () => {
@@ -37,7 +37,7 @@ export default function ModalDetallesSancion({ sancion, onClose }: ModalDetalles
         >
             <div className="space-y-4">
                 {/* Estado de la sanción - Destacado */}
-                <div className="flex items-center gap-3 p-4 bg-[var(--gray-300)] rounded-lg border-l-4 border-[var(--green)]">
+                <div className="flex items-center gap-3 p-4 bg-[var(--gray-300)] rounded-lg border-l-4 border-[var(--color-primary)]">
                     {getEstadoIcon()}
                     <div className="flex-1">
                         <p className="text-xs text-[var(--gray-100)]">Estado</p>
@@ -46,7 +46,7 @@ export default function ModalDetallesSancion({ sancion, onClose }: ModalDetalles
                     <div className="text-right">
                         <p className="text-xs text-[var(--gray-100)]">Fechas</p>
                         <p className={`text-2xl font-bold ${
-                            (sancion.fechas_restantes || 0) > 0 ? 'text-red-400' : 'text-[var(--green)]'
+                            (sancion.fechas_restantes || 0) > 0 ? 'text-red-400' : 'text-[var(--color-primary)]'
                         }`}>
                             {sancion.fechas_restantes || 0}/{sancion.fechas || 0}
                         </p>
@@ -60,7 +60,7 @@ export default function ModalDetallesSancion({ sancion, onClose }: ModalDetalles
                 <div className="grid grid-cols-2 gap-3">
                     {/* Jugador */}
                     <div className="flex items-start gap-3 p-3 bg-[var(--gray-300)] rounded-lg">
-                        <User className="w-4 h-4 text-[var(--green)] mt-0.5" />
+                        <User className="w-4 h-4 text-[var(--color-primary)] mt-0.5" />
                         <div className="flex-1 min-w-0">
                             <p className="text-xs text-[var(--gray-100)]">Jugador</p>
                             <p className="text-[var(--white)] font-medium text-sm truncate">
@@ -146,7 +146,7 @@ export default function ModalDetallesSancion({ sancion, onClose }: ModalDetalles
                 {/* Motivo - Solo si existe */}
                 {sancion.motivo && (
                     <div className="flex items-start gap-3 p-3 bg-[var(--gray-300)] rounded-lg">
-                        <FileText className="w-4 h-4 text-[var(--green)] mt-0.5" />
+                        <FileText className="w-4 h-4 text-[var(--color-primary)] mt-0.5" />
                         <div className="flex-1 min-w-0">
                             <p className="text-xs text-[var(--gray-100)] mb-1">Motivo</p>
                             <p className="text-[var(--white)] text-sm">{sancion.motivo}</p>

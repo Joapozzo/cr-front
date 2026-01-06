@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -28,7 +28,7 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({ tabs }) => {
                                 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors
                                 ${
                                     isActive
-                                        ? 'border-[var(--green)] text-[var(--green)]'
+                                        ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                                         : 'border-transparent text-[var(--gray-100)] hover:text-[var(--white)] hover:border-[var(--gray-200)]'
                                 }
                             `}

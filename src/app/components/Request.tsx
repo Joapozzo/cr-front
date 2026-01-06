@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Send, Search, Plus, Clock, AlertCircle } from "lucide-react";
 import { memo, useCallback, useState } from "react";
@@ -91,9 +91,9 @@ const SolicitudItemComponent = memo(({
                                 </div>
                             )}
                             {solicitud.motivo_rechazo && (
-                                <div className="mt-2 p-2 bg-[var(--red-500)]/10 rounded border border-[var(--red-500)]/30">
-                                    <p className="text-[var(--red-400)] text-xs mb-1">Motivo de rechazo:</p>
-                                    <p className="text-[var(--red-300)] text-xs italic">
+                                <div className="mt-2 p-2 bg-[var(--color-secondary-500)]/10 rounded border border-[var(--color-secondary-500)]/30">
+                                    <p className="text-[var(--color-secondary-400)] text-xs mb-1">Motivo de rechazo:</p>
+                                    <p className="text-[var(--color-secondary-300)] text-xs italic">
                                         &quot;{solicitud.motivo_rechazo}&quot;
                                     </p>
                                 </div>
@@ -281,10 +281,10 @@ const Solicitudes: React.FC<SolicitudesProps> = ({
         switch (estado) {
             case 'A':
             case 'aceptada':
-                return 'text-[var(--green-400)] bg-[var(--green-500)]/20 border-[var(--green-500)]/30';
+                return 'text-[var(--color-primary-400)] bg-[var(--color-primary-500)]/20 border-[var(--color-primary-500)]/30';
             case 'R':
             case 'rechazada':
-                return 'text-[var(--red-400)] bg-[var(--red-500)]/20 border-[var(--red-500)]/30';
+                return 'text-[var(--color-secondary-400)] bg-[var(--color-secondary-500)]/20 border-[var(--color-secondary-500)]/30';
             default:
                 return 'text-[var(--orange-400)] bg-[var(--orange-500)]/20 border-[var(--orange-500)]/30';
         }
@@ -314,7 +314,7 @@ const Solicitudes: React.FC<SolicitudesProps> = ({
             <div className="rounded-2xl border border-[var(--gray-300)]">
                 {/* Header */}
                 <div className="flex items-center gap-2 bg-[var(--black-900)] p-3 sm:p-4 rounded-t-2xl">
-                    <Send className="text-[var(--green)]" size={16} />
+                    <Send className="text-[var(--color-primary)]" size={16} />
                     <h3 className="text-[var(--white)] font-bold text-sm">Enviar solicitudes</h3>
                 </div>
 
@@ -461,7 +461,7 @@ const Solicitudes: React.FC<SolicitudesProps> = ({
                 {equipoSeleccionado && (
                     <div className="text-left space-y-2">
                         <p className="text-[var(--gray-100)] text-sm">
-                            Equipo: <span className="text-[var(--green)] font-medium">
+                            Equipo: <span className="text-[var(--color-primary)] font-medium">
                                 {equipoSeleccionado.nombre}
                             </span>
                         </p>

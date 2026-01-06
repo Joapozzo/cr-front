@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { PlantelEquipo } from '@/app/types/legajos';
 import { ImagenPublica } from '@/app/components/common/ImagenPublica';
@@ -42,15 +42,15 @@ export const EquipoPlantelTab = ({ plantel, isLoading, categoriaSeleccionada }: 
     }
 
     const getEstadoColor = (estado: string, sancionado: boolean) => {
-        if (sancionado) return 'border-[var(--red)]';
+        if (sancionado) return 'border-[var(--color-secondary)]';
         if (estado === 'baja') return 'border-[var(--gray-200)]';
-        return 'border-[var(--green)]';
+        return 'border-[var(--color-primary)]';
     };
 
     const getEstadoBadgeColor = (estado: string, sancionado: boolean) => {
-        if (sancionado) return 'bg-[var(--red)] text-[var(--white)]';
+        if (sancionado) return 'bg-[var(--color-secondary)] text-[var(--white)]';
         if (estado === 'baja') return 'bg-[var(--gray-200)] text-[var(--white)]';
-        return 'bg-[var(--green)] text-[var(--white)]';
+        return 'bg-[var(--color-primary)] text-[var(--white)]';
     };
 
     return (
@@ -131,8 +131,8 @@ export const EquipoPlantelTab = ({ plantel, isLoading, categoriaSeleccionada }: 
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-1">
-                                            <Volleyball className="w-4 h-4 text-[var(--green)]" />
-                                            <span className="text-sm text-[var(--green)] font-medium">
+                                            <Volleyball className="w-4 h-4 text-[var(--color-primary)]" />
+                                            <span className="text-sm text-[var(--color-primary)] font-medium">
                                                 {jugador.estadisticas.goles}
                                             </span>
                                         </div>

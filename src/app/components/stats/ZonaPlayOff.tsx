@@ -1,4 +1,4 @@
-import { Trophy } from 'lucide-react';
+﻿import { Trophy } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { TablaPosiciones } from '../posiciones/TablaPosiciones';
 import { useZonaStore } from '@/app/stores/zonaStore';
@@ -101,7 +101,7 @@ const ZonasPlayoff = ({ zonasPlayoff, zonasTodosContraTodos, posiciones, isLoadi
             <div className="p-4 border-b border-[var(--gray-300)]">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                     <h3 className="text-[var(--white)] font-semibold text-lg flex items-center gap-2">
-                        <Trophy className="w-5 h-5 text-[var(--green)]" />
+                        <Trophy className="w-5 h-5 text-[var(--color-primary)]" />
                         {tipoVistaActiva === 'todos_contra_todos' ? 'Tabla de posiciones' : 'Playoffs'}
                     </h3>
 
@@ -113,7 +113,7 @@ const ZonasPlayoff = ({ zonasPlayoff, zonasTodosContraTodos, posiciones, isLoadi
                                 className={`
                                     px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200
                                     ${tipoVistaActiva === 'todos_contra_todos'
-                                        ? 'bg-[var(--green)] text-white'
+                                        ? 'bg-[var(--color-primary)] text-white'
                                         : 'bg-[var(--gray-300)] text-[var(--gray-100)] hover:bg-[var(--gray-200)]'
                                     }
                                 `}
@@ -125,7 +125,7 @@ const ZonasPlayoff = ({ zonasPlayoff, zonasTodosContraTodos, posiciones, isLoadi
                                 className={`
                                     px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200
                                     ${tipoVistaActiva === 'playoff'
-                                        ? 'bg-[var(--green)] text-white'
+                                        ? 'bg-[var(--color-primary)] text-white'
                                         : 'bg-[var(--gray-300)] text-[var(--gray-100)] hover:bg-[var(--gray-200)]'
                                     }
                                 `}
@@ -142,7 +142,7 @@ const ZonasPlayoff = ({ zonasPlayoff, zonasTodosContraTodos, posiciones, isLoadi
                         <select
                             value={zonaSeleccionada}
                             onChange={(e) => setZonaSeleccionada(Number(e.target.value))}
-                            className="w-full px-4 py-2 bg-[var(--gray-300)] text-[var(--white)] rounded-lg border border-[var(--gray-200)] focus:outline-none focus:border-[var(--green)] transition-colors"
+                            className="w-full px-4 py-2 bg-[var(--gray-300)] text-[var(--white)] rounded-lg border border-[var(--gray-200)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                         >
                             {zonasTodosContraTodos.map((zona) => (
                                 <option key={zona.id_zona} value={zona.id_zona}>
@@ -163,7 +163,7 @@ const ZonasPlayoff = ({ zonasPlayoff, zonasTodosContraTodos, posiciones, isLoadi
                                 className={`
                                     px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200
                                     ${etapaPlayoffActiva === etapa.id_etapa
-                                        ? 'bg-[var(--green)] text-white'
+                                        ? 'bg-[var(--color-primary)] text-white'
                                         : 'bg-[var(--gray-300)] text-[var(--gray-100)] hover:bg-[var(--gray-200)]'
                                     }
                                 `}

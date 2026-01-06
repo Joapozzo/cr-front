@@ -1,4 +1,4 @@
-import { Equipo } from "@/app/types/equipo";
+﻿import { Equipo } from "@/app/types/equipo";
 import { InfoVacante } from "@/app/types/temporada";
 // import { Shield } from "lucide-react";
 import { EscudoEquipo } from "../common/EscudoEquipo";
@@ -16,7 +16,7 @@ const EquipoCard = ({ equipo, infoVacante, goles, penales, isWinner, isPending }
     return (
         <div className={`
             flex items-center justify-between p-2 md:p-3 rounded-lg border
-            ${isWinner ? 'bg-[var(--green)]/10 border-[var(--green)]' : 'bg-[var(--gray-400)] border-[var(--gray-300)]'}
+            ${isWinner ? 'bg-[var(--color-primary)]/10 border-[var(--color-primary)]' : 'bg-[var(--gray-400)] border-[var(--gray-300)]'}
             ${isPending ? 'opacity-50' : ''}
             transition-all duration-200
         `}>
@@ -50,7 +50,7 @@ const EquipoCard = ({ equipo, infoVacante, goles, penales, isWinner, isPending }
                 <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
                     <span className={`
                         font-bold text-base md:text-lg
-                        ${isWinner ? 'text-[var(--green)]' : 'text-[var(--white)]'}
+                        ${isWinner ? 'text-[var(--color-primary)]' : 'text-[var(--white)]'}
                     `}>
                         {goles ?? 0}
                     </span>

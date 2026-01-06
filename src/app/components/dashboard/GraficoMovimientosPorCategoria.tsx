@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { BarChart3 } from 'lucide-react';
@@ -46,7 +46,7 @@ export default function GraficoMovimientosPorCategoria({ data, isLoading }: Graf
                     <h3 className="text-lg font-semibold text-white mb-1">Movimientos por Categoría</h3>
                     <p className="text-sm text-[var(--gray-100)]">Ingresos, egresos y deudas</p>
                 </div>
-                <BarChart3 className="w-5 h-5 text-[var(--green)]" />
+                <BarChart3 className="w-5 h-5 text-[var(--color-primary)]" />
             </div>
             <ResponsiveContainer width="100%" height={400}>
                 <BarChart 

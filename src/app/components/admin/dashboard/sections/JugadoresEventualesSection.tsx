@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { UserPlus, User } from 'lucide-react';
 import React from 'react';
 import { JugadorEventual } from '@/app/types/admin.types';
@@ -62,14 +62,14 @@ export const JugadoresEventualesSection: React.FC<JugadoresEventualesSectionProp
                                     </div>
                                     <div className="h-1.5 w-full bg-[var(--black-900)] rounded-full overflow-hidden border border-[#262626]">
                                         <div
-                                            className={`h-full rounded-full ${isCritical ? 'bg-[var(--red-500)]' : 'bg-[var(--blue-500)]'}`}
+                                            className={`h-full rounded-full ${isCritical ? 'bg-[var(--color-secondary-500)]' : 'bg-[var(--blue-500)]'}`}
                                             style={{ width: `${Math.min(progress, 100)}%` }}
                                         ></div>
                                     </div>
                                 </div>
 
                                 <div className="text-center min-w-[3rem]">
-                                    <span className={`text-sm font-bold ${isCritical ? 'text-[var(--red-500)]' : isWarning ? 'text-[var(--yellow-500)]' : 'text-[var(--green)]'}`}>
+                                    <span className={`text-sm font-bold ${isCritical ? 'text-[var(--color-secondary-500)]' : isWarning ? 'text-[var(--color-warning)]' : 'text-[var(--color-primary)]'}`}>
                                         {jugador.partidos_restantes}
                                     </span>
                                     <p className="text-[8px] text-[#555] uppercase">Restan</p>

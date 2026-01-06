@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useRegistrationFlow } from '@/app/hooks/auth/useRegistrationFlow';
 import { useRegistrationContext, type RegistrationStep } from '@/app/contexts/RegistrationContext';
@@ -37,10 +37,10 @@ const StepItem = ({ step, stepNumber, isActive, isCompleted, isAvailable, onClic
             transition-all duration-300 ease-out
             ${
               isCompleted
-                ? 'bg-[var(--green)] text-white hover:bg-[var(--green)]/90'
+                ? 'bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90'
                 : isActive
-                ? 'bg-[var(--green)] text-white ring-4 ring-[var(--green)]/20'
-                : 'bg-[var(--gray-400)] text-[var(--gray-200)] border-2 border-[var(--gray-300)] hover:border-[var(--green)]/50'
+                ? 'bg-[var(--color-primary)] text-white ring-4 ring-[var(--color-primary)]/20'
+                : 'bg-[var(--gray-400)] text-[var(--gray-200)] border-2 border-[var(--gray-300)] hover:border-[var(--color-primary)]/50'
             }
           `}
         >
@@ -58,9 +58,9 @@ const StepItem = ({ step, stepNumber, isActive, isCompleted, isAvailable, onClic
             transition-colors duration-200
             ${
               isActive
-                ? 'text-[var(--green)]'
+                ? 'text-[var(--color-primary)]'
                 : isCompleted
-                ? 'text-[var(--gray-200)] hover:text-[var(--green)]'
+                ? 'text-[var(--gray-200)] hover:text-[var(--color-primary)]'
                 : 'text-[var(--gray-300)]'
             }
           `}
@@ -75,7 +75,7 @@ const StepItem = ({ step, stepNumber, isActive, isCompleted, isAvailable, onClic
           className={`
             absolute top-5 left-1/2 h-0.5
             transition-colors duration-300 z-0
-            ${isCompleted ? 'bg-[var(--green)]' : 'bg-[var(--gray-400)]'}
+            ${isCompleted ? 'bg-[var(--color-primary)]' : 'bg-[var(--gray-400)]'}
           `}
           style={{
             width: '100%',
@@ -129,7 +129,7 @@ export const RegistrationStepper = () => {
       {/* Progress Bar */}
       <div className="mt-4 w-full h-1 bg-[var(--gray-400)] rounded-full overflow-hidden">
         <div
-          className="h-full bg-[var(--green)] transition-all duration-500 ease-out"
+          className="h-full bg-[var(--color-primary)] transition-all duration-500 ease-out"
           style={{
             width: `${(currentStepNumber / totalSteps) * 100}%`,
           }}

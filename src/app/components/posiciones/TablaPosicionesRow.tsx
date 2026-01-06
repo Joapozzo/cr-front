@@ -43,8 +43,8 @@ export const TablaPosicionesRow: React.FC<TablaPosicionesRowProps> = ({
     <tr
       className={`transition-colors ${
         variant === 'home'
-          ? esMiEquipo ? 'bg-[var(--green)]/5' : 'hover:bg-[#0a0a0a]'
-          : isUserTeam ? 'bg-[var(--green)]/5 hover:bg-[var(--black-800)]' : 'hover:bg-[var(--black-800)]'
+          ? esMiEquipo ? 'bg-[var(--color-primary)]/5' : 'hover:bg-[#0a0a0a]'
+          : isUserTeam ? 'bg-[var(--color-primary)]/5 hover:bg-[var(--black-800)]' : 'hover:bg-[var(--black-800)]'
       }`}
     >
       <td className={variant === 'home' ? "py-3 px-3" : "px-4 py-3 whitespace-nowrap"}>
@@ -56,7 +56,7 @@ export const TablaPosicionesRow: React.FC<TablaPosicionesRowProps> = ({
             />
             <span className={`text-sm ${variant === 'home' ? 'font-bold' : 'font-semibold'} ${
               (variant === 'home' && esMiEquipo) || isUserTeam
-                ? 'text-[var(--green)]'
+                ? 'text-[var(--color-primary)]'
                 : 'text-white'
             }`}>
               {posicion}
@@ -76,13 +76,13 @@ export const TablaPosicionesRow: React.FC<TablaPosicionesRowProps> = ({
             <div className="flex items-center gap-2">
               <span className={`text-sm font-medium truncate ${
                 (variant === 'home' && esMiEquipo) || isUserTeam
-                  ? 'text-[var(--green)]'
+                  ? 'text-[var(--color-primary)]'
                   : 'text-white'
               }`}>
                 {equipo.nombre_equipo}
               </span>
               {equipoConLive.en_vivo && (
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[var(--green)] text-white animate-pulse flex-shrink-0">
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[var(--color-primary)] text-white animate-pulse flex-shrink-0">
                   <span className="w-1 h-1 bg-white rounded-full"></span>
                   {variant === 'home' ? 'LIVE' : 'EN VIVO'}
                 </span>
@@ -93,7 +93,7 @@ export const TablaPosicionesRow: React.FC<TablaPosicionesRowProps> = ({
       </td>
       {columnMode === 'full' && (
         <>
-          <td className={`${variant === 'home' ? 'text-center py-3 px-2' : 'px-4 py-3 text-center'} text-sm ${variant === 'home' && esMiEquipo ? 'text-[var(--green)]' : 'text-[#737373]'}`}>
+          <td className={`${variant === 'home' ? 'text-center py-3 px-2' : 'px-4 py-3 text-center'} text-sm ${variant === 'home' && esMiEquipo ? 'text-[var(--color-primary)]' : 'text-[#737373]'}`}>
             <Link href={`/equipos/${equipo.id_equipo}`} className="block">
               {stats.partidosJugados}
             </Link>
@@ -128,13 +128,13 @@ export const TablaPosicionesRow: React.FC<TablaPosicionesRowProps> = ({
       <td className={`${variant === 'home' ? 'text-center py-3 px-2' : 'px-4 py-3 text-center'}`}>
         <Link href={`/equipos/${equipo.id_equipo}`} className="block">
           {columnMode === 'compact' ? (
-            <span className={`text-sm ${variant === 'home' && esMiEquipo ? 'text-[var(--green)]' : 'text-white'}`}>
+            <span className={`text-sm ${variant === 'home' && esMiEquipo ? 'text-[var(--color-primary)]' : 'text-white'}`}>
               {stats.partidosJugados}
             </span>
           ) : (
             <span className={`text-sm font-medium ${
               stats.diferenciaGoles > 0
-                ? 'text-[var(--green)]'
+                ? 'text-[var(--color-primary)]'
                 : stats.diferenciaGoles < 0
                   ? 'text-red-400'
                   : 'text-[#737373]'
@@ -149,10 +149,10 @@ export const TablaPosicionesRow: React.FC<TablaPosicionesRowProps> = ({
           <Link href={`/equipos/${equipo.id_equipo}`} className="block">
             <span className={`text-sm font-medium ${
               stats.diferenciaGoles > 0
-                ? variant === 'home' && esMiEquipo ? 'text-[var(--green)]' : 'text-green-400'
+                ? variant === 'home' && esMiEquipo ? 'text-[var(--color-primary)]' : 'text-green-400'
                 : stats.diferenciaGoles < 0
                   ? 'text-red-400'
-                  : variant === 'home' && esMiEquipo ? 'text-[var(--green)]' : 'text-gray-400'
+                  : variant === 'home' && esMiEquipo ? 'text-[var(--color-primary)]' : 'text-gray-400'
             }`}>
               {stats.diferenciaGoles > 0 ? '+' : ''}{stats.diferenciaGoles}
             </span>
@@ -164,7 +164,7 @@ export const TablaPosicionesRow: React.FC<TablaPosicionesRowProps> = ({
           <div className="flex flex-col items-center">
             <span className={`text-sm ${variant === 'home' ? 'font-bold' : 'font-bold'} ${
               (variant === 'home' && esMiEquipo) || isUserTeam
-                ? 'text-[var(--green)]'
+                ? 'text-[var(--color-primary)]'
                 : 'text-white'
             }`}>
               {stats.puntosFinales}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useMemo } from 'react';
 import { Eye, Edit, Trash2, Search } from 'lucide-react';
 import { Sancion } from '@/app/types/sancion';
@@ -47,7 +47,7 @@ export default function TablaSanciones({
             return <span className="px-2 py-1 text-xs rounded bg-[var(--gray-300)] text-[var(--gray-100)]">Revocada</span>;
         }
         if (sancion.estado === 'C' || (sancion.fechas_restantes || 0) === 0) {
-            return <span className="px-2 py-1 text-xs rounded bg-[var(--green)]/20 text-[var(--green)]">Cumplida</span>;
+            return <span className="px-2 py-1 text-xs rounded bg-[var(--color-primary)]/20 text-[var(--color-primary)]">Cumplida</span>;
         }
         if (sancion.estado === 'A' && (sancion.fechas_restantes || 0) > 0) {
             return <span className="px-2 py-1 text-xs rounded bg-red-500/20 text-red-400">Activa</span>;
@@ -69,7 +69,7 @@ export default function TablaSanciones({
                                 placeholder="Buscar por nombre del jugador..."
                                 value={filtroNombre}
                                 onChange={(e) => setFiltroNombre(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] placeholder-[var(--gray-100)] focus:outline-none focus:border-[var(--green)]"
+                                className="w-full pl-10 pr-4 py-2 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] placeholder-[var(--gray-100)] focus:outline-none focus:border-[var(--color-primary)]"
                             />
                         </div>
                     </div>
@@ -260,7 +260,7 @@ export default function TablaSanciones({
                                                     </>
                                                 )}
                                                 {/* {sancion.estado === 'C' && (
-                                                    <span className="text-xs text-[var(--green)] px-2">
+                                                    <span className="text-xs text-[var(--color-primary)] px-2">
                                                         Cumplida
                                                     </span>
                                                 )} */}

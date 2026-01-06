@@ -65,7 +65,7 @@ export const SancionesActivasSection: React.FC<SancionesActivasSectionProps> = (
 
                         <div className="text-right shrink-0 flex flex-col items-end">
                             <span
-                                className={`text-lg font-bold ${(sancion.fechas_restantes || 0) > 3 ? 'text-[var(--red-500)]' : 'text-[var(--yellow-500)]'
+                                className={`text-lg font-bold ${(sancion.fechas_restantes || 0) > 3 ? 'text-[var(--color-secondary-500)]' : 'text-[var(--color-warning)]'
                                     }`}
                             >
                                 {sancion.fechas_restantes}

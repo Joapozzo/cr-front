@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { CheckCircle2 } from 'lucide-react';
 
@@ -22,9 +22,9 @@ export default function StepIndicators({ pasoActual, totalPasos, labels }: StepI
                             <div
                                 className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
                                     isActive
-                                        ? 'bg-[var(--green)] text-black'
+                                        ? 'bg-[var(--color-primary)] text-black'
                                         : isCompleted
-                                        ? 'bg-[var(--green)] text-black'
+                                        ? 'bg-[var(--color-primary)] text-black'
                                         : 'bg-[#171717] border border-[#404040] text-[#737373]'
                                 }`}
                             >

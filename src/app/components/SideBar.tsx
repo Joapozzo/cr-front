@@ -1,9 +1,10 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useTenant } from '@/app/contexts/TenantContext';
 import {
     ChevronLeft,
     ChevronRight,
@@ -36,63 +37,63 @@ const menuItems: MenuItem[] = [
         label: 'Dashboard',
         icon: LayoutDashboard,
         href: '/adm/dashboard',
-        color: 'text-[var(--green)]'
+        color: 'text-[var(--color-primary)]'
     },
     {
         id: 'ediciones',
         label: 'Ediciones',
         icon: Calendar,
         href: '/adm/ediciones',
-        color: 'text-[var(--green)]'
+        color: 'text-[var(--color-primary)]'
     },
     {
         id: 'sanciones',
         label: 'Sanciones',
         icon: AlertTriangle,
         href: '/adm/sanciones',
-        color: 'text-[var(--green)]'
+        color: 'text-[var(--color-primary)]'
     },
     {
         id: 'noticias',
         label: 'Noticias',
         icon: Newspaper,
         href: '/adm/noticias',
-        color: 'text-[var(--green)]'
+        color: 'text-[var(--color-primary)]'
     },
     {
         id: 'usuarios',
         label: 'Usuarios',
         icon: Users,
         href: '/adm/usuarios',
-        color: 'text-[var(--green)]'
+        color: 'text-[var(--color-primary)]'
     },
     {
         id: 'legajos',
         label: 'Legajos',
         icon: Trophy,
         href: '/adm/legajos',
-        color: 'text-[var(--green)]'
+        color: 'text-[var(--color-primary)]'
     },
     {
         id: 'predios',
         label: 'Predios',
         icon: MdStadium,
         href: '/adm/predios',
-        color: 'text-[var(--green)]'
+        color: 'text-[var(--color-primary)]'
     },
     {
         id: 'caja',
         label: 'Caja',
         icon: Wallet,
         href: '/cajero/caja',
-        color: 'text-[var(--green)]'
+        color: 'text-[var(--color-primary)]'
     },
     // {
     //     id: 'configuracion-precios',
     //     label: 'Configuración de Precios',
     //     icon: DollarSign,
     //     href: '/adm/configuracion/precios',
-    //     color: 'text-[var(--green)]'
+    //     color: 'text-[var(--color-primary)]'
     // }
 ];
 
@@ -102,6 +103,7 @@ export default function Sidebar() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const pathname = usePathname();
     const isLoggingOut = logoutState === 'loading';
+    const tenant = useTenant();
 
     const toggleSidebar = () => {
         setIsCollapsed(!isCollapsed);
@@ -121,8 +123,8 @@ export default function Sidebar() {
                 <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'justify-between'} w-full`}>
                     {!isCollapsed ? (
                         <Image
-                            src="/logos/logotipo.png"
-                            alt="Logo"
+                            src={tenant.branding.logo_principal}
+                            alt={tenant.nombre_empresa}
                             width={200}
                             height={40}
                             className="h-4 w-auto object-contain"
@@ -130,8 +132,8 @@ export default function Sidebar() {
                         />
                     ) : (
                         <Image
-                            src="/logos/isologo-reducido.png"
-                            alt="Logo"
+                            src={tenant.branding.logo_header}
+                            alt={tenant.nombre_empresa}
                             width={200}
                             height={40}
                             className="h-8 w-auto object-contain"
@@ -170,13 +172,13 @@ export default function Sidebar() {
                             className="w-full p-2 rounded-lg transition-colors group hover:bg-[var(--black-900)] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                             title={isLoggingOut ? 'Saliendo...' : 'Cerrar sesión'}
                         >
-                            <LogOut className={`w-5 h-5 text-[var(--red-500)] group-hover:text-[var(--red-400)] transition-colors ${isLoggingOut ? 'opacity-50' : ''}`} />
+                            <LogOut className={`w-5 h-5 text-[var(--color-secondary-500)] group-hover:text-[var(--color-secondary-400)] transition-colors ${isLoggingOut ? 'opacity-50' : ''}`} />
                         </button>
                     </div>
                 ) : (
                     <>
                         <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 rounded-full bg-[var(--green)] flex items-center justify-center overflow-hidden">
+                            <div className="w-10 h-10 rounded-full bg-[var(--color-primary)] flex items-center justify-center overflow-hidden">
                                 <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
                                     <ImagenPublica
                                         src={usuario?.img}
@@ -194,14 +196,14 @@ export default function Sidebar() {
                         </div>
 
                         <div className="mt-3 flex space-x-2">
-                            <Link href="/adm/perfil" className="flex-1 bg-[var(--green)] text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-[var(--green-300)] transition-colors flex items-center justify-center space-x-2">
+                            <Link href="/adm/perfil" className="flex-1 bg-[var(--color-primary)] text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-300)] transition-colors flex items-center justify-center space-x-2">
                                 <User className="w-4 h-4" />
                                 <span>Perfil</span>
                             </Link>
                             <button
                                 onClick={logout}
                                 disabled={isLoggingOut}
-                                className="flex-1 border border-[var(--red-500)] text-[var(--red-500)] px-3 py-2 rounded-lg text-sm font-medium hover:bg-[var(--red-500)] hover:text-white transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex-1 border border-[var(--color-secondary-500)] text-[var(--color-secondary-500)] px-3 py-2 rounded-lg text-sm font-medium hover:bg-[var(--color-secondary-500)] hover:text-white transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <LogOut className="w-4 h-4" />
                                 <span>{isLoggingOut ? 'Saliendo...' : 'Salir'}</span>
@@ -227,14 +229,14 @@ export default function Sidebar() {
                                 >
                                     <item.icon
                                         className={`w-5 h-5 flex-shrink-0 ${isActive
-                                            ? "text-[var(--green)]"
+                                            ? "text-[var(--color-primary)]"
                                             : item.color || "text-gray-400"
                                             } group-hover:scale-110 transition-transform`}
                                     />
                                     {!isCollapsed && (
                                         <span
                                             className={`transition-colors ${isActive
-                                                ? "text-[var(--green)] font-medium"
+                                                ? "text-[var(--color-primary)] font-medium"
                                                 : "text-gray-300 group-hover:text-white"
                                                 }`}
                                         >

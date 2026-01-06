@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 
 function classNames(...classes: (string | undefined | null | boolean)[]): string {
   return classes.filter(Boolean).join(' ');
@@ -57,27 +57,27 @@ export const Button: React.FC<ButtonProps> = ({
       hover:text-[#65656B]
     `,
     footer: `
-      bg-[#2AD174] 
-      text-[#101011] 
+      bg-[var(--color-primary)] 
+      text-[var(--black)] 
       hover:bg-transparent 
-      hover:border-[#2AD174] 
-      hover:text-[#2AD174]
+      hover:border-[var(--color-primary)] 
+      hover:text-[var(--color-primary)]
     `,
     success: `
-      bg-[#22C55E] 
+      bg-[var(--color-primary)] 
       border 
-      border-[#22C55E] 
+      border-[var(--color-primary)] 
       text-white 
       hover:bg-transparent 
-      hover:text-[#22C55E]
+      hover:text-[var(--color-primary)]
     `,
     danger: `
-      bg-[#EF4444] 
+      bg-[var(--color-danger)] 
       border 
-      border-[#EF4444] 
+      border-[var(--color-danger)] 
       text-white 
       hover:bg-transparent 
-      hover:text-[#EF4444]
+      hover:text-[var(--color-danger)]
     `,
     import: `
       bg-[#6366F1] 
@@ -102,7 +102,7 @@ export const Button: React.FC<ButtonProps> = ({
       hover:bg-transparent 
       hover:text-inherit
     `,
-    secondary: 'bg-transparent text-[var(--green)] border border-[var(--green)] hover:bg-[var(--green)] hover:text-[var(--black)]',
+    secondary: 'bg-transparent text-[var(--color-primary)] border border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--black)]',
 
   };
 

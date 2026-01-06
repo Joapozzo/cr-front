@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { Plus, Trash2, AlertCircle } from 'lucide-react';
 import { FormatoPosicion } from '../types/zonas';
 import toast from 'react-hot-toast';
@@ -310,7 +310,7 @@ const FormatosPosicionStep = ({
                                 key={formato.id}
                                 className={`p-3 rounded-lg border ${
                                     formato.errores
-                                        ? 'border-[var(--red)] bg-red-500/10'
+                                        ? 'border-[var(--color-secondary)] bg-red-500/10'
                                         : 'border-[var(--gray-300)] bg-[var(--gray-500)]'
                                 }`}
                             >
@@ -335,7 +335,7 @@ const FormatosPosicionStep = ({
                                                 {Object.entries(formato.errores).map(([campo, mensaje]) => (
                                                     <div
                                                         key={campo}
-                                                        className="flex items-center gap-2 text-xs text-[var(--red)]"
+                                                        className="flex items-center gap-2 text-xs text-[var(--color-secondary)]"
                                                     >
                                                         <AlertCircle className="w-3 h-3" />
                                                         <span>{mensaje}</span>
@@ -423,7 +423,7 @@ const FormatosPosicionStep = ({
                                     </div>
                                     <button
                                         onClick={() => handleEliminarFormato(formato.id)}
-                                        className="p-2 text-[var(--red)] hover:bg-[var(--gray-300)] rounded transition-colors"
+                                        className="p-2 text-[var(--color-secondary)] hover:bg-[var(--gray-300)] rounded transition-colors"
                                         title="Eliminar formato"
                                     >
                                         <Trash2 className="w-4 h-4" />
@@ -529,7 +529,7 @@ const FormatosPosicionStep = ({
                             </div>
                             {formatoNuevo.errores?.superposicion && (
                                 <div className="col-span-2">
-                                    <p className="text-xs text-[var(--red)] flex items-center gap-2">
+                                    <p className="text-xs text-[var(--color-secondary)] flex items-center gap-2">
                                         <AlertCircle className="w-3 h-3" />
                                         {formatoNuevo.errores.superposicion}
                                     </p>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { HiArrowLeft } from 'react-icons/hi';
 import { useRegistrationContext, type RegistrationStep } from '@/app/contexts/RegistrationContext';
@@ -35,7 +35,7 @@ export const StepBackButton = ({ className = '' }: StepBackButtonProps) => {
     <button
       onClick={handleGoBack}
       className={`
-        flex items-center gap-2 text-[var(--gray-200)] hover:text-[var(--green)] 
+        flex items-center gap-2 text-[var(--gray-200)] hover:text-[var(--color-primary)] 
         transition-colors cursor-pointer w-fit
         ${className}
       `}

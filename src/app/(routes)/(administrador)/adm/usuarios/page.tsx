@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -240,7 +240,7 @@ const UsuariosPage = () => {
             {error ? (
                 <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-12">
                     <div className="flex flex-col items-center justify-center text-center">
-                        <p className="text-[var(--red)] mb-4">Error al cargar los usuarios</p>
+                        <p className="text-[var(--color-secondary)] mb-4">Error al cargar los usuarios</p>
                         <Button onClick={handleRefresh}>
                             Reintentar
                         </Button>
@@ -328,8 +328,8 @@ const UsuariosPage = () => {
                         </div>
 
                         <div className="space-y-3">
-                            <div className="p-4 bg-[var(--green)]/10 border border-[var(--green)]/30 rounded-lg">
-                                <p className="text-sm text-[var(--green)] font-medium mb-2">
+                            <div className="p-4 bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/30 rounded-lg">
+                                <p className="text-sm text-[var(--color-primary)] font-medium mb-2">
                                     Nueva Contraseña:
                                 </p>
                                 <div className="flex items-center gap-2">
@@ -342,7 +342,7 @@ const UsuariosPage = () => {
                                         title="Copiar contraseña"
                                     >
                                         {passwordCopied ? (
-                                            <Check className="w-5 h-5 text-[var(--green)]" />
+                                            <Check className="w-5 h-5 text-[var(--color-primary)]" />
                                         ) : (
                                             <Copy className="w-5 h-5 text-[var(--gray-200)]" />
                                         )}

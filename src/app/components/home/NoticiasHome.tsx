@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Newspaper, ExternalLink, Clock, Eye } from 'lucide-react';
 import Link from 'next/link';
@@ -8,6 +8,7 @@ import { Noticia } from '@/app/types/noticia';
 import { formatearFechaNoticia } from '@/app/utils/fechas';
 import { useNoticiasHome } from '@/app/hooks/useNoticiasHome';
 import { NoticiasHomeFallback } from './homeFallbacks';
+import { useTenant } from '@/app/contexts/TenantContext';
 
 interface NoticiasHomeProps {
   noticias?: Noticia[];
@@ -27,7 +28,7 @@ const NoticiaCard = ({ noticia }: { noticia: Noticia }) => {
       href={`/noticias/${noticia.slug || noticia.id_noticia}`}
       className="block group h-full"
     >
-      <div className="bg-[#0a0a0a] rounded-xl overflow-hidden border border-[#262626] hover:border-[var(--green)] transition-all duration-300 h-full flex flex-col">
+      <div className="bg-[#0a0a0a] rounded-xl overflow-hidden border border-[#262626] hover:border-[var(--color-primary)] transition-all duration-300 h-full flex flex-col">
         {/* Imagen */}
         <div className="relative h-44 bg-[#262626] overflow-hidden">
           {(noticia.img_portada || noticia.img) ? (
@@ -46,7 +47,7 @@ const NoticiaCard = ({ noticia }: { noticia: Noticia }) => {
           {/* Badge tipo noticia */}
           {noticia.tipoNoticia && (
             <div className="absolute top-2 left-2">
-              <span className="px-2 py-1 text-[10px] font-semibold rounded-md bg-[var(--green)]/90 text-white backdrop-blur-sm">
+              <span className="px-2 py-1 text-[10px] font-semibold rounded-md bg-[var(--color-primary)]/90 text-white backdrop-blur-sm">
                 {noticia.tipoNoticia.nombre}
               </span>
             </div>
@@ -65,7 +66,7 @@ const NoticiaCard = ({ noticia }: { noticia: Noticia }) => {
         {/* Contenido */}
         <div className="p-4 flex-1 flex flex-col">
           {/* Título */}
-          <h3 className="text-white font-semibold text-base mb-2 line-clamp-2 group-hover:text-[var(--green)] transition-colors">
+          <h3 className="text-white font-semibold text-base mb-2 line-clamp-2 group-hover:text-[var(--color-primary)] transition-colors">
             {noticia.titulo}
           </h3>
 
@@ -90,7 +91,7 @@ const NoticiaCard = ({ noticia }: { noticia: Noticia }) => {
               )}
             </div>
 
-            <span className="text-[var(--green)] font-medium group-hover:underline">
+            <span className="text-[var(--color-primary)] font-medium group-hover:underline">
               Leer más →
             </span>
           </div>
@@ -126,7 +127,7 @@ export const NoticiasHome = ({
     return (
       <BaseCard>
         <CardHeader
-          icon={<Newspaper size={18} className="text-[var(--green)]" />}
+          icon={<Newspaper size={18} className="text-[var(--color-primary)]" />}
           title="Noticias"
           subtitle="Error al cargar"
         />
@@ -142,7 +143,7 @@ export const NoticiasHome = ({
     return (
       <BaseCard>
         <CardHeader
-          icon={<Newspaper size={18} className="text-[var(--green)]" />}
+          icon={<Newspaper size={18} className="text-[var(--color-primary)]" />}
           title="Noticias"
         />
         <div className="flex flex-col items-center justify-center py-12 px-6">
@@ -161,7 +162,7 @@ export const NoticiasHome = ({
     <BaseCard>
       <div className="rounded-t-2xl overflow-hidden">
         <CardHeader
-          icon={<Newspaper size={18} className="text-[var(--green)]" />}
+          icon={<Newspaper size={18} className="text-[var(--color-primary)]" />}
           title="Noticias"
           subtitle={`${noticiasData.length} ${noticiasData.length === 1 ? 'noticia' : 'noticias'}`}
         />
@@ -198,7 +199,7 @@ export const NoticiasHome = ({
               key={index}
               onClick={() => scrollToPage(index)}
               className={`h-2 rounded-full transition-all duration-300 ${index === activeDot
-                  ? 'w-8 bg-[var(--green)]'
+                  ? 'w-8 bg-[var(--color-primary)]'
                   : 'w-2 bg-[#525252] hover:bg-[#737373]'
                 }`}
               aria-label={`Ir a página ${index + 1}`}
@@ -211,7 +212,7 @@ export const NoticiasHome = ({
       <div className="border-t border-[#262626] p-4">
         <Link
           href={linkNoticiasCompleta}
-          className="flex items-center justify-center gap-2 text-sm text-[var(--green)] hover:text-[var(--green)]/80 transition-colors font-medium"
+          className="flex items-center justify-center gap-2 text-sm text-[var(--color-primary)] hover:text-[var(--color-primary)]/80 transition-colors font-medium"
         >
           Ver todas las noticias
           <ExternalLink size={14} />
@@ -236,10 +237,11 @@ export const NoticiasHome = ({
 // 🎨 MOCK DATA PARA TESTING
 // ============================================
 
-export const mockNoticias: Noticia[] = [
+// Función para generar mock noticias con tenant config
+export const getMockNoticias = (tenantName: string): Noticia[] => [
   {
     id_noticia: 1,
-    titulo: 'Arranca la nueva temporada de la Copa Relámpago 2024',
+    titulo: `Arranca la nueva temporada de ${tenantName} 2024`,
     contenido: 'Con gran expectativa, comienza una nueva edición del torneo más emocionante de la región. Los equipos están listos para demostrar su mejor juego en la cancha.',
     contenido_preview: 'Comienza una nueva edición del torneo con equipos renovados y con grandes expectativas.',
     img_portada: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800',

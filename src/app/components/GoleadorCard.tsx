@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import StatsCardTemplate from "./TemplateCardStats";
 import { Trophy, Volleyball } from "lucide-react";
 
@@ -19,11 +19,11 @@ export const GoleadorCard: React.FC<GoleadorCardProps> = ({
         <StatsCardTemplate
             title="Goleador del Equipo"
             icon={<Trophy className="w-4 h-4" />}
-            accentColor="var(--green)"
+            accentColor="var(--color-primary)"
         >
             {/* Imagen del jugador */}
             <div className="flex items-center space-x-3 flex-1">
-                <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden bg-[var(--gray-300)] border-2 border-[var(--green)] flex-shrink-0">
+                <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden bg-[var(--gray-300)] border-2 border-[var(--color-primary)] flex-shrink-0">
                     {playerImage ? (
                         <Image
                             src={playerImage}
@@ -52,8 +52,8 @@ export const GoleadorCard: React.FC<GoleadorCardProps> = ({
             {/* Goles */}
             <div className="text-right flex-shrink-0 ml-4">
                 <div className="flex items-center space-x-1">
-                    <Volleyball className="w-5 h-5 md:w-6 md:h-6 text-[var(--green)]" />
-                    <p className="text-3xl md:text-4xl font-bold text-[var(--green)]">
+                    <Volleyball className="w-5 h-5 md:w-6 md:h-6 text-[var(--color-primary)]" />
+                    <p className="text-3xl md:text-4xl font-bold text-[var(--color-primary)]">
                         {goals}
                     </p>
                 </div>

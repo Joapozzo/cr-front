@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -53,7 +53,7 @@ export default function PerfilLayout({
                 <div className="flex items-center space-x-2 max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 lg:px-10">
                     <Link
                         href="/"
-                        className="flex items-center text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
+                        className="flex items-center text-[var(--color-primary)] hover:text-[var(--color-primary-strong)] transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4 mr-1" />
                         Inicio
@@ -99,7 +99,7 @@ export default function PerfilLayout({
                                     flex-1 min-w-0 py-2.5 sm:py-3 px-1.5 sm:px-2 flex flex-col items-center space-y-1 
                                     transition-colors border-b-2 text-xs font-medium
                                     ${isActiveTab(tab.href)
-                                        ? 'border-[var(--green)] text-[var(--green)]'
+                                        ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                                         : 'border-transparent text-[var(--gray-100)] hover:text-[var(--white)] hover:border-[var(--gray-200)]'
                                     }
                                 `}

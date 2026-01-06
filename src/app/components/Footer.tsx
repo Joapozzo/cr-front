@@ -1,12 +1,16 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { Instagram, Facebook, MessageCircle, User, Mail, Youtube } from "lucide-react";
 import { Button } from './ui/Button';
 import { Input, Textarea } from './ui/Input';
+import { useTenant } from '@/app/contexts/TenantContext';
 
 import Image from 'next/image';
 
 const Footer: React.FC = () => {
+    const tenant = useTenant();
     return (
         <footer
             id="footer"
@@ -16,7 +20,7 @@ const Footer: React.FC = () => {
             <div className="flex md:hidden w-full justify-center items-center px-8">
                 <div className="text-center">
                     <h3 className="text-white text-lg font-semibold mb-1">
-                        Copa Relámpago
+                        {tenant.nombre_empresa}
                     </h3>
                     <p className="text-[#65656B] text-sm">
                         Versión 1.0.0
@@ -31,8 +35,8 @@ const Footer: React.FC = () => {
                     {/* COLUMNA 1: Logo y Call-to-Action */}
                     <div className="flex flex-col items-start gap-5">
                         <Image
-                            src="/Logos/isologo.png"
-                            alt="Logo CR"
+                            src={tenant.branding.logo_principal}
+                            alt={tenant.nombre_empresa}
                             width={120}
                             height={120}
                             className="w-[120px] md:w-30"
@@ -82,14 +86,14 @@ const Footer: React.FC = () => {
                         <div className="flex flex-col gap-4">
                             <h2 className="text-white text-xl font-semibold">Nuestras redes</h2>
                             <div className="flex flex-col gap-3">
-                                <div className="flex items-center gap-3 cursor-pointer transition-colors duration-200 text-[#65656B] hover:text-[#2AD174]">
+                                <a href={`https://instagram.com/${tenant.contacto.redes.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 cursor-pointer transition-colors duration-200 text-[#65656B] hover:text-[#2AD174]">
                                     <Instagram className="w-5 h-5" />
-                                    <span>coparelampago</span>
-                                </div>
-                                <div className="flex items-center gap-3 cursor-pointer transition-colors duration-200 text-[#65656B] hover:text-[#2AD174]">
+                                    <span>{tenant.contacto.redes.instagram}</span>
+                                </a>
+                                <a href={`https://facebook.com/${tenant.contacto.redes.facebook}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 cursor-pointer transition-colors duration-200 text-[#65656B] hover:text-[#2AD174]">
                                     <Facebook className="w-5 h-5" />
-                                    <span>coparelampago</span>
-                                </div>
+                                    <span>{tenant.contacto.redes.facebook}</span>
+                                </a>
                                 <div className="flex items-center gap-3 cursor-pointer transition-colors duration-200 text-[#65656B] hover:text-[#2AD174]">
                                     <MessageCircle className="w-5 h-5" />
                                     <span>+54 9 3518 18-2129</span>

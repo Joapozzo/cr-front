@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Card de jugador para el grid de legajos
  */
 'use client';
@@ -17,9 +17,9 @@ export const JugadorCard: React.FC<JugadorCardProps> = ({ jugador }) => {
     const getEstadoColor = () => {
         switch (jugador.estado) {
             case 'A':
-                return 'bg-[var(--green)] text-[var(--white)]';
+                return 'bg-[var(--color-primary)] text-[var(--white)]';
             case 'E':
-                return 'bg-[var(--red)] text-[var(--white)]';
+                return 'bg-[var(--color-secondary)] text-[var(--white)]';
             case 'I':
             default:
                 return 'bg-[var(--gray-300)] text-[var(--gray-100)]';
@@ -47,8 +47,8 @@ export const JugadorCard: React.FC<JugadorCardProps> = ({ jugador }) => {
         >
             <div className={`bg-[var(--gray-400)] border rounded-lg p-4 hover:shadow-md transition-shadow h-[140px] relative ${
                 estaExpulsado 
-                    ? 'border-[var(--red)] hover:border-[var(--red)] opacity-90' 
-                    : 'border-[var(--gray-300)] hover:border-[var(--green)]'
+                    ? 'border-[var(--color-secondary)] hover:border-[var(--color-secondary)] opacity-90' 
+                    : 'border-[var(--gray-300)] hover:border-[var(--color-primary)]'
             }`}>
                 {/* Badge de estado en la esquina superior izquierda */}
                 <span className={`absolute top-2 left-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium z-20 ${getEstadoColor()}`}>
@@ -90,7 +90,7 @@ export const JugadorCard: React.FC<JugadorCardProps> = ({ jugador }) => {
 
                     {/* Información */}
                     <div className="flex-1 min-w-0 flex flex-col gap-1.5 h-full">
-                        <h3 className={`text-sm font-semibold leading-tight break-words ${estaExpulsado ? 'text-[var(--red)]' : 'text-[var(--white)]'}`}>
+                        <h3 className={`text-sm font-semibold leading-tight break-words ${estaExpulsado ? 'text-[var(--color-secondary)]' : 'text-[var(--white)]'}`}>
                             {jugador.nombre_completo}
                         </h3>
                         
@@ -109,7 +109,7 @@ export const JugadorCard: React.FC<JugadorCardProps> = ({ jugador }) => {
 
                     {/* Botón ver legajo */}
                     <div className="flex-shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <ArrowRight className="h-5 w-5 text-[var(--gray-100)] group-hover:text-[var(--green)]" />
+                        <ArrowRight className="h-5 w-5 text-[var(--gray-100)] group-hover:text-[var(--color-primary)]" />
                     </div>
                 </div>
             </div>

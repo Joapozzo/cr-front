@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { AlertTriangle, Trash2, Loader2 } from "lucide-react";
 import { TbRectangleVerticalFilled } from "react-icons/tb";
 import { GiSoccerKick } from "react-icons/gi";
@@ -64,7 +64,7 @@ const ConfirmDeleteIncidentModal: React.FC<ConfirmDeleteIncidentModalProps> = ({
     const getIncidentIcon = () => {
         switch (incidencia.tipo) {
             case 'gol':
-                return <PiSoccerBallFill className="w-5 h-5 text-[var(--green)]" />;
+                return <PiSoccerBallFill className="w-5 h-5 text-[var(--color-primary)]" />;
             case 'amarilla':
                 return <TbRectangleVerticalFilled className="w-5 h-5 text-yellow-500" />;
             case 'roja':
@@ -153,7 +153,7 @@ const ConfirmDeleteIncidentModal: React.FC<ConfirmDeleteIncidentModalProps> = ({
                     {/* Minuto */}
                     <div className="flex justify-between items-center pt-2 border-t border-[#262626]">
                         <span className="text-[#737373] text-sm">Minuto:</span>
-                        <span className="text-[var(--green)] font-bold">
+                        <span className="text-[var(--color-primary)] font-bold">
                             {incidencia.minuto}&apos;
                         </span>
                     </div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { StatsResumen } from '@/app/types/equipoResumen';
@@ -17,7 +17,7 @@ const getConfigByType = (tipo: TipoEstadistica) => {
       return {
         icon: Volleyball,
         label: 'Goles',
-        color: 'text-[var(--green)]'
+        color: 'text-[var(--color-primary)]'
       };
     case 'asistencias':
       return {
@@ -152,7 +152,7 @@ export const StatsResumenCard: React.FC<StatsResumenCardProps> = ({
       {/* {stats.jugadores.length > 2 && (
         <button
           onClick={onVerTodos}
-          className="flex items-center justify-center gap-1.5 py-1 transition-colors text-[var(--green)] text-xs font-medium border-b border-[var(--green)] mx-auto"
+          className="flex items-center justify-center gap-1.5 py-1 transition-colors text-[var(--color-primary)] text-xs font-medium border-b border-[var(--color-primary)] mx-auto"
         >
           <span>Ver todos</span>
           <ChevronRight className="w-3 h-3" />

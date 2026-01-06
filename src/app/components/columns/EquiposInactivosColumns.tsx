@@ -1,4 +1,4 @@
-import { Calendar, FileText, RotateCcw, Shield } from "lucide-react";
+﻿import { Calendar, FileText, RotateCcw, Shield } from "lucide-react";
 import { Button } from "@/app/components/ui/Button";
 
 const getEquiposInactivosColumns = (
@@ -26,7 +26,7 @@ const getEquiposInactivosColumns = (
                 const fecha = new Date(row.expulsion.fecha_expulsion);
                 return (
                     <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-[var(--red)]" />
+                        <Calendar className="w-4 h-4 text-[var(--color-secondary)]" />
                         <div>
                             <p className="text-[var(--white)] text-sm">
                                 {fecha.toLocaleDateString("es-AR")}

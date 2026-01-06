@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { HistorialEquiposJugador } from '@/app/types/legajos';
 import { Trophy, Users, Calendar } from 'lucide-react';
@@ -34,7 +34,7 @@ export const JugadorEquiposTab = ({ equipos, isLoading }: JugadorEquiposTabProps
             {equipos.map((edicion, idx) => (
                 <div key={idx} className="bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] p-6">
                     <div className="flex items-center gap-2 mb-4">
-                        <Trophy className="w-5 h-5 text-[var(--green)]" />
+                        <Trophy className="w-5 h-5 text-[var(--color-primary)]" />
                         <h3 className="text-lg font-bold text-[var(--white)]">
                             {edicion.edicion.nombre} - Temporada {edicion.temporada}
                         </h3>
@@ -48,7 +48,7 @@ export const JugadorEquiposTab = ({ equipos, isLoading }: JugadorEquiposTabProps
                                 {categoria.planteles.map((plantel, plantelIdx) => (
                                     <div
                                         key={plantelIdx}
-                                        className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-4 hover:border-[var(--green)] transition-colors"
+                                        className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-4 hover:border-[var(--color-primary)] transition-colors"
                                     >
                                         <div className="flex items-start gap-4">
                                             <EscudoEquipo
@@ -64,7 +64,7 @@ export const JugadorEquiposTab = ({ equipos, isLoading }: JugadorEquiposTabProps
                                                         <span className={`px-2 py-1 rounded text-xs font-medium ${
                                                             plantel.tipo === 'eventual' 
                                                                 ? 'bg-[var(--yellow)]/20 text-[var(--yellow)] border border-[var(--yellow)]/30'
-                                                                : 'bg-[var(--green)]/20 text-[var(--green)] border border-[var(--green)]/30'
+                                                                : 'bg-[var(--color-primary)]/20 text-[var(--color-primary)] border border-[var(--color-primary)]/30'
                                                         }`}>
                                                             {plantel.tipo === 'eventual' ? 'Eventual' : 'Titular'}
                                                         </span>
@@ -72,8 +72,8 @@ export const JugadorEquiposTab = ({ equipos, isLoading }: JugadorEquiposTabProps
                                                     <div className="flex items-center gap-1">
                                                         <span className={`px-2 py-1 rounded text-xs font-medium ${
                                                             plantel.estado === 'activo'
-                                                                ? 'bg-[var(--green)]/20 text-[var(--green)] border border-[var(--green)]/30'
-                                                                : 'bg-[var(--red)]/20 text-[var(--red)] border border-[var(--red)]/30'
+                                                                ? 'bg-[var(--color-primary)]/20 text-[var(--color-primary)] border border-[var(--color-primary)]/30'
+                                                                : 'bg-[var(--color-secondary)]/20 text-[var(--color-secondary)] border border-[var(--color-secondary)]/30'
                                                         }`}>
                                                             {plantel.estado === 'activo' ? 'Activo' : 'Baja'}
                                                         </span>

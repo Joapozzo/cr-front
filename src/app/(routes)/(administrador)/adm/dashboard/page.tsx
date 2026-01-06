@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from 'framer-motion';
 import {
@@ -80,7 +80,7 @@ export default function DashboardPage() {
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div>
                     <h1 className="text-3xl font-bold flex items-center gap-3">
-                        <LayoutDashboard className="text-[var(--green)]" />
+                        <LayoutDashboard className="text-[var(--color-primary)]" />
                         Dashboard
                     </h1>
                     <p className="text-[#737373] mt-1">Visión general del estado del torneo</p>
@@ -88,7 +88,7 @@ export default function DashboardPage() {
 
                 <button
                     onClick={() => refresh()}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--black-900)] border border-[#262626] hover:bg-[var(--black-800)] hover:text-[var(--green)] transition-all text-sm font-medium"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--black-900)] border border-[#262626] hover:bg-[var(--black-800)] hover:text-[var(--color-primary)] transition-all text-sm font-medium"
                 >
                     <RefreshCcw size={16} className={isLoadingAll ? "animate-spin" : ""} />
                     Actualizar
@@ -101,16 +101,16 @@ export default function DashboardPage() {
                     title="Categorías Activas"
                     value={stats.activeCategories}
                     icon={Trophy}
-                    color="var(--yellow-500)"
+                    color="var(--color-warning)"
                     trend={{ value: 100, label: 'Activas', positive: true }}
                 />
                 <StatCard
                     title="Partidos en Vivo"
                     value={stats.liveMatches}
                     icon={PlayCircle}
-                    color="var(--red-500)"
+                    color="var(--color-secondary-500)"
                     subtitle="Jugándose ahora"
-                    className={stats.liveMatches > 0 ? "border-[var(--red-500)]/50" : ""}
+                    className={stats.liveMatches > 0 ? "border-[var(--color-secondary-500)]/50" : ""}
                 />
                 <StatCard
                     title="Sanciones activas"

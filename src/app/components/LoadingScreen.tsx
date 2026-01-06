@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { CheckCircle2, XCircle, Loader2 } from 'lucide-react';
@@ -41,21 +41,21 @@ export const LoadingScreen = ({
           {state === 'loading' && (
             <>
               {/* Spinning outer ring */}
-              <div className="absolute inset-0 rounded-full border-4 border-[var(--green)]/20 animate-ping" />
+              <div className="absolute inset-0 rounded-full border-4 border-[var(--color-primary)]/20 animate-ping" />
               
               {/* Main loader */}
               <div className="relative bg-[var(--gray-400)] rounded-full p-6">
-                <Loader2 className="w-12 h-12 text-[var(--green)] animate-spin" />
+                <Loader2 className="w-12 h-12 text-[var(--color-primary)] animate-spin" />
               </div>
               
               {/* Pulsing background */}
-              <div className="absolute inset-0 rounded-full bg-[var(--green)]/10 animate-pulse" />
+              <div className="absolute inset-0 rounded-full bg-[var(--color-primary)]/10 animate-pulse" />
             </>
           )}
 
           {state === 'success' && (
-            <div className="relative bg-[var(--green)]/20 rounded-full p-6 animate-scale-in">
-              <CheckCircle2 className="w-12 h-12 text-[var(--green)] animate-check" />
+            <div className="relative bg-[var(--color-primary)]/20 rounded-full p-6 animate-scale-in">
+              <CheckCircle2 className="w-12 h-12 text-[var(--color-primary)] animate-check" />
             </div>
           )}
 
@@ -85,7 +85,7 @@ export const LoadingScreen = ({
         {state === 'error' && onRetry && (
           <button
             onClick={onRetry}
-            className="px-6 py-3 bg-[var(--green)] hover:bg-[var(--green)]/90 text-white rounded-lg font-medium transition-all duration-200 hover:scale-105"
+            className="px-6 py-3 bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/90 text-white rounded-lg font-medium transition-all duration-200 hover:scale-105"
           >
             Intentar de nuevo
           </button>
@@ -94,7 +94,7 @@ export const LoadingScreen = ({
         {/* Loading bar */}
         {state === 'loading' && (
           <div className="w-64 h-1 bg-[var(--gray-400)] rounded-full overflow-hidden">
-            <div className="h-full bg-[var(--green)] animate-loading-bar" />
+            <div className="h-full bg-[var(--color-primary)] animate-loading-bar" />
           </div>
         )}
       </div>

@@ -1,182 +1,49 @@
-'use client';
+import { edicionesService } from '@/app/services/ediciones.services';
+import { categoriasService } from '@/app/services/categorias.services';
+import { EdicionLayoutClient } from './EdicionLayoutClient';
 
-import { useParams, usePathname } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
-import { useEdicionStore } from '@/app/stores/edicionStore';
-import { useCategoriaStore } from '@/app/stores/categoriaStore';
-import { useEquiposPorCategoriaEdicion } from '@/app/hooks/useEquipos';
-import { useEquiposStore } from '@/app/stores/equiposStore';
-import { useEffect } from 'react';
-
-export default function EdicionLayout({
-    children,
-}: {
+interface LayoutProps {
     children: React.ReactNode;
-}) {
-    const params = useParams();
-    const pathname = usePathname();
-    const edicionId = params.id as string;
-    const idCategoria = params.id_categoria as string;
-    const idEquipo = params.id_equipo as string;
+    params: Promise<{
+        id: string;
+        id_categoria?: string;
+        id_equipo?: string;
+    }>;
+}
 
-    const { edicionSeleccionada, isEdicionSelected } = useEdicionStore();
-    const { categoriaSeleccionada, isCategoriaSelected } = useCategoriaStore();
-    const { setEquipos, equipos } = useEquiposStore()
+export default async function EdicionLayout({ children, params }: LayoutProps) {
+    const resolvedParams = await params;
+    const edicionId = parseInt(resolvedParams.id);
+    const idCategoria = resolvedParams.id_categoria ? parseInt(resolvedParams.id_categoria) : undefined;
 
-    const idCategoriaEdicion = Number(categoriaSeleccionada?.id_categoria_edicion);
-
-    const { data: equiposResponse, isLoading: loadingEquipos } = useEquiposPorCategoriaEdicion(idCategoriaEdicion);
-
-    const isInCategoria = !!idCategoria;
-    const isInEquipo = !!idEquipo;
-
-    // Buscar el equipo actual si estamos en la ruta de un equipo
-    const equipoActual = isInEquipo && equiposResponse?.equipos
-        ? equiposResponse.equipos.find(eq => eq.id_equipo === Number(idEquipo))
-        : null;
-
-    const equiposTotales = equiposResponse?.total || 0;
-
-    const edicionTabs = [
-        {
-            id: 'categorias',
-            label: 'Categorías',
-            href: `/adm/ediciones/${edicionId}`,
-        },
-        {
-            id: 'configuracion',
-            label: 'Configuración',
-            href: `/adm/ediciones/${edicionId}/configuracion`,
-        },
-    ];
-
-    const categoriaTabs = [
-        {
-            id: 'resumen',
-            label: 'Resumen',
-            href: `/adm/ediciones/${edicionId}/${idCategoria}/resumen`,
-        },
-        {
-            id: 'formato',
-            label: 'Formato',
-            href: `/adm/ediciones/${edicionId}/${idCategoria}/formato`,
-        },
-        {
-            id: 'fixture',
-            label: 'Fixture / DreamTeam',
-            href: `/adm/ediciones/${edicionId}/${idCategoria}/fixture`,
-        },
-        {
-            id: 'estadisticas',
-            label: 'Estadísticas',
-            href: `/adm/ediciones/${edicionId}/${idCategoria}/estadisticas`,
-        },
-        {
-            id: 'equipos',
-            label: 'Equipos (' + equiposTotales + ')',
-            href: `/adm/ediciones/${edicionId}/${idCategoria}/equipos`,
-        },
-        {
-            id: 'configuracion',
-            label: 'Configuración',
-            href: `/adm/ediciones/${edicionId}/${idCategoria}/configuracion`,
-        },
-    ];
-
-    const tabs = isInCategoria ? categoriaTabs : edicionTabs;
-
-    const isActiveTab = (href: string) => {
-        if (href === `/adm/ediciones/${edicionId}`) {
-            return pathname === href;
-        }
-        return pathname === href;
-    };
-
-    useEffect(() => {
-        if (edicionSeleccionada && categoriaSeleccionada && equiposResponse && !loadingEquipos) {
-            setEquipos(equiposResponse.equipos);
-        }
-    }, [edicionSeleccionada, categoriaSeleccionada, equiposResponse, loadingEquipos, setEquipos]);
-
-    useEffect(() => {
-        if (!edicionSeleccionada || !categoriaSeleccionada) {
-            setEquipos([]);
-        }
-    }, [edicionSeleccionada, categoriaSeleccionada, setEquipos]);
-
-    if (!isInCategoria && !isEdicionSelected) {
-        return <div>Selecciona una edición o categoría</div>
+    // Fetch edición en el servidor usando el servicio existente
+    // api.ts ahora detecta automáticamente si está en servidor y usa cookies
+    let edicion = null;
+    try {
+        const ediciones = await edicionesService.obtenerTodasLasEdiciones();
+        edicion = ediciones.find(e => e.id_edicion === edicionId) || null;
+    } catch (error) {
+        console.error('Error al obtener edición en servidor:', error);
     }
 
+    // Fetch categoría si existe id_categoria
+    let categoria = null;
+    if (idCategoria) {
+        try {
+            const categorias = await categoriasService.obtenerCategoriasPorEdicion(edicionId);
+            categoria = categorias.find(cat => cat.categoria.id_categoria === idCategoria) || null;
+        } catch (error) {
+            console.error('Error al obtener categoría en servidor:', error);
+        }
+    }
 
     return (
-        <div className="space-y-6">
-            {/* Breadcrumb dinámico */}
-            <div className="flex items-center space-x-2">
-                <Link
-                    href="/adm/ediciones"
-                    className="flex items-center text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
-                >
-                    <ArrowLeft className="w-4 h-4 mr-1" />
-                    Ediciones
-                </Link>
-                <span className="text-[var(--gray-100)]">/</span>
-
-                {isInCategoria ? (
-                    <>
-                        <Link
-                            href={`/adm/ediciones/${edicionId}`}
-                            className="text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
-                        >
-                            {edicionSeleccionada?.nombre} - {edicionSeleccionada?.temporada}
-                        </Link>
-                        <span className="text-[var(--gray-100)]">/</span>
-                        {isInEquipo ? (
-                            <>
-                                <Link
-                                    href={`/adm/ediciones/${edicionId}/${idCategoria}/equipos`}
-                                    className="text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
-                                >
-                                    {categoriaSeleccionada?.nombre_completo}
-                                </Link>
-                                <span className="text-[var(--gray-100)]">/</span>
-                                <span className="text-[var(--white)]">{equipoActual?.nombre || 'Equipo'}</span>
-                            </>
-                        ) : (
-                            <span className="text-[var(--white)]">{categoriaSeleccionada?.nombre_completo}</span>
-                        )}
-                    </>
-                ) : (
-                    <span className="text-[var(--white)]">{edicionSeleccionada?.nombre} - {edicionSeleccionada?.temporada}</span>
-                )}
-            </div>
-
-            {/* Tabs dinámicos */}
-            <div className="border-b border-[var(--gray-300)]">
-                <nav className="flex space-x-8 overflow-x-auto">
-                    {tabs.map((tab) => (
-                        <Link
-                            key={tab.id}
-                            href={tab.href}
-                            className={`
-                                py-4 px-1 border-b-2 font-medium text-sm transition-colors whitespace-nowrap
-                                ${isActiveTab(tab.href)
-                                    ? 'border-[var(--green)] text-[var(--green)]'
-                                    : 'border-transparent text-[var(--gray-100)] hover:text-[var(--white)] hover:border-[var(--gray-200)]'
-                                }
-                            `}
-                        >
-                            {tab.label}
-                        </Link>
-                    ))}
-                </nav>
-            </div>
-
-            {/* Content */}
-            <div>
-                {children}
-            </div>
-        </div>
+        <EdicionLayoutClient
+            edicion={edicion}
+            categoria={categoria}
+            params={resolvedParams}
+        >
+            {children}
+        </EdicionLayoutClient>
     );
 }

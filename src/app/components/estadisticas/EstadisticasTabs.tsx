@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useRef, useMemo } from 'react';
 import Link from 'next/link';
@@ -98,7 +98,7 @@ export const EstadisticasTabs: React.FC<EstadisticasTabsProps> = ({
               const isActive = activeTab === tab.id;
               const className = `flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 whitespace-nowrap ${
                 isActive
-                  ? 'bg-[var(--green)] text-white'
+                  ? 'bg-[var(--color-primary)] text-white'
                   : 'text-[#737373] hover:text-white hover:bg-[var(--black-800)]'
               }`;
               
@@ -138,7 +138,7 @@ export const EstadisticasTabs: React.FC<EstadisticasTabsProps> = ({
             key={tab.id}
             className={`h-1 rounded-full transition-all duration-300 ${
               activeTab === tab.id 
-                ? 'w-8 bg-[var(--green)]' 
+                ? 'w-8 bg-[var(--color-primary)]' 
                 : 'w-1 bg-[#262626]'
             }`}
           />

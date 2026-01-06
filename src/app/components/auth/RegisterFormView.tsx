@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -152,7 +152,7 @@ export const RegisterFormView = ({
             <div className="flex justify-center mt-2">
                 <Link
                     href="/login"
-                    className="text-sm text-[var(--gray-200)] hover:text-[var(--green)] transition-colors"
+                    className="text-sm text-[var(--gray-200)] hover:text-[var(--color-primary)] transition-colors"
                 >
                     ¿Ya tienes cuenta? <span className="font-semibold text-white">Inicia sesión</span>
                 </Link>

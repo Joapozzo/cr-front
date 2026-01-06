@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { PageHeader } from '@/app/components/ui/PageHeader';
@@ -413,7 +413,7 @@ export default function PreciosCanchaPage() {
                                         className="flex items-center justify-between p-4 bg-[var(--black-950)] rounded-lg border border-[var(--gray-300)]"
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className="text-[var(--green)]">
+                                            <div className="text-[var(--color-primary)]">
                                                 {getIconoTipo(precio.tipo_concepto)}
                                             </div>
                                             <div>
@@ -469,7 +469,7 @@ export default function PreciosCanchaPage() {
                                                     className="flex items-center justify-between p-4 bg-[var(--black-950)] rounded-lg border border-[var(--gray-300)]"
                                                 >
                                                     <div className="flex items-center gap-3">
-                                                        <div className="text-[var(--green)]">
+                                                        <div className="text-[var(--color-primary)]">
                                                             {getIconoTipo(precio.tipo_concepto)}
                                                         </div>
                                                         <div>

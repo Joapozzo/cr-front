@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import BaseModal from '../modals/ModalPlanillero';
@@ -38,7 +38,7 @@ export default function QRModal({ isOpen, onClose, qrData, monto, equipo }: QRMo
                         <p className="text-sm text-[var(--gray-100)] mb-1">Equipo</p>
                         <p className="text-lg font-semibold text-white mb-4">{equipo}</p>
                         <p className="text-sm text-[var(--gray-100)] mb-1">Monto a Pagar</p>
-                        <p className="text-2xl font-bold text-[var(--green)]">${monto.toLocaleString('es-AR')}</p>
+                        <p className="text-2xl font-bold text-[var(--color-primary)]">${monto.toLocaleString('es-AR')}</p>
                     </div>
                 </div>
 
@@ -58,7 +58,7 @@ export default function QRModal({ isOpen, onClose, qrData, monto, equipo }: QRMo
                             </p>
                             <button
                                 onClick={handleCopy}
-                                className="flex items-center gap-2 mx-auto px-4 py-2 bg-[var(--green)] hover:bg-green-300 text-white rounded-lg transition-colors text-sm"
+                                className="flex items-center gap-2 mx-auto px-4 py-2 bg-[var(--color-primary)] hover:bg-green-300 text-white rounded-lg transition-colors text-sm"
                             >
                                 {copied ? (
                                     <>

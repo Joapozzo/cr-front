@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Componente de búsqueda reutilizable
  */
 'use client';
@@ -66,7 +66,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                 value={localValue}
                 onChange={(e) => setLocalValue(e.target.value)}
                 placeholder={placeholder}
-                className="block w-full pl-10 pr-10 py-2 border border-[var(--gray-300)] rounded-lg bg-[var(--gray-300)] text-[var(--white)] placeholder-[var(--gray-100)] focus:outline-none focus:ring-2 focus:ring-[var(--green)] focus:border-transparent"
+                className="block w-full pl-10 pr-10 py-2 border border-[var(--gray-300)] rounded-lg bg-[var(--gray-300)] text-[var(--white)] placeholder-[var(--gray-100)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
             />
             {localValue && (
                 <button

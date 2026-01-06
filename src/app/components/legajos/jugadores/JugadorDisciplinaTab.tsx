@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { HistorialDisciplinarioJugador } from '@/app/types/legajos';
 import { Shield, AlertTriangle, Ban } from 'lucide-react';
@@ -87,7 +87,7 @@ export const JugadorDisciplinaTab = ({
             {disciplina.resumen_por_categoria.length > 0 && (
                 <div className="bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] p-6">
                     <div className="flex items-center gap-2 mb-4">
-                        <Shield className="w-5 h-5 text-[var(--green)]" />
+                        <Shield className="w-5 h-5 text-[var(--color-primary)]" />
                         <h2 className="text-xl font-bold text-[var(--white)]">Resumen por categoría</h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -101,12 +101,12 @@ export const JugadorDisciplinaTab = ({
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-sm text-[var(--gray-100)]">Rojas:</span>
-                                        <span className="text-[var(--red)] font-semibold">{resumen.total_rojas}</span>
+                                        <span className="text-[var(--color-secondary)] font-semibold">{resumen.total_rojas}</span>
                                     </div>
                                     {resumen.sanciones_vigentes > 0 && (
                                         <div className="flex justify-between">
                                             <span className="text-sm text-[var(--gray-100)]">Sanciones Vigentes:</span>
-                                            <span className="text-[var(--red)] font-semibold">{resumen.sanciones_vigentes}</span>
+                                            <span className="text-[var(--color-secondary)] font-semibold">{resumen.sanciones_vigentes}</span>
                                         </div>
                                     )}
                                 </div>
@@ -170,14 +170,14 @@ export const JugadorDisciplinaTab = ({
             {disciplina.expulsiones.length > 0 && (
                 <div className="bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] p-6">
                     <div className="flex items-center gap-2 mb-4">
-                        <Ban className="w-5 h-5 text-[var(--red)]" />
+                        <Ban className="w-5 h-5 text-[var(--color-secondary)]" />
                         <h2 className="text-xl font-bold text-[var(--white)]">Expulsiones ({disciplina.expulsiones.length})</h2>
                     </div>
                     <div className="space-y-3">
                         {disciplina.expulsiones.map((expulsion) => (
                             <div
                                 key={expulsion.id_expulsion}
-                                className="bg-[var(--gray-400)] rounded-lg border border-[var(--red)]/30 p-4"
+                                className="bg-[var(--gray-400)] rounded-lg border border-[var(--color-secondary)]/30 p-4"
                             >
                                 <div className="flex items-start justify-between mb-3">
                                     <div className="flex-1">
@@ -216,7 +216,7 @@ export const JugadorDisciplinaTab = ({
                                         <p className="text-sm text-[var(--gray-100)]">
                                             Sanción: {expulsion.fechas_sancion.total} fechas
                                             {expulsion.fechas_sancion.restantes > 0 && (
-                                                <span className="text-[var(--red)] ml-2">
+                                                <span className="text-[var(--color-secondary)] ml-2">
                                                     ({expulsion.fechas_sancion.restantes} restantes)
                                                 </span>
                                             )}

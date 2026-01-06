@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -108,7 +108,7 @@ const LoginFormUI = ({
                                 <div className="flex justify-end">
                                     <Link
                                         href="/recuperar-password"
-                                        className="text-sm text-[var(--gray-200)] hover:text-[var(--green)] transition-colors"
+                                        className="text-sm text-[var(--gray-200)] hover:text-[var(--color-primary)] transition-colors"
                                     >
                                         ¿Olvidaste tu contraseña?
                                     </Link>
@@ -139,7 +139,7 @@ const LoginFormUI = ({
             <div className="flex justify-center mt-2">
                 <Link
                     href="/registro"
-                    className="text-sm text-[var(--gray-200)] hover:text-[var(--green)] transition-colors"
+                    className="text-sm text-[var(--gray-200)] hover:text-[var(--color-primary)] transition-colors"
                 >
                     ¿No tenes cuenta? <span className="font-semibold text-white">Regístrate</span>
                 </Link>

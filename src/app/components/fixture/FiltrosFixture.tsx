@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { ChevronDown } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
@@ -66,7 +66,7 @@ export const FiltrosFixture: React.FC<FiltrosFixtureProps> = ({
         <button
           ref={buttonRef}
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 px-3 py-3 bg-[var(--black-900)] border border-[#262626] rounded-lg hover:border-[var(--green)] transition-colors text-xs whitespace-nowrap"
+          className="flex items-center gap-2 px-3 py-3 bg-[var(--black-900)] border border-[#262626] rounded-lg hover:border-[var(--color-primary)] transition-colors text-xs whitespace-nowrap"
         >
           <span className="text-white font-medium">J{jornadaActual}</span>
           <ChevronDown 
@@ -92,7 +92,7 @@ export const FiltrosFixture: React.FC<FiltrosFixtureProps> = ({
                 }}
                 className={`w-full px-3 py-2 text-left text-xs hover:bg-[var(--black-800)] transition-colors whitespace-nowrap ${
                   jornada === jornadaActual
-                    ? 'bg-[var(--black-800)] text-[var(--green)] font-medium'
+                    ? 'bg-[var(--black-800)] text-[var(--color-primary)] font-medium'
                     : 'text-white'
                 }`}
               >
@@ -105,7 +105,7 @@ export const FiltrosFixture: React.FC<FiltrosFixtureProps> = ({
 
       {/* TODO: Agregar filtro de fechas/calendario si es necesario */}
       {/* <button
-        className="flex items-center gap-2 px-3 py-2 bg-[var(--black-900)] border border-[#262626] rounded-lg hover:border-[var(--green)] transition-colors text-xs"
+        className="flex items-center gap-2 px-3 py-2 bg-[var(--black-900)] border border-[#262626] rounded-lg hover:border-[var(--color-primary)] transition-colors text-xs"
       >
         <Calendar size={14} className="text-[#737373]" />
         <span className="text-white text-xs">Filtrar</span>

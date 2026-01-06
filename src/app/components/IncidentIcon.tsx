@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { TbRectangleVerticalFilled } from "react-icons/tb";
 import { GiSoccerKick } from "react-icons/gi";
 import { PiSoccerBallFill } from "react-icons/pi";
@@ -11,7 +11,7 @@ interface IncidentIconProps {
 const IncidentIcon: React.FC<IncidentIconProps> = ({ incidencia }) => {
     switch (incidencia.tipo) {
         case 'gol':
-            return <PiSoccerBallFill className="w-4 h-4 text-[var(--green)] fill-current" />;
+            return <PiSoccerBallFill className="w-4 h-4 text-[var(--color-primary)] fill-current" />;
         case 'amarilla':
             return <TbRectangleVerticalFilled className="w-4 h-4 text-yellow-500" />;
         case 'roja':
@@ -24,7 +24,7 @@ const IncidentIcon: React.FC<IncidentIconProps> = ({ incidencia }) => {
                 </div>
             );
         case 'asistencia':
-            return <GiSoccerKick className="w-4 h-4 text-[var(--green)]" />;
+            return <GiSoccerKick className="w-4 h-4 text-[var(--color-primary)]" />;
         default:
             return null;
     }
@@ -36,7 +36,7 @@ export const IncidentsIcon: React.FC<{ tipo: string; cantidad?: number }> = ({ t
     const renderIcono = () => {
         switch (tipo) {
             case 'gol':
-                return <PiSoccerBallFill className="w-4 h-4 text-[var(--green)] fill-current" />;
+                return <PiSoccerBallFill className="w-4 h-4 text-[var(--color-primary)] fill-current" />;
             case 'amarilla':
                 return <TbRectangleVerticalFilled className="w-4 h-4 text-yellow-500" />;
             case 'roja':
@@ -49,7 +49,7 @@ export const IncidentsIcon: React.FC<{ tipo: string; cantidad?: number }> = ({ t
                     </div>
                 );
             case 'asistencia':
-                return <GiSoccerKick className="w-4 h-4 text-[var(--green)]" />;
+                return <GiSoccerKick className="w-4 h-4 text-[var(--color-primary)]" />;
             default:
                 return null;
         }

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Users, Swords, Check, CircleAlert, Ban } from 'lucide-react';
 
 interface StatsData {
@@ -21,36 +21,36 @@ const EstadisticasRapidas: React.FC<EstadisticasRapidasProps> = ({ stats }) => {
             icon: Users,
             label: 'Equipos',
             value: stats.cantidad_equipos,
-            bgColor: 'bg-[var(--green)]/20',
-            iconColor: 'text-[var(--green)]',
+            bgColor: 'bg-[var(--color-primary)]/20',
+            iconColor: 'text-[var(--color-primary)]',
         },
         {
             icon: Swords,
             label: 'Total partidos',
             value: stats.total_partidos,
-            bgColor: 'bg-[var(--green)]/20',
-            iconColor: 'text-[var(--green)]',
+            bgColor: 'bg-[var(--color-primary)]/20',
+            iconColor: 'text-[var(--color-primary)]',
         },
         {
             icon: Check,
             label: 'Partidos finalizados',
             value: stats.partidos_finalizados,
-            bgColor: 'bg-[var(--green)]/20',
-            iconColor: 'text-[var(--green)]',
+            bgColor: 'bg-[var(--color-primary)]/20',
+            iconColor: 'text-[var(--color-primary)]',
         },
         {
             icon: CircleAlert,
             label: 'Partidos pendientes',
             value: stats.partidos_pendientes,
-            bgColor: 'bg-[var(--red)]/20',
-            iconColor: 'text-[var(--red)]',
+            bgColor: 'bg-[var(--color-secondary)]/20',
+            iconColor: 'text-[var(--color-secondary)]',
         },
         {
             icon: Ban,
             label: 'Jugadores sancionados',
             value: stats.jugadores_sancionados,
-            bgColor: 'bg-[var(--red)]/20',
-            iconColor: 'text-[var(--red)]',
+            bgColor: 'bg-[var(--color-secondary)]/20',
+            iconColor: 'text-[var(--color-secondary)]',
         },
     ];
 

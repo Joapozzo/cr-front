@@ -1,4 +1,4 @@
-import { Check, X } from "lucide-react";
+﻿import { Check, X } from "lucide-react";
 import { SolicitudEnviada, SolicitudEstado } from "../types/solicitudes";
 import { Button } from "./ui/Button";
 import UserAvatar from "./ui/UserAvatar";
@@ -27,7 +27,7 @@ const renderInvitation = ({handleAccept, handleReject, isLoading, invitacion}: I
                     className="opacity-60"
                 />
                 {/* Indicador de nueva invitación */}
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-[var(--green)] rounded-full animate-pulse"></div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-[var(--color-primary)] rounded-full animate-pulse"></div>
             </div>
 
             <div className="flex-1">
@@ -35,7 +35,7 @@ const renderInvitation = ({handleAccept, handleReject, isLoading, invitacion}: I
                     <h4 className="text-[#E5E5E5] font-medium">
                         {invitacion.nombre_equipo}
                     </h4>
-                    <span className="px-2 py-0.5 bg-[var(--green)]/20 text-[var(--green)] text-xs font-medium rounded border border-[var(--green)]/30">
+                    <span className="px-2 py-0.5 bg-[var(--color-primary)]/20 text-[var(--color-primary)] text-xs font-medium rounded border border-[var(--color-primary)]/30">
                         Invitación
                     </span>
                 </div>
@@ -55,7 +55,7 @@ const renderInvitation = ({handleAccept, handleReject, isLoading, invitacion}: I
                     )}
                     {invitacion.estado === SolicitudEstado.E && (
                         <span className="flex items-center gap-1">
-                            <div className="w-2 h-2 bg-[var(--green)] rounded-full animate-pulse"></div>
+                            <div className="w-2 h-2 bg-[var(--color-primary)] rounded-full animate-pulse"></div>
                             Esperando respuesta
                         </span>
                     )}

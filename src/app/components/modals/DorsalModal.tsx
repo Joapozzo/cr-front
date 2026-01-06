@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from '../ui/Button';
 import { Loader2, Save, User } from 'lucide-react';
@@ -193,7 +193,7 @@ const DorsalModal: React.FC<DorsalModalProps> = ({
                         </h3>
                         <div className="flex items-center justify-center gap-2 mt-1">
                             {jugador.dorsal ? (
-                                <span className="text-[var(--green)] font-mono text-sm bg-[var(--green)]/10 px-2 py-0.5 rounded">
+                                <span className="text-[var(--color-primary)] font-mono text-sm bg-[var(--color-primary)]/10 px-2 py-0.5 rounded">
                                     Dorsal actual: #{jugador.dorsal}
                                 </span>
                             ) : (
@@ -226,7 +226,7 @@ const DorsalModal: React.FC<DorsalModalProps> = ({
                             className={`
                                 w-full bg-[#171717] border rounded-lg px-4 py-3 text-center text-3xl font-bold text-white
                                 focus:outline-none focus:ring-2 transition-all
-                                ${error ? 'border-red-500 focus:ring-red-500/20' : 'border-[#262626] focus:border-[var(--green)] focus:ring-[var(--green)]/20'}
+                                ${error ? 'border-red-500 focus:ring-red-500/20' : 'border-[#262626] focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]/20'}
                             `}
                             placeholder="#"
                             autoFocus

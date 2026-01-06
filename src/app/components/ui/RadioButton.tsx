@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import clsx from 'clsx';
 
@@ -40,9 +40,9 @@ export default function RadioButton({
                     className={clsx(
                         'w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all',
                         checked
-                            ? 'border-[var(--green)] bg-[var(--green)]'
+                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)]'
                             : 'border-[var(--gray-300)] bg-transparent',
-                        !disabled && 'hover:border-[var(--green)]'
+                        !disabled && 'hover:border-[var(--color-primary)]'
                     )}
                     onClick={!disabled ? onChange : undefined}
                 >

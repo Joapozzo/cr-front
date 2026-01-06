@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useMemo } from 'react';
 import { z } from 'zod';
@@ -587,12 +587,12 @@ export default function ModalActualizarPartido({
                             Tipo: {zonaSeleccionada.tipoZona.nombre}
                         </p>
                         {esZonaTipo2 && (
-                            <p className="text-[var(--green)] text-sm pt-1">
+                            <p className="text-[var(--color-primary)] text-sm pt-1">
                                 ✓ Disponible opción interzonal
                             </p>
                         )}
                         {permiteVentajaDeportiva && (
-                            <p className="text-[var(--green)] text-sm pt-1">
+                            <p className="text-[var(--color-primary)] text-sm pt-1">
                                 ✓ Disponible ventaja deportiva
                             </p>
                         )}

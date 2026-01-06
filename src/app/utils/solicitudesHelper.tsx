@@ -1,11 +1,11 @@
-import { CheckCircle, Clock, XCircle } from "lucide-react";
+﻿import { CheckCircle, Clock, XCircle } from "lucide-react";
 
 export const getEstadoInfo = (estado: string) => {
     switch (estado) {
         case 'A':
-            return { text: 'Aceptada', color: 'text-[var(--green)]', bgColor: 'bg-[var(--green)]/20', icon: <CheckCircle size={14} /> };
+            return { text: 'Aceptada', color: 'text-[var(--color-primary)]', bgColor: 'bg-[var(--color-primary)]/20', icon: <CheckCircle size={14} /> };
         case 'R':
-            return { text: 'Rechazada', color: 'text-[var(--red)]', bgColor: 'bg-[var(--red)]/20', icon: <XCircle size={14} /> };
+            return { text: 'Rechazada', color: 'text-[var(--color-secondary)]', bgColor: 'bg-[var(--color-secondary)]/20', icon: <XCircle size={14} /> };
         case 'C':
             return { text: 'Cancelada', color: 'text-[var(--gray-100)]', bgColor: 'bg-[var(--gray-300)]/20', icon: <XCircle size={14} /> };
         default:

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { FileText, Users, Trophy, Calendar, Award, Shield } from 'lucide-react';
 
@@ -32,7 +32,7 @@ export const EquipoTabs = ({ activeTab, onTabChange }: EquipoTabsProps) => {
                             className={`
                                 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2
                                 ${isActive
-                                    ? 'border-[var(--green)] text-[var(--green)]'
+                                    ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                                     : 'border-transparent text-[var(--gray-100)] hover:text-[var(--white)] hover:border-[var(--gray-200)]'
                                 }
                             `}

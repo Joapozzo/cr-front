@@ -1,4 +1,4 @@
-import { Expulsado } from '@/app/types/jugador';
+﻿import { Expulsado } from '@/app/types/jugador';
 import { UserX, AlertTriangle } from 'lucide-react';
 import { ImagenPublica } from '@/app/components/common/ImagenPublica';
 
@@ -44,7 +44,7 @@ const TablaExpulsados = ({ expulsados }: TablaExpulsadosProps) => {
         <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] overflow-hidden">
             <div className="p-4 border-b border-[var(--gray-300)]">
                 <h3 className="text-[var(--white)] font-semibold text-lg flex items-center gap-2">
-                    <UserX className="w-5 h-5 text-[var(--red)]" />
+                    <UserX className="w-5 h-5 text-[var(--color-secondary)]" />
                     Jugadores sancionados
                 </h3>
             </div>
@@ -96,7 +96,7 @@ const TablaExpulsados = ({ expulsados }: TablaExpulsadosProps) => {
                                                 {expulsado.sancion.fechas}
                                             </span>
                                             <span className="text-[var(--gray-100)]">/</span>
-                                            <span className={`font-bold ${expulsado.sancion.fechas_restantes > 0 ? 'text-[var(--red)]' : 'text-[var(--green)]'
+                                            <span className={`font-bold ${expulsado.sancion.fechas_restantes > 0 ? 'text-[var(--color-secondary)]' : 'text-[var(--color-primary)]'
                                                 }`}>
                                                 {expulsado.sancion.fechas_restantes}
                                             </span>
@@ -104,7 +104,7 @@ const TablaExpulsados = ({ expulsados }: TablaExpulsadosProps) => {
                                     </td>
                                     <td className="px-4 py-3">
                                         <div className="flex items-center gap-2">
-                                            <AlertTriangle className="w-4 h-4 text-[var(--red)]" />
+                                            <AlertTriangle className="w-4 h-4 text-[var(--color-secondary)]" />
                                             <span className="text-[var(--gray-100)] text-sm">
                                                 {expulsado.sancion.motivo}
                                             </span>

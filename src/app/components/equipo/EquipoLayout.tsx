@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { ImagenPublica } from '../common/ImagenPublica';
 import { EscudoEquipo } from '../common/EscudoEquipo';
@@ -109,7 +109,7 @@ export const EquipoLayout: React.FC<EquipoLayoutProps> = ({
                         </div>
                         <div className="flex-1 text-left min-w-0">
                           <p className={`text-sm font-medium truncate ${
-                            eq.id_equipo === idEquipo ? 'text-[var(--green)]' : 'text-white'
+                            eq.id_equipo === idEquipo ? 'text-[var(--color-primary)]' : 'text-white'
                           }`}>
                             {eq.nombre_equipo}
                           </p>
@@ -141,8 +141,8 @@ export const EquipoLayout: React.FC<EquipoLayoutProps> = ({
                   </div>
                 ) : (
                   <div className="flex items-center gap-1 px-2 py-1 bg-[var(--black-800)] border border-[#262626] rounded-md">
-                    <User size={12} className="text-[var(--green)]" />
-                    <span className="text-[var(--green)] text-xs font-medium">Jugador</span>
+                    <User size={12} className="text-[var(--color-primary)]" />
+                    <span className="text-[var(--color-primary)] text-xs font-medium">Jugador</span>
                   </div>
                 )}
               </div>

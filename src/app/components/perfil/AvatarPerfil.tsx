@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Camera, User } from 'lucide-react';
@@ -68,7 +68,7 @@ export const AvatarPerfil = ({
         {editable && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className={`absolute bottom-0 right-0 ${cameraButtonSizes[size]} rounded-full bg-[var(--green)] text-white flex items-center justify-center hover:bg-[var(--green)]/90 transition-colors shadow-lg border-2 border-[var(--gray-500)]`}
+            className={`absolute bottom-0 right-0 ${cameraButtonSizes[size]} rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center hover:bg-[var(--color-primary)]/90 transition-colors shadow-lg border-2 border-[var(--gray-500)]`}
             title="Cambiar foto"
           >
             <Camera size={cameraIconSizes[size]} />

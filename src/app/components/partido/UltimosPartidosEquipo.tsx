@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { Partido } from '@/app/types/partido';
@@ -69,7 +69,7 @@ export const UltimosPartidosEquipo: React.FC<UltimosPartidosEquipoProps> = ({
 
           const colorResultado =
             resultado === 'victoria'
-              ? 'bg-[var(--green)]'
+              ? 'bg-[var(--color-primary)]'
               : resultado === 'derrota'
                 ? 'bg-red-500'
                 : 'bg-[#737373]';

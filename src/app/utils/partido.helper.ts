@@ -1,4 +1,4 @@
-import { EstadoPartido, Partido, PartidoCompleto } from "../types/partido";
+﻿import { EstadoPartido, Partido, PartidoCompleto } from "../types/partido";
 
 export const getEstadoInfo = (estado: EstadoPartido) => {
     switch (estado) {
@@ -10,7 +10,7 @@ export const getEstadoInfo = (estado: EstadoPartido) => {
             return { text: 'EN VIVO', color: 'text-green-400', bg: 'bg-green-400/10 animate-pulse' };
         case 'T':
         case 'F':
-            return { text: 'FINALIZADO', color: 'text-white', bg: 'bg-[var(--green)]/10' };
+            return { text: 'FINALIZADO', color: 'text-white', bg: 'bg-[var(--color-primary)]/10' };
         case 'S':
             return { text: 'SUSPENDIDO', color: 'text-red-400', bg: 'bg-red-400/10' };
         case 'A':

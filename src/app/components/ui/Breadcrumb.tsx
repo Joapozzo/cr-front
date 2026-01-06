@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -65,7 +65,7 @@ export default function Breadcrumb({ items, basePath = '/cajero', baseLabel = 'C
             <div className="flex items-center space-x-2 text-sm mb-4">
                 <Link
                     href={basePath}
-                    className="flex items-center text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
+                    className="flex items-center text-[var(--color-primary)] hover:text-[var(--color-primary-strong)] transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4 mr-1" />
                     {baseLabel}
@@ -78,7 +78,7 @@ export default function Breadcrumb({ items, basePath = '/cajero', baseLabel = 'C
                         ) : (
                             <Link
                                 href={item.href}
-                                className="text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
+                                className="text-[var(--color-primary)] hover:text-[var(--color-primary-strong)] transition-colors"
                             >
                                 {item.label}
                             </Link>
@@ -125,7 +125,7 @@ export default function Breadcrumb({ items, basePath = '/cajero', baseLabel = 'C
         <div className="flex items-center space-x-2 text-sm mb-4">
             <Link
                 href={basePath}
-                className="flex items-center text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
+                className="flex items-center text-[var(--color-primary)] hover:text-[var(--color-primary-strong)] transition-colors"
             >
                 <ArrowLeft className="w-4 h-4 mr-1" />
                 {baseLabel}
@@ -138,7 +138,7 @@ export default function Breadcrumb({ items, basePath = '/cajero', baseLabel = 'C
                     ) : (
                         <Link
                             href={item.href}
-                            className="text-[var(--green)] hover:text-[var(--green-win)] transition-colors"
+                            className="text-[var(--color-primary)] hover:text-[var(--color-primary-strong)] transition-colors"
                         >
                             {item.label}
                         </Link>

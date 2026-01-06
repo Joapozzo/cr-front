@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { BsGoogle } from 'react-icons/bs';
 
@@ -38,13 +38,13 @@ export const GoogleAuthButton = ({
                 bg-[var(--gray-400)] rounded-2xl 
                 border transition-colors
                 ${isPending
-                    ? 'border-[var(--green)] opacity-80 cursor-wait'
-                    : 'border-[var(--gray-300)] hover:border-[var(--green)] cursor-pointer text-white'}
+                    ? 'border-[var(--color-primary)] opacity-80 cursor-wait'
+                    : 'border-[var(--gray-300)] hover:border-[var(--color-primary)] cursor-pointer text-white'}
                 shadow-lg shadow-black/20
             `}
         >
             {isPending ? (
-                <Loader2 className="animate-spin text-[var(--green)] w-8 h-8" />
+                <Loader2 className="animate-spin text-[var(--color-primary)] w-8 h-8" />
             ) : (
                 <>
                     <div className="p-3 bg-white/5 rounded-full border border-white/5 shadow-inner">

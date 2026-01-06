@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { X, Search, Filter, Users, TrendingUp, Loader2 } from 'lucide-react';
@@ -117,7 +117,7 @@ const ModalBuscarJugadorDisponible = ({
                 onClick={onClose}
             />
             <div 
-                className={`relative bg-[var(--gray-400)] rounded-xl border-2 border-[var(--green)] shadow-2xl w-full max-w-5xl transform transition-all duration-300 ${isAnimating
+                className={`relative bg-[var(--gray-400)] rounded-xl border-2 border-[var(--color-primary)] shadow-2xl w-full max-w-5xl transform transition-all duration-300 ${isAnimating
                     ? 'opacity-100 scale-100 translate-y-0'
                     : 'opacity-0 scale-95 translate-y-4'
                 }`}
@@ -126,8 +126,8 @@ const ModalBuscarJugadorDisponible = ({
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-[var(--gray-300)]">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[var(--green)]/20 rounded-lg flex items-center justify-center">
-                            <Users className="w-5 h-5 text-[var(--green)]" />
+                        <div className="w-10 h-10 bg-[var(--color-primary)]/20 rounded-lg flex items-center justify-center">
+                            <Users className="w-5 h-5 text-[var(--color-primary)]" />
                         </div>
                         <div>
                             <h2 className="text-xl font-semibold text-[var(--white)]">
@@ -185,7 +185,7 @@ const ModalBuscarJugadorDisponible = ({
                             <select
                                 value={filtroOrden}
                                 onChange={(e) => setFiltroOrden(e.target.value as any)}
-                                className="px-4 py-2 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] focus:outline-none focus:border-[var(--green)] transition-colors"
+                                className="px-4 py-2 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                             >
                                 <option value="nombre">Nombre A-Z</option>
                                 <option value="goles">Más goles</option>
@@ -207,7 +207,7 @@ const ModalBuscarJugadorDisponible = ({
                                 </span>
                             )}
                             {isLoading && (
-                                <span className="flex items-center gap-2 text-[var(--green)]">
+                                <span className="flex items-center gap-2 text-[var(--color-primary)]">
                                     <Loader2 className="w-4 h-4 animate-spin" />
                                     Buscando...
                                 </span>
@@ -237,20 +237,20 @@ const ModalBuscarJugadorDisponible = ({
                     {/* Loading state */}
                     {isLoading && debeRealizarBusqueda && (
                         <div className="flex flex-col items-center justify-center py-12">
-                            <Loader2 className="w-12 h-12 text-[var(--green)] animate-spin mb-4" />
+                            <Loader2 className="w-12 h-12 text-[var(--color-primary)] animate-spin mb-4" />
                             <p className="text-[var(--gray-100)]">Buscando jugadores disponibles...</p>
                         </div>
                     )}
 
                     {/* Error state */}
                     {isError && debeRealizarBusqueda && (
-                        <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-4 text-center">
-                            <p className="text-[var(--red)] mb-2">
+                        <div className="bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg p-4 text-center">
+                            <p className="text-[var(--color-secondary)] mb-2">
                                 {error?.message || 'Error al buscar los jugadores'}
                             </p>
                             <button
                                 onClick={() => refetchJugadores()}
-                                className="text-sm text-[var(--green)] hover:underline"
+                                className="text-sm text-[var(--color-primary)] hover:underline"
                             >
                                 Intentar nuevamente
                             </button>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Ban, Loader2, CheckCircle } from 'lucide-react';
@@ -56,7 +56,7 @@ export const ModalExpulsarJugador: React.FC<ModalExpulsarJugadorProps> = ({
                             <p className="text-[var(--gray-100)] text-sm mb-2">
                                 Estás a punto de expulsar permanentemente a <span className="text-[var(--white)] font-medium">{jugadorNombre}</span> del torneo.
                             </p>
-                            <p className="text-[var(--red)] text-sm font-medium mb-2">
+                            <p className="text-[var(--color-secondary)] text-sm font-medium mb-2">
                                 ⚠️ Esta acción es permanente y el jugador no podrá:
                             </p>
                             <ul className="text-[var(--gray-100)] text-sm list-disc list-inside space-y-1">
@@ -81,7 +81,7 @@ export const ModalExpulsarJugador: React.FC<ModalExpulsarJugadorProps> = ({
                             value={motivo}
                             onChange={(e) => setMotivo(e.target.value)}
                             placeholder="Ej: Conducta antideportiva, incumplimiento de reglas, etc."
-                            className="w-full px-4 py-3 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] placeholder-[var(--gray-100)] focus:outline-none focus:border-[var(--green)] transition-colors resize-none"
+                            className="w-full px-4 py-3 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] placeholder-[var(--gray-100)] focus:outline-none focus:border-[var(--color-primary)] transition-colors resize-none"
                             rows={3}
                             maxLength={200}
                         />

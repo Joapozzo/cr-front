@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { AlertCircle, Flag } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
@@ -41,7 +41,7 @@ export const ZonasSinTerminarSection: React.FC<ZonasSinTerminarSectionProps> = (
                                 animate={{ opacity: 1, x: 0 }}
                                 whileHover={{ scale: 1.01, backgroundColor: 'rgba(255, 255, 255, 0.02)' }}
                                 transition={{ duration: 0.3 }}
-                                className="bg-[var(--black-800)]/40 rounded-lg p-3 border border-transparent hover:border-[var(--green)]/30 transition-all cursor-pointer"
+                                className="bg-[var(--black-800)]/40 rounded-lg p-3 border border-transparent hover:border-[var(--color-primary)]/30 transition-all cursor-pointer"
                             >
                             <div className="flex justify-between items-start mb-2">
                                 <div>
@@ -63,8 +63,8 @@ export const ZonasSinTerminarSection: React.FC<ZonasSinTerminarSectionProps> = (
                                         initial={{ width: 0 }}
                                         animate={{ width: `${params.percent}%` }}
                                         transition={{ duration: 1, ease: 'easeOut' }}
-                                        className={`h-full rounded-full ${params.percent > 90 ? 'bg-[var(--green)]' :
-                                                params.percent > 50 ? 'bg-[var(--yellow-500)]' : 'bg-[var(--blue-500)]'
+                                        className={`h-full rounded-full ${params.percent > 90 ? 'bg-[var(--color-primary)]' :
+                                                params.percent > 50 ? 'bg-[var(--color-warning)]' : 'bg-[var(--blue-500)]'
                                             }`}
                                     />
                                 </div>

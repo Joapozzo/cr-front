@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { PlantelEquipo } from '@/app/types/plantelEquipo';
@@ -171,7 +171,7 @@ export const PlantelTab: React.FC<PlantelTabProps> = ({
 
         {perteneceAlEquipo && !esCapitan && (
         <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-4 text-center">
-          <p className="text-[var(--green)]/50 text-sm font-medium">
+          <p className="text-[var(--color-primary)]/50 text-sm font-medium">
             Ya estás en este equipo
           </p>
         </div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { PartidoResumido } from '@/app/types/equipoResumen';
@@ -13,7 +13,7 @@ interface UltimosPartidosResumenProps {
 const getResultadoColor = (resultado: 'victoria' | 'derrota' | 'empate'): string => {
   switch (resultado) {
     case 'victoria':
-      return 'bg-[var(--green)] text-white';
+      return 'bg-[var(--color-primary)] text-white';
     case 'derrota':
       return 'bg-red-600 text-white';
     case 'empate':

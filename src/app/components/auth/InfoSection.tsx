@@ -1,4 +1,7 @@
+﻿'use client';
+
 import Image from 'next/image';
+import { useTenant } from '@/app/contexts/TenantContext';
 
 interface InfoSectionProps {
   infoTitle?: string;
@@ -9,6 +12,7 @@ export const InfoSection = ({
   infoTitle,
   infoDescription,
 }: InfoSectionProps) => {
+  const tenant = useTenant();
   return (
     <div
       className="hidden lg:flex relative w-1/2 flex-col items-center justify-center px-24 bg-cover bg-center"
@@ -20,8 +24,8 @@ export const InfoSection = ({
       {/* Logo arriba */}
       <div className="absolute top-12 left-12 z-10">
         <Image
-          src="/logos/logotipo.png"
-          alt="Copa Relámpago"
+          src={tenant.branding.logo_principal}
+          alt={tenant.nombre_empresa}
           width={275}
           height={60}
         />
@@ -30,7 +34,7 @@ export const InfoSection = ({
       {/* Badge y título al medio, alineados a la izquierda */}
       <div className="z-10 flex flex-col gap-4 items-start justify-center w-full pl-12">
         {/* Badge */}
-        <span className="text-xs font-bold px-3 py-1 bg-[var(--green)] text-[var(--black)] uppercase">
+        <span className="text-xs font-bold px-3 py-1 bg-[var(--color-primary)] text-[var(--black)] uppercase">
           {infoTitle || 'novedades'}
         </span>
 

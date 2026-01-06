@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { ConfiguracionPrecio, CrearPrecioInput, TipoConcepto, UnidadMedida } from '@/app/services/configuracionPrecio.services';
@@ -160,7 +160,7 @@ export default function ModalConfigPrecio({
                             <select
                                 value={formData.tipo_concepto}
                                 onChange={(e) => setFormData({ ...formData, tipo_concepto: e.target.value as TipoConcepto })}
-                                className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--green)]"
+                                className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--color-primary)]"
                                 required
                                 disabled={isLoading || !!precioEditando}
                             >
@@ -193,7 +193,7 @@ export default function ModalConfigPrecio({
                                             setIdCategoriaSeleccionada(null);
                                         }}
                                         disabled={isLoading || !!precioEditando}
-                                        className="text-[var(--green)]"
+                                        className="text-[var(--color-primary)]"
                                     />
                                     <span className="text-white">Global (todas las categorías)</span>
                                 </label>
@@ -204,7 +204,7 @@ export default function ModalConfigPrecio({
                                         checked={!esGlobal}
                                         onChange={() => setEsGlobal(false)}
                                         disabled={isLoading || !!precioEditando}
-                                        className="text-[var(--green)]"
+                                        className="text-[var(--color-primary)]"
                                     />
                                     <span className="text-white">Específico por categoría</span>
                                 </label>
@@ -222,7 +222,7 @@ export default function ModalConfigPrecio({
                                     value={idCategoriaSeleccionada || ''}
                                     onChange={(e) => setIdCategoriaSeleccionada(e.target.value ? parseInt(e.target.value) : null)}
                                     placeholder="ID de categoría"
-                                    className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--green)]"
+                                    className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--color-primary)]"
                                     required={!esGlobal}
                                     disabled={isLoading}
                                 />
@@ -247,7 +247,7 @@ export default function ModalConfigPrecio({
                                             checked={formData.unidad === unidad}
                                             onChange={(e) => setFormData({ ...formData, unidad: e.target.value as UnidadMedida })}
                                             disabled={isLoading}
-                                            className="text-[var(--green)]"
+                                            className="text-[var(--color-primary)]"
                                         />
                                         <span className="text-white">{unidad.replace('_', ' ')}</span>
                                     </label>
@@ -267,7 +267,7 @@ export default function ModalConfigPrecio({
                                 required
                                 value={formData.monto}
                                 onChange={(e) => setFormData({ ...formData, monto: parseFloat(e.target.value) || 0 })}
-                                className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--green)]"
+                                className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--color-primary)]"
                                 placeholder="0.00"
                                 disabled={isLoading}
                             />
@@ -284,7 +284,7 @@ export default function ModalConfigPrecio({
                                 min="0"
                                 value={formData.monto_transferencia || ''}
                                 onChange={(e) => setFormData({ ...formData, monto_transferencia: e.target.value ? parseFloat(e.target.value) : null })}
-                                className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--green)]"
+                                className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--color-primary)]"
                                 placeholder="Dejar vacío para usar el mismo precio"
                                 disabled={isLoading}
                             />
@@ -304,7 +304,7 @@ export default function ModalConfigPrecio({
                                     required
                                     value={formData.fecha_desde}
                                     onChange={(e) => setFormData({ ...formData, fecha_desde: e.target.value })}
-                                    className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--green)]"
+                                    className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--color-primary)]"
                                     disabled={isLoading}
                                 />
                             </div>
@@ -316,7 +316,7 @@ export default function ModalConfigPrecio({
                                     type="date"
                                     value={formData.fecha_hasta || ''}
                                     onChange={(e) => setFormData({ ...formData, fecha_hasta: e.target.value || null })}
-                                    className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--green)]"
+                                    className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--color-primary)]"
                                     disabled={isLoading}
                                 />
                             </div>
@@ -331,7 +331,7 @@ export default function ModalConfigPrecio({
                                 type="text"
                                 value={formData.descripcion || ''}
                                 onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-                                className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--green)]"
+                                className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--color-primary)]"
                                 placeholder="Descripción breve del precio"
                                 disabled={isLoading}
                             />
@@ -345,7 +345,7 @@ export default function ModalConfigPrecio({
                                 value={formData.observaciones || ''}
                                 onChange={(e) => setFormData({ ...formData, observaciones: e.target.value })}
                                 rows={3}
-                                className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--green)] resize-none"
+                                className="w-full px-3 py-2 bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg text-white focus:outline-none focus:border-[var(--color-primary)] resize-none"
                                 placeholder="Notas adicionales..."
                                 disabled={isLoading}
                             />

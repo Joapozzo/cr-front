@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import BaseModal from "./ModalPlanillero";
@@ -145,7 +145,7 @@ const GolModal: React.FC<GolModalProps> = ({
                         </div>
                         <div className="w-4 h-px bg-[#404040]"></div>
                         <div className="flex items-center gap-1">
-                            <div className="w-6 h-6 rounded-full bg-[var(--green)] flex items-center justify-center text-black text-xs font-medium">
+                            <div className="w-6 h-6 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-black text-xs font-medium">
                                 2
                             </div>
                             <span className="hidden sm:inline">Tipo</span>
@@ -218,9 +218,9 @@ const GolModal: React.FC<GolModalProps> = ({
                                         relative w-5 h-5 cursor-pointer
                                         appearance-none rounded-full border-2 border-[#262626] bg-[#171717]
                                         transition-colors duration-300 ease-in-out
-                                        checked:border-[var(--green)]
+                                        checked:border-[var(--color-primary)]
                                         before:content-[''] before:absolute before:inset-1
-                                        before:rounded-full before:bg-[var(--green)]
+                                        before:rounded-full before:bg-[var(--color-primary)]
                                         before:scale-0 before:transition-transform before:duration-300 before:ease-in-out
                                         checked:before:scale-100
                                     `}
@@ -249,7 +249,7 @@ const GolModal: React.FC<GolModalProps> = ({
                                     relative w-5 h-5 cursor-pointer
                                     appearance-none rounded border-2 border-[#262626] bg-[#171717]
                                     transition-colors duration-300 ease-in-out
-                                    checked:border-[var(--green)] checked:bg-[var(--green)]
+                                    checked:border-[var(--color-primary)] checked:bg-[var(--color-primary)]
                                     before:content-['✓'] before:absolute before:inset-0
                                     before:text-black before:text-sm before:font-bold
                                     before:flex before:items-center before:justify-center

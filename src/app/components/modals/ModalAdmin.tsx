@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { X, Check, Trash2, AlertTriangle, Plus, Edit3, Upload, FileText, Loader2 } from 'lucide-react';
@@ -96,11 +96,11 @@ const BaseModal = ({ isOpen, onClose, title, children, type = 'info', maxWidth =
     const getTypeIcon = () => {
         switch (type) {
             case 'create':
-                return <Plus className="w-6 h-6 text-[var(--green)]" />;
+                return <Plus className="w-6 h-6 text-[var(--color-primary)]" />;
             case 'edit':
                 return <Edit3 className="w-6 h-6 text-[var(--import)]" />;
             case 'delete':
-                return <Trash2 className="w-6 h-6 text-[var(--red)]" />;
+                return <Trash2 className="w-6 h-6 text-[var(--color-secondary)]" />;
             case 'import':
                 return <Upload className="w-6 h-6 text-[var(--import)]" />;
             default:
@@ -111,11 +111,11 @@ const BaseModal = ({ isOpen, onClose, title, children, type = 'info', maxWidth =
     const getTypeColor = () => {
         switch (type) {
             case 'create':
-                return 'border-[var(--green)]';
+                return 'border-[var(--color-primary)]';
             case 'edit':
                 return 'border-[var(--import)]';
             case 'delete':
-                return 'border-[var(--red)]';
+                return 'border-[var(--color-secondary)]';
             case 'import':
                 return 'border-[var(--import)]';
             default:
@@ -390,7 +390,7 @@ const FormModal = ({
                             field.placeholder ||
                             `Seleccionar ${field.label.toLowerCase()}`
                         }
-                        className={`w-full border border-[var(--gray-300)] rounded-[20px] ${hasError && "border-[var(--red)]"}`}
+                        className={`w-full border border-[var(--gray-300)] rounded-[20px] ${hasError && "border-[var(--color-secondary)]"}`}
                     />
                 );
 
@@ -402,7 +402,7 @@ const FormModal = ({
                         onChange={(e) => handleChange(field.name, e.target.value)}
                         placeholder={field.placeholder}
                         rows={4}
-                        className={`w-full px-4 py-3 bg-[var(--gray-300)] border rounded-lg text-[var(--white)] placeholder-[var(--gray-100)] focus:outline-none focus:border-[var(--green)] transition-colors resize-none ${hasError ? 'border-[var(--red)]' : 'border-[var(--gray-200)]'
+                        className={`w-full px-4 py-3 bg-[var(--gray-300)] border rounded-lg text-[var(--white)] placeholder-[var(--gray-100)] focus:outline-none focus:border-[var(--color-primary)] transition-colors resize-none ${hasError ? 'border-[var(--color-secondary)]' : 'border-[var(--gray-200)]'
                             }`}
                     />
                 );
@@ -413,7 +413,7 @@ const FormModal = ({
                         type="file"
                         accept={field.accept}
                         onChange={(e) => handleFileChange(field.name, e.target.files?.[0] || null)}
-                        className={`w-full px-4 py-3 bg-[var(--gray-300)] border rounded-lg text-[var(--white)] focus:outline-none focus:border-[var(--green)] transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--green)] file:text-white hover:file:bg-[var(--green-win)] ${hasError ? 'border-[var(--red)]' : 'border-[var(--gray-200)]'
+                        className={`w-full px-4 py-3 bg-[var(--gray-300)] border rounded-lg text-[var(--white)] focus:outline-none focus:border-[var(--color-primary)] transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--color-primary)] file:text-white hover:file:bg-[var(--color-primary-strong)] ${hasError ? 'border-[var(--color-secondary)]' : 'border-[var(--gray-200)]'
                             }`}
                     />
                 );
@@ -489,12 +489,12 @@ const FormModal = ({
                             <label className="block text-sm font-light text-[var(--white)]">
                                 {field.label}
                                 {field.required && (
-                                    <span className="text-[var(--red)] ml-1">*</span>
+                                    <span className="text-[var(--color-secondary)] ml-1">*</span>
                                 )}
                             </label>
                             {renderField(field)}
                             {errors[field.name] && (
-                                <p className="text-[var(--red)] text-sm flex items-center gap-1">
+                                <p className="text-[var(--color-secondary)] text-sm flex items-center gap-1">
                                     <AlertTriangle className="w-4 h-4" />
                                     {errors[field.name]}
                                 </p>
@@ -505,8 +505,8 @@ const FormModal = ({
             )}
 
             {errors.general && (
-                <div className="p-3 bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg flex items-center justify-center w-full my-4">
-                    <p className="text-[var(--red)] text-sm flex items-center gap-2">
+                <div className="p-3 bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg flex items-center justify-center w-full my-4">
+                    <p className="text-[var(--color-secondary)] text-sm flex items-center gap-2">
                         <AlertTriangle className="w-4 h-4" />
                         {errors.general}
                     </p>
@@ -560,8 +560,8 @@ const DeleteModal = ({ isOpen, onClose, title, message, itemName, onConfirm, err
     return (
         <BaseModal isOpen={isOpen} onClose={onClose} title={title} type="delete">
             <div className="space-y-4">
-                <div className="flex items-center gap-3 p-4 bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg">
-                    <AlertTriangle className="w-6 h-6 text-[var(--red)] flex-shrink-0" />
+                <div className="flex items-center gap-3 p-4 bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg">
+                    <AlertTriangle className="w-6 h-6 text-[var(--color-secondary)] flex-shrink-0" />
                     <div>
                         <p className="text-[var(--white)] font-medium">
                             {message}
@@ -577,10 +577,10 @@ const DeleteModal = ({ isOpen, onClose, title, message, itemName, onConfirm, err
                 {/* Mostrar error si existe */}
                 {error && (
                     <div className="mb-4">
-                        <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-3">
+                        <div className="bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg p-3">
                             <div className="flex items-center gap-2">
-                                <AlertTriangle className="w-4 h-4 text-[var(--red)] flex-shrink-0" />
-                                <p className="text-[var(--red)] text-sm">
+                                <AlertTriangle className="w-4 h-4 text-[var(--color-secondary)] flex-shrink-0" />
+                                <p className="text-[var(--color-secondary)] text-sm">
                                     {error.message}
                                 </p>
                             </div>
@@ -604,7 +604,7 @@ const DeleteModal = ({ isOpen, onClose, title, message, itemName, onConfirm, err
                 <button
                     onClick={handleConfirm}
                     disabled={isLoading}
-                    className="px-6 py-2 bg-[var(--red)] text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-6 py-2 bg-[var(--color-secondary)] text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {isLoading ? (
                         <>
@@ -736,7 +736,7 @@ const ImportModal = ({ isOpen, onClose, title, description, acceptedFormats, onF
                         type="file"
                         accept={acceptedFormats.join(',')}
                         onChange={handleFileChange}
-                        className="w-full px-4 py-3 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] focus:outline-none focus:border-[var(--green)] transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--import)] file:text-white hover:file:bg-indigo-600"
+                        className="w-full px-4 py-3 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] focus:outline-none focus:border-[var(--color-primary)] transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--import)] file:text-white hover:file:bg-indigo-600"
                     />
                     <p className="text-sm text-[var(--gray-100)]">
                         Formatos aceptados: {acceptedFormats.join(', ')}

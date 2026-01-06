@@ -1,8 +1,9 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { Trophy, Zap, BarChart2, MapPin, Users, Smartphone } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTenant } from '@/app/contexts/TenantContext';
 
 const features = [
     {
@@ -11,7 +12,7 @@ const features = [
         description: 'Sistema de liguilla + playoffs para garantizar la máxima competitividad y emoción.'
     },
     {
-        icon: <Zap className="w-8 h-8 text-[var(--green)]" />,
+        icon: <Zap className="w-8 h-8 text-[var(--color-primary)]" />,
         title: 'Gestión Digital',
         description: 'Todo el torneo en tu celular. Fixture, resultados y tablas actualizadas al instante.'
     },
@@ -21,7 +22,7 @@ const features = [
         description: 'Seguimiento detallado de goleadores, asistencias y vallas invictas.'
     },
     {
-        icon: <MapPin className="w-8 h-8 text-[var(--red)]" />,
+        icon: <MapPin className="w-8 h-8 text-[var(--color-secondary)]" />,
         title: 'Complejo Premium',
         description: 'Jugamos en Complejo Elenia, las mejores canchas de sintético de Córdoba.'
     },
@@ -53,12 +54,14 @@ const item = {
 };
 
 const Features = () => {
+    const tenant = useTenant();
+    
     return (
         <section id="features" className="py-20 bg-[var(--black-950)]">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
                     <h2 className="text-2xl md:text-5xl font-bold text-[var(--white)] mb-4">
-                        Por qué elegir <span className="text-[var(--green)]">Copa Relámpago</span>
+                        Por qué elegir <span className="text-[var(--color-primary)]">{tenant.nombre_empresa}</span>
                     </h2>
                     <p className="text-[var(--gray-100)] max-w-2xl mx-auto text-base md:text-lg">
                         Llevamos la experiencia del fútbol amateur al siguiente nivel con tecnología y organización de primera.
@@ -76,7 +79,7 @@ const Features = () => {
                         <motion.div
                             key={index}
                             variants={item}
-                            className="bg-[var(--black-900)] p-5 md:p-8 rounded-2xl border border-[var(--black-800)] hover:border-[var(--green)]/30 transition-all hover:bg-[var(--black-800)] group"
+                            className="bg-[var(--black-900)] p-5 md:p-8 rounded-2xl border border-[var(--black-800)] hover:border-[var(--color-primary)]/30 transition-all hover:bg-[var(--black-800)] group"
                         >
                             <div className="mb-6 p-4 bg-[var(--black-800)] rounded-xl inline-block group-hover:scale-110 transition-transform">
                                 {feature.icon}

@@ -1,4 +1,4 @@
-import { PartidoResponse } from '@/app/schemas/partidos.schema';
+﻿import { PartidoResponse } from '@/app/schemas/partidos.schema';
 import {
     Edit3,
     Trash2,
@@ -12,11 +12,11 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: PartidoRow) => void, o
 
     const EstadoBadge = ({ estado }: { estado: string }) => {
         const estados = {
-            'F': { label: 'FINALIZADO', color: 'bg-[var(--green)] text-white' },
+            'F': { label: 'FINALIZADO', color: 'bg-[var(--color-primary)] text-white' },
             'P': { label: 'PROGRAMADO', color: 'bg-[var(--yellow)] text-white' },
-            'C1': { label: 'EN VIVO', color: 'bg-[var(--green)] text-white animate-pulse' },
-            'E': { label: 'EN VIVO', color: 'bg-[var(--green)] text-white animate-pulse' },
-            'C2': { label: 'EN VIVO', color: 'bg-[var(--green)] text-white animate-pulse' },
+            'C1': { label: 'EN VIVO', color: 'bg-[var(--color-primary)] text-white animate-pulse' },
+            'E': { label: 'EN VIVO', color: 'bg-[var(--color-primary)] text-white animate-pulse' },
+            'C2': { label: 'EN VIVO', color: 'bg-[var(--color-primary)] text-white animate-pulse' },
             'C': { label: 'EN CURSO', color: 'bg-[var(--blue)] text-white' },
             'S': { label: 'SUSPENDIDO', color: 'bg-red-600 text-white' },
             'A': { label: 'APLAZADO', color: 'bg-orange-600 text-white' },
@@ -153,7 +153,7 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: PartidoRow) => void, o
                     </button>
                     <button
                         onClick={() => onEliminarPartido?.(row)}
-                        className="px-3 py-2 rounded-md bg-[var(--danger)] text-white hover:opacity-70 transition"
+                        className="px-3 py-2 rounded-md bg-[var(--color-danger)] text-white hover:opacity-70 transition"
                         title="Eliminar partido"
                     >
                         <Trash2 className="w-3 h-3" />

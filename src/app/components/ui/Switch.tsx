@@ -1,4 +1,4 @@
-interface SwitchProps {
+﻿interface SwitchProps {
     checked: boolean;
     onChange: (checked: boolean) => void;
     disabled?: boolean;
@@ -43,9 +43,9 @@ const Switch = ({
             className={`
                 relative inline-flex ${sizeClasses.container} items-center rounded-full 
                 transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 
-                focus:ring-[var(--green)] focus:ring-offset-2 focus:ring-offset-[var(--gray-400)]
+                focus:ring-[var(--color-primary)] focus:ring-offset-2 focus:ring-offset-[var(--gray-400)]
                 ${checked
-                    ? 'bg-[var(--green)]'
+                    ? 'bg-[var(--color-primary)]'
                     : 'bg-[var(--gray-200)]'
                 }
                 ${disabled
@@ -70,7 +70,7 @@ const Switch = ({
                     className={`
                         w-2 h-2 rounded-full transition-colors duration-200
                         ${checked
-                            ? 'bg-[var(--green)]'
+                            ? 'bg-[var(--color-primary)]'
                             : 'bg-[var(--gray-200)]'
                         }
                     `}

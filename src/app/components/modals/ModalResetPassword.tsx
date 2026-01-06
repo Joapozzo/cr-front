@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { X, Copy, Check } from 'lucide-react';
 import { Button } from '../ui/Button';
@@ -60,8 +60,8 @@ export default function ModalResetPassword({
 
                     {nuevaPassword && (
                         <div className="space-y-3">
-                            <div className="p-4 bg-[var(--green)]/10 border border-[var(--green)]/30 rounded-lg">
-                                <p className="text-sm text-[var(--green)] font-medium mb-2">
+                            <div className="p-4 bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/30 rounded-lg">
+                                <p className="text-sm text-[var(--color-primary)] font-medium mb-2">
                                     Nueva Contraseña:
                                 </p>
                                 <div className="flex items-center gap-2">
@@ -74,7 +74,7 @@ export default function ModalResetPassword({
                                         title="Copiar contraseña"
                                     >
                                         {passwordCopied ? (
-                                            <Check className="w-5 h-5 text-[var(--green)]" />
+                                            <Check className="w-5 h-5 text-[var(--color-primary)]" />
                                         ) : (
                                             <Copy className="w-5 h-5 text-[var(--gray-200)]" />
                                         )}

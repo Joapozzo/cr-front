@@ -1,9 +1,10 @@
-'use client';
+﻿'use client';
 
 import { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { X } from 'lucide-react';
+import { useTenant } from '@/app/contexts/TenantContext';
 
 interface NavLink {
   name: string;
@@ -17,6 +18,8 @@ interface MobileMenuLandingProps {
 }
 
 export const MobileMenuLanding = ({ isOpen, onClose, navLinks }: MobileMenuLandingProps) => {
+  const tenant = useTenant();
+  
   // Prevenir scroll del body cuando el menú está abierto
   useEffect(() => {
     if (isOpen) {
@@ -73,8 +76,8 @@ export const MobileMenuLanding = ({ isOpen, onClose, navLinks }: MobileMenuLandi
               className="focus:outline-none"
             >
               <Image
-                src="/logos/isologo.png"
-                alt="Copa Relámpago"
+                src={tenant.branding.logo_principal}
+                alt={tenant.nombre_empresa}
                 width={40}
                 height={40}
                 className="h-10 w-auto"
@@ -82,7 +85,7 @@ export const MobileMenuLanding = ({ isOpen, onClose, navLinks }: MobileMenuLandi
             </button>
             <button
               onClick={onClose}
-              className="text-white hover:text-[var(--green)] transition-colors p-2 rounded-full hover:bg-white/10"
+              className="text-white hover:text-[var(--color-primary)] transition-colors p-2 rounded-full hover:bg-white/10"
               aria-label="Cerrar menú"
             >
               <X size={24} />
@@ -96,7 +99,7 @@ export const MobileMenuLanding = ({ isOpen, onClose, navLinks }: MobileMenuLandi
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="text-lg text-white hover:text-[var(--green)] transition-colors font-medium border-b border-white/10 pb-2 animate-slide-in"
+                  className="text-lg text-white hover:text-[var(--color-primary)] transition-colors font-medium border-b border-white/10 pb-2 animate-slide-in"
                   style={{
                     animationDelay: `${index * 50}ms`,
                     animationFillMode: 'both',
@@ -108,7 +111,7 @@ export const MobileMenuLanding = ({ isOpen, onClose, navLinks }: MobileMenuLandi
               ))}
               <Link
                 href="/login"
-                className="bg-[var(--green)] hover:bg-[var(--green-win)] text-white px-6 py-3 rounded-xl font-medium text-base w-full text-center mt-4 transition-all animate-slide-in"
+                className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)] text-white px-6 py-3 rounded-xl font-medium text-base w-full text-center mt-4 transition-all animate-slide-in"
                 style={{
                   animationDelay: `${navLinks.length * 50}ms`,
                   animationFillMode: 'both',

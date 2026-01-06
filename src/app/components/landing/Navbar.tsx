@@ -1,14 +1,16 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Menu } from 'lucide-react';
 import { MobileMenuLanding } from './MobileMenuLanding';
+import { useTenant } from '@/app/contexts/TenantContext';
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const tenant = useTenant();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -40,8 +42,8 @@ const Navbar = () => {
                     }}
                 >
                     <Image
-                        src="/logos/isologo.png"
-                        alt="Copa Relámpago"
+                        src={tenant.branding.logo_principal}
+                        alt={tenant.nombre_empresa}
                         width={50}
                         height={50}
                         className="h-12 w-auto"
@@ -55,14 +57,14 @@ const Navbar = () => {
                         <Link
                             key={link.name}
                             href={link.href}
-                            className="text-[var(--gray-100)] hover:text-[var(--green)] transition-colors text-sm font-medium"
+                            className="text-[var(--gray-100)] hover:text-[var(--color-primary)] transition-colors text-sm font-medium"
                         >
                             {link.name}
                         </Link>
                     ))}
                     <Link
                         href="/login"
-                        className="bg-[var(--green)] hover:bg-[var(--green-win)] text-white px-5 py-2 rounded-full font-medium transition-all transform hover:scale-105"
+                        className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)] text-white px-5 py-2 rounded-full font-medium transition-all transform hover:scale-105"
                     >
                         Iniciar Sesión
                     </Link>

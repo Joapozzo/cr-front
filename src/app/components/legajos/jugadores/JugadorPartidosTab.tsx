@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { HistorialPartidosJugadorResponse, PartidoJugador } from '@/app/types/legajos';
 import MatchCard from '@/app/components/CardPartidoGenerico';
@@ -113,7 +113,7 @@ export const JugadorPartidosTab = ({
                                             </div>
                                         )}
                                         {partido.estadisticas_individuales.goles.length > 0 && (
-                                            <div className="flex items-center gap-1 text-[var(--green)]">
+                                            <div className="flex items-center gap-1 text-[var(--color-primary)]">
                                                 <span className="font-semibold">{partido.estadisticas_individuales.goles.length} gol(es)</span>
                                             </div>
                                         )}
@@ -128,12 +128,12 @@ export const JugadorPartidosTab = ({
                                             </div>
                                         )}
                                         {partido.estadisticas_individuales.rojas.length > 0 && (
-                                            <div className="flex items-center gap-1 text-[var(--red)]">
+                                            <div className="flex items-center gap-1 text-[var(--color-secondary)]">
                                                 <span className="font-semibold">{partido.estadisticas_individuales.rojas.length} roja(s)</span>
                                             </div>
                                         )}
                                         {partido.estadisticas_individuales.destacado && (
-                                            <div className="flex items-center gap-1 text-[var(--green)]">
+                                            <div className="flex items-center gap-1 text-[var(--color-primary)]">
                                                 <span className="font-semibold">⭐ Destacado</span>
                                             </div>
                                         )}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useRef } from 'react';
 import { FormModal } from '../modals/ModalAdmin';
 import { Sancion, CrearSancionInput, EditarSancionInput } from '@/app/types/sancion';
@@ -235,12 +235,12 @@ export default function ModalFormSancion({
             {!esEdicion && (
                 <div className="mb-6 z-9999">
                     <label className="block text-sm font-light text-[var(--white)] mb-2">
-                        Jugador <span className="text-[var(--red)]">*</span>
+                        Jugador <span className="text-[var(--color-secondary)]">*</span>
                     </label>
 
                     {selectedJugador ? (
                         // Jugador seleccionado
-                        <div className="bg-[var(--gray-300)] rounded-lg p-4 border-2 border-[var(--green)] flex items-center justify-between">
+                        <div className="bg-[var(--gray-300)] rounded-lg p-4 border-2 border-[var(--color-primary)] flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <ImagenPublica src={selectedJugador.img} alt={`${selectedJugador.nombre} ${selectedJugador.apellido}`} width={40} height={40} />
                                 <div>
@@ -274,7 +274,7 @@ export default function ModalFormSancion({
                                     }}
                                     onFocus={() => setShowDropdown(true)}
                                     placeholder="Buscar jugador por nombre..."
-                                    className="w-full pl-10 pr-4 py-3 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] placeholder-[var(--gray-100)] focus:outline-none focus:border-[var(--green)] transition-colors"
+                                    className="w-full pl-10 pr-4 py-3 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] placeholder-[var(--gray-100)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                                 />
                             </div>
 

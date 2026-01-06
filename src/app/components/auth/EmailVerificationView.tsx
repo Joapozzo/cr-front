@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { Toaster } from 'react-hot-toast';
 import { MdMarkEmailRead } from 'react-icons/md';
 import { FaAngleRight } from 'react-icons/fa6';
@@ -24,8 +24,8 @@ export const EmailVerificationView = ({
         <div className="flex flex-col gap-6 w-full">
             {/* Icono y mensaje */}
             <div className="flex flex-col items-center gap-4 text-center">
-                <div className="w-16 h-16 rounded-full bg-[var(--green)]/10 flex items-center justify-center">
-                    <MdMarkEmailRead size={32} className="text-[var(--green)]" />
+                <div className="w-16 h-16 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center">
+                    <MdMarkEmailRead size={32} className="text-[var(--color-primary)]" />
                 </div>
                 <div>
                     <h3 className="text-xl font-bold text-white mb-2">
@@ -37,7 +37,7 @@ export const EmailVerificationView = ({
                     <p className="text-sm text-[var(--gray-200)]">
                         Hemos enviado un email de verificación a:
                     </p>
-                    <p className="text-sm font-medium text-[var(--green)] mt-1">
+                    <p className="text-sm font-medium text-[var(--color-primary)] mt-1">
                         {email}
                     </p>
                 </div>
@@ -89,7 +89,7 @@ export const EmailVerificationView = ({
             <div className="flex justify-center pt-2">
                 <Link
                     href="/login"
-                    className="text-sm text-[var(--gray-200)] hover:text-[var(--green)] transition-colors"
+                    className="text-sm text-[var(--gray-200)] hover:text-[var(--color-primary)] transition-colors"
                 >
                     Volver al inicio de sesión
                 </Link>

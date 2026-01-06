@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { PagoCancha } from '@/app/types/pagoCancha';
 import { format } from 'date-fns';
@@ -174,7 +174,7 @@ export default function PagosCanchaTable({ pagos, onPagoRegistrado }: PagosCanch
                                                 <div className="space-y-1">
                                                     {transaccionesConObs.map((transaccion: any, idx: number) => (
                                                         <div key={idx} className="text-xs">
-                                                            <span className="text-[var(--green)] font-medium">
+                                                            <span className="text-[var(--color-primary)] font-medium">
                                                                 {transaccion.metodo_pago}:
                                                             </span>
                                                             <span className="text-[var(--gray-100)] ml-1">
@@ -191,7 +191,7 @@ export default function PagosCanchaTable({ pagos, onPagoRegistrado }: PagosCanch
                                             {pago.estado_pago !== 'PAGADO' && (
                                                 <button
                                                     onClick={() => handlePagar(pago)}
-                                                    className="bg-[var(--green)] hover:bg-green-300 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                                                    className="bg-[var(--color-primary)] hover:bg-green-300 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
                                                 >
                                                     <DollarSign className="w-4 h-4" />
                                                     Pagar

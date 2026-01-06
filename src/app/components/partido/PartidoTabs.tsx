@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 
@@ -34,14 +34,14 @@ export const PartidoTabs: React.FC<PartidoTabsProps> = ({
         <span
           className={`text-xs sm:text-sm font-medium transition-colors duration-200 ${
             tabActiva === 'previa'
-              ? 'text-[var(--green)]'
+              ? 'text-[var(--color-primary)]'
               : 'text-white'
           }`}
         >
           Previa
         </span>
         <div
-          className={`absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--green)] transition-all duration-300 ease-in-out ${
+          className={`absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--color-primary)] transition-all duration-300 ease-in-out ${
             tabActiva === 'previa'
               ? 'opacity-100 scale-x-100'
               : 'opacity-0 scale-x-0'
@@ -55,14 +55,14 @@ export const PartidoTabs: React.FC<PartidoTabsProps> = ({
         <span
           className={`text-xs sm:text-sm font-medium transition-colors duration-200 ${
             tabActiva === 'cara-a-cara'
-              ? 'text-[var(--green)]'
+              ? 'text-[var(--color-primary)]'
               : 'text-white'
           }`}
         >
           Cara a Cara
         </span>
         <div
-          className={`absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--green)] transition-all duration-300 ease-in-out ${
+          className={`absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--color-primary)] transition-all duration-300 ease-in-out ${
             tabActiva === 'cara-a-cara'
               ? 'opacity-100 scale-x-100'
               : 'opacity-0 scale-x-0'

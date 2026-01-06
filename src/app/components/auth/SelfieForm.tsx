@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef, useEffect, useCallback, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
@@ -666,7 +666,7 @@ export const SelfieForm = () => {
           <div className="bg-[var(--gray-400)] rounded-xl p-6 border border-[var(--gray-300)] flex-shrink-0">
             <div className="flex flex-col items-center gap-4">
               <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-full bg-[var(--gray-300)] flex items-center justify-center">
-                <ScanFace className="w-12 h-12 lg:w-16 lg:h-16 text-[var(--green)]" />
+                <ScanFace className="w-12 h-12 lg:w-16 lg:h-16 text-[var(--color-primary)]" />
               </div>
 
               <div className="text-center space-y-2">
@@ -782,14 +782,14 @@ export const SelfieForm = () => {
                 {/* Guía oval grande para mobile */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className={`w-72 h-96 border-4 rounded-full transition-all ${deteccionRostro.valido
-                    ? 'border-[var(--green)] shadow-lg shadow-[var(--green)]/50'
+                    ? 'border-[var(--color-primary)] shadow-lg shadow-[var(--color-primary)]/50'
                     : 'border-white/50'
                     }`} />
 
                   {/* Contador */}
                   {contador !== null && contador > 0 && (
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-40 h-40 rounded-full bg-[var(--green)]/90 flex items-center justify-center shadow-2xl">
+                      <div className="w-40 h-40 rounded-full bg-[var(--color-primary)]/90 flex items-center justify-center shadow-2xl">
                         <span className="text-7xl font-bold text-white">{contador}</span>
                       </div>
                     </div>
@@ -843,14 +843,14 @@ export const SelfieForm = () => {
                 {/* Guía oval con estado de detección */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className={`w-64 lg:w-80 border-4 rounded-full transition-all ${deteccionRostro.valido
-                    ? 'border-[var(--green)] shadow-lg shadow-[var(--green)]/50'
+                    ? 'border-[var(--color-primary)] shadow-lg shadow-[var(--color-primary)]/50'
                     : 'border-white/30'
                     }`} style={{ aspectRatio: '3/4' }} />
 
                   {/* Contador */}
                   {contador !== null && contador > 0 && (
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-32 h-32 rounded-full bg-[var(--green)]/90 flex items-center justify-center shadow-2xl">
+                      <div className="w-32 h-32 rounded-full bg-[var(--color-primary)]/90 flex items-center justify-center shadow-2xl">
                         <span className="text-6xl font-bold text-white">{contador}</span>
                       </div>
                     </div>
@@ -945,7 +945,7 @@ export const SelfieForm = () => {
               />
 
               {rostroValidado && (
-                <div className="absolute top-4 right-4 bg-[var(--green)] text-white px-4 py-2 rounded-full flex items-center gap-2 font-medium shadow-lg">
+                <div className="absolute top-4 right-4 bg-[var(--color-primary)] text-white px-4 py-2 rounded-full flex items-center gap-2 font-medium shadow-lg">
                   <CheckCircle2 className="w-5 h-5" />
                   <span>Foto lista</span>
                 </div>

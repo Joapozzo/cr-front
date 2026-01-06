@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { URI_IMG } from './utils';
 import Image from 'next/image';
@@ -89,7 +89,7 @@ const SelectGeneral: React.FC<SelectProps> = ({
                     cursor-pointer transition-all duration-200
                     min-w-[140px]
                     ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#2a2a2a]'}
-                    ${isOpen ? 'ring-2 ring-[var(--green)]' : ''}
+                    ${isOpen ? 'ring-2 ring-[var(--color-primary)]' : ''}
                 `}
             >
                 <div className="flex items-center gap-2">
@@ -132,7 +132,7 @@ const SelectGeneral: React.FC<SelectProps> = ({
                                         ? 'opacity-50 cursor-not-allowed'
                                         : 'cursor-pointer hover:bg-[#333]'
                                     }
-                                    ${option.value === value ? 'bg-[#333] text-[var(--green)]' : ''}
+                                    ${option.value === value ? 'bg-[#333] text-[var(--color-primary)]' : ''}
                                 `}
                             >
                                 {showImages && option.image && (

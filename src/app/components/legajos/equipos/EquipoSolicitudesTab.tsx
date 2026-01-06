@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { SolicitudesEquipo } from '@/app/types/legajos';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
@@ -56,9 +56,9 @@ export const EquipoSolicitudesTab = ({ solicitudes, isLoading, categoriaSeleccio
                                         </p>
                                     </div>
                                     <span className={`px-3 py-1 rounded text-sm ${solicitud.estado === 'aceptado'
-                                            ? 'bg-[var(--green)] text-[var(--white)]'
+                                            ? 'bg-[var(--color-primary)] text-[var(--white)]'
                                             : solicitud.estado === 'rechazado'
-                                                ? 'bg-[var(--red)] text-[var(--white)]'
+                                                ? 'bg-[var(--color-secondary)] text-[var(--white)]'
                                                 : 'bg-[var(--yellow)] text-[var(--white)]'
                                         }`}>
                                         {solicitud.estado}
@@ -91,9 +91,9 @@ export const EquipoSolicitudesTab = ({ solicitudes, isLoading, categoriaSeleccio
                                         </p>
                                     </div>
                                     <span className={`px-3 py-1 rounded text-sm ${invitacion.estado === 'aceptado'
-                                            ? 'bg-[var(--green)] text-[var(--white)]'
+                                            ? 'bg-[var(--color-primary)] text-[var(--white)]'
                                             : invitacion.estado === 'rechazado'
-                                                ? 'bg-[var(--red)] text-[var(--white)]'
+                                                ? 'bg-[var(--color-secondary)] text-[var(--white)]'
                                                 : 'bg-[var(--yellow)] text-[var(--white)]'
                                         }`}>
                                         {invitacion.estado}

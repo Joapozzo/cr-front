@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Shield } from "lucide-react";
 import { Equipo } from '../types/equipo';
 
@@ -27,7 +27,7 @@ const TabNavigationTeams: React.FC<TabNavigationProps> = ({
                 <button
                     onClick={() => onTabChange('local')}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 ${activeTab === 'local'
-                        ? 'bg-[var(--green)] text-black'
+                        ? 'bg-[var(--color-primary)] text-black'
                         : 'text-[#737373] hover:text-white'
                         }`}
                 >
@@ -43,7 +43,7 @@ const TabNavigationTeams: React.FC<TabNavigationProps> = ({
                 <button
                     onClick={() => onTabChange('visitante')}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 ${activeTab === 'visitante'
-                        ? 'bg-[var(--green)]  text-black'
+                        ? 'bg-[var(--color-primary)]  text-black'
                         : 'text-[#737373] hover:text-white'
                         }`}
                 >

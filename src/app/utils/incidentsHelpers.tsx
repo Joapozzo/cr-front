@@ -1,4 +1,4 @@
-import { IncidenciaPartido, Partido } from '../types/partido';
+﻿import { IncidenciaPartido, Partido } from '../types/partido';
 import { TbRectangleVerticalFilled } from "react-icons/tb";
 import { GiSoccerKick } from "react-icons/gi";
 import { PiSoccerBallFill } from "react-icons/pi";
@@ -16,7 +16,7 @@ export const isLocalTeam = (equipoId: number | null, partido: Partido): boolean 
 export const getIcono = (incidencia: IncidenciaPartido) => {
     switch (incidencia.tipo) {
         case 'gol':
-            return <PiSoccerBallFill className="w-4 h-4 text-[var(--green)] fill-current" />;
+            return <PiSoccerBallFill className="w-4 h-4 text-[var(--color-primary)] fill-current" />;
         case 'amarilla':
             return <TbRectangleVerticalFilled className="w-4 h-4 text-yellow-500" />;
         case 'roja':
@@ -31,7 +31,7 @@ export const getIcono = (incidencia: IncidenciaPartido) => {
                         </div>
                 );
             case 'asistencia':
-return <GiSoccerKick className="w-4 h-4 text-[var(--green)]" />;
+return <GiSoccerKick className="w-4 h-4 text-[var(--color-primary)]" />;
             default:
 return null;
         }

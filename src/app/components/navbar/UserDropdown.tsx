@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -22,7 +22,7 @@ export const UserDropdown = () => {
     >
       {/* Avatar Trigger */}
       <button
-        className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--green)] transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[var(--green)] focus:ring-offset-2 focus:ring-offset-[var(--gray-500)]"
+        className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--color-primary)] transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 focus:ring-offset-[var(--gray-500)]"
         aria-label="Menú de usuario"
       >
         <div className="relative w-6 h-6 rounded-full overflow-hidden">
@@ -68,7 +68,7 @@ export const UserDropdown = () => {
             </div>
           </div>
           {/* Decoración - Línea verde */}
-          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[var(--green)] to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent" />
         </div>
 
         {/* Menu Items */}
@@ -77,7 +77,7 @@ export const UserDropdown = () => {
             href="/perfil"
             className="flex items-center gap-3 px-4 py-2.5 text-white hover:bg-[var(--gray-400)] transition-colors duration-200 group"
           >
-            <UserIcon className="w-4 h-4 text-[var(--gray-200)] group-hover:text-[var(--green)] transition-colors duration-200" />
+            <UserIcon className="w-4 h-4 text-[var(--gray-200)] group-hover:text-[var(--color-primary)] transition-colors duration-200" />
             <span className="font-medium text-sm">Ver perfil</span>
           </Link>
 

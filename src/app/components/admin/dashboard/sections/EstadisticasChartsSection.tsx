@@ -1,4 +1,4 @@
-import { BarChart, Activity, PieChart as PieIcon, TrendingUp } from 'lucide-react';
+﻿import { BarChart, Activity, PieChart as PieIcon, TrendingUp } from 'lucide-react';
 import React from 'react';
 import {
     BarChart as ReBarChart,
@@ -31,7 +31,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         return (
             <div className="bg-[var(--black-900)] border border-[#262626] p-3 rounded-lg shadow-xl">
                 <p className="text-white text-xs font-bold mb-1">{label}</p>
-                <p className="text-[var(--green)] text-sm">
+                <p className="text-[var(--color-primary)] text-sm">
                     {payload[0].value} {payload[0].name === 'cantidad' ? '' : payload[0].name}
                 </p>
             </div>
@@ -94,7 +94,7 @@ export const EstadisticasChartsSection: React.FC<EstadisticasChartsSectionProps>
                     <Tooltip content={<CustomTooltip />} />
                     <Bar
                         dataKey="cantidad"
-                        fill="var(--green)"
+                        fill="var(--color-primary)"
                         radius={[0, 4, 4, 0]}
                         barSize={20}
                         animationDuration={1500}
@@ -120,9 +120,9 @@ export const EstadisticasChartsSection: React.FC<EstadisticasChartsSectionProps>
                     <Line
                         type="monotone"
                         dataKey="total_goles"
-                        stroke="var(--green)"
+                        stroke="var(--color-primary)"
                         strokeWidth={2}
-                        dot={{ fill: 'var(--green)', r: 3 }}
+                        dot={{ fill: 'var(--color-primary)', r: 3 }}
                         activeDot={{ r: 5, fill: '#fff' }}
                     />
                 </LineChart>

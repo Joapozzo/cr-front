@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Partido } from '@/app/types/partido';
@@ -216,7 +216,7 @@ export const PartidosTab: React.FC<PartidosTabProps> = ({
             }}
             className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
               vistaActiva === 'jornada'
-                ? 'bg-[var(--green)] text-white'
+                ? 'bg-[var(--color-primary)] text-white'
                 : 'text-[#737373] hover:text-white'
             }`}
           >
@@ -230,7 +230,7 @@ export const PartidosTab: React.FC<PartidosTabProps> = ({
             }}
             className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
               vistaActiva === 'fecha'
-                ? 'bg-[var(--green)] text-white'
+                ? 'bg-[var(--color-primary)] text-white'
                 : 'text-[#737373] hover:text-white'
             }`}
           >

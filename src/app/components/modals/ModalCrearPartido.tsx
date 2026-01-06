@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useMemo } from 'react';
 import { z } from 'zod';
@@ -442,8 +442,8 @@ export default function ModalCrearPartido({
             {/* ✅ Advertencia si se selecciona zona de eliminación directa */}
             {selectedZona && esZonaTipo1 && (
                 <div className="mb-4">
-                    <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-3">
-                        <h4 className="text-[var(--red)] font-medium text-sm mb-1">
+                    <div className="bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg p-3">
+                        <h4 className="text-[var(--color-secondary)] font-medium text-sm mb-1">
                             ⚠️ Zona de Eliminación Directa
                         </h4>
                         <p className="text-[var(--gray-100)] text-sm">

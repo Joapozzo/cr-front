@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Shield, Clock, CheckCircle, XCircle, Mail, Send, User } from "lucide-react";
 import { useState } from "react";
@@ -108,7 +108,7 @@ const HistorialChat: React.FC<HistorialChatProps> = ({ isLoading = false, userPl
                             <div className="flex-1 max-w-[85%] sm:max-w-[75%] md:max-w-[70%]">
                                 <div className="bg-[var(--black-800)] rounded-2xl rounded-tl-none p-3 sm:p-4 border border-[var(--gray-300)]">
                                     <div className="flex items-center gap-1 mb-1">
-                                        <Mail size={12} className="text-[var(--green)]" />
+                                        <Mail size={12} className="text-[var(--color-primary)]" />
                                         <span className="px-2 py-0.5 bg-[var(--blue)]/20 text-[var(--blue)] text-[10px] font-medium rounded">
                                             Invitación recibida
                                         </span>
@@ -146,12 +146,12 @@ const HistorialChat: React.FC<HistorialChatProps> = ({ isLoading = false, userPl
                         <div key={`sol-${solicitud.id_solicitud}`} className="flex gap-2 sm:gap-3 items-start justify-end">
                             {/* Mensaje */}
                             <div className="flex-1 max-w-[85%] sm:max-w-[75%] md:max-w-[70%] flex flex-col items-end">
-                                <div className="bg-[var(--green)]/10 rounded-2xl rounded-tr-none p-3 sm:p-4 border border-[var(--green)]/30">
+                                <div className="bg-[var(--color-primary)]/10 rounded-2xl rounded-tr-none p-3 sm:p-4 border border-[var(--color-primary)]/30">
                                     <div className="flex items-center gap-1 mb-1 justify-end">
-                                        <span className="px-2 py-0.5 bg-[var(--green)]/20 text-[var(--green)] text-[10px] font-medium rounded">
+                                        <span className="px-2 py-0.5 bg-[var(--color-primary)]/20 text-[var(--color-primary)] text-[10px] font-medium rounded">
                                             Solicitud enviada
                                         </span>
-                                        <Send size={12} className="text-[var(--green)]" />
+                                        <Send size={12} className="text-[var(--color-primary)]" />
                                     </div>
                                     <p className="text-[var(--white)] font-semibold text-sm mb-1 text-right">
                                         {solicitud.nombre_equipo}
@@ -164,7 +164,7 @@ const HistorialChat: React.FC<HistorialChatProps> = ({ isLoading = false, userPl
                                             {solicitud.mensaje_jugador}
                                         </p>
                                     )}
-                                    <div className="flex items-center gap-2 justify-end mt-2 pt-2 border-t border-[var(--green)]/30">
+                                    <div className="flex items-center gap-2 justify-end mt-2 pt-2 border-t border-[var(--color-primary)]/30">
                                         <span className="text-[var(--gray-100)] text-xs">
                                             {formatFecha(solicitud.fecha_solicitud)}
                                         </span>
@@ -177,7 +177,7 @@ const HistorialChat: React.FC<HistorialChatProps> = ({ isLoading = false, userPl
                             </div>
 
                             {/* Avatar Jugador */}
-                            <div className="w-10 h-10 rounded-full bg-[var(--green)]/20 flex items-center justify-center flex-shrink-0 p-1">
+                            <div className="w-10 h-10 rounded-full bg-[var(--color-primary)]/20 flex items-center justify-center flex-shrink-0 p-1">
                                 <ImagenPublica
                                     src={solicitud.img_jugador || userPlayer?.img}
                                     alt={solicitud.nombre_jugador || "Tu perfil"}
@@ -197,7 +197,7 @@ const HistorialChat: React.FC<HistorialChatProps> = ({ isLoading = false, userPl
                 <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-t border-[var(--gray-300)]">
                     <button
                         onClick={() => setShowMore(!showMore)}
-                        className="w-full py-2 text-[var(--green)] hover:text-[var(--green)]/80 text-sm font-medium transition-colors"
+                        className="w-full py-2 text-[var(--color-primary)] hover:text-[var(--color-primary)]/80 text-sm font-medium transition-colors"
                     >
                         {showMore ? 'Ver menos' : `Ver más (${allSolicitudes.length - ITEMS_POR_PAGINA} restantes)`}
                     </button>

@@ -211,7 +211,7 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-[var(--white)]">
                         Nombre del equipo
-                        <span className="text-[var(--red)] ml-1">*</span>
+                        <span className="text-[var(--color-secondary)] ml-1">*</span>
                     </label>
                     <Input
                         type="text"
@@ -253,7 +253,7 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
                                 <button
                                     type="button"
                                     onClick={handleRemoveImage}
-                                    className="absolute -top-2 -right-2 w-6 h-6 bg-[var(--red)] rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                                    className="absolute -top-2 -right-2 w-6 h-6 bg-[var(--color-secondary)] rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
                                     disabled={isLoading}
                                 >
                                     <X className="w-3 h-3 text-white" />
@@ -275,7 +275,7 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
                         />
                         <label
                             htmlFor="imagen-equipo"
-                            className={`flex items-center gap-2 px-4 py-2 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] cursor-pointer hover:bg-[var(--gray-200)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${errors.imagen ? 'border-[var(--red)]' : ''}`}
+                            className={`flex items-center gap-2 px-4 py-2 bg-[var(--gray-300)] border border-[var(--gray-200)] rounded-lg text-[var(--white)] cursor-pointer hover:bg-[var(--gray-200)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${errors.imagen ? 'border-[var(--color-secondary)]' : ''}`}
                         >
                             <Upload className="w-4 h-4" />
                             <span className="text-sm">
@@ -285,7 +285,7 @@ const ModalEditarEquipo = ({ isOpen, onClose, equipo, onSuccess }: ModalEditarEq
                     </div>
 
                     {errors.imagen && (
-                        <p className="text-[var(--red)] text-sm flex items-center gap-1">
+                        <p className="text-[var(--color-secondary)] text-sm flex items-center gap-1">
                             <AlertTriangle className="w-4 h-4" />
                             {errors.imagen}
                         </p>

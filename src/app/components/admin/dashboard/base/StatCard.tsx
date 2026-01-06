@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { LucideIcon } from 'lucide-react';
 import React from 'react';
 
@@ -23,7 +23,7 @@ export const StatCard: React.FC<StatCardProps> = ({
     value,
     subtitle,
     trend,
-    color = "var(--green)",
+    color = "var(--color-primary)",
     onClick,
     className = ''
 }) => {
@@ -36,7 +36,7 @@ export const StatCard: React.FC<StatCardProps> = ({
             className={`
                 bg-[var(--black-900)] border border-[#262626] rounded-xl p-5 
                 flex flex-col justify-between h-full relative overflow-hidden group
-                ${onClick ? 'cursor-pointer hover:border-[var(--green)]/50' : ''}
+                ${onClick ? 'cursor-pointer hover:border-[var(--color-primary)]/50' : ''}
                 ${className}
             `}
             onClick={onClick}
@@ -57,7 +57,7 @@ export const StatCard: React.FC<StatCardProps> = ({
             {(subtitle || trend) && (
                 <div className="flex items-center text-xs z-10">
                     {trend && (
-                        <span className={`font-semibold mr-2 ${trend.positive ? 'text-[var(--green)]' : 'text-[var(--red-500)]'}`}>
+                        <span className={`font-semibold mr-2 ${trend.positive ? 'text-[var(--color-primary)]' : 'text-[var(--color-secondary-500)]'}`}>
                             {trend.positive ? '+' : ''}{trend.value}%
                         </span>
                     )}

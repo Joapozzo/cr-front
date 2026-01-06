@@ -1,13 +1,15 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Menu, Bell } from "lucide-react";
 import { MobileMenuPlanillero } from './navbar/MobileMenuPlanillero';
+import { useTenant } from '@/app/contexts/TenantContext';
 
 const NavbarPlanillero: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const tenant = useTenant();
 
     const navItems = [
         { label: 'Inicio', href: '/planillero/home', isExternal: false },
@@ -24,7 +26,7 @@ const NavbarPlanillero: React.FC = () => {
                     {/* Left - Menu Button */}
                     <button
                         onClick={() => setIsMenuOpen(true)}
-                        className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--green)] transition-colors duration-300"
+                        className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--color-primary)] transition-colors duration-300"
                         aria-label="Abrir menú"
                     >
                         <Menu className="text-white w-5 h-5" />
@@ -37,8 +39,8 @@ const NavbarPlanillero: React.FC = () => {
                     >
                         <div className="relative h-full w-[40px]">
                             <Image
-                                src="/logos/isologo-reducido.png"
-                                alt="Logo Copa Relampago Mobile"
+                                src={tenant.branding.logo_header}
+                                alt={`Logo ${tenant.nombre_empresa} Mobile`}
                                 fill
                                 className="object-contain"
                             />
@@ -46,7 +48,7 @@ const NavbarPlanillero: React.FC = () => {
                     </Link>
 
                     {/* Right - Notifications */}
-                    {/* <button className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--green)] transition-colors duration-300">
+                    {/* <button className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--color-primary)] transition-colors duration-300">
                         <Bell className="text-white w-5 h-5" />
                     </button> */}
                 </div>
@@ -59,8 +61,8 @@ const NavbarPlanillero: React.FC = () => {
                         className="flex items-center cursor-pointer"
                     >
                         <Image
-                            src="/logos/logotipo.png"
-                            alt="Logo Copa Relampago"
+                            src={tenant.branding.logo_principal}
+                            alt={`Logo ${tenant.nombre_empresa}`}
                             width={120}
                             height={20}
                             className="h-5 w-auto"
@@ -74,7 +76,7 @@ const NavbarPlanillero: React.FC = () => {
                             <li key={item.label}>
                                 <Link
                                     href={item.href}
-                                    className="text-white text-md font-medium hover:text-[var(--green)] transition-colors duration-300"
+                                    className="text-white text-md font-medium hover:text-[var(--color-primary)] transition-colors duration-300"
                                 >
                                     {item.label}
                                 </Link>

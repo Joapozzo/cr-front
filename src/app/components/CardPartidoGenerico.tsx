@@ -1,4 +1,4 @@
-import { MapPin, Calendar, Clock, Volleyball } from 'lucide-react';
+﻿import { MapPin, Calendar, Clock, Volleyball } from 'lucide-react';
 import { formatTime, formatDate, getEstadoTexto, getEstadoColor } from '../utils/cardPartido.helper';
 import { EstadoPartido, PartidoEquipo } from '../types/partido';
 import { EscudoEquipo } from './common/EscudoEquipo';
@@ -102,7 +102,7 @@ export default function MatchCard({ partido, misEquiposIds = [] }: MatchCardProp
                         className="flex-shrink-0"
                     />
                     <span className={`text-xs sm:text-sm font-medium truncate ${
-                        esEquipoLocalMio ? 'text-[var(--green)]' : 'text-white'
+                        esEquipoLocalMio ? 'text-[var(--color-primary)]' : 'text-white'
                     }`}>
                         {nombreLocal}
                     </span>
@@ -152,7 +152,7 @@ export default function MatchCard({ partido, misEquiposIds = [] }: MatchCardProp
                 {/* Equipo Visita */}
                 <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0 justify-end">
                     <span className={`text-xs sm:text-sm font-medium truncate text-right ${
-                        esEquipoVisitaMio ? 'text-[var(--green)]' : 'text-white'
+                        esEquipoVisitaMio ? 'text-[var(--color-primary)]' : 'text-white'
                     }`}>
                         {nombreVisita}
                     </span>

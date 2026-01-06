@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { SolicitudesJugador } from '@/app/types/legajos';
 import { Mail, CheckCircle, XCircle, Clock } from 'lucide-react';
@@ -43,7 +43,7 @@ export const JugadorSolicitudesTab = ({ solicitudes, isLoading }: JugadorSolicit
             {solicitudes.solicitudes_entrada.length > 0 && (
                 <div className="bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] p-6">
                     <div className="flex items-center gap-2 mb-4">
-                        <Mail className="w-5 h-5 text-[var(--green)]" />
+                        <Mail className="w-5 h-5 text-[var(--color-primary)]" />
                         <h2 className="text-xl font-bold text-[var(--white)]">
                             Solicitudes de entrada ({solicitudes.solicitudes_entrada.length})
                         </h2>
@@ -71,19 +71,19 @@ export const JugadorSolicitudesTab = ({ solicitudes, isLoading }: JugadorSolicit
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 {solicitud.estado === 'aceptado' && (
-                                                    <CheckCircle className="w-5 h-5 text-[var(--green)]" />
+                                                    <CheckCircle className="w-5 h-5 text-[var(--color-primary)]" />
                                                 )}
                                                 {solicitud.estado === 'rechazado' && (
-                                                    <XCircle className="w-5 h-5 text-[var(--red)]" />
+                                                    <XCircle className="w-5 h-5 text-[var(--color-secondary)]" />
                                                 )}
                                                 {solicitud.estado === 'enviado' && (
                                                     <Clock className="w-5 h-5 text-[var(--yellow)]" />
                                                 )}
                                                 <span className={`px-2 py-1 rounded text-xs font-medium ${
                                                     solicitud.estado === 'aceptado'
-                                                        ? 'bg-[var(--green)]/20 text-[var(--green)] border border-[var(--green)]/30'
+                                                        ? 'bg-[var(--color-primary)]/20 text-[var(--color-primary)] border border-[var(--color-primary)]/30'
                                                         : solicitud.estado === 'rechazado'
-                                                        ? 'bg-[var(--red)]/20 text-[var(--red)] border border-[var(--red)]/30'
+                                                        ? 'bg-[var(--color-secondary)]/20 text-[var(--color-secondary)] border border-[var(--color-secondary)]/30'
                                                         : 'bg-[var(--yellow)]/20 text-[var(--yellow)] border border-[var(--yellow)]/30'
                                                 }`}>
                                                     {solicitud.estado === 'aceptado' ? 'Aceptado' : solicitud.estado === 'rechazado' ? 'Rechazado' : 'Enviado'}
@@ -110,7 +110,7 @@ export const JugadorSolicitudesTab = ({ solicitudes, isLoading }: JugadorSolicit
             {solicitudes.solicitudes_baja.length > 0 && (
                 <div className="bg-[var(--gray-500)] rounded-lg border border-[var(--gray-300)] p-6">
                     <div className="flex items-center gap-2 mb-4">
-                        <Mail className="w-5 h-5 text-[var(--green)]" />
+                        <Mail className="w-5 h-5 text-[var(--color-primary)]" />
                         <h2 className="text-xl font-bold text-[var(--white)]">
                             Solicitudes de Baja ({solicitudes.solicitudes_baja.length})
                         </h2>
@@ -138,19 +138,19 @@ export const JugadorSolicitudesTab = ({ solicitudes, isLoading }: JugadorSolicit
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 {solicitud.estado === 'aceptado' && (
-                                                    <CheckCircle className="w-5 h-5 text-[var(--green)]" />
+                                                    <CheckCircle className="w-5 h-5 text-[var(--color-primary)]" />
                                                 )}
                                                 {solicitud.estado === 'rechazado' && (
-                                                    <XCircle className="w-5 h-5 text-[var(--red)]" />
+                                                    <XCircle className="w-5 h-5 text-[var(--color-secondary)]" />
                                                 )}
                                                 {solicitud.estado === 'pendiente' && (
                                                     <Clock className="w-5 h-5 text-[var(--yellow)]" />
                                                 )}
                                                 <span className={`px-2 py-1 rounded text-xs font-medium ${
                                                     solicitud.estado === 'aceptado'
-                                                        ? 'bg-[var(--green)]/20 text-[var(--green)] border border-[var(--green)]/30'
+                                                        ? 'bg-[var(--color-primary)]/20 text-[var(--color-primary)] border border-[var(--color-primary)]/30'
                                                         : solicitud.estado === 'rechazado'
-                                                        ? 'bg-[var(--red)]/20 text-[var(--red)] border border-[var(--red)]/30'
+                                                        ? 'bg-[var(--color-secondary)]/20 text-[var(--color-secondary)] border border-[var(--color-secondary)]/30'
                                                         : 'bg-[var(--yellow)]/20 text-[var(--yellow)] border border-[var(--yellow)]/30'
                                                 }`}>
                                                     {solicitud.estado === 'aceptado' ? 'Aceptado' : solicitud.estado === 'rechazado' ? 'Rechazado' : 'Pendiente'}

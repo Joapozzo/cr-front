@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import BaseModal from "./ModalPlanillero";
 import { Save, ArrowLeft } from "lucide-react";
 import { Button } from "../ui/Button";
@@ -81,7 +81,7 @@ const ExpulsionModal: React.FC<ExpulsionModalProps> = ({
                         </div>
                         <div className="w-4 h-px bg-[#404040]"></div>
                         <div className="flex items-center gap-1">
-                            <div className="w-6 h-6 rounded-full bg-[var(--green)] flex items-center justify-center text-black text-xs font-medium">
+                            <div className="w-6 h-6 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-black text-xs font-medium">
                                 2
                             </div>
                             <span className="hidden sm:inline">Motivo</span>

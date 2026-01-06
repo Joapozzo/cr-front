@@ -1,4 +1,4 @@
-import { Volleyball } from 'lucide-react';
+﻿import { Volleyball } from 'lucide-react';
 import { Goleador } from '@/app/types/jugador';
 import { ImagenPublica } from '@/app/components/common/ImagenPublica';
 
@@ -11,7 +11,7 @@ const TablaGoleadores = ({ goleadores }: GoleadoresProps) => {
         <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] overflow-hidden">
             <div className="p-4 border-b border-[var(--gray-300)]">
                 <h3 className="text-[var(--white)] font-semibold text-lg flex items-center gap-2">
-                    <Volleyball className="w-5 h-5 text-[var(--green)]" />
+                    <Volleyball className="w-5 h-5 text-[var(--color-primary)]" />
                     Tabla de goleadores
                 </h3>
             </div>
@@ -59,7 +59,7 @@ const TablaGoleadores = ({ goleadores }: GoleadoresProps) => {
                                         </div>
                                     </td>
                                     <td className="px-4 py-3 text-center">
-                                        <span className="text-[var(--green)] font-bold text-lg">
+                                        <span className="text-[var(--color-primary)] font-bold text-lg">
                                             {goleador.stats.goles}
                                         </span>
                                     </td>

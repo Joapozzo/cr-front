@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useRef, useState } from 'react';
 import { MdQrCodeScanner, MdCameraAlt } from 'react-icons/md';
@@ -118,7 +118,7 @@ export const ScannerDNINativo = ({ onScan }: ScannerDNINativoProps) => {
           {isProcessing && (
             <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
               <div className="flex flex-col items-center gap-2">
-                <Loader2 className="w-8 h-8 animate-spin text-[var(--green)]" />
+                <Loader2 className="w-8 h-8 animate-spin text-[var(--color-primary)]" />
                 <p className="text-sm text-white">Procesando imagen...</p>
               </div>
             </div>
@@ -132,7 +132,7 @@ export const ScannerDNINativo = ({ onScan }: ScannerDNINativoProps) => {
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={isProcessing}
-          className="w-full h-64 bg-[var(--gray-400)] rounded-lg border-2 border-dashed border-[var(--gray-300)] flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-[var(--gray-300)] hover:border-[var(--green)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full h-64 bg-[var(--gray-400)] rounded-lg border-2 border-dashed border-[var(--gray-300)] flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-[var(--gray-300)] hover:border-[var(--color-primary)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <MdCameraAlt size={48} className="text-[var(--gray-200)]" />
           <p className="text-sm text-[var(--gray-200)] font-medium text-center">
@@ -141,7 +141,7 @@ export const ScannerDNINativo = ({ onScan }: ScannerDNINativoProps) => {
           <p className="text-xs text-[var(--gray-300)] text-center px-4">
             Toma una foto del código de barras de tu DNI
           </p>
-          <div className="flex items-center gap-2 text-xs text-[var(--green)]">
+          <div className="flex items-center gap-2 text-xs text-[var(--color-primary)]">
             <MdQrCodeScanner size={16} />
             <span>Zoom disponible</span>
           </div>
