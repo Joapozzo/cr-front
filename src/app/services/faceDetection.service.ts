@@ -2,11 +2,23 @@
  * Servicio para detección y validación facial usando face-api.js
  */
 
-import * as faceapi from 'face-api.js';
+// Importación dinámica de face-api.js solo en el cliente
+let faceapi: any = null;
 
 // Estado de carga de modelos
 let modelsLoaded = false;
 let loadingPromise: Promise<void> | null = null;
+
+// Cargar face-api.js dinámicamente solo en el cliente
+const loadFaceApi = async () => {
+  if (typeof window === 'undefined') {
+    throw new Error('face-api.js solo puede usarse en el cliente');
+  }
+  if (!faceapi) {
+    faceapi = await import('face-api.js');
+  }
+  return faceapi;
+};
 
 /**
  * Carga los modelos de face-api.js si no están cargados
@@ -22,12 +34,13 @@ export const loadFaceModels = async (): Promise<void> => {
 
   loadingPromise = (async () => {
     try {
+      const faceapiModule = await loadFaceApi();
       const MODEL_URL = '/models';
       
       await Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-        faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL),
+        faceapiModule.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+        faceapiModule.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+        faceapiModule.nets.faceExpressionNet.loadFromUri(MODEL_URL),
       ]);
 
       modelsLoaded = true;
@@ -78,8 +91,9 @@ export const validarRostro = async (
     }
 
     // Detectar rostros con landmarks y expresiones
-    const detecciones = await faceapi
-      .detectAllFaces(imageElement, new faceapi.TinyFaceDetectorOptions())
+    const faceapiModule = await loadFaceApi();
+    const detecciones = await faceapiModule
+      .detectAllFaces(imageElement, new faceapiModule.TinyFaceDetectorOptions())
       .withFaceLandmarks()
       .withFaceExpressions();
 
@@ -229,8 +243,9 @@ export const detectarRostroEnTiempoReal = async (
     }
 
     try {
-      const detecciones = await faceapi
-        .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+      const faceapiModule = await loadFaceApi();
+      const detecciones = await faceapiModule
+        .detectAllFaces(video, new faceapiModule.TinyFaceDetectorOptions())
         .withFaceLandmarks()
         .withFaceExpressions();
 

@@ -1,5 +1,17 @@
 // src/services/face-detection.service.ts
-import * as faceapi from 'face-api.js';
+// Importación dinámica de face-api.js solo en el cliente
+let faceapi: typeof import('face-api.js') | null = null;
+
+// Cargar face-api.js dinámicamente solo en el cliente
+const loadFaceApi = async () => {
+  if (typeof window === 'undefined') {
+    throw new Error('face-api.js solo puede usarse en el cliente');
+  }
+  if (!faceapi) {
+    faceapi = await import('face-api.js');
+  }
+  return faceapi;
+};
 
 let modelosDescargados = false;
 
@@ -10,12 +22,13 @@ export const descargarModelosFaciales = async (): Promise<void> => {
   if (modelosDescargados) return;
 
   try {
+    const faceapiModule = await loadFaceApi();
     const MODEL_URL = '/models'; // Los modelos deben estar en public/models/
 
     await Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-      faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-      faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL),
+      faceapiModule.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+      faceapiModule.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+      faceapiModule.nets.faceExpressionNet.loadFromUri(MODEL_URL),
     ]);
 
     modelosDescargados = true;
@@ -45,8 +58,9 @@ export const detectarRostro = async (
     }
 
     // Detectar rostros
-    const detecciones = await faceapi
-      .detectAllFaces(imagenElement, new faceapi.TinyFaceDetectorOptions())
+    const faceapiModule = await loadFaceApi();
+    const detecciones = await faceapiModule
+      .detectAllFaces(imagenElement, new faceapiModule.TinyFaceDetectorOptions())
       .withFaceLandmarks()
       .withFaceExpressions();
 
@@ -93,13 +107,13 @@ export const detectarRostro = async (
     const rightEye = landmarks.getRightEye();
     
     const leftEyeCenter = {
-      x: leftEye.reduce((sum, p) => sum + p.x, 0) / leftEye.length,
-      y: leftEye.reduce((sum, p) => sum + p.y, 0) / leftEye.length,
+      x: leftEye.reduce((sum: number, p: { x: number; y: number }) => sum + p.x, 0) / leftEye.length,
+      y: leftEye.reduce((sum: number, p: { x: number; y: number }) => sum + p.y, 0) / leftEye.length,
     };
     
     const rightEyeCenter = {
-      x: rightEye.reduce((sum, p) => sum + p.x, 0) / rightEye.length,
-      y: rightEye.reduce((sum, p) => sum + p.y, 0) / rightEye.length,
+      x: rightEye.reduce((sum: number, p: { x: number; y: number }) => sum + p.x, 0) / rightEye.length,
+      y: rightEye.reduce((sum: number, p: { x: number; y: number }) => sum + p.y, 0) / rightEye.length,
     };
 
     const angulo = Math.abs(
@@ -169,7 +183,7 @@ export const validarSelfie = async (
       valido: true,
       mensaje: `Rostro detectado correctamente (confianza: ${Math.round(resultado.confianza * 100)}%)`,
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error al validar selfie:', error);
     return {
       valido: false,
