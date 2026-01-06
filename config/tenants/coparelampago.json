@@ -1,0 +1,46 @@
+{
+    "id": "coparelampago",
+    "nombre_empresa": "Copa Relámpago",
+    "nombre_corto": "CR",
+    
+    "branding": {
+      "logo_principal": "/logos/coparelampago-logo.png",
+      "logo_header": "/logos/coparelampago-header.png",
+      "favicon": "/favicons/coparelampago.ico",
+      "titulo_pagina": "Copa Relámpago - Gestión de Torneos"
+    },
+    
+    "colores": {
+      "primario": "#00985f",
+      "secundario": "#2ad174",
+      "acento": "#ef4444",
+      "success": "#22c55e",
+      "danger": "#ef4444",
+      "warning": "#e2b000"
+    },
+    
+    "features": {
+      "sistema_pagos": true,
+      "mercado_jugadores": false,
+      "dreamteam": true,
+      "inscripciones_online": true,
+      "validacion_dni_biometrica": true,
+      "caja_diaria": true
+    },
+    
+    "reglas_negocio": {
+      "requiere_validacion_dni": true,
+      "permite_cambios_durante_partido": true,
+      "calculo_tabla_custom": false
+    },
+    
+    "contacto": {
+      "email": "contacto@coparelampago.com",
+      "telefono": "+54 351 123 4567",
+      "direccion": "Córdoba, Argentina",
+      "redes": {
+        "instagram": "@coparelampago",
+        "facebook": "coparelampago"
+      }
+    }
+  }

@@ -20,21 +20,78 @@ dist
 # Producción
 /build
 
-# Archivos de entorno
+# ============================================
+# ARCHIVOS DE ENTORNO - MULTI TENANT
+# ============================================
+# Ignorar TODOS los archivos .env excepto los ejemplos
 .env
 .env*.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Logs
+# Archivos de configuración específicos por tenant
+.env.coparelampago
+.env.ucfa
+.env.production.coparelampago
+.env.production.ucfa
+
+# Mantener solo los archivos de ejemplo
+!.env.example
+!.env.coparelampago.example
+!.env.ucfa.example
+
+# ============================================
+# CONFIGURACIÓN DE TENANTS
+# ============================================
+# Si tienes datos sensibles en los JSON de config, ignóralos
+# (Generalmente NO es necesario, pero por si acaso)
+# config/tenants/*.local.json
+
+# ============================================
+# ARCHIVOS ESPECÍFICOS DE TENANTS
+# ============================================
+# Logos y assets específicos (si son privados)
+# public/logos/coparelampago-*.png
+# public/logos/ucfa-*.png
+
+# Archivos de build específicos por tenant
+dist-coparelampago/
+dist-ucfa/
+
+# ============================================
+# BASE DE DATOS
+# ============================================
+# Archivos de migración local
+*.db
+*.sqlite
+*.sqlite3
+prisma/dev.db
+prisma/*.db
+
+# Dumps de base de datos
+*.sql
+*.dump
+backups/
+
+# ============================================
+# LOGS
+# ============================================
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+logs/
+*.log
 
-# Sistema operativo
+# Logs específicos por tenant (si los tienes)
+logs-coparelampago/
+logs-ucfa/
+
+# ============================================
+# SISTEMA OPERATIVO
+# ============================================
 .DS_Store
 .DS_Store?
 ._*
@@ -44,7 +101,9 @@ ehthumbs.db
 Thumbs.db
 desktop.ini
 
-# IDEs y editores
+# ============================================
+# IDEs Y EDITORES
+# ============================================
 .vscode/
 .idea/
 *.swp
@@ -56,19 +115,53 @@ desktop.ini
 *.sublime-project
 *.sublime-workspace
 
-# TypeScript
+# ============================================
+# TYPESCRIPT
+# ============================================
 *.tsbuildinfo
 next-env.d.ts
 
-# Cache
+# ============================================
+# CACHE
+# ============================================
 .cache/
 .parcel-cache/
 .turbo/
+.eslintcache
 
-# Misceláneos
-*.log
+# ============================================
+# ARCHIVOS TEMPORALES
+# ============================================
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+
+# ============================================
+# PM2
+# ============================================
+# Si usas PM2, ignorar logs y pids
+.pm2/
+pids/
 *.pid
 *.seed
 *.pid.lock
+
+# ============================================
+# UPLOADS Y ARCHIVOS GENERADOS
+# ============================================
+# Archivos subidos por usuarios (si corresponde)
+uploads/
+public/uploads/
+storage/
+
+# Comprobantes de pago (si se guardan localmente)
+comprobantes/
+public/comprobantes/
+
+# ============================================
+# MISCELÁNEOS
+# ============================================
 .npm
-.eslintcache
+*.orig

@@ -1,0 +1,46 @@
+{
+    "id": "ucfa",
+    "nombre_empresa": "UCFA Fútbol",
+    "nombre_corto": "UCFA",
+    
+    "branding": {
+      "logo_principal": "/logos/ucfa-logo.png",
+      "logo_header": "/logos/ucfa-header.png",
+      "favicon": "/favicons/ucfa.ico",
+      "titulo_pagina": "UCFA - Unión Cordobesa de Fútbol Amateur"
+    },
+    
+    "colores": {
+      "primario": "#dc2626",
+      "secundario": "#ef4444",
+      "acento": "#3b82f6",
+      "success": "#10b981",
+      "danger": "#dc2626",
+      "warning": "#f59e0b"
+    },
+    
+    "features": {
+      "sistema_pagos": true,
+      "mercado_jugadores": true,
+      "dreamteam": false,
+      "inscripciones_online": true,
+      "validacion_dni_biometrica": false,
+      "caja_diaria": false
+    },
+    
+    "reglas_negocio": {
+      "requiere_validacion_dni": false,
+      "permite_cambios_durante_partido": false,
+      "calculo_tabla_custom": true
+    },
+    
+    "contacto": {
+      "email": "info@ucfa.com.ar",
+      "telefono": "+54 351 987 6543",
+      "direccion": "Córdoba, Argentina",
+      "redes": {
+        "instagram": "@ucfa_oficial",
+        "facebook": "ucfaoficial"
+      }
+    }
+  }

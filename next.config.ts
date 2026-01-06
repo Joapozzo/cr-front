@@ -27,8 +27,8 @@ const nextConfig = {
     ];
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  webpack: (config: any, { isServer }: { isServer: boolean }) => {
-    // Excluir módulos de Node.js del bundle del cliente
+  webpack: (config: any, { isServer, webpack }: { isServer: boolean; webpack: any }) => {
+    // Para el cliente: excluir módulos de Node.js
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -44,9 +44,33 @@ const nextConfig = {
         assert: false,
         os: false,
         path: false,
-        'encoding': false,
+        encoding: false,
+        util: false,
+        buffer: false,
+        process: false,
       };
+
+      // Ignorar módulos problemáticos de face-api.js y node-fetch
+      config.plugins.push(
+        new webpack.IgnorePlugin({
+          resourceRegExp: /^(fs|path|encoding|util|os|stream|buffer)$/,
+          contextRegExp: /node_modules\/face-api\.js/,
+        }),
+        new webpack.IgnorePlugin({
+          resourceRegExp: /^encoding$/,
+          contextRegExp: /node_modules\/node-fetch/,
+        })
+      );
     }
+
+    // Para el servidor: excluir face-api.js completamente
+    if (isServer) {
+      config.externals = config.externals || [];
+      config.externals.push({
+        'face-api.js': 'commonjs face-api.js',
+      });
+    }
+
     return config;
   },
 };
