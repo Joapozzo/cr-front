@@ -62,7 +62,7 @@ export const MobileMenuLanding = ({ isOpen, onClose, navLinks }: MobileMenuLandi
 
       {/* Drawer/Sidebar */}
       <div
-        className={`fixed top-0 right-0 h-full w-[80%] max-w-sm bg-[var(--gray-500)] backdrop-blur-none z-[9999] shadow-2xl border-l border-white/10 transform transition-transform duration-300 ease-out md:hidden ${isOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed top-0 left-0 h-full w-[80%] max-w-sm bg-[var(--gray-500)] backdrop-blur-none z-[9999] shadow-2xl border-r border-white/10 transform transition-transform duration-300 ease-out md:hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
       >
         <div className="flex flex-col h-full p-6">
@@ -130,7 +130,7 @@ export const MobileMenuLanding = ({ isOpen, onClose, navLinks }: MobileMenuLandi
         @keyframes slide-in {
           from {
             opacity: 0;
-            transform: translateX(-20px);
+            transform: translateX(20px);
           }
           to {
             opacity: 1;

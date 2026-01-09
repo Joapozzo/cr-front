@@ -70,7 +70,7 @@ const Footer = () => {
                         <ul className="space-y-4">
                             <li className="flex items-start gap-3 text-[var(--gray-100)] text-sm">
                                 <MapPin size={18} className="text-[var(--color-primary)] shrink-0 mt-1" />
-                                <span>Complejo Elenia, Córdoba, Argentina</span>
+                                <span>{tenant.contacto.direccion}</span>
                             </li>
                             <li className="flex items-center gap-3 text-[var(--gray-100)] text-sm">
                                 <Mail size={18} className="text-[var(--color-primary)] shrink-0" />

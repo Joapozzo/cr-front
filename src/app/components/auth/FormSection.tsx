@@ -76,14 +76,14 @@ export const FormSection = ({
           Modified logic: if isLoginPage or isRegistroPage, behave like full page (centered, no rounded top) 
       */}
       <div className={`
-          w-full lg:max-w-xl lg:mx-auto flex flex-col 
+          w-full ${isRegistroPage || isLoginPage ? 'lg:max-w-lg' : 'lg:max-w-xl'} lg:mx-auto flex flex-col 
           ${isFullPageMobile ? 'h-full flex-1' : 'flex-shrink-0 lg:flex-none'} 
           bg-[var(--gray-500)] lg:bg-[var(--gray-500)] z-10 relative 
           ${isRegistroPage || isLoginPage ? 'justify-center lg:justify-center' : 'justify-start'} 
           ${isFullPageMobile ? 'rounded-none' : 'rounded-t-[30px] lg:rounded-none'} 
-          px-6 
-          ${(isLoginPage || isRegistroPage) ? 'pt-4' : 'pt-4 lg:pt-8'} 
-          pb-4 lg:px-16 lg:pb-8 overflow-y-auto lg:overflow-hidden
+          ${(isLoginPage || isRegistroPage) ? 'px-8 lg:px-20' : 'px-6 lg:px-16'}
+          ${(isLoginPage || isRegistroPage) ? 'pt-6' : 'pt-4 lg:pt-8'} 
+          ${(isLoginPage || isRegistroPage) ? 'pb-8 lg:pb-12' : 'pb-4 lg:pb-8'} overflow-y-auto lg:overflow-hidden
       `}>
         {/* Contenedor centrado verticalmente - Login y Register idénticos */}
         {(isLoginPage || isRegistroPage) ? (

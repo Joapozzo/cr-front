@@ -31,9 +31,9 @@ const Navbar = () => {
 
     return (
         <nav
-            className={`fixed top-0 left-0 right-0 z-[201] transition-all duration-300 ${isScrolled || isMobileMenuOpen ? 'bg-[var(--black)] md:backdrop-blur-md shadow-lg shadow-[var(--black)]/50 py-2' : 'bg-transparent py-3'}`}
+            className={`fixed top-0 left-0 right-0 z-[201] transition-all duration-300 ${isScrolled || isMobileMenuOpen ? 'bg-[var(--black)] md:backdrop-blur-md shadow-lg shadow-[var(--black)]/50 py-4' : 'bg-transparent py-5'}`}
         >
-            <div className="flex justify-between items-center w-full h-full relative max-w-[1300px] mx-auto px-6">
+            <div className="flex justify-between items-center w-full h-full relative max-w-[1300px] mx-auto px-8 md:px-12">
                 {/* Mobile Layout - Mismo skeleton que los otros navbars */}
                 <div className="flex md:hidden items-center justify-between w-full">
                     {/* Left - Menu Button */}
