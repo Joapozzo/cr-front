@@ -75,7 +75,7 @@ const PredioAccordion: React.FC<PredioAccordionProps> = ({
                             </h2>
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                                 predio.estado === 'A'
-                                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                                    ? 'bg-[var(--color-primary)]/20 text-[var(--color-primary)] border border-[var(--color-primary)]/30'
                                     : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
                             }`}>
                                 {predio.estado === 'A' ? 'Activo' : 'Inactivo'}

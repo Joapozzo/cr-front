@@ -2,9 +2,11 @@
 
 interface ResumenCategoriaProps { 
     estadisticas: EstadisticasCategoriaEdicion;
+    edicionId: number;
+    idCategoria: number;
 }
 
-const ResumenCategoria = ({ estadisticas }: ResumenCategoriaProps) => {
+const ResumenCategoria = ({ estadisticas, edicionId, idCategoria }: ResumenCategoriaProps) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Vacantes */}
@@ -63,7 +65,7 @@ const ResumenCategoria = ({ estadisticas }: ResumenCategoriaProps) => {
                         <span className="text-sm text-[var(--gray-100)]">Sin vacante</span>
                     </div>
                     <div className="mt-4">
-                        <a href="#" className="text-[var(--color-primary)] text-sm hover:text-[var(--color-primary-strong)] transition-colors">
+                        <a href={`/adm/ediciones/${edicionId}/${idCategoria}/equipos`} className="text-[var(--color-primary)] text-sm hover:text-[var(--color-primary-strong)] transition-colors">
                             Ir a equipos
                         </a>
                     </div>

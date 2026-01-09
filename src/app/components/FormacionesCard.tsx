@@ -302,7 +302,7 @@ const FormacionesCard: React.FC<FormacionesProps> = ({
                                                     ? 'text-red-400'
                                                     : jugador.eventual === 'S'
                                                         ? 'text-yellow-400'
-                                                        : 'text-[var(--color-secondary)]'
+                                                        : 'text-[var(--color-danger)]'
                                                     }`}
                                             />
                                         </div>

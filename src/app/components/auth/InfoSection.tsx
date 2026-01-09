@@ -16,7 +16,7 @@ export const InfoSection = ({
   return (
     <div
       className="hidden lg:flex relative w-1/2 flex-col items-center justify-center px-24 bg-cover bg-center"
-      style={{ backgroundImage: "url('/imagen_log.jpg')" }}
+      style={{ backgroundImage: `url('${tenant.imagenes.login}')` }}
     >
       {/* Overlay oscuro */}
       <div className="absolute inset-0 bg-black/80 z-0" />

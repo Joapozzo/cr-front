@@ -7,6 +7,7 @@ export interface CategoriaActiva {
     nombre_completo: string;
     id_edicion: number;
     nombre_edicion: string | null;
+    color: string | null;
 }
 
 export interface ZonaSinTerminar {

@@ -9,6 +9,7 @@ import {
   LazyTablaPosicionesHome,
   LazySancionesHome,
   LazyNoticiasHome,
+  LazyDreamTeamHome,
 } from "@/app/components/home/LazyHomeComponents";
 
 export default function Home() {
@@ -22,6 +23,7 @@ export default function Home() {
         <LazyUnirseEquipoCard show={equipos.length === 0} />
         <LazyPartidosEquipoCard show={equipos.length > 0} />
         <LazyTablaPosicionesHome linkTablaCompleta="/estadisticas" />
+        <LazyDreamTeamHome />
         <LazySancionesHome />
         <LazyNoticiasHome linkNoticiasCompleta="/noticias" />
       </div>

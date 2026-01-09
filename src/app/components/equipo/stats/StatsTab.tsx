@@ -76,8 +76,22 @@ export const StatsTab: React.FC<StatsTabProps> = ({
         goles_contra: pos.goles_contra,
         diferencia_goles: pos.diferencia_goles,
         puntos: pos.puntos,
+        puntos_descontados: pos.puntos_descontados,
+        puntos_finales: pos.puntos_finales,
+        apercibimientos: pos.apercibimientos,
         ultima_actualizacion: new Date().toISOString().split('T')[0],
-        img_equipo: pos.img_equipo || undefined
+        img_equipo: pos.img_equipo || undefined,
+        // Campos para datos en vivo
+        puntos_live: pos.puntos_live,
+        goles_favor_live: pos.goles_favor_live,
+        goles_contra_live: pos.goles_contra_live,
+        diferencia_goles_live: pos.diferencia_goles_live,
+        puntos_finales_live: pos.puntos_finales_live,
+        partidos_jugados_live: pos.partidos_jugados_live,
+        partidos_ganados_live: pos.partidos_ganados_live,
+        partidos_empatados_live: pos.partidos_empatados_live,
+        partidos_perdidos_live: pos.partidos_perdidos_live,
+        en_vivo: pos.en_vivo
       }));
     }
 
@@ -96,17 +110,42 @@ export const StatsTab: React.FC<StatsTabProps> = ({
           goles_contra: pos.goles_contra,
           diferencia_goles: pos.diferencia_goles,
           puntos: pos.puntos,
+          puntos_descontados: pos.puntos_descontados,
+          puntos_finales: pos.puntos_finales,
+          apercibimientos: pos.apercibimientos,
           ultima_actualizacion: new Date().toISOString().split('T')[0],
-          img_equipo: pos.img_equipo || undefined
+          img_equipo: pos.img_equipo || undefined,
+          // Campos para datos en vivo
+          puntos_live: pos.puntos_live,
+          goles_favor_live: pos.goles_favor_live,
+          goles_contra_live: pos.goles_contra_live,
+          diferencia_goles_live: pos.diferencia_goles_live,
+          puntos_finales_live: pos.puntos_finales_live,
+          partidos_jugados_live: pos.partidos_jugados_live,
+          partidos_ganados_live: pos.partidos_ganados_live,
+          partidos_empatados_live: pos.partidos_empatados_live,
+          partidos_perdidos_live: pos.partidos_perdidos_live,
+          en_vivo: pos.en_vivo
         });
       });
     });
 
-    // Ordenar por puntos, diferencia de goles, goles a favor
+    // Ordenar por puntos finales (usando valores live si están disponibles), diferencia de goles, goles a favor
     return todasPosiciones.sort((a, b) => {
-      if (b.puntos !== a.puntos) return b.puntos - a.puntos;
-      if (b.diferencia_goles !== a.diferencia_goles) return b.diferencia_goles - a.diferencia_goles;
-      return b.goles_favor - a.goles_favor;
+      const equipoA = a as EquipoPosicion & { puntos_finales_live?: number; diferencia_goles_live?: number; goles_favor_live?: number };
+      const equipoB = b as EquipoPosicion & { puntos_finales_live?: number; diferencia_goles_live?: number; goles_favor_live?: number };
+      
+      const puntosA = equipoA.puntos_finales_live ?? equipoA.puntos_finales ?? equipoA.puntos ?? 0;
+      const puntosB = equipoB.puntos_finales_live ?? equipoB.puntos_finales ?? equipoB.puntos ?? 0;
+      if (puntosB !== puntosA) return puntosB - puntosA;
+      
+      const difA = equipoA.diferencia_goles_live ?? equipoA.diferencia_goles ?? 0;
+      const difB = equipoB.diferencia_goles_live ?? equipoB.diferencia_goles ?? 0;
+      if (difB !== difA) return difB - difA;
+      
+      const gfA = equipoA.goles_favor_live ?? equipoA.goles_favor ?? 0;
+      const gfB = equipoB.goles_favor_live ?? equipoB.goles_favor ?? 0;
+      return gfB - gfA;
     });
   }, [posicionesData]);
 
@@ -146,19 +185,11 @@ export const StatsTab: React.FC<StatsTabProps> = ({
                     <TablaPosiciones
                       variant="completa"
                       posiciones={zona.posiciones.map(pos => ({
-                        id_equipo: pos.id_equipo,
-                        nombre_equipo: pos.nombre_equipo,
-                        partidos_jugados: pos.partidos_jugados,
-                        ganados: pos.partidos_ganados, // Mapear partidos_ganados a ganados
-                        empatados: pos.partidos_empatados, // Mapear partidos_empatados a empatados
-                        perdidos: pos.partidos_perdidos, // Mapear partidos_perdidos a perdidos
-                        goles_favor: pos.goles_favor,
-                        goles_contra: pos.goles_contra,
-                        diferencia_goles: pos.diferencia_goles,
-                        puntos: pos.puntos,
-                        puntos_descontados: pos.puntos_descontados,
-                        puntos_finales: pos.puntos_finales,
-                        apercibimientos: pos.apercibimientos,
+                        ...pos, // Preservar todos los campos originales (incluyendo _live y en_vivo)
+                        // Mapear campos para compatibilidad con EquipoPosicion
+                        ganados: pos.partidos_ganados,
+                        empatados: pos.partidos_empatados,
+                        perdidos: pos.partidos_perdidos,
                         ultima_actualizacion: new Date().toISOString().split('T')[0],
                         img_equipo: pos.img_equipo || undefined
                       }))}

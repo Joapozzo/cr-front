@@ -105,9 +105,17 @@ export interface NombreCategoriaDisponible {
   es_nombre: boolean;
 }
 
+export interface DivisionDisponible {
+  id_division: number;
+  nombre: string;
+  descripcion: string | null;
+  genero: 'M' | 'F' | 'X';
+}
+
 export interface DatosCrearCategoriaData {
   categorias: CategoriaDisponible[];
   nombres_disponibles: NombreCategoriaDisponible[];
+  divisiones_disponibles: DivisionDisponible[];
 }
 
 export interface DatosCrearCategoriaResponse {

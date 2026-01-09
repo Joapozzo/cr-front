@@ -134,11 +134,11 @@ const MVPComponent: React.FC<MVPComponentProps> = ({
                             {/* Equipo y posición */}
                             <div className="flex items-center gap-2">
                                 <p className="text-[#e5e5e5] text-sm font-medium">
-                                    {jugadorSeleccionado.nombre_equipo}
+                                    {jugadorSeleccionado.nombre_equipo}, 
                                 </p>
                                 {jugadorSeleccionado.posicion && (
                                     <p className="text-[#737373] text-sm">
-                                        , Posicion: {jugadorSeleccionado.posicion}
+                                        Posicion: {jugadorSeleccionado.posicion}
                                     </p>
                                 )}
                             </div>

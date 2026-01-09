@@ -79,19 +79,13 @@ export const EdicionLayout: React.FC<EdicionLayoutProps> = ({
     <div className="space-y-6 w-full">
       {/* Header con edición y categoría */}
       <div className="relative flex items-center gap-3 p-4 bg-[var(--black-900)] rounded-xl border border-[#262626]">
-        <div className="w-10 h-10 bg-[var(--color-primary)] rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
-          {logoEdicion ? (
-            <ImagenPublica
-              src={logoEdicion}
-              alt={nombreEdicion}
-              width={40}
-              height={40}
-              fallbackIcon="Shield"
-            />
-          ) : (
-            <Shield size={20} className="text-white" />
-          )}
-        </div>
+        <ImagenPublica
+          src={logoEdicion}
+          alt={nombreEdicion}
+          width={35}
+          height={35}
+          fallbackIcon="Shield"
+        />
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <p className="text-white font-semibold text-sm">

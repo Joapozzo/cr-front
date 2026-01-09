@@ -21,7 +21,7 @@ const  Hero = () => {
                 <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/90 z-10" />
                 {/* Mobile Image */}
                 <Image
-                    src="/hero_mobile.jpg"
+                    src={tenant.imagenes.hero_mobile}
                     alt="Cancha de fútbol"
                     fill
                     className="object-cover md:hidden"
@@ -29,7 +29,7 @@ const  Hero = () => {
                 />
                 {/* Desktop Image */}
                 <Image
-                    src="/hero.jpg"
+                    src={tenant.imagenes.hero}
                     alt="Cancha de fútbol"
                     fill
                     className="object-cover hidden md:block"
@@ -62,7 +62,7 @@ const  Hero = () => {
 
                     <div className="flex flex-col md:flex-row gap-4 justify-center items-center w-full md:w-auto">
                         <a href={getWhatsAppLink(undefined, tenant.nombre_empresa)} target="_blank" rel="noopener noreferrer" className="w-full md:w-auto">
-                            <Button variant="footer" size="md" className="gap-2 font-bold shadow-lg shadow-green-900/20 rounded-full w-full md:w-auto md:px-8 md:py-4 md:text-lg">
+                            <Button variant="footer" size="md" className="gap-2 font-bold shadow-lg shadow-[var(--color-primary)]/20 rounded-full w-full md:w-auto md:px-8 md:py-4 md:text-lg">
                                 Empezá a Jugar <ArrowRight size={20} />
                             </Button>
                         </a>

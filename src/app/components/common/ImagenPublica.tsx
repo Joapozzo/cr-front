@@ -105,21 +105,21 @@ export const ImagenPublica = ({
   if (isSecureUrl) {
     if (!blobUrl) {
       return (
-        <div className={`relative ${width || height ? '' : 'w-full h-full'}`} style={{ width, height }}>
+        <div className={`relative overflow-hidden ${width || height ? '' : 'w-full h-full'} ${className}`} style={{ width, height }}>
           <div
-            className={`absolute inset-0 animate-pulse bg-[var(--gray-400)] ${className}`}
+            className="absolute inset-0 animate-pulse bg-[var(--gray-400)]"
           />
         </div>
       );
     }
 
     return (
-      <div className={`relative ${width || height ? '' : 'w-full h-full'}`} style={{ width, height }}>
+      <div className={`relative overflow-hidden ${width || height ? '' : 'w-full h-full'} ${className}`} style={{ width, height }}>
         {/* Imagen desde blob URL */}
         <Image
           src={blobUrl}
           alt={alt}
-          className={`${className} ${loading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300 object-cover`}
+          className={`w-full h-full ${loading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300 object-cover`}
           style={{ width: '100%', height: '100%' }}
           onLoad={() => setLoading(false)}
           onError={() => {
@@ -133,11 +133,11 @@ export const ImagenPublica = ({
 
   // Para URLs públicas, usar Next.js Image (con optimización)
   return (
-    <div className={`relative ${width || height ? '' : 'w-full h-full'}`} style={{ width, height }}>
+    <div className={`relative overflow-hidden ${width || height ? '' : 'w-full h-full'} ${className}`} style={{ width, height }}>
       {/* Skeleton loader */}
       {loading && (
         <div
-          className={`absolute inset-0 animate-pulse bg-[var(--gray-400)] ${className}`}
+          className="absolute inset-0 animate-pulse bg-[var(--gray-400)]"
         />
       )}
 
@@ -146,7 +146,7 @@ export const ImagenPublica = ({
         src={imgUrl}
         alt={alt}
         fill
-        className={`${className} ${loading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300 object-cover`}
+        className={`${loading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300 object-cover`}
         onLoad={() => setLoading(false)}
         onError={() => {
           setError(true);

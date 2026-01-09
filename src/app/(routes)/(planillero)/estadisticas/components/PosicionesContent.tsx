@@ -45,19 +45,11 @@ function PosicionesContentInner() {
     
     if (posicionesData.length === 1) {
       return posicionesData[0].posiciones.map(pos => ({
-        id_equipo: pos.id_equipo,
-        nombre_equipo: pos.nombre_equipo,
-        partidos_jugados: pos.partidos_jugados,
+        ...pos, // Preservar todos los campos originales (incluyendo _live y en_vivo)
+        // Mapear campos para compatibilidad con EquipoPosicion
         ganados: pos.partidos_ganados,
         empatados: pos.partidos_empatados,
         perdidos: pos.partidos_perdidos,
-        goles_favor: pos.goles_favor,
-        goles_contra: pos.goles_contra,
-        diferencia_goles: pos.diferencia_goles,
-        puntos: pos.puntos,
-        puntos_descontados: pos.puntos_descontados,
-        puntos_finales: pos.puntos_finales,
-        apercibimientos: pos.apercibimientos,
         ultima_actualizacion: new Date().toISOString().split('T')[0],
         img_equipo: pos.img_equipo || undefined
       }));
@@ -67,29 +59,33 @@ function PosicionesContentInner() {
     posicionesData.forEach(zona => {
       zona.posiciones.forEach(pos => {
         todasPosiciones.push({
-          id_equipo: pos.id_equipo,
-          nombre_equipo: pos.nombre_equipo,
-          partidos_jugados: pos.partidos_jugados,
+          ...pos, // Preservar todos los campos originales (incluyendo _live y en_vivo)
+          // Mapear campos para compatibilidad con EquipoPosicion
           ganados: pos.partidos_ganados,
           empatados: pos.partidos_empatados,
           perdidos: pos.partidos_perdidos,
-          goles_favor: pos.goles_favor,
-          goles_contra: pos.goles_contra,
-          diferencia_goles: pos.diferencia_goles,
-          puntos: pos.puntos,
-          puntos_descontados: pos.puntos_descontados,
-          puntos_finales: pos.puntos_finales,
-          apercibimientos: pos.apercibimientos,
           ultima_actualizacion: new Date().toISOString().split('T')[0],
           img_equipo: pos.img_equipo || undefined
         });
       });
     });
     
+    // Ordenar por puntos finales (usando valores live si están disponibles), diferencia de goles, goles a favor
     return todasPosiciones.sort((a, b) => {
-      if (b.puntos !== a.puntos) return b.puntos - a.puntos;
-      if (b.diferencia_goles !== a.diferencia_goles) return b.diferencia_goles - a.diferencia_goles;
-      return b.goles_favor - a.goles_favor;
+      const equipoA = a as EquipoPosicion & { puntos_finales_live?: number; diferencia_goles_live?: number; goles_favor_live?: number };
+      const equipoB = b as EquipoPosicion & { puntos_finales_live?: number; diferencia_goles_live?: number; goles_favor_live?: number };
+      
+      const puntosA = equipoA.puntos_finales_live ?? equipoA.puntos_finales ?? equipoA.puntos ?? 0;
+      const puntosB = equipoB.puntos_finales_live ?? equipoB.puntos_finales ?? equipoB.puntos ?? 0;
+      if (puntosB !== puntosA) return puntosB - puntosA;
+      
+      const difA = equipoA.diferencia_goles_live ?? equipoA.diferencia_goles ?? 0;
+      const difB = equipoB.diferencia_goles_live ?? equipoB.diferencia_goles ?? 0;
+      if (difB !== difA) return difB - difA;
+      
+      const gfA = equipoA.goles_favor_live ?? equipoA.goles_favor ?? 0;
+      const gfB = equipoB.goles_favor_live ?? equipoB.goles_favor ?? 0;
+      return gfB - gfA;
     });
   }, [posicionesData]);
 
@@ -118,19 +114,11 @@ function PosicionesContentInner() {
             <TablaPosiciones
               variant="completa"
               posiciones={zona.posiciones.map(pos => ({
-                id_equipo: pos.id_equipo,
-                nombre_equipo: pos.nombre_equipo,
-                partidos_jugados: pos.partidos_jugados,
+                ...pos, // Preservar todos los campos originales (incluyendo _live y en_vivo)
+                // Mapear campos para compatibilidad con EquipoPosicion
                 ganados: pos.partidos_ganados,
                 empatados: pos.partidos_empatados,
                 perdidos: pos.partidos_perdidos,
-                goles_favor: pos.goles_favor,
-                goles_contra: pos.goles_contra,
-                diferencia_goles: pos.diferencia_goles,
-                puntos: pos.puntos,
-                puntos_descontados: pos.puntos_descontados,
-                puntos_finales: pos.puntos_finales,
-                apercibimientos: pos.apercibimientos,
                 ultima_actualizacion: new Date().toISOString().split('T')[0],
                 img_equipo: pos.img_equipo || undefined
               }))}

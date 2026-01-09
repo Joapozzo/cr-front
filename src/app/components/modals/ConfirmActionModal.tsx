@@ -26,8 +26,8 @@ const variantConfig: Record<ModalVariant, {
 }> = {
     success: {
         icon: Check,
-        iconBgColor: 'bg-green-500/10',
-        iconColor: 'text-green-400',
+        iconBgColor: 'bg-[var(--color-primary)]/10',
+        iconColor: 'text-[var(--color-primary)]',
         buttonVariant: 'success'
     },
     danger: {

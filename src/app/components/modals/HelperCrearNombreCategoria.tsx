@@ -98,7 +98,7 @@ const HelperCrearNombreCategoria = ({ onSuccess }: HelperCrearNombreCategoriaPro
                 <div>
                     <label className="block text-xs font-medium text-[var(--white)] mb-1">
                         Nombre
-                        <span className="text-[var(--color-secondary)] ml-1">*</span>
+                        <span className="text-[var(--color-danger)] ml-1">*</span>
                     </label>
                     <Input
                         type="text"

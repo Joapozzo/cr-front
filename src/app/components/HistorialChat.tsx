@@ -31,7 +31,7 @@ const HistorialChat: React.FC<HistorialChatProps> = ({ isLoading = false, userPl
         switch (estadoStr) {
             case 'A':
             case 'aceptada':
-                return { text: 'Aceptada', color: 'text-green-400', icon: <CheckCircle size={14} /> };
+                return { text: 'Aceptada', color: 'text-[var(--color-primary)]', icon: <CheckCircle size={14} /> };
             case 'R':
             case 'rechazada':
                 return { text: 'Rechazada', color: 'text-red-400', icon: <XCircle size={14} /> };

@@ -66,10 +66,10 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-[#262626]">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-[var(--color-secondary-500)]/10 rounded-lg">
-                            <AlertTriangle className="w-5 h-5 text-[var(--color-secondary-400)]" />
+                        <div className="p-2 bg-[var(--color-danger)]/10 rounded-lg">
+                            <AlertTriangle className="w-5 h-5 text-[var(--color-danger)]" />
                         </div>
-                        <h3 className="text-white font-bold text-lg">Eliminar Dorsal</h3>
+                        <h3 className="text-white font-bold text-lg">Eliminar dorsal</h3>
                     </div>
                     <button
                         onClick={handleClose}
@@ -83,8 +83,8 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
                 {/* Content */}
                 <div className="p-6 space-y-4">
                     <div className="text-center space-y-3">
-                        <div className="mx-auto w-16 h-16 bg-[var(--color-secondary-500)]/10 rounded-full flex items-center justify-center">
-                            <Trash2 className="w-8 h-8 text-[var(--color-secondary-400)]" />
+                        <div className="mx-auto w-16 h-16 bg-[var(--color-danger)]/10 rounded-full flex items-center justify-center">
+                            <Trash2 className="w-8 h-8 text-[var(--color-danger)]" />
                         </div>
 
                         <div>
@@ -136,7 +136,7 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
                             ) : (
                                 <>
                                     <Trash2 size={16} />
-                                    Eliminar Dorsal
+                                    Eliminar dorsal
                                 </>
                             )}
                         </Button>

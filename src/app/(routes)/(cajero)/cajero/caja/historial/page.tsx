@@ -150,7 +150,7 @@ export default function HistorialCajaPage() {
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                                                 ${Number(caja.saldo_inicial || 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-green-400 text-right">
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-primary)] text-right">
                                                 ${ingresos.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-red-400 text-right">
@@ -163,14 +163,14 @@ export default function HistorialCajaPage() {
                                                 <div className="flex flex-col items-center gap-1">
                                                     <span className={`px-2 py-1 rounded text-xs font-medium ${
                                                         caja.cerrada 
-                                                            ? 'bg-green-500/20 text-green-400' 
+                                                            ? 'bg-[var(--color-primary)]/20 text-[var(--color-primary)]' 
                                                             : 'bg-yellow-500/20 text-yellow-400'
                                                     }`}>
                                                         {caja.cerrada ? 'Cerrada' : 'Abierta'}
                                                     </span>
                                                     {caja.cerrada && Math.abs(diferencia) > 0.01 && (
                                                         <span className={`text-xs ${
-                                                            diferencia > 0 ? 'text-green-400' : 'text-red-400'
+                                                            diferencia > 0 ? 'text-[var(--color-primary)]' : 'text-red-400'
                                                         }`}>
                                                             {diferencia > 0 ? '+' : ''}${diferencia.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                                         </span>

@@ -145,7 +145,7 @@ export const JugadorHeader = ({ jugadorInfo, onBack }: JugadorHeaderProps) => {
                                 )}
                                 {estaExpulsado && (
                                     <div className="mb-4">
-                                        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold bg-[var(--color-secondary)] text-[var(--white)]">
+                                        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold bg-[var(--color-danger)] text-[var(--white)]">
                                             <Ban className="w-4 h-4" />
                                             Jugador Expulsado
                                         </span>

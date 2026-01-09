@@ -129,12 +129,12 @@ export default function TablaMovimientos({ movimientos, isLoading, onRefresh }: 
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center gap-2">
                                             {movimiento.categoria === 'INGRESO' ? (
-                                                <TrendingUp className="w-4 h-4 text-green-400" />
+                                                <TrendingUp className="w-4 h-4 text-[var(--color-primary)]" />
                                             ) : (
                                                 <TrendingDown className="w-4 h-4 text-red-400" />
                                             )}
                                             <span className={`text-sm font-medium ${
-                                                movimiento.categoria === 'INGRESO' ? 'text-green-400' : 'text-red-400'
+                                                movimiento.categoria === 'INGRESO' ? 'text-[var(--color-primary)]' : 'text-red-400'
                                             }`}>
                                                 {movimiento.categoria}
                                             </span>
@@ -183,7 +183,7 @@ export default function TablaMovimientos({ movimientos, isLoading, onRefresh }: 
                                         </div>
                                     </td>
                                     <td className={`px-6 py-4 whitespace-nowrap text-sm font-semibold text-right ${
-                                        movimiento.categoria === 'INGRESO' ? 'text-green-400' : 'text-red-400'
+                                        movimiento.categoria === 'INGRESO' ? 'text-[var(--color-primary)]' : 'text-red-400'
                                     }`}>
                                         {movimiento.categoria === 'INGRESO' ? '+' : '-'}$
                                         {Number(movimiento.monto).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}

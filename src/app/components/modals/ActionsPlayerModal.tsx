@@ -299,7 +299,7 @@ const AccionModal: React.FC<AccionModalProps> = ({
         {
             id: 'gol',
             label: 'Gol',
-            icon: <PiSoccerBall className="w-5 h-5 text-green-400" />
+            icon: <PiSoccerBall className="w-5 h-5 text-[var(--color-primary)]" />
         },
         {
             id: 'amarilla',

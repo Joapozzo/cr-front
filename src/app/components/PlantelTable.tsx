@@ -275,9 +275,9 @@ export default function SquadTable({ id_categoria_edicion, esCapitan, esEdicionA
                                     label: 'Pendiente'
                                 },
                                 'A': {
-                                    bg: 'bg-green-500/10',
-                                    border: 'border-green-500/30',
-                                    text: 'text-green-400',
+                                    bg: 'bg-[var(--color-primary)]/10',
+                                    border: 'border-[var(--color-primary)]/30',
+                                    text: 'text-[var(--color-primary)]',
                                     label: 'Aceptada'
                                 },
                                 'R': {

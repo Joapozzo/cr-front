@@ -89,7 +89,7 @@ export default function ModalFormSancion({
     const fields = [
         {
             name: 'tipo_tarjeta',
-            label: 'Tipo de Tarjeta',
+            label: 'Tipo de tarjeta',
             type: 'select' as const,
             required: true,
             options: [
@@ -105,13 +105,13 @@ export default function ModalFormSancion({
         },
         {
             name: 'fechas',
-            label: 'Fechas de Sanción',
+            label: 'Fechas de sanción',
             type: 'number' as const,
             required: true
         },
         ...(esEdicion ? [{
             name: 'fechas_restantes',
-            label: 'Fechas Restantes',
+            label: 'Fechas restantes',
             type: 'number' as const
         }] : []),
         {
@@ -122,7 +122,7 @@ export default function ModalFormSancion({
         },
         {
             name: 'multa',
-            label: '¿Tiene Multa?',
+            label: '¿Tiene multa?',
             type: 'select' as const,
             options: [
                 { value: 'N', label: 'No' },
@@ -131,7 +131,7 @@ export default function ModalFormSancion({
         },
         ...(esEdicion ? [{
             name: 'apelacion',
-            label: '¿Tiene Apelación?',
+            label: '¿Tiene apelación?',
             type: 'select' as const,
             options: [
                 { value: 'N', label: 'No' },
@@ -228,14 +228,14 @@ export default function ModalFormSancion({
             fields={fields}
             initialData={initialData}
             onSubmit={handleFormSubmit}
-            submitText={esEdicion ? 'Guardar Cambios' : 'Crear Sanción'}
+            submitText={esEdicion ? 'Guardar cambios' : 'Crear Sanción'}
             type={esEdicion ? 'edit' : 'create'}
         >
             {/* Búsqueda de jugador (solo en creación) */}
             {!esEdicion && (
                 <div className="mb-6 z-9999">
                     <label className="block text-sm font-light text-[var(--white)] mb-2">
-                        Jugador <span className="text-[var(--color-secondary)]">*</span>
+                        Jugador <span className="text-[var(--color-danger)]">*</span>
                     </label>
 
                     {selectedJugador ? (
@@ -322,7 +322,7 @@ export default function ModalFormSancion({
             {esEdicion && selectedJugador && (
                 <div className="mb-6">
                     <label className="block text-sm font-light text-[var(--white)] mb-2">
-                        Jugador Sancionado
+                        Jugador sancionado
                     </label>
                     <div className="bg-[var(--gray-300)] rounded-lg p-4 border border-[var(--gray-200)]">
                         <p className="text-[var(--white)] font-medium">

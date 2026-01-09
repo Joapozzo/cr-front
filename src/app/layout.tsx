@@ -24,6 +24,13 @@ const hexToRgba = (hex: string, alpha: number = 1): string => {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
+const hexToRgb = (hex: string): string => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `${r}, ${g}, ${b}`;
+};
+
 // Generar variables CSS del tenant
 const generateTenantCSSVariables = (config: typeof tenantConfig): string => {
   const { colores } = config;
@@ -34,6 +41,7 @@ const generateTenantCSSVariables = (config: typeof tenantConfig): string => {
       --color-primary: ${colores.primary};
       --color-primary-strong: ${colores.primaryStrong};
       --color-primary-opacity: ${hexToRgba(colores.primary, 0.2)};
+      --color-primary-rgb: ${hexToRgb(colores.primary)};
       --color-secondary: ${colores.secondary};
       --color-success: ${colores.success};
       --color-danger: ${colores.danger};
@@ -212,7 +220,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className={`${mulish.className} antialiased font-mulish`}>
+      <body className={`${mulish.className} antialiased font-mulish`} suppressHydrationWarning>
         <Providers tenantConfig={tenantConfig}>
           {children}
         </Providers>

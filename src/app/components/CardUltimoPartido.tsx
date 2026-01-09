@@ -16,6 +16,8 @@ const CardPartidosSlider: React.FC<CardPartidosSliderProps> = ({
     isLoading = false
 }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [esProximo, setEsProximo] = useState(false);
+    const [fechaFormateada, setFechaFormateada] = useState('');
 
     // Auto-slide cada 10 segundos si hay múltiples partidos
     useEffect(() => {
@@ -27,6 +29,21 @@ const CardPartidosSlider: React.FC<CardPartidosSliderProps> = ({
             return () => clearInterval(interval);
         }
     }, [currentIndex, partidos.length]);
+
+    // Calcular valores dependientes de fecha solo en el cliente
+    useEffect(() => {
+        if (partidos.length > 0 && currentIndex < partidos.length) {
+            const currentPartido = partidos[currentIndex];
+            const ahora = new Date();
+            const fechaPartido = new Date(currentPartido.dia);
+            setEsProximo(fechaPartido > ahora);
+            setFechaFormateada(fechaPartido.toLocaleDateString('es-AR', {
+                weekday: 'short',
+                day: 'numeric',
+                month: 'short'
+            }));
+        }
+    }, [partidos, currentIndex]);
 
     const handlePartidoChange = (newIndex: number) => {
         setCurrentIndex(newIndex);
@@ -51,14 +68,6 @@ const CardPartidosSlider: React.FC<CardPartidosSliderProps> = ({
 
     const currentPartido = partidos[currentIndex];
     const hasMultiplePartidos = partidos.length > 1;
-
-    // Determinar si es próximo o último partido
-    const esProximo = new Date(currentPartido.dia) > new Date();
-    const fechaFormateada = new Date(currentPartido.dia).toLocaleDateString('es-AR', {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short'
-    });
 
     return (
         <div className="bg-[var(--black-900)] rounded-2xl overflow-hidden border border-[var(--black-700)]">
@@ -93,7 +102,7 @@ const CardPartidosSlider: React.FC<CardPartidosSliderProps> = ({
                                     key={index}
                                     onClick={() => handlePartidoChange(index)}
                                     className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentIndex
-                                        ? 'bg-green-400 w-4'
+                                        ? 'bg-[var(--color-primary)] w-4'
                                         : 'bg-[var(--black-600)] hover:bg-[var(--black-500)]'
                                         }`}
                                 />
@@ -195,7 +204,7 @@ const CardPartidosSlider: React.FC<CardPartidosSliderProps> = ({
             {hasMultiplePartidos && (
                 <div className="h-1 bg-[var(--black-800)] relative overflow-hidden">
                     <div
-                        className="h-full bg-green-400 transition-all duration-75 ease-linear"
+                        className="h-full bg-[var(--color-primary)] transition-all duration-75 ease-linear"
                         style={{
                             width: '0%',
                             animation: 'progress 10s linear infinite'

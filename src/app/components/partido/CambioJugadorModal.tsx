@@ -141,7 +141,7 @@ const CambioJugadorModal: React.FC<CambioJugadorModalProps> = ({
             title={modoEdicion ? "Editar cambio" : "Realizar cambio"}
             type="edit"
             onSubmit={handleSubmit}
-            submitText={modoEdicion ? "Guardar Cambios" : "Confirmar Cambio"}
+            submitText={modoEdicion ? "Guardar cambios" : "Confirmar cambio"}
             isLoading={isLoading}
             maxWidth="max-w-sm"
             submitDisabled={!jugadorSeleccionado || (!modoEdicion && !estadoValido)}
@@ -162,7 +162,7 @@ const CambioJugadorModal: React.FC<CambioJugadorModalProps> = ({
             {/* Selección de jugador que sale (en edición) o que entra (en creación) */}
             <div className="mb-4">
                 <label className="block text-sm font-light text-[var(--white)] mb-2">
-                    {modoEdicion ? 'Jugador que sale' : 'Jugador que entra'} <span className="text-[var(--color-secondary)]">*</span>
+                    {modoEdicion ? 'Jugador que sale' : 'Jugador que entra'} <span className="text-[var(--color-danger)]">*</span>
                 </label>
                 <select
                     value={jugadorSeleccionado || ''}
@@ -185,7 +185,7 @@ const CambioJugadorModal: React.FC<CambioJugadorModalProps> = ({
             {/* Input minuto */}
             <div className="mb-4">
                 <label className="block text-sm font-light text-[var(--white)] mb-2">
-                    Minuto <span className="text-[var(--color-secondary)]">*</span>
+                    Minuto <span className="text-[var(--color-danger)]">*</span>
                 </label>
                 <Input
                     type="number"

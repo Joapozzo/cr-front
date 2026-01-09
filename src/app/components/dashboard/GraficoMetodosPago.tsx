@@ -46,7 +46,7 @@ export default function GraficoMetodosPago({ resumen, isLoading }: GraficoMetodo
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Wallet className="w-4 h-4 text-green-400" />
+                    <Wallet className="w-4 h-4 text-[var(--color-primary)]" />
                     <CreditCard className="w-4 h-4 text-blue-400" />
                     <QrCode className="w-4 h-4 text-purple-400" />
                 </div>

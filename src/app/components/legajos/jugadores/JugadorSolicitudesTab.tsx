@@ -74,7 +74,7 @@ export const JugadorSolicitudesTab = ({ solicitudes, isLoading }: JugadorSolicit
                                                     <CheckCircle className="w-5 h-5 text-[var(--color-primary)]" />
                                                 )}
                                                 {solicitud.estado === 'rechazado' && (
-                                                    <XCircle className="w-5 h-5 text-[var(--color-secondary)]" />
+                                                    <XCircle className="w-5 h-5 text-[var(--color-danger)]" />
                                                 )}
                                                 {solicitud.estado === 'enviado' && (
                                                     <Clock className="w-5 h-5 text-[var(--yellow)]" />
@@ -83,7 +83,7 @@ export const JugadorSolicitudesTab = ({ solicitudes, isLoading }: JugadorSolicit
                                                     solicitud.estado === 'aceptado'
                                                         ? 'bg-[var(--color-primary)]/20 text-[var(--color-primary)] border border-[var(--color-primary)]/30'
                                                         : solicitud.estado === 'rechazado'
-                                                        ? 'bg-[var(--color-secondary)]/20 text-[var(--color-secondary)] border border-[var(--color-secondary)]/30'
+                                                        ? 'bg-[var(--color-danger)]/20 text-[var(--color-danger)] border border-[var(--color-danger)]/30'
                                                         : 'bg-[var(--yellow)]/20 text-[var(--yellow)] border border-[var(--yellow)]/30'
                                                 }`}>
                                                     {solicitud.estado === 'aceptado' ? 'Aceptado' : solicitud.estado === 'rechazado' ? 'Rechazado' : 'Enviado'}
@@ -141,7 +141,7 @@ export const JugadorSolicitudesTab = ({ solicitudes, isLoading }: JugadorSolicit
                                                     <CheckCircle className="w-5 h-5 text-[var(--color-primary)]" />
                                                 )}
                                                 {solicitud.estado === 'rechazado' && (
-                                                    <XCircle className="w-5 h-5 text-[var(--color-secondary)]" />
+                                                    <XCircle className="w-5 h-5 text-[var(--color-danger)]" />
                                                 )}
                                                 {solicitud.estado === 'pendiente' && (
                                                     <Clock className="w-5 h-5 text-[var(--yellow)]" />
@@ -150,7 +150,7 @@ export const JugadorSolicitudesTab = ({ solicitudes, isLoading }: JugadorSolicit
                                                     solicitud.estado === 'aceptado'
                                                         ? 'bg-[var(--color-primary)]/20 text-[var(--color-primary)] border border-[var(--color-primary)]/30'
                                                         : solicitud.estado === 'rechazado'
-                                                        ? 'bg-[var(--color-secondary)]/20 text-[var(--color-secondary)] border border-[var(--color-secondary)]/30'
+                                                        ? 'bg-[var(--color-danger)]/20 text-[var(--color-danger)] border border-[var(--color-danger)]/30'
                                                         : 'bg-[var(--yellow)]/20 text-[var(--yellow)] border border-[var(--yellow)]/30'
                                                 }`}>
                                                     {solicitud.estado === 'aceptado' ? 'Aceptado' : solicitud.estado === 'rechazado' ? 'Rechazado' : 'Pendiente'}

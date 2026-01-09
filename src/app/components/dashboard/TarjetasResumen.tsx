@@ -27,9 +27,9 @@ export default function TarjetasResumen({ resumen, isLoading }: TarjetasResumenP
             titulo: 'Ingresos Totales',
             valor: resumen.ingresos_totales,
             icono: <TrendingUp className="w-6 h-6" />,
-            color: 'text-green-400',
-            bgColor: 'bg-green-500/10',
-            borderColor: 'border-green-500/30',
+            color: 'text-[var(--color-primary)]',
+            bgColor: 'bg-[var(--color-primary)]/10',
+            borderColor: 'border-[var(--color-primary)]/30',
             hoy: resumen.ingresos_hoy
         },
         {
@@ -45,9 +45,9 @@ export default function TarjetasResumen({ resumen, isLoading }: TarjetasResumenP
             titulo: 'Saldo Neto',
             valor: resumen.saldo_neto,
             icono: <DollarSign className="w-6 h-6" />,
-            color: resumen.saldo_neto >= 0 ? 'text-green-400' : 'text-red-400',
-            bgColor: resumen.saldo_neto >= 0 ? 'bg-green-500/10' : 'bg-red-500/10',
-            borderColor: resumen.saldo_neto >= 0 ? 'border-green-500/30' : 'border-red-500/30',
+            color: resumen.saldo_neto >= 0 ? 'text-[var(--color-primary)]' : 'text-red-400',
+            bgColor: resumen.saldo_neto >= 0 ? 'bg-[var(--color-primary)]/10' : 'bg-red-500/10',
+            borderColor: resumen.saldo_neto >= 0 ? 'border-[var(--color-primary)]/30' : 'border-red-500/30',
             hoy: resumen.saldo_neto_hoy
         },
         {

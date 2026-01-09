@@ -33,7 +33,7 @@ const CardPartidosSemana: React.FC<PartidosSemanaProps> = ({ partidos = [], isLo
     return (
         <BaseCard>
             <CardHeader
-                icon={<FileText className="text-green-400" size={16} />}
+                icon={<FileText className="text-[var(--color-primary)]" size={16} />}
                 title="Esta semana"
                 subtitle={partidos.length > 0 ? `${partidos.length} partidos` : ''}
                 actions={
@@ -53,7 +53,7 @@ const CardPartidosSemana: React.FC<PartidosSemanaProps> = ({ partidos = [], isLo
                                         key={index}
                                         onClick={() => setCurrentIndex(index)}
                                         className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentIndex
-                                            ? 'bg-green-400 w-4'
+                                            ? 'bg-[var(--color-primary)] w-4'
                                             : 'bg-[#404040] hover:bg-[#525252]'
                                             }`}
                                     />

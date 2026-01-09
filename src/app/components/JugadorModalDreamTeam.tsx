@@ -3,6 +3,7 @@
 import { Shield, Star } from "lucide-react";
 import { JugadorDestacadoDt } from "../types/jugador";
 import { ImagenPublica } from "./common/ImagenPublica";
+import { EscudoEquipo } from "./common/EscudoEquipo";
 
 interface JugadorModalDreamTeamProps {
     jugador: JugadorDestacadoDt;
@@ -54,9 +55,7 @@ const JugadorModalDreamTeam = ({ jugador, jugadorSeleccionado, handleSeleccionar
 
             {/* Equipo */}
             <div className="flex items-center gap-2 mb-3 p-2 bg-[var(--gray-400)] rounded-lg">
-                <div className="w-6 h-6 rounded bg-[var(--gray-300)] flex items-center justify-center">
-                    <Shield className="w-4 h-4 text-[var(--gray-100)]" />
-                </div>
+                <EscudoEquipo src={jugador.equipo.img} alt={jugador.equipo.nombre} size={18} />
                 <span className="text-sm text-[var(--gray-100)] truncate">
                     {jugador.equipo.nombre}
                 </span>

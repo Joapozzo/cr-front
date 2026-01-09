@@ -14,6 +14,8 @@ interface DataTableProps<T extends Record<string, unknown> = Record<string, unkn
     className?: string;
     onRowClick?: (row: T, index: number) => void;
     isLoading?: boolean;
+    getRowClassName?: (row: T, index: number) => string;
+    getRowStyle?: (row: T, index: number) => React.CSSProperties;
 }
 
 // Componente de Skeleton para las filas de carga
@@ -33,7 +35,9 @@ export const DataTable = <T extends Record<string, unknown>>({
     emptyMessage = "No hay datos disponibles",
     className = "",
     onRowClick,
-    isLoading = false // Valor por defecto
+    isLoading = false, // Valor por defecto
+    getRowClassName,
+    getRowStyle
 }: DataTableProps<T>) => {
     
     // Estado de loading
@@ -128,15 +132,36 @@ export const DataTable = <T extends Record<string, unknown>>({
 
                     {/* Body */}
                     <tbody className="divide-y divide-[var(--gray-300)]">
-                        {data.map((row, index) => (
+                        {data.map((row, index) => {
+                            const customClassName = getRowClassName ? getRowClassName(row, index) : '';
+                            const customStyle = getRowStyle ? getRowStyle(row, index) : {};
+                            
+                            // Obtener el color del row si está disponible (para hover personalizado)
+                            const rowColor = (row as any)?.configuracion?.color;
+                            
+                            // Helper para convertir hex a rgba
+                            const hexToRgba = (hex: string, opacity: number): string => {
+                                const cleanHex = hex.replace('#', '');
+                                const r = parseInt(cleanHex.substring(0, 2), 16);
+                                const g = parseInt(cleanHex.substring(2, 4), 16);
+                                const b = parseInt(cleanHex.substring(4, 6), 16);
+                                return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+                            };
+                            
+                            const hoverStyle = rowColor ? {
+                                '--row-hover-color': hexToRgba(rowColor, 0.15),
+                            } as React.CSSProperties & { '--row-hover-color': string } : {};
+                            
+                            return (
                             <tr
                                 key={(row as { id?: string | number }).id || index}
                                 onClick={() => onRowClick?.(row, index)}
                                 className={`transition-colors ${
                                     onRowClick 
-                                        ? 'hover:bg-[var(--gray-300)] cursor-pointer' 
-                                        : 'hover:bg-[var(--gray-300)]'
-                                }`}
+                                        ? 'cursor-pointer' 
+                                        : ''
+                                } ${customClassName} ${rowColor ? 'categoria-row-hover' : 'hover:bg-[var(--gray-300)]'}`}
+                                style={{ ...customStyle, ...hoverStyle }}
                             >
                                 {columns.map((column) => {
                                     const value = row[column.key];
@@ -163,7 +188,8 @@ export const DataTable = <T extends Record<string, unknown>>({
                                     );
                                 })}
                             </tr>
-                        ))}
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>

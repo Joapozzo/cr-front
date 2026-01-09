@@ -97,8 +97,8 @@ export const ResetPasswordForm = () => {
   if (!oobCode) {
     return (
       <div className="flex flex-col gap-6 w-full">
-        <div className="bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)] rounded-lg p-4">
-          <p className="text-sm text-[var(--color-secondary)] text-center">
+        <div className="bg-[var(--color-danger)]/10 border border-[var(--color-danger)] rounded-lg p-4">
+          <p className="text-sm text-[var(--color-danger)] text-center">
             Enlace inválido o expirado
           </p>
         </div>

@@ -3,9 +3,12 @@ import { Loader2 } from 'lucide-react';
 import { Button } from './ui/Button'; 
 import { EstadoPartido } from '@/app/types/partido';
 
+type ActionInProgress = 'empezarPartido' | 'terminarPrimerTiempo' | 'empezarSegundoTiempo' | 'terminarPartido' | 'finalizarPartido' | 'suspenderPartido' | null;
+
 interface BotoneraPartidoProps {
     estado: EstadoPartido;
     isLoading: boolean | undefined;
+    actionInProgress?: ActionInProgress;
     onEmpezarPartido?: () => void;
     onTerminarPrimerTiempo?: () => void;
     onEmpezarSegundoTiempo?: () => void;
@@ -17,6 +20,7 @@ interface BotoneraPartidoProps {
 const BotoneraPartido: React.FC<BotoneraPartidoProps> = ({
     estado,
     isLoading = false,
+    actionInProgress = null,
     onEmpezarPartido,
     onTerminarPrimerTiempo,
     onEmpezarSegundoTiempo,
@@ -82,6 +86,8 @@ const BotoneraPartido: React.FC<BotoneraPartidoProps> = ({
                 );
 
             case 'C2':
+                // Si estamos empezando el segundo tiempo, mostrar "Empezando..." en lugar de "Terminando..."
+                const isEmpezandoSegundoTiempo = actionInProgress === 'empezarSegundoTiempo';
                 return (
                     <Button
                         onClick={onTerminarPartido}
@@ -91,7 +97,7 @@ const BotoneraPartido: React.FC<BotoneraPartidoProps> = ({
                         {isLoading ? (
                             <span className="flex items-center gap-2 justify-center w-full">
                                 <Loader2 size={16} className="animate-spin" />
-                                Terminando...
+                                {isEmpezandoSegundoTiempo ? 'Empezando...' : 'Terminando...'}
                             </span>
                         ) : (
                             'Terminar Partido'

@@ -1,153 +1,70 @@
 'use client';
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { Button } from '@/app/components/ui/Button';
-import {
-    ChevronLeft,
-    ChevronRight,
-    Plus,
-    Calendar,
-    Star,
-    RefreshCcw
-} from 'lucide-react';
-import { DataTable } from '@/app/components/ui/DataTable';
-import DreamTeamField from '@/app/components/CardDreamTeam';
-import InstruccionesDreamTeam from '@/app/components/InstruccionesDreamTeam';
-import GetPartidosColumns from '@/app/components/columns/PartidosColumns';
+import { useState, useCallback } from 'react';
 import ModalCrearPartido from '@/app/components/modals/ModalCrearPartido';
 import ModalActualizarPartido from '@/app/components/modals/ModalActualizarPartido';
 import ModalGenerarFixture from '@/app/components/modals/ModalGenerarFixture';
-import { usePartidosPorJornadaYCategoria, useEliminarPartido } from '@/app/hooks/usePartidosAdmin';
+import { usePartidosPorJornadaYCategoria } from '@/app/hooks/usePartidosAdmin';
 import { useCategoriaStore } from '@/app/stores/categoriaStore';
-import { useModals, DeleteModal } from "@/app/components/modals/ModalAdmin";
-import toast from 'react-hot-toast';
+import { DeleteModal } from '@/app/components/modals/ModalAdmin';
 import DescriptionModal from '@/app/components/modals/DescripcionPartidoModal';
-import { PartidoResponse } from '@/app/schemas/partidos.schema';
-import { useDreamteamCategoriaJornada, usePublicarDreamteam, useVaciarFormacionDreamteam } from '@/app/hooks/useDreamteam';
-import DreamTeamSkeleton from '@/app/components/skeletons/DreamTeamSkeleton';
+import { useJornadaNavigation } from '../../../../../../../hooks/useJornadaNavigation';
+import { useFixtureModals } from '../../../../../../../hooks/useFixtureModals';
+import { useEliminarPartidoFlow } from '../../../../../../../hooks/useEliminarPartidoFlow';
+import { FixtureHeader } from '../../../../../../../components/admin/FixtureHeader';
+import { JornadaNavigator } from '../../../../../../../components/admin/JornadaNavigator';
+import { FixtureActions } from '../../../../../../../components/admin/FixtureActions';
+import { FixtureTable } from '../../../../../../../components/admin/FixtureTable';
+import { DreamTeamSection } from '../../../../../../../components/admin/DreamTeamSection';
 
 export default function FixtureDreamTeamPage() {
-    const toastShownRef = useRef(false);
-
     const { categoriaSeleccionada } = useCategoriaStore();
     const idCategoriaEdicion = Number(categoriaSeleccionada?.id_categoria_edicion);
-    const [jornadaActual, setJornadaActual] = useState(1);
-    const [formacionActual, setFormacionActual] = useState<string>('1-2-3-1');
+    const [vistaActual, setVistaActual] = useState<'fixture' | 'dreamteam'>('fixture');
+    const [isRefetch, setIsRefetch] = useState(false);
+    const [isModalGenerarFixtureOpen, setIsModalGenerarFixtureOpen] = useState(false);
 
+    // Query inicial para obtener totalJornadas (usando jornada 1)
+    const {
+        data: partidosInicial,
+    } = usePartidosPorJornadaYCategoria(1, idCategoriaEdicion);
+
+    // Hook de navegación de jornadas
+    const totalJornadas = partidosInicial?.totalJornadas || 1;
+    const {
+        jornadaActual,
+        jornadasDisponibles,
+        indexActual,
+        cambiarJornada,
+    } = useJornadaNavigation({
+        totalJornadas,
+        initialJornada: 1,
+    });
+
+    // Query para obtener partidos de la jornada actual
     const {
         data: partidosPorJornada,
         isLoading,
         isError,
-        refetch
+        refetch,
     } = usePartidosPorJornadaYCategoria(jornadaActual, idCategoriaEdicion);
 
+    // Hook de modales
     const {
-        data: dreamteam,
-        refetch: refetchDreamteam,
-        isLoading: isLoadingDreamteam,
-    } = useDreamteamCategoriaJornada(
-        categoriaSeleccionada?.id_categoria_edicion || 0,
-        jornadaActual,
-        {
-            enabled: !!categoriaSeleccionada
-        }
-    );
-    const id_dreamteam = dreamteam?.id_dreamteam || 0;
+        modals,
+        openModal,
+        closeModal,
+        partidoAEliminar,
+        partidoAEditar,
+        partidoDescripcion,
+        handleEliminarPartido,
+        handleEditarPartido,
+        handleVerDescripcion,
+        closeEditModal,
+        closeDeleteModal,
+        closeInfoModal,
+    } = useFixtureModals();
 
-    const {mutateAsync: publicarDreamteam, isPending: isPublicando} = usePublicarDreamteam({
-        onSuccess: () => {
-            refetchDreamteam();
-            toast.success("Dreamteam publicado exitosamente");
-        },
-        onError: (error) => {
-            toast.error(error.message || "Error al publicar dreamteam");
-        }
-    });
-
-    const {mutateAsync: vaciarFormacion, isPending: isVaciando} = useVaciarFormacionDreamteam({
-        onSuccess: () => {
-            refetchDreamteam();
-            toast.success("Formación vaciada exitosamente");
-        },
-        onError: (error) => {
-            toast.error(error.message || "Error al vaciar la formación");
-        }
-    });
-
-    const [vistaActual, setVistaActual] = useState<'fixture' | 'dreamteam'>('fixture');
-    const [isRefetch, setIsRefetch] = useState(false);
-    const [isModalGenerarFixtureOpen, setIsModalGenerarFixtureOpen] = useState(false);
-    const [partidoAEliminar, setPartidoAEliminar] = useState<PartidoResponse | null>(null);
-    const [partidoAEditar, setPartidoAEditar] = useState<PartidoResponse | null>(null);
-    const [partidoDescripcion, setPartidoDescripcion] = useState<PartidoResponse | null>(null);
-
-    // ✅ Estado para manejar resolvers como en crear partido
-    const [promiseResolvers, setPromiseResolvers] = useState<{
-        resolve: () => void;
-        reject: (error: Error) => void;
-    } | null>(null);
-
-    const { modals, openModal, closeModal } = useModals();
-
-    const {
-        mutate: eliminarPartido,
-        // isPending: isDeleting,
-        error: deleteError,
-        isSuccess: deleteSuccess,
-        reset: resetDeleteMutation
-    } = useEliminarPartido();
-
-    // Función para manejar eliminar partido
-    const handleEliminarPartido = (partido: PartidoResponse) => {
-        setPartidoAEliminar(partido);
-        openModal('delete');
-    };
-
-    const handleEditarPartido = (partido: PartidoResponse) => {
-        setPartidoAEditar(partido);
-        openModal('edit');
-    };
-
-    const handleVerDescripcion = (partido: PartidoResponse) => {
-        setPartidoDescripcion(partido);
-        openModal('info');
-    };
-
-    const partidosColumns = GetPartidosColumns(handleEliminarPartido, handleEditarPartido, handleVerDescripcion);
-
-    const confirmarEliminacion = async () => {
-        if (partidoAEliminar) {
-            return new Promise<void>((resolve, reject) => {
-                setPromiseResolvers({ resolve, reject });
-
-                // Ejecutar la mutación
-                eliminarPartido(partidoAEliminar.id_partido);
-            });
-        }
-    };
-
-    // Usar datos reales de la API
-    const totalJornadas = partidosPorJornada?.totalJornadas || 1;
-    const jornadasDisponibles = Array.from({ length: totalJornadas }, (_, i) => i + 1);
-    const indexActual = jornadasDisponibles.indexOf(jornadaActual);
-
-    const cambiarJornada = (direccion: 'anterior' | 'siguiente') => {
-        if (direccion === 'anterior' && indexActual > 0) {
-            setJornadaActual(jornadasDisponibles[indexActual - 1]);
-        } else if (direccion === 'siguiente' && indexActual < jornadasDisponibles.length - 1) {
-            setJornadaActual(jornadasDisponibles[indexActual + 1]);
-        }
-    };
-
-    const handlePartidoCreado = () => {
-        handleRefresh();
-    };
-
-    const handlePartidoActualizado = () => {
-        handleRefresh();
-        closeModal('edit');
-        setPartidoAEditar(null);
-    };
-
+    // Hook de eliminación
     const handleRefresh = useCallback(() => {
         setIsRefetch(true);
         refetch().finally(() => {
@@ -157,130 +74,55 @@ export default function FixtureDreamTeamPage() {
         });
     }, [refetch]);
 
-    useEffect(() => {
-        if (deleteSuccess) {
-            toast.success("Partido eliminado correctamente");
-            closeModal('delete');
-            setPartidoAEliminar(null);
-            resetDeleteMutation();
+    const {
+        confirmarEliminacion,
+        deleteError,
+        resetDeleteMutation,
+    } = useEliminarPartidoFlow({
+        onSuccess: () => {
             handleRefresh();
+            closeDeleteModal();
+        },
+    });
 
-            // Resolver la promesa
-            if (promiseResolvers) {
-                promiseResolvers.resolve();
-                setPromiseResolvers(null);
-            }
+    // Handlers
+    const handlePartidoCreado = () => {
+        handleRefresh();
+    };
+
+    const handlePartidoActualizado = () => {
+        handleRefresh();
+        closeEditModal();
+    };
+
+    const handleConfirmarEliminacion = async () => {
+        if (partidoAEliminar) {
+            await confirmarEliminacion(partidoAEliminar.id_partido);
         }
-    }, [deleteSuccess, promiseResolvers, closeModal, resetDeleteMutation, handleRefresh]);
-
-    useEffect(() => {
-        if (deleteError && !toastShownRef.current) {
-            toastShownRef.current = true;
-            toast.error(deleteError.message || "Error al eliminar el partido");
-
-            // Rechazar la promesa para que el modal pare el loading
-            if (promiseResolvers) {
-                promiseResolvers.reject(new Error(deleteError.message));
-                setPromiseResolvers(null);
-            }
-        }
-    }, [deleteError, promiseResolvers]);
-
-    useEffect(() => {
-        if (modals.delete) {
-            resetDeleteMutation();
-            setPromiseResolvers(null);
-            toastShownRef.current = false;
-        }
-    }, [modals.delete, resetDeleteMutation]);
+    };
 
     return (
         <div className="space-y-6">
-            {/* Header */}
-            <div>
-                <h1 className="text-2xl font-bold text-[var(--white)] mb-2">
-                    Fixture / DreamTeam - {categoriaSeleccionada?.nombre_completo || 'Categoría no seleccionada'}
-                </h1>
-                <p className="text-[var(--gray-100)]">
-                    Gestiona los partidos y arma el equipo ideal de cada fecha
-                </p>
-            </div>
+            <FixtureHeader categoriaNombre={categoriaSeleccionada?.nombre_completo} />
 
-            {/* Navegación de fechas */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center justify-between">
-                    <Button
-                        variant="ghost"
-                        onClick={() => cambiarJornada("anterior")}
-                        disabled={indexActual <= 0}
-                    >
-                        <ChevronLeft className="w-4 h-4" />
-                    </Button>
-                    <span className="text-[var(--white)] font-medium text-lg text-center">
-                        Fecha {jornadaActual}
-                    </span>
-                    <Button
-                        variant="ghost"
-                        onClick={() => cambiarJornada("siguiente")}
-                        disabled={indexActual >= jornadasDisponibles.length - 1}
-                        className="flex items-end justify-end"
-                    >
-                        <ChevronRight className="w-4 h-4" />
-                    </Button>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button
-                        variant={vistaActual === "fixture" ? "more" : "default"}
-                        onClick={() => setVistaActual("fixture")}
-                        className="flex items-center gap-2"
-                    >
-                        <Calendar size={14} />
-                        Fixture
-                    </Button>
-                    <Button
-                        variant={vistaActual === "dreamteam" ? "more" : "default"}
-                        onClick={() => setVistaActual("dreamteam")}
-                        className="flex items-center gap-2"
-                    >
-                        <Star size={14} />
-                        DreamTeam
-                    </Button>
-                </div>
-            </div>
+            <JornadaNavigator
+                jornadaActual={jornadaActual}
+                indexActual={indexActual}
+                jornadasDisponibles={jornadasDisponibles}
+                cambiarJornada={cambiarJornada}
+                vistaActual={vistaActual}
+                setVistaActual={setVistaActual}
+            />
 
-            {/* Acciones */}
-            {vistaActual === "fixture" && (
-                <div className="flex items-center gap-3">
-                    <Button
-                        variant="success"
-                        onClick={() => openModal('create')}
-                        className="flex items-center gap-2"
-                        disabled={!categoriaSeleccionada}
-                    >
-                        <Plus className="w-4 h-4" />
-                        Crear partido
-                    </Button>
-                    <Button
-                        variant="import"
-                        onClick={() => setIsModalGenerarFixtureOpen(true)}
-                        className="flex items-center gap-2"
-                        disabled={!categoriaSeleccionada}
-                    >
-                        <Calendar className="w-4 h-4" />
-                        Automatizar Fixture
-                    </Button>
-                    <Button
-                        variant="default"
-                        onClick={handleRefresh}
-                        className="flex items-center gap-2"
-                    >
-                        <RefreshCcw className="w-4 h-4" />
-                        Actualizar
-                    </Button>
-                </div>
+            {vistaActual === 'fixture' && (
+                <FixtureActions
+                    onCrearPartido={() => openModal('create')}
+                    onGenerarFixture={() => setIsModalGenerarFixtureOpen(true)}
+                    onRefresh={handleRefresh}
+                    categoriaSeleccionada={!!categoriaSeleccionada}
+                />
             )}
 
-            {/* Mostrar mensaje si no hay categoría seleccionada */}
             {!categoriaSeleccionada && (
                 <div className="bg-[var(--import)]/10 border border-[var(--import)]/30 rounded-lg p-4">
                     <p className="text-[var(--import)] text-sm">
@@ -289,59 +131,20 @@ export default function FixtureDreamTeamPage() {
                 </div>
             )}
 
-            {/* Contenido principal */}
-            {vistaActual === "fixture" ? (
-                <DataTable
-                    data={partidosPorJornada?.partidos || []}
-                    columns={partidosColumns}
-                    emptyMessage="No se encontraron partidos para esta jornada."
+            {vistaActual === 'fixture' ? (
+                <FixtureTable
+                    partidos={partidosPorJornada?.partidos || []}
+                    onEliminarPartido={handleEliminarPartido}
+                    onEditarPartido={handleEditarPartido}
+                    onVerDescripcion={handleVerDescripcion}
                     isLoading={isLoading || isRefetch}
                 />
             ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Campo de juego - 2/3 del espacio */}
-                    <div className="lg:col-span-2">
-                        <div className="mb-4 flex items-center justify-between">
-                            <div>
-                                <p className="text-[var(--gray-100)] text-sm mt-1">
-                                    {categoriaSeleccionada?.nombre_completo || 'Categoría no seleccionada'}
-                                </p>
-                            </div>
-                            <div className='flex gap-2'>
-                                <Button
-                                    variant="success"
-                                    size="sm"
-                                    onClick={() => publicarDreamteam({ id_dreamteam, formacion: formacionActual })}
-                                    disabled={isPublicando || dreamteam?.publicado}
-                                >
-                                    {isPublicando ? "Publicando..." : dreamteam?.publicado ? "Publicado" : "Publicar"}
-                                </Button>
-                                <Button
-                                    variant="danger"
-                                    size="sm"
-                                    onClick={() => vaciarFormacion(id_dreamteam)}
-                                    disabled={dreamteam?.publicado || isVaciando}
-                                >
-                                    {isVaciando ? "Vaciando..." : dreamteam?.publicado ? "Vaciar formación" : "Vaciar formación"}
-                                </Button>
-                            </div>
-                        </div>
-                        {isLoadingDreamteam ? (
-                            <DreamTeamSkeleton />
-                        ) : (
-                            <DreamTeamField
-                                jornada={jornadaActual}
-                                dreamteam={dreamteam}
-                                refetchDreamteam={refetchDreamteam}
-                                onFormacionChange={setFormacionActual}
-                            />
-                        )}
-                    </div>
-                    {/* Instrucciones - 1/3 del espacio */}
-                    <div className="lg:col-span-1">
-                        <InstruccionesDreamTeam />
-                    </div>
-                </div>
+                <DreamTeamSection
+                    categoriaNombre={categoriaSeleccionada?.nombre_completo}
+                    jornada={jornadaActual}
+                    idCategoriaEdicion={idCategoriaEdicion}
+                />
             )}
 
             <ModalCrearPartido
@@ -353,10 +156,7 @@ export default function FixtureDreamTeamPage() {
 
             <ModalActualizarPartido
                 isOpen={modals.edit}
-                onClose={() => {
-                    closeModal('edit');
-                    setPartidoAEditar(null);
-                }}
+                onClose={closeEditModal}
                 partido={partidoAEditar}
                 onSuccess={handlePartidoActualizado}
             />
@@ -365,29 +165,25 @@ export default function FixtureDreamTeamPage() {
                 isOpen={modals.delete}
                 onClose={() => {
                     resetDeleteMutation();
-                    closeModal('delete');
-                    setPartidoAEliminar(null);
-                    setPromiseResolvers(null);
-                    toastShownRef.current = false;
+                    closeDeleteModal();
                 }}
                 title="Eliminar Partido"
                 message="¿Estás seguro de que deseas eliminar este partido?"
-                itemName={partidoAEliminar ?
-                    `${partidoAEliminar?.equipoLocal?.nombre || 'Equipo 1'} vs ${partidoAEliminar?.equipoVisita?.nombre || 'Equipo 2'} - Fecha ${partidoAEliminar?.jornada}`
-                    : ''
+                itemName={
+                    partidoAEliminar
+                        ? `${partidoAEliminar?.equipoLocal?.nombre || 'Equipo 1'} vs ${partidoAEliminar?.equipoVisita?.nombre || 'Equipo 2'} - Fecha ${partidoAEliminar?.jornada}`
+                        : ''
                 }
-                onConfirm={confirmarEliminacion}
+                onConfirm={handleConfirmarEliminacion}
                 error={deleteError}
             />
 
             <DescriptionModal
                 isOpen={modals.info}
-                onClose={() => {
-                    closeModal('info');
-                    setPartidoDescripcion(null);
-                }}
+                onClose={closeInfoModal}
                 partido={partidoDescripcion}
             />
+
             <ModalGenerarFixture
                 isOpen={isModalGenerarFixtureOpen}
                 onClose={() => setIsModalGenerarFixtureOpen(false)}
@@ -397,7 +193,6 @@ export default function FixtureDreamTeamPage() {
                 }}
             />
 
-            {/* Mostrar errores de carga si existen */}
             {isError && (
                 <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-4">
                     <p className="text-[var(--red)] text-sm">

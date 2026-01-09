@@ -222,3 +222,23 @@ export const useTogglePublicacion = (
         ...options,
     });
 };
+
+// ==================== HOOKS PARA TIPOS DE NOTICIA ====================
+
+/**
+ * Hook para obtener todos los tipos de noticia
+ */
+export const useTiposNoticia = (
+    options?: Omit<UseQueryOptions<Array<{ id_tipo_noticia: number; nombre: string }>, Error>, 'queryKey' | 'queryFn'>
+) => {
+    return useQuery({
+        queryKey: ['tipos-noticia'],
+        queryFn: () => noticiasService.obtenerTiposNoticia(),
+        staleTime: 10 * 60 * 1000, // 10 minutos - los tipos de noticia no cambian frecuentemente
+        gcTime: 30 * 60 * 1000, // 30 minutos
+        retry: 2,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        ...options,
+    });
+};

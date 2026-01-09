@@ -147,22 +147,6 @@ const ModalBuscarJugadorDisponible = ({
                     </button>
                 </div>
 
-                {/* Info Alert */}
-                {/* <div className="p-4 mx-6 mt-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-                    <div className="flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                        <div className="flex-1">
-                            <p className="text-blue-400 text-sm font-medium mb-1">
-                                No hay jugadores destacados disponibles
-                            </p>
-                            <p className="text-[var(--gray-100)] text-sm">
-                                Puedes buscar manualmente cualquier jugador disponible de la categoría para agregarlo al Dream Team.
-                                La búsqueda se realiza automáticamente mientras escribes (mínimo 2 caracteres).
-                            </p>
-                        </div>
-                    </div>
-                </div> */}
-
                 {/* Search Section */}
                 <div className="p-6 border-b border-[var(--gray-300)] space-y-4">
                     <div className="flex flex-col sm:flex-row gap-4">
@@ -244,8 +228,8 @@ const ModalBuscarJugadorDisponible = ({
 
                     {/* Error state */}
                     {isError && debeRealizarBusqueda && (
-                        <div className="bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg p-4 text-center">
-                            <p className="text-[var(--color-secondary)] mb-2">
+                        <div className="bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/30 rounded-lg p-4 text-center">
+                            <p className="text-[var(--color-danger)] mb-2">
                                 {error?.message || 'Error al buscar los jugadores'}
                             </p>
                             <button

@@ -197,8 +197,8 @@ const TabSeleccionManual = ({
                                     </div>
                                 </div>
                             ) : searchError ? (
-                                <div className="p-3 bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg">
-                                    <p className="text-[var(--color-secondary)] text-sm flex items-center gap-2">
+                                <div className="p-3 bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/30 rounded-lg">
+                                    <p className="text-[var(--color-danger)] text-sm flex items-center gap-2">
                                         <AlertTriangle className="w-4 h-4" />
                                         Error al buscar equipos: {searchError instanceof Error ? searchError.message : 'Error desconocido'}
                                     </p>
@@ -243,7 +243,7 @@ const TabSeleccionManual = ({
                                                             {equipo.nombre}
                                                         </p>
                                                         {!isApto && (
-                                                            <p className="text-xs text-[var(--color-secondary)] mt-1">
+                                                            <p className="text-xs text-[var(--color-danger)] mt-1">
                                                                 No disponible (ya está asignado o expulsado)
                                                             </p>
                                                         )}
@@ -251,7 +251,7 @@ const TabSeleccionManual = ({
                                                     {equipoBeingProcessed === equipo.id_equipo ? (
                                                         <Loader2 className="w-4 h-4 animate-spin text-[var(--color-primary)]" />
                                                     ) : !isApto && (
-                                                        <AlertTriangle className="w-4 h-4 text-[var(--color-secondary)]" />
+                                                        <AlertTriangle className="w-4 h-4 text-[var(--color-danger)]" />
                                                     )}
                                                 </div>
                                             </div>

@@ -131,7 +131,7 @@ export default function ResumenCajaActual() {
                 {/* Ingresos físicos */}
                 <div className="bg-[var(--black-950)] border border-[var(--gray-300)] rounded-lg p-4">
                     <p className="text-xs text-[var(--gray-100)] mb-1">Ingresos físicos</p>
-                    <p className="text-lg font-semibold text-green-400">
+                    <p className="text-lg font-semibold text-[var(--color-primary)]">
                         ${totalIngresosFisico.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>
                 </div>

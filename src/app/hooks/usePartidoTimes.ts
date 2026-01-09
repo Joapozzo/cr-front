@@ -2,37 +2,58 @@ import { useMutation, useQueryClient, UseMutationOptions } from '@tanstack/react
 import { planilleroService } from '../services/planillero.services';
 import { planilleroKeys } from './usePartidoPlanillero';
 import { useAuthStore } from '../stores/authStore';
+import { DatosCompletosPlanillero } from '../types/partido';
 
 interface MutationError {
     message: string;
     error?: string;
 }
 
+interface PartidoTimeResponse {
+    estado?: string;
+    hora_inicio?: string;
+    hora_inicio_segundo_tiempo?: string;
+    observaciones?: string;
+}
+
 export const useComenzarPartido = (
-    options?: Omit<UseMutationOptions<any, MutationError, number>, 'mutationFn'>
+    options?: Omit<UseMutationOptions<PartidoTimeResponse, MutationError, number>, 'mutationFn'>
 ) => {
     const queryClient = useQueryClient();
     const usuario = useAuthStore((state) => state.usuario);
     return useMutation({
-        mutationFn: (idPartido: number) => {
+        mutationFn: async (idPartido: number): Promise<PartidoTimeResponse> => {
             if (!usuario?.uid) {
                 throw new Error('Usuario no autenticado');
             }
-            return planilleroService.comenzarPartido(idPartido);
+            return planilleroService.comenzarPartido(idPartido) as Promise<PartidoTimeResponse>;
         },
         onSuccess: (data, idPartido) => {
-            // Invalidar todas las queries del planillero para refrescar los datos
+            // Actualizar cache directamente sin refetch - MUCHO MÁS RÁPIDO
+            queryClient.setQueryData<DatosCompletosPlanillero>(
+                planilleroKeys.datosCompletos(idPartido),
+                (oldData) => {
+                    if (!oldData) return oldData;
+                    return {
+                        ...oldData,
+                        partido: {
+                            ...oldData.partido,
+                            estado: data?.estado || 'C1',
+                            hora_inicio: data?.hora_inicio || oldData.partido.hora_inicio
+                        }
+                    };
+                }
+            );
+            
+            // Invalidar otras queries pero sin refetch automático
             queryClient.invalidateQueries({
-                queryKey: planilleroKeys.all
+                queryKey: planilleroKeys.partidosPendientes(),
+                refetchType: 'none'
             });
             
-            // Invalidar queries específicas
             queryClient.invalidateQueries({
-                queryKey: planilleroKeys.partidosPendientes()
-            });
-            
-            queryClient.invalidateQueries({
-                queryKey: planilleroKeys.partidosPlanillados()
+                queryKey: planilleroKeys.partidosPlanillados(),
+                refetchType: 'none'
             });
         },
         onError: (error: MutationError) => {
@@ -43,28 +64,42 @@ export const useComenzarPartido = (
 };
 
 export const useTerminarPrimerTiempo = (
-    options?: Omit<UseMutationOptions<any, MutationError, number>, 'mutationFn'>
+    options?: Omit<UseMutationOptions<PartidoTimeResponse, MutationError, number>, 'mutationFn'>
 ) => {
     const queryClient = useQueryClient();
     const usuario = useAuthStore((state) => state.usuario);
     return useMutation({
-        mutationFn: (idPartido: number) => {
+        mutationFn: async (idPartido: number): Promise<PartidoTimeResponse> => {
             if (!usuario?.uid) {
                 throw new Error('Usuario no autenticado');
             }
-            return planilleroService.terminarPrimerTiempo(idPartido);
+            return planilleroService.terminarPrimerTiempo(idPartido) as Promise<PartidoTimeResponse>;
         },
         onSuccess: (data, idPartido) => {
+            // Actualizar cache directamente sin refetch - MUCHO MÁS RÁPIDO
+            queryClient.setQueryData<DatosCompletosPlanillero>(
+                planilleroKeys.datosCompletos(idPartido),
+                (oldData) => {
+                    if (!oldData) return oldData;
+                    return {
+                        ...oldData,
+                        partido: {
+                            ...oldData.partido,
+                            estado: data?.estado || 'E'
+                        }
+                    };
+                }
+            );
+            
+            // Invalidar otras queries pero sin refetch automático
             queryClient.invalidateQueries({
-                queryKey: planilleroKeys.all
+                queryKey: planilleroKeys.partidosPendientes(),
+                refetchType: 'none'
             });
             
             queryClient.invalidateQueries({
-                queryKey: planilleroKeys.partidosPendientes()
-            });
-            
-            queryClient.invalidateQueries({
-                queryKey: planilleroKeys.partidosPlanillados()
+                queryKey: planilleroKeys.partidosPlanillados(),
+                refetchType: 'none'
             });
         },
         onError: (error: MutationError) => {
@@ -75,28 +110,43 @@ export const useTerminarPrimerTiempo = (
 };
 
 export const useComenzarSegundoTiempo = (
-    options?: Omit<UseMutationOptions<any, MutationError, number>, 'mutationFn'>
+    options?: Omit<UseMutationOptions<PartidoTimeResponse, MutationError, number>, 'mutationFn'>
 ) => {
     const queryClient = useQueryClient();
     const usuario = useAuthStore((state) => state.usuario);
     return useMutation({
-        mutationFn: (idPartido: number) => {
+        mutationFn: async (idPartido: number): Promise<PartidoTimeResponse> => {
             if (!usuario?.uid) {
                 throw new Error('Usuario no autenticado');
             }
-            return planilleroService.comenzarSegundoTiempo(idPartido);
+            return planilleroService.comenzarSegundoTiempo(idPartido) as Promise<PartidoTimeResponse>;
         },
         onSuccess: (data, idPartido) => {
+            // Actualizar cache directamente sin refetch - MUCHO MÁS RÁPIDO
+            queryClient.setQueryData<DatosCompletosPlanillero>(
+                planilleroKeys.datosCompletos(idPartido),
+                (oldData) => {
+                    if (!oldData) return oldData;
+                    return {
+                        ...oldData,
+                        partido: {
+                            ...oldData.partido,
+                            estado: data?.estado || 'C2',
+                            hora_inicio_segundo_tiempo: data?.hora_inicio_segundo_tiempo || oldData.partido.hora_inicio_segundo_tiempo
+                        }
+                    };
+                }
+            );
+            
+            // Invalidar otras queries pero sin refetch automático
             queryClient.invalidateQueries({
-                queryKey: planilleroKeys.all
+                queryKey: planilleroKeys.partidosPendientes(),
+                refetchType: 'none'
             });
             
             queryClient.invalidateQueries({
-                queryKey: planilleroKeys.partidosPendientes()
-            });
-            
-            queryClient.invalidateQueries({
-                queryKey: planilleroKeys.partidosPlanillados()
+                queryKey: planilleroKeys.partidosPlanillados(),
+                refetchType: 'none'
             });
         },
         onError: (error: MutationError) => {
@@ -112,28 +162,43 @@ interface TerminarPartidoParams {
 }
 
 export const useTerminarPartido = (
-    options?: Omit<UseMutationOptions<any, MutationError, TerminarPartidoParams>, 'mutationFn'>
+    options?: Omit<UseMutationOptions<PartidoTimeResponse, MutationError, TerminarPartidoParams>, 'mutationFn'>
 ) => {
     const queryClient = useQueryClient();
     const usuario = useAuthStore((state) => state.usuario);
     return useMutation({
-        mutationFn: ({ idPartido, observaciones }: TerminarPartidoParams) => {
+        mutationFn: async ({ idPartido, observaciones }: TerminarPartidoParams): Promise<PartidoTimeResponse> => {
             if (!usuario?.uid) {
                 throw new Error('Usuario no autenticado');
             }
-            return planilleroService.terminarPartido(idPartido, observaciones);
+            return planilleroService.terminarPartido(idPartido, observaciones) as Promise<PartidoTimeResponse>;
         },
-        onSuccess: (data, idPartido) => {
+        onSuccess: (data, { idPartido }) => {
+            // Actualizar cache directamente sin refetch - MUCHO MÁS RÁPIDO
+            queryClient.setQueryData<DatosCompletosPlanillero>(
+                planilleroKeys.datosCompletos(idPartido),
+                (oldData) => {
+                    if (!oldData) return oldData;
+                    return {
+                        ...oldData,
+                        partido: {
+                            ...oldData.partido,
+                            estado: data?.estado || 'T',
+                            descripcion: data?.observaciones !== undefined ? data.observaciones : oldData.partido.descripcion
+                        }
+                    };
+                }
+            );
+            
+            // Invalidar otras queries pero sin refetch automático
             queryClient.invalidateQueries({
-                queryKey: planilleroKeys.all
+                queryKey: planilleroKeys.partidosPendientes(),
+                refetchType: 'none'
             });
             
             queryClient.invalidateQueries({
-                queryKey: planilleroKeys.partidosPendientes()
-            });
-            
-            queryClient.invalidateQueries({
-                queryKey: planilleroKeys.partidosPlanillados()
+                queryKey: planilleroKeys.partidosPlanillados(),
+                refetchType: 'none'
             });
         },
         onError: (error: MutationError) => {
@@ -144,28 +209,42 @@ export const useTerminarPartido = (
 };
 
 export const useFinalizarPartido = (
-    options?: Omit<UseMutationOptions<any, MutationError, number>, 'mutationFn'>
+    options?: Omit<UseMutationOptions<PartidoTimeResponse, MutationError, number>, 'mutationFn'>
 ) => {
     const queryClient = useQueryClient();
     const usuario = useAuthStore((state) => state.usuario);
     return useMutation({
-        mutationFn: (idPartido: number) => {
+        mutationFn: async (idPartido: number): Promise<PartidoTimeResponse> => {
             if (!usuario?.uid) {
                 throw new Error('Usuario no autenticado');
             }
-            return planilleroService.finalizarPartido(idPartido);
+            return planilleroService.finalizarPartido(idPartido) as Promise<PartidoTimeResponse>;
         },
         onSuccess: (data, idPartido) => {
+            // Actualizar cache directamente sin refetch - MUCHO MÁS RÁPIDO
+            queryClient.setQueryData<DatosCompletosPlanillero>(
+                planilleroKeys.datosCompletos(idPartido),
+                (oldData) => {
+                    if (!oldData) return oldData;
+                    return {
+                        ...oldData,
+                        partido: {
+                            ...oldData.partido,
+                            estado: 'F'
+                        }
+                    };
+                }
+            );
+            
+            // Invalidar otras queries pero sin refetch automático
             queryClient.invalidateQueries({
-                queryKey: planilleroKeys.all
+                queryKey: planilleroKeys.partidosPendientes(),
+                refetchType: 'none'
             });
             
             queryClient.invalidateQueries({
-                queryKey: planilleroKeys.partidosPendientes()
-            });
-            
-            queryClient.invalidateQueries({
-                queryKey: planilleroKeys.partidosPlanillados()
+                queryKey: planilleroKeys.partidosPlanillados(),
+                refetchType: 'none'
             });
         },
         onError: (error: MutationError) => {
@@ -181,28 +260,42 @@ interface SuspenderPartidoParams {
 }
 
 export const useSuspenderPartido = (
-    options?: Omit<UseMutationOptions<any, MutationError, SuspenderPartidoParams>, 'mutationFn'>
+    options?: Omit<UseMutationOptions<PartidoTimeResponse, MutationError, SuspenderPartidoParams>, 'mutationFn'>
 ) => {
     const queryClient = useQueryClient();
     const usuario = useAuthStore((state) => state.usuario);
     return useMutation({
-        mutationFn: ({ idPartido, motivo }: SuspenderPartidoParams) => {
+        mutationFn: async ({ idPartido, motivo }: SuspenderPartidoParams): Promise<PartidoTimeResponse> => {
             if (!usuario?.uid) {
                 throw new Error('Usuario no autenticado');
             }
-            return planilleroService.suspenderPartido(idPartido, motivo);
+            return planilleroService.suspenderPartido(idPartido, motivo) as Promise<PartidoTimeResponse>;
         },
         onSuccess: (data, { idPartido }) => {
+            // Actualizar cache directamente sin refetch - MUCHO MÁS RÁPIDO
+            queryClient.setQueryData<DatosCompletosPlanillero>(
+                planilleroKeys.datosCompletos(idPartido),
+                (oldData) => {
+                    if (!oldData) return oldData;
+                    return {
+                        ...oldData,
+                        partido: {
+                            ...oldData.partido,
+                            estado: data?.estado || 'S'
+                        }
+                    };
+                }
+            );
+            
+            // Invalidar otras queries pero sin refetch automático
             queryClient.invalidateQueries({
-                queryKey: planilleroKeys.all
+                queryKey: planilleroKeys.partidosPendientes(),
+                refetchType: 'none'
             });
             
             queryClient.invalidateQueries({
-                queryKey: planilleroKeys.partidosPendientes()
-            });
-            
-            queryClient.invalidateQueries({
-                queryKey: planilleroKeys.partidosPlanillados()
+                queryKey: planilleroKeys.partidosPlanillados(),
+                refetchType: 'none'
             });
         },
         onError: (error: MutationError) => {

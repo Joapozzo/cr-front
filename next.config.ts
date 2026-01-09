@@ -1,6 +1,11 @@
 // next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Permitir conexiones de desarrollo desde la red local
+  allowedDevOrigins: [
+    'http://localhost:3000',
+    'http://192.168.0.13:3000',
+  ],
   images: {
     remotePatterns: [
       {

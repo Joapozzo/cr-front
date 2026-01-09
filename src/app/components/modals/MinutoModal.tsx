@@ -30,9 +30,9 @@ const MinutoModal: React.FC<MinutoModalProps> = ({
     const [error, setError] = useState<string>('');
 
     const accionLabels = {
-        gol: 'Gol',
-        amarilla: 'Tarjeta amarilla',
-        roja: 'Expulsión'
+        gol: 'gol',
+        amarilla: 'tarjeta amarilla',
+        roja: 'expulsión'
     };
 
     useEffect(() => {

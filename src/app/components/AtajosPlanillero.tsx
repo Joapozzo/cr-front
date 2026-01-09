@@ -11,29 +11,29 @@ import { BaseCard, CardHeader } from "./BaseCard";
 const CardAccesosRapidos: React.FC = () => {
     const accesos = [
         {
-            icon: <FileText className="text-green-400" size={20} />,
+            icon: <FileText className="text-[var(--color-primary)]" size={20} />,
             titulo: "Planillar Partido",
             descripcion: "Nuevo partido",
-            color: "green"
+            color: "var(--color-primary)"
         },
         {
-            icon: <Trophy className="text-green-400" size={20} />,
+            icon: <Trophy className="text-[var(--color-primary)]" size={20} />,
             titulo: "Mis partidos",
             descripcion: "Ver historial",
-            color: "green"
+            color: "var(--color-primary)"
         },
         {
-            icon: <Users className="text-green-400" size={20} />,
+            icon: <Users className="text-[var(--color-primary)]" size={20} />,
             titulo: "Equipos",
             descripcion: "Información",
-            color: "green"
+            color: "var(--color-primary)"
         },
     ];
 
     return (
         <BaseCard>
             <CardHeader
-                icon={<Play className="text-green-400" size={16} />}
+                icon={<Play className="text-[var(--color-primary)]" size={16} />}
                 title="Accesos Rápidos"
             />
             <div className="px-6 py-4">
@@ -41,20 +41,20 @@ const CardAccesosRapidos: React.FC = () => {
                     {accesos.map((acceso, index) => (
                         <button
                             key={index}
-                            className="flex items-center gap-4 p-4 bg-[#171717] hover:bg-[#262626] rounded-lg border border-[#262626] hover:border-green-500/30 transition-all duration-200 group"
+                            className="flex items-center gap-4 p-4 bg-[#171717] hover:bg-[#262626] rounded-lg border border-[#262626] hover:border-[var(--color-primary)]/30 transition-all duration-200 group"
                         >
-                            <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center group-hover:bg-green-500/30 transition-colors duration-200">
+                            <div className="w-10 h-10 bg-[var(--color-primary)]/20 rounded-lg flex items-center justify-center group-hover:bg-[var(--color-primary)]/30 transition-colors duration-200">
                                 {acceso.icon}
                             </div>
                             <div className="flex-1 text-left">
-                                <p className="text-white font-medium group-hover:text-green-300 transition-colors duration-200">
+                                <p className="text-white font-medium group-hover:text-[var(--color-primary)] transition-colors duration-200">
                                     {acceso.titulo}
                                 </p>
                                 <p className="text-[#525252] text-sm">
                                     {acceso.descripcion}
                                 </p>
                             </div>
-                            <ChevronRight className="text-[#525252] group-hover:text-green-400 transition-colors duration-200" size={16} />
+                            <ChevronRight className="text-[#525252] group-hover:text-[var(--color-primary)] transition-colors duration-200" size={16} />
                         </button>
                     ))}
                 </div>

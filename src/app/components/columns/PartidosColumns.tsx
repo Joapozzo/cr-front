@@ -12,16 +12,16 @@ const GetPartidosColumns = (onEliminarPartido?: (partido: PartidoRow) => void, o
 
     const EstadoBadge = ({ estado }: { estado: string }) => {
         const estados = {
-            'F': { label: 'FINALIZADO', color: 'bg-[var(--color-primary)] text-white' },
-            'P': { label: 'PROGRAMADO', color: 'bg-[var(--yellow)] text-white' },
-            'C1': { label: 'EN VIVO', color: 'bg-[var(--color-primary)] text-white animate-pulse' },
-            'E': { label: 'EN VIVO', color: 'bg-[var(--color-primary)] text-white animate-pulse' },
-            'C2': { label: 'EN VIVO', color: 'bg-[var(--color-primary)] text-white animate-pulse' },
-            'C': { label: 'EN CURSO', color: 'bg-[var(--blue)] text-white' },
-            'S': { label: 'SUSPENDIDO', color: 'bg-red-600 text-white' },
-            'A': { label: 'APLAZADO', color: 'bg-orange-600 text-white' },
-            'T': { label: 'FALTA SUBIR', color: 'bg-yellow-600 text-white' },
-            'I': { label: 'INDEFINIDO', color: 'bg-[var(--gray-600)] text-white' },
+            'F': { label: 'FINALIZADO', color: 'bg-[#2ad174] text-white' },
+            'P': { label: 'PROGRAMADO', color: 'bg-[#eab308] text-white' },
+            'C1': { label: 'EN VIVO', color: 'bg-[#2ad174] text-white animate-pulse' },
+            'E': { label: 'EN VIVO', color: 'bg-[#2ad174] text-white animate-pulse' },
+            'C2': { label: 'EN VIVO', color: 'bg-[#2ad174] text-white animate-pulse' },
+            'C': { label: 'EN CURSO', color: 'bg-[#3b82f6] text-white' },
+            'S': { label: 'SUSPENDIDO', color: 'bg-[#ef4444] text-white' },
+            'A': { label: 'APLAZADO', color: 'bg-[#f97316] text-white' },
+            'T': { label: 'FALTA SUBIR', color: 'bg-[#eab308] text-white' },
+            'I': { label: 'INDEFINIDO', color: 'bg-[#4b5563] text-white' },
         };
 
         const estadoInfo = estados[estado as keyof typeof estados] || estados['P'];

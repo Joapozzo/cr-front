@@ -94,7 +94,7 @@ const PartidoItem: React.FC<PartidoItemProps> = ({ partido, isPendiente = false,
                             {/* Cronómetro (solo si está en vivo) */}
                             {/* {cronometro.enVivo && (
                                 <div className="flex flex-col items-center">
-                                    <span className="text-green-400 text-xs font-medium">
+                                    <span className="text-[var(--color-primary)] text-xs font-medium">
                                         {cronometro.fase}
                                     </span>
                                     <span className="text-white text-sm font-mono">

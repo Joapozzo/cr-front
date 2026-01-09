@@ -60,8 +60,9 @@ export const Button: React.FC<ButtonProps> = ({
       bg-[var(--color-primary)] 
       text-[var(--black)] 
       hover:bg-transparent 
+      border
       hover:border-[var(--color-primary)] 
-      hover:text-[var(--color-primary)]
+      hover:text-[var(--color-primary)] 
     `,
     success: `
       bg-[var(--color-primary)] 
@@ -69,7 +70,7 @@ export const Button: React.FC<ButtonProps> = ({
       border-[var(--color-primary)] 
       text-white 
       hover:bg-transparent 
-      hover:text-[var(--color-primary)]
+      hover:text-[var(--color-primary)] 
     `,
     danger: `
       bg-[var(--color-danger)] 
@@ -102,7 +103,14 @@ export const Button: React.FC<ButtonProps> = ({
       hover:bg-transparent 
       hover:text-inherit
     `,
-    secondary: 'bg-transparent text-[var(--color-primary)] border border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--black)]',
+    secondary: `
+      bg-transparent 
+      text-[var(--color-primary)] 
+      border 
+      border-[var(--color-primary)] 
+      hover:bg-[var(--color-primary)] 
+      hover:text-[var(--black)]
+    `,
 
   };
 

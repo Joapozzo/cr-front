@@ -36,14 +36,22 @@ export const EquipoCard: React.FC<EquipoCardProps> = ({ equipo }) => {
                         <div className="mt-2 space-y-2">
                             {equipo.categorias.length > 0 && (
                                 <div className="flex flex-wrap gap-1">
-                                    {equipo.categorias.slice(0, 2).map((cat, idx) => (
-                                        <span
-                                            key={idx}
-                                            className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-[var(--color-primary)] text-[var(--white)]"
-                                        >
-                                            {cat.categoria.nombre || cat.edicion.nombre}
-                                        </span>
-                                    ))}
+                                    {equipo.categorias.slice(0, 2).map((cat, idx) => {
+                                        const color = cat.color;
+                                        const bgColor = color || 'var(--color-primary)';
+                                        
+                                        return (
+                                            <span
+                                                key={idx}
+                                                className="inline-flex items-center px-2 py-1 rounded text-xs font-medium text-[var(--white)]"
+                                                style={{
+                                                    backgroundColor: bgColor
+                                                }}
+                                            >
+                                                {cat.categoria.nombre || cat.edicion.nombre}
+                                            </span>
+                                        );
+                                    })}
                                     {equipo.categorias.length > 2 && (
                                         <span className="text-xs text-[var(--gray-100)]">
                                             +{equipo.categorias.length - 2}

@@ -186,6 +186,8 @@ export interface IncidenciaPartido {
     jugador_entra_id?: number | null;
     jugador_entra_nombre?: string;
     observaciones?: string | null;
+    // Flag para identificar actualizaciones optimistas (no se persiste en BD)
+    _optimistic?: boolean;
 }
 
 export interface DatosCompletosPlanillero {

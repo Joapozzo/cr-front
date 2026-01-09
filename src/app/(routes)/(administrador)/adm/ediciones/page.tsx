@@ -1,5 +1,5 @@
 ﻿import { edicionesService } from '@/app/services/ediciones.services';
-import { EdicionesClient } from './EdicionesClient';
+import { EdicionesClient } from '../../../../components/admin/EdicionesClient';
 
 export default async function EdicionesPage() {
     // Fetch ediciones en el servidor usando el servicio existente

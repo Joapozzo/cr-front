@@ -80,7 +80,7 @@ const CardTeamHomeUser: React.FC<CardTeamHomeUserProps> = ({ equipos: teamsPlaye
                                         key={index}
                                         onClick={() => handleTeamChange(index)}
                                         className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentTeamIndex
-                                                ? "bg-green-500 w-4"
+                                                ? "bg-[var(--color-primary)] w-4"
                                                 : "bg-[var(--black-600)] hover:bg-[var(--black-500)]"
                                             }`}
                                         disabled={isTransitioning}
@@ -122,11 +122,11 @@ const CardTeamHomeUser: React.FC<CardTeamHomeUserProps> = ({ equipos: teamsPlaye
                                     className="transition-transform duration-300 group-hover:scale-110"
                                 />
                                 {/* Subtle glow effect */}
-                                <div className="absolute inset-0 bg-gradient-to-r from-green-500/0 via-green-500/10 to-green-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-primary)]/0 via-[var(--color-primary)]/10 to-[var(--color-primary)]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                             </div>
 
                             <div className="flex-1">
-                                <h4 className="text-white font-medium mb-1 transition-colors duration-300 hover:text-green-300">
+                                <h4 className="text-white font-medium mb-1 transition-colors duration-300 hover:text-[var(--color-primary)]">
                                     {currentTeam.nombre_equipo}
                                 </h4>
                                 <p className="text-[var(--black-400)] text-sm">
@@ -147,9 +147,9 @@ const CardTeamHomeUser: React.FC<CardTeamHomeUserProps> = ({ equipos: teamsPlaye
                                 )}
                                 {currentTeam.eventual === "no" &&
                                     currentTeam.sancionado === "no" && (
-                                        <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-medium rounded border border-green-500/30 relative overflow-hidden">
+                                        <span className="px-2 py-1 bg-[var(--color-primary)]/20 text-[var(--color-primary)] text-xs font-medium rounded border border-[var(--color-primary)]/30 relative overflow-hidden">
                                             Activo
-                                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/20 to-transparent translate-x-[-100%] animate-[shimmer_2s_infinite]"></div>
+                                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--color-primary)]/20 to-transparent translate-x-[-100%] animate-[shimmer_2s_infinite]"></div>
                                         </span>
                                     )}
                             </div>
@@ -160,7 +160,7 @@ const CardTeamHomeUser: React.FC<CardTeamHomeUserProps> = ({ equipos: teamsPlaye
                     {hasMultipleTeams && (
                         <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[var(--black-700)]">
                             <div
-                                className="h-full bg-green-400 transition-all duration-75 ease-linear"
+                                className="h-full bg-[var(--color-primary)] transition-all duration-75 ease-linear"
                                 style={{
                                     width: "0%",
                                     animation: "progress 8s linear infinite",

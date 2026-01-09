@@ -22,7 +22,7 @@ const About = () => {
                         <div className="relative">
                             <div className="absolute -inset-4 bg-[var(--color-primary)]/20 rounded-3xl blur-xl"></div>
                             <Image
-                                src="/about.jpg"
+                                src={tenant.imagenes.about}
                                 alt={`Jugadores de ${tenant.nombre_empresa}`}
                                 width={800}
                                 height={450}

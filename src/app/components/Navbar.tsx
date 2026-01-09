@@ -1,17 +1,16 @@
 ﻿'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { Menu } from "lucide-react";
 import { MobileMenu } from './navbar/MobileMenu';
 import { UserDropdown } from './navbar/UserDropdown';
+import { NavbarBase } from './navbar/NavbarBase';
 import { getMenuItemsByRole } from '../config/menuItems';
 import { useAuth } from '../hooks/auth/useAuth';
 import { useTenant } from '../contexts/TenantContext';
 import Image from 'next/image';
 
 const Navbar: React.FC = () => {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { usuario } = useAuth();
     const tenant = useTenant();
 
@@ -33,85 +32,57 @@ const Navbar: React.FC = () => {
         return '/home';
     };
 
+    const homeRoute = getHomeRoute();
+
+    // Contenido desktop
+    const desktopContent = (
+        <>
+            {/* Desktop Logo */}
+            <Link
+                href={homeRoute}
+                className="flex items-center cursor-pointer"
+            >
+                <Image
+                    src={tenant.branding.logo_principal}
+                    alt={`Logo ${tenant.nombre_empresa}`}
+                    width={200}
+                    height={40}
+                    className="h-10 w-auto"
+                />
+            </Link>
+
+            {/* Navigation List */}
+            <ul className="flex items-center gap-12 md:gap-10">
+                {navItems.map((item) => (
+                    <li key={item.label}>
+                        <Link
+                            href={item.href}
+                            className="text-white text-md font-medium hover:text-[var(--color-primary)] transition-colors duration-300"
+                        >
+                            {item.label}
+                        </Link>
+                    </li>
+                ))}
+                <li>
+                    <UserDropdown />
+                </li>
+            </ul>
+        </>
+    );
+
     return (
-        <header className="w-full h-[80px] md:h-[80px] bg-[var(--gray-500)] flex justify-center sticky top-0 select-none z-[101]">
-            <div className="flex justify-between items-center w-full h-full relative max-w-[1300px] mx-auto px-6">
-
-                {/* Mobile Layout */}
-                <div className="flex md:hidden items-center justify-between w-full">
-                    {/* Left - Menu Button */}
-                    <button
-                        onClick={() => setIsMobileMenuOpen(true)}
-                        className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--color-primary)] transition-colors duration-300"
-                        aria-label="Abrir menú"
-                    >
-                        <Menu className="text-white w-5 h-5" />
-                    </button>
-
-                    {/* Center - Mobile Logo */}
-                    <Link
-                        href={getHomeRoute()}
-                        className="absolute left-1/2 transform -translate-x-1/2 h-[30%] flex items-center cursor-pointer"
-                    >
-                        <div className="relative h-full w-[100px]">
-                            <Image
-                                src={tenant.branding.logo_header}
-                                alt={`Logo ${tenant.nombre_empresa} Mobile`}
-                                fill
-                                className="object-contain"
-                            />
-                        </div>
-                    </Link>
-
-                    {/* Right - Notifications */}
-                    {/* <button className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--color-primary)] transition-colors duration-300">
-                        <Bell className="text-white w-5 h-5" />
-                    </button> */}
-                </div>
-
-                {/* Desktop Layout */}
-                <div className="hidden md:flex justify-between items-center w-full">
-                    {/* Desktop Logo */}
-                    <Link
-                        href={getHomeRoute()}
-                        className="flex items-center cursor-pointer"
-                    >
-                        <Image
-                            src={tenant.branding.logo_principal}
-                            alt={`Logo ${tenant.nombre_empresa}`}
-                            width={160}
-                            height={20}
-                            className="h-5 w-auto" // controla la altura del logo
-                        />
-                    </Link>
-
-
-                    {/* Navigation List */}
-                    <ul className="flex items-center gap-12 md:gap-10">
-                        {navItems.map((item) => (
-                            <li key={item.label}>
-                                <Link
-                                    href={item.href}
-                                    className="text-white text-md font-medium hover:text-[var(--color-primary)] transition-colors duration-300"
-                                >
-                                    {item.label}
-                                </Link>
-                            </li>
-                        ))}
-                        <li>
-                            <UserDropdown />
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            {/* Mobile Menu */}
-            <MobileMenu
-                isOpen={isMobileMenuOpen}
-                onClose={() => setIsMobileMenuOpen(false)}
-                menuItems={mobileMenuItems}
-            />
-        </header>
+        <NavbarBase
+            homeRoute={homeRoute}
+            desktopContent={desktopContent}
+            renderMobileMenu={(isOpen, onClose) => (
+                <MobileMenu
+                    isOpen={isOpen}
+                    onClose={onClose}
+                    menuItems={mobileMenuItems}
+                />
+            )}
+            zIndex={101}
+        />
     );
 };
 

@@ -6,6 +6,7 @@ import { SancionActiva } from '@/app/types/admin.types';
 import { DataCard } from '@/app/components/admin/dashboard/base/DataCard';
 import { Badge } from '@/app/components/admin/dashboard/base/Badge';
 import Image from 'next/image';
+import { ImagenPublica } from '@/app/components/common/ImagenPublica';
 
 interface SancionesActivasSectionProps {
     data: SancionActiva[] | null;
@@ -43,10 +44,12 @@ export const SancionesActivasSection: React.FC<SancionesActivasSectionProps> = (
                             className="p-4 hover:bg-[var(--black-800)]/30 transition-colors flex items-center gap-4 group cursor-pointer"
                         >
                         <div className="relative w-10 h-10 rounded-full bg-[var(--black-800)] overflow-hidden shrink-0 border border-[#333]">
-                            <User className="w-full h-full p-2 text-[#737373]" />
-                            {/* Fallback above, image would be better but keeping simple without external loader issues
-                                 In real app: <Image ... />
-                             */}
+                            <ImagenPublica
+                                src={sancion.jugador.img}
+                                alt={`${sancion.jugador.nombre} ${sancion.jugador.apellido}`}
+                                width={40}
+                                height={40}
+                            />
                         </div>
 
                         <div className="flex-1 min-w-0">
@@ -65,7 +68,7 @@ export const SancionesActivasSection: React.FC<SancionesActivasSectionProps> = (
 
                         <div className="text-right shrink-0 flex flex-col items-end">
                             <span
-                                className={`text-lg font-bold ${(sancion.fechas_restantes || 0) > 3 ? 'text-[var(--color-secondary-500)]' : 'text-[var(--color-warning)]'
+                                className={`text-lg font-bold ${(sancion.fechas_restantes || 0) > 3 ? 'text-[var(--color-danger)]' : 'text-[var(--color-warning)]'
                                     }`}
                             >
                                 {sancion.fechas_restantes}

@@ -11,6 +11,12 @@
       "favicons_path": "/favicons/coparelampago",
       "titulo_pagina": "Copa Relámpago - F7 Córdoba"
     },
+    "imagenes": {
+      "hero": "/hero_cr.jpg",
+      "hero_mobile": "/hero_mobile_cr.jpg",
+      "about": "/about_cr.jpg",
+      "login": "/login_cr.jpg"
+    },
     
     "seo": {
       "keywords": [

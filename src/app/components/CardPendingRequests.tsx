@@ -14,6 +14,7 @@ const CardPendingRequests: React.FC<CardPendingRequestsProps> = ({
     solicitudesPendientes = []
 }) => {
     const [currentRequestIndex, setCurrentRequestIndex] = useState(0);
+    const [diasPendiente, setDiasPendiente] = useState(0);
 
     // Auto-slide para múltiples solicitudes cada 6 segundos
     useEffect(() => {
@@ -28,6 +29,18 @@ const CardPendingRequests: React.FC<CardPendingRequestsProps> = ({
         }
     }, [currentRequestIndex, solicitudesPendientes.length]);
 
+    // Calcular días desde la solicitud solo en el cliente
+    useEffect(() => {
+        if (solicitudesPendientes.length > 0 && currentRequestIndex < solicitudesPendientes.length) {
+            const currentRequest = solicitudesPendientes[currentRequestIndex];
+            const dias = Math.floor(
+                (new Date().getTime() - new Date(currentRequest.fecha_solicitud).getTime()) /
+                (1000 * 60 * 60 * 24)
+            );
+            setDiasPendiente(dias);
+        }
+    }, [solicitudesPendientes, currentRequestIndex]);
+
     const handleRequestChange = (newIndex: number) => {
         setCurrentRequestIndex(newIndex);
     };
@@ -38,12 +51,6 @@ const CardPendingRequests: React.FC<CardPendingRequestsProps> = ({
 
     const currentRequest = solicitudesPendientes[currentRequestIndex];
     const hasMultipleRequests = solicitudesPendientes.length > 1;
-
-    // Calcular días desde la solicitud
-    const diasPendiente = Math.floor(
-        (new Date().getTime() - new Date(currentRequest.fecha_solicitud).getTime()) /
-        (1000 * 60 * 60 * 24)
-    );
 
     return (
         <div className="bg-[var(--black-950)] rounded-2xl overflow-hidden border border-[var(--black-700)]">

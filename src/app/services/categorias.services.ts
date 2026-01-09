@@ -218,4 +218,29 @@ export const categoriasService = {
             throw new Error(message);
         }
     },
+
+    crearDivision: async (nombre: string, descripcion?: string, genero: 'M' | 'F' | 'X' = 'M'): Promise<any> => {
+        try {
+            return await api.post<any>('/admin/categorias/division', { nombre, descripcion, genero });
+        } catch (error: any) {
+            const errorData = error.response?.data;
+            
+            // Manejar errores de validación (400)
+            if (error.response?.status === 400) {
+                const message = errorData?.message || errorData?.error || 'Datos inválidos';
+                throw new Error(message);
+            }
+
+            // Manejar error 409 (conflicto - división duplicada)
+            if (error.response?.status === 409) {
+                const message = errorData?.message || errorData?.error || 'Ya existe una división con ese nombre';
+                throw new Error(message);
+            }
+
+            // Para otros errores
+            console.error('Error al crear división:', error);
+            const message = errorData?.message || errorData?.error || error.message || 'No se pudo crear la división';
+            throw new Error(message);
+        }
+    },
 }

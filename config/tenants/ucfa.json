@@ -10,6 +10,12 @@
     "favicons_path": "/favicons/ucfa",
     "titulo_pagina": "UCFA - Unión Cordobesa de Fútbol Amateur"
   },
+  "imagenes": {
+    "hero": "/hero_ucfa.jpg",
+    "hero_mobile": "/hero_mobile_ucfa.jpg",
+    "about": "/about_ucfa.jpg",
+    "login": "/login_ucfa.jpg"
+  },
   
   "seo": {
     "keywords": [
@@ -55,12 +61,12 @@
     "calculo_tabla_custom": true
   },
   "contacto": {
-    "email": "info@ucfa.com.ar",
-    "telefono": "+54 351 987 6543",
+    "email": "adm@ucfa.org.ar",
+    "telefono": "+54 351-3112216",
     "direccion": "Córdoba, Argentina",
     "redes": {
-      "instagram": "@ucfa_oficial",
-      "facebook": "ucfaoficial"
+      "instagram": "@ucfaok",
+      "facebook": "ucfaok"
     }
   }
 }

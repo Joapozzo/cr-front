@@ -85,8 +85,8 @@ export const ScannerIdleView = ({
       </div>
 
       {error && (
-        <div className="bg-[var(--color-secondary)]/20 border border-[var(--color-secondary)] rounded-lg p-4">
-          <p className="text-sm text-[var(--color-secondary)] mb-3 text-center">{error}</p>
+        <div className="bg-[var(--color-danger)]/20 border border-[var(--color-danger)] rounded-lg p-4">
+          <p className="text-sm text-[var(--color-danger)] mb-3 text-center">{error}</p>
           <button
             onClick={onRetry}
             className="w-full py-3 bg-[var(--color-primary)] text-[var(--black)] rounded-lg text-sm font-medium"

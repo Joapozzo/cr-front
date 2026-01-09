@@ -18,7 +18,6 @@ export const SancionesHome = ({
 }: SancionesHomeProps) => {
   const {
     sanciones: sancionesData,
-    sancionesPorPagina,
     error,
     esMiSancion,
   } = useSancionesHome({ sanciones, loading, limit: undefined });
@@ -100,11 +99,11 @@ export const SancionesHome = ({
                 <tr
                   key={sancion.id}
                   className={`transition-colors ${
-                    esMiSancionActual ? 'bg-green-500/10' : 'hover:bg-[#0a0a0a]'
+                    esMiSancionActual ? 'bg-[var(--color-primary)]/10' : 'hover:bg-[#0a0a0a]'
                   }`}
                 >
                   <td className={`py-3 px-3 text-sm font-bold ${
-                    esMiSancionActual ? 'text-green-400' : 'text-white'
+                    esMiSancionActual ? 'text-[var(--color-primary)]' : 'text-white'
                   }`}>
                     {index + 1}
                   </td>
@@ -122,7 +121,7 @@ export const SancionesHome = ({
                       {/* Info del jugador */}
                       <div className="flex flex-col min-w-0">
                         <span className={`text-sm font-medium truncate ${
-                          esMiSancionActual ? 'text-green-400' : 'text-white'
+                          esMiSancionActual ? 'text-[var(--color-primary)]' : 'text-white'
                         }`}>
                           {sancion.nombre_jugador} {sancion.apellido_jugador}
                         </span>
@@ -136,8 +135,8 @@ export const SancionesHome = ({
                     <div className="flex flex-col items-center gap-1">
                       <span className={`text-sm font-bold ${
                         cumplidas === totales 
-                          ? esMiSancionActual ? 'text-green-400' : 'text-green-400'
-                          : esMiSancionActual ? 'text-green-400' : 'text-yellow-400'
+                          ? esMiSancionActual ? 'text-[var(--color-primary)]' : 'text-[var(--color-primary)]'
+                          : esMiSancionActual ? 'text-[var(--color-primary)]' : 'text-yellow-400'
                       }`}>
                         {cumplidas}/{totales}
                       </span>
@@ -146,8 +145,8 @@ export const SancionesHome = ({
                         <div 
                           className={`h-full transition-all duration-300 ${
                             cumplidas === totales 
-                              ? esMiSancionActual ? 'bg-green-400' : 'bg-green-400'
-                              : esMiSancionActual ? 'bg-green-400' : 'bg-yellow-400'
+                              ? esMiSancionActual ? 'bg-[var(--color-primary)]' : 'bg-[var(--color-primary)]'
+                              : esMiSancionActual ? 'bg-[var(--color-primary)]' : 'bg-yellow-400'
                           }`}
                           style={{ width: `${porcentaje}%` }}
                         />
@@ -156,7 +155,7 @@ export const SancionesHome = ({
                   </td>
                   <td className="py-3 px-3">
                     <span className={`text-xs ${
-                      esMiSancionActual ? 'text-green-400' : 'text-white'
+                      esMiSancionActual ? 'text-[var(--color-primary)]' : 'text-white'
                     }`}>
                       {sancion.articulo}
                     </span>

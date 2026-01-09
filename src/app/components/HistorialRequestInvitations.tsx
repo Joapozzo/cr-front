@@ -44,7 +44,7 @@ const Historial: React.FC<HistorialProps> = ({
     };
 
     const getTipoIcon = (tipo: string, estado: string) => {
-        if (estado === 'aceptada') return <Check className="w-4 h-4 text-green-400" />;
+        if (estado === 'aceptada') return <Check className="w-4 h-4 text-[var(--color-primary)]" />;
         if (estado === 'rechazada') return <X className="w-4 h-4 text-red-400" />;
         if (estado === 'pendiente') return <Clock className="w-4 h-4 text-orange-400" />;
 
@@ -63,7 +63,7 @@ const Historial: React.FC<HistorialProps> = ({
     const getEstadoColor = (estado: string) => {
         switch (estado) {
             case 'aceptada':
-                return 'text-green-400 bg-green-500/10 border-green-500/20';
+                return 'text-[var(--color-primary)] bg-[var(--color-primary)]/10 border-[var(--color-primary)]/20';
             case 'rechazada':
                 return 'text-red-400 bg-red-500/10 border-red-500/20';
             case 'pendiente':

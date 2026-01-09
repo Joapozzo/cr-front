@@ -69,7 +69,7 @@ export default function SolicitudesJugadorPage() {
                 <h1 className="text-2xl font-bold text-[var(--white)] mb-2">
                     Solicitudes e invitaciones
                 </h1>
-                <span className="flex items-center gap-1 px-3 py-1 bg-green-500/20 text-green-400 rounded-full border border-green-500/30">
+                <span className="flex items-center gap-1 px-3 py-1 bg-[var(--color-primary)]/20 text-[var(--color-primary)] rounded-full border border-[var(--color-primary)]/30">
                     <UserIcon className="w-4 h-4" />
                     Jugador
                 </span>

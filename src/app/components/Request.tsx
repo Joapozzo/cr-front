@@ -91,9 +91,9 @@ const SolicitudItemComponent = memo(({
                                 </div>
                             )}
                             {solicitud.motivo_rechazo && (
-                                <div className="mt-2 p-2 bg-[var(--color-secondary-500)]/10 rounded border border-[var(--color-secondary-500)]/30">
-                                    <p className="text-[var(--color-secondary-400)] text-xs mb-1">Motivo de rechazo:</p>
-                                    <p className="text-[var(--color-secondary-300)] text-xs italic">
+                                <div className="mt-2 p-2 bg-[var(--color-danger)]/10 rounded border border-[var(--color-danger)]/30">
+                                    <p className="text-[var(--color-danger)] text-xs mb-1">Motivo de rechazo:</p>
+                                    <p className="text-[var(--color-danger)]/80 text-xs italic">
                                         &quot;{solicitud.motivo_rechazo}&quot;
                                     </p>
                                 </div>
@@ -284,7 +284,7 @@ const Solicitudes: React.FC<SolicitudesProps> = ({
                 return 'text-[var(--color-primary-400)] bg-[var(--color-primary-500)]/20 border-[var(--color-primary-500)]/30';
             case 'R':
             case 'rechazada':
-                return 'text-[var(--color-secondary-400)] bg-[var(--color-secondary-500)]/20 border-[var(--color-secondary-500)]/30';
+                return 'text-[var(--color-danger)] bg-[var(--color-danger)]/20 border-[var(--color-danger)]/30';
             default:
                 return 'text-[var(--orange-400)] bg-[var(--orange-500)]/20 border-[var(--orange-500)]/30';
         }

@@ -241,14 +241,14 @@ const PrediosPage = () => {
     const canchaFields: FormField[] = [
         {
             name: 'nombre',
-            label: 'Nombre de la Cancha',
+            label: 'Nombre de la cancha',
             type: 'text',
             placeholder: 'Ej: Cancha 1',
             required: true
         },
         {
             name: 'tipo_futbol',
-            label: 'Tipo de Fútbol',
+            label: 'Tipo de fútbol',
             type: 'select',
             required: false,
             options: [
@@ -474,7 +474,7 @@ const PrediosPage = () => {
                     closeModal('createCancha');
                     setPredioSeleccionado(null);
                 }}
-                title={`Crear Cancha - ${predioSeleccionado?.nombre || ''}`}
+                title={`Crear cancha - ${predioSeleccionado?.nombre || ''}`}
                 fields={canchaFields}
                 initialData={{
                     id_predio: predioSeleccionado?.id_predio || 0,

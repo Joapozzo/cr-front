@@ -104,7 +104,7 @@ export default function PasoDiaHorarios({
             {/* Predio */}
             <div>
                 <Select
-                    label="Seleccionar Predio"
+                    label="Seleccionar predio"
                     value={idPredioSeleccionado?.toString() || ''}
                     onChange={(value) => onPredioChange(typeof value === 'string' ? parseInt(value, 10) : value)}
                     options={predios.map(p => ({
@@ -125,7 +125,7 @@ export default function PasoDiaHorarios({
                     {loadingCanchas ? (
                         <p className="text-[var(--gray-100)]">Cargando canchas...</p>
                     ) : canchas.length === 0 ? (
-                        <p className="text-[var(--color-secondary)]">No hay canchas disponibles en este predio</p>
+                        <p className="text-[var(--color-danger)]">No hay canchas disponibles en este predio</p>
                     ) : (
                         <div className="flex flex-wrap gap-2">
                             {canchas.map((cancha) => (

@@ -234,7 +234,7 @@ export default function PanelSolicitudesAdmin({
                         <div className="flex items-center gap-2 text-sm text-[var(--gray-100)] pl-12"> 
                             {sol.tipo_solicitud === 'B' ? (
                                 <>
-                                    <X size={14} className="text-[var(--color-secondary)]" />
+                                    <X size={14} className="text-[var(--color-danger)]" />
                                     <span>Solicita darse de baja de:</span>
                                 </>
                             ) : sol.tipo_solicitud === 'J' ? (

@@ -42,6 +42,20 @@ export const crearCategoriaEdicionSchema = z.object({
         .int('Debe ser un número entero')
         .min(0, 'No puede ser negativo')
         .max(5, 'Máximo 5 puntos'),
-}).strict();
+
+    id_division: z.preprocess(
+        (val) => {
+            // Si es 0, undefined, null o string vacío, retornar undefined
+            if (val === 0 || val === '0' || val === null || val === undefined || val === '') {
+                return undefined;
+            }
+            return val;
+        },
+        z.number()
+            .int('Debe ser un número entero')
+            .positive('Debe ser un número positivo')
+            .optional()
+    ),
+});
 
 export type CrearCategoriaEdicionInput = z.infer<typeof crearCategoriaEdicionSchema>;

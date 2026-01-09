@@ -34,6 +34,8 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         className = "",
         label,
         error,
+        showImages,
+        bgColor,
         ...props 
     }, ref) => {
         const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +57,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                     </label>
                 )}
                 
-                <div className="relative group z-[90]">
+                <div className="relative group z-[50]">
                     <select
                         ref={ref}
                         value={value ?? ''}
@@ -66,11 +68,12 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                         className={clsx(
                             'w-full h-9 px-4 pr-10 rounded-[20px] font-medium transition-all duration-200 appearance-none',
                             'border border-[#2D2F30]',
-                            'bg-[#1A1A1A] text-[#fafafa]',
-                            'focus:outline-none focus:ring-2 focus:ring-[#2AD174] focus:border-transparent',
+                            bgColor || 'bg-[#1A1A1A]',
+                            'text-[#fafafa]',
+                            'focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent',
                             'hover:border-[#3D3F40]',
                             disabled && 'opacity-50 cursor-not-allowed',
-                            error && 'border-[#EF4444] focus:ring-[#EF4444]',
+                            error && 'border-[var(--color-danger)] focus:ring-[var(--color-danger)]',
                             'relative cursor-pointer',
                             className
                         )}
@@ -104,7 +107,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 </div>
 
                 {error && (
-                    <p className="text-[var(--color-secondary)] text-xs mt-1.5 ml-1">{error}</p>
+                    <p className="text-[var(--color-danger)] text-xs mt-1.5 ml-1">{error}</p>
                 )}
             </div>
         );

@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { X, Camera, Upload, Loader2 } from 'lucide-react';
+import { Camera, Upload, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'react-hot-toast';
 import { useActualizarFotoPerfil } from '@/app/hooks/perfil/useActualizarFotoPerfil';
 import { Button } from '@/app/components/ui/Button';
+import { BaseModal } from '@/app/components/modals/ModalAdmin';
 
 interface CambiarFotoModalProps {
   isOpen: boolean;
@@ -26,8 +27,6 @@ export const CambiarFotoModal = ({
   const [stream, setStream] = useState<MediaStream | null>(null);
 
   const { mutate: actualizarFoto, isPending } = useActualizarFotoPerfil();
-
-  if (!isOpen) return null;
 
   // Comprimir imagen a base64
   const compressImage = (file: File): Promise<string> => {
@@ -175,117 +174,108 @@ export const CambiarFotoModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-[var(--gray-500)] rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[var(--gray-400)]">
-          <h2 className="text-xl font-bold text-white">Cambiar foto de perfil</h2>
-          <button
-            onClick={handleClose}
-            className="text-[var(--gray-200)] hover:text-white transition-colors"
-            disabled={isPending}
-          >
-            <X size={24} />
-          </button>
+    <BaseModal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title="Cambiar foto de perfil"
+      type="edit"
+      maxWidth="max-w-md"
+    >
+      <div className="space-y-6">
+        {/* Vista previa */}
+        <div className="flex justify-center">
+          <div className="relative w-48 h-48 rounded-full overflow-hidden bg-[var(--gray-400)] border-4 border-[var(--gray-300)]">
+            {preview ? (
+              <Image src={preview} alt="Preview" fill className="object-cover" />
+            ) : currentImage ? (
+              <Image src={currentImage} alt="Current" fill className="object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-[var(--gray-200)]">
+                <Upload size={48} />
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Body */}
-        <div className="p-6 space-y-6">
-          {/* Vista previa */}
-          <div className="flex justify-center">
-            <div className="relative w-48 h-48 rounded-full overflow-hidden bg-[var(--gray-400)] border-4 border-[var(--gray-300)]">
-              {preview ? (
-                <Image src={preview} alt="Preview" fill className="object-cover" />
-              ) : currentImage ? (
-                <Image src={currentImage} alt="Current" fill className="object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-[var(--gray-200)]">
-                  <Upload size={48} />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Cámara activa */}
-          {isCameraActive && (
-            <div className="space-y-4">
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                className="w-full rounded-lg bg-black"
-              />
-              <div className="flex gap-3">
-                <Button
-                  onClick={handleCapturarFoto}
-                  className="flex-1 flex items-center justify-center gap-2"
-                >
-                  <Camera size={20} />
-                  Capturar
-                </Button>
-                <Button
-                  onClick={handleDetenerCamara}
-                  variant="secondary"
-                  className="flex-1"
-                >
-                  Cancelar
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Opciones */}
-          {!isCameraActive && (
-            <div className="space-y-3">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileSelect}
-                className="hidden"
-              />
-
+        {/* Cámara activa */}
+        {isCameraActive && (
+          <div className="space-y-4">
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              className="w-full rounded-lg bg-black"
+            />
+            <div className="flex gap-3">
               <Button
-                onClick={() => fileInputRef.current?.click()}
-                variant="secondary"
-                className="w-full flex items-center justify-center gap-2"
-                disabled={isPending}
-              >
-                <Upload size={20} />
-                Subir desde archivo
-              </Button>
-
-              <Button
-                onClick={handleActivarCamara}
-                variant="secondary"
-                className="w-full flex items-center justify-center gap-2"
-                disabled={isPending}
+                onClick={handleCapturarFoto}
+                className="flex-1 flex items-center justify-center gap-2"
               >
                 <Camera size={20} />
-                Tomar foto con cámara
+                Capturar
+              </Button>
+              <Button
+                onClick={handleDetenerCamara}
+                variant="secondary"
+                className="flex-1"
+              >
+                Cancelar
               </Button>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Botón guardar */}
-          {preview && !isCameraActive && (
+        {/* Opciones */}
+        {!isCameraActive && (
+          <div className="space-y-3">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+
             <Button
-              onClick={handleGuardar}
-              disabled={isPending}
+              onClick={() => fileInputRef.current?.click()}
+              variant="secondary"
               className="w-full flex items-center justify-center gap-2"
+              disabled={isPending}
             >
-              {isPending ? (
-                <>
-                  Guardando <Loader2 className="animate-spin w-4 h-4" />
-                </>
-              ) : (
-                'Guardar cambios'
-              )}
+              <Upload size={20} />
+              Subir desde archivo
             </Button>
-          )}
-        </div>
+
+            <Button
+              onClick={handleActivarCamara}
+              variant="secondary"
+              className="w-full flex items-center justify-center gap-2"
+              disabled={isPending}
+            >
+              <Camera size={20} />
+              Tomar foto con cámara
+            </Button>
+          </div>
+        )}
+
+        {/* Botón guardar */}
+        {preview && !isCameraActive && (
+          <Button
+            onClick={handleGuardar}
+            disabled={isPending}
+            className="w-full flex items-center justify-center gap-2"
+          >
+            {isPending ? (
+              <>
+                Guardando <Loader2 className="animate-spin w-4 h-4" />
+              </>
+            ) : (
+              'Guardar cambios'
+            )}
+          </Button>
+        )}
       </div>
-    </div>
+    </BaseModal>
   );
 };
 

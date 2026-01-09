@@ -35,7 +35,7 @@ export const getEstadoColor = (estado: EstadoPartido) => {
         case 'C1':
         case 'E':
         case 'C2':
-            return 'text-green-400';
+            return 'text-[var(--color-primary)]';
         case 'T':
         case 'F':
             return 'text-[#737373]';

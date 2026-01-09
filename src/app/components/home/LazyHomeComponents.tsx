@@ -7,6 +7,7 @@ import {
   SancionesHomeFallback,
   NoticiasHomeFallback,
   UnirseEquipoCardFallback,
+  DreamTeamHomeFallback,
 } from "./homeFallbacks";
 
 // Lazy load components
@@ -28,6 +29,10 @@ const SancionesHome = lazy(() =>
 
 const NoticiasHome = lazy(() =>
   import("./NoticiasHome").then((module) => ({ default: module.NoticiasHome }))
+);
+
+const DreamTeamHome = lazy(() =>
+  import("../DreamTeam").then((module) => ({ default: module.DreamTeam }))
 );
 
 interface LazyUnirseEquipoCardProps {
@@ -86,6 +91,14 @@ export const LazyNoticiasHome = ({ linkNoticiasCompleta = "/noticias" }: LazyNot
   return (
     <Suspense fallback={<NoticiasHomeFallback />}>
       <NoticiasHome linkNoticiasCompleta={linkNoticiasCompleta} />
+    </Suspense>
+  );
+};
+
+export const LazyDreamTeamHome = () => {
+  return (
+    <Suspense fallback={<DreamTeamHomeFallback />}>
+      <DreamTeamHome />
     </Suspense>
   );
 };

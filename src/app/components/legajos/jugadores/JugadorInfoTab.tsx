@@ -139,7 +139,7 @@ export const JugadorInfoTab = ({ jugadorInfo, estadisticas, isLoading }: Jugador
                         </div>
                         <div className="bg-[var(--gray-400)] rounded-lg p-4 border border-[var(--gray-300)]">
                             <div className="flex items-center gap-2 mb-2">
-                                <Activity className="w-4 h-4 text-[var(--color-secondary)]" />
+                                <Activity className="w-4 h-4 text-[var(--color-danger)]" />
                                 <p className="text-xs text-[var(--gray-100)]">Rojas</p>
                             </div>
                             <p className="text-2xl font-bold text-[var(--white)]">{estadisticas.rojas}</p>

@@ -88,7 +88,7 @@ export default function ModalDetallesSancion({ sancion, onClose }: ModalDetalles
                     <div className="flex items-start gap-3 p-3 bg-[var(--gray-300)] rounded-lg">
                         <Shield className="w-4 h-4 text-red-400 mt-0.5" />
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs text-[var(--gray-100)]">Tipo de Tarjeta</p>
+                            <p className="text-xs text-[var(--gray-100)]">Tipo de tarjeta</p>
                             <p className="text-[var(--white)] font-medium">{sancion.tipo_tarjeta || 'No especificado'}</p>
                             {sancion.minuto && (
                                 <p className="text-xs text-[var(--gray-100)]">Minuto {sancion.minuto}&apos;</p>
@@ -122,7 +122,7 @@ export default function ModalDetallesSancion({ sancion, onClose }: ModalDetalles
                     <div className="flex items-start gap-3 p-3 bg-[var(--gray-300)] rounded-lg">
                         <Clock className="w-4 h-4 text-[var(--gray-100)] mt-0.5" />
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs text-[var(--gray-100)]">Fecha de Sanción</p>
+                            <p className="text-xs text-[var(--gray-100)]">Fecha de sanción</p>
                             <p className="text-[var(--white)] font-medium text-sm">
                                 {sancion.fecha_creacion ? formatearFechaCorta(sancion.fecha_creacion.toString()) : 'N/A'}
                             </p>
@@ -135,7 +135,7 @@ export default function ModalDetallesSancion({ sancion, onClose }: ModalDetalles
                     <div className="flex items-start gap-3 p-3 bg-[var(--gray-300)] rounded-lg">
                         <Shield className="w-4 h-4 text-[var(--blue)] mt-0.5" />
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs text-[var(--gray-100)]">Enfrentamiento</p>
+                            <p className="text-xs text-[var(--gray-100)]">Partido</p>
                             <p className="text-[var(--white)] font-medium text-sm">
                                 {sancion.partido.equipoLocal.nombre} vs {sancion.partido.equipoVisita.nombre}
                             </p>

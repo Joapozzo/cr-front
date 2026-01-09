@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'next/navigation';
 import BackButton from '@/app/components/ui/BackButton';
 import { PartidoTabs, TabPartido } from '@/app/components/partido/PartidoTabs';
@@ -31,7 +31,6 @@ export default function PartidoPageUsuario() {
   const { 
     data: datosPartido, 
     isLoading: isLoadingData, 
-    isFetching: isFetchingData,
     error 
   } = usePartidoDetalleUsuario(idPartido);
   
@@ -102,7 +101,16 @@ export default function PartidoPageUsuario() {
           }}
           incidencias={datosPartido.incidencias || []}
           destacados={datosPartido.jugadores_destacados || []}
-          jugadorDestacado={datosPartido.partido?.jugadorDestacado || null}
+          jugadorDestacado={
+            datosPartido.partido?.jugadorDestacado?.usuario
+              ? {
+                  id_jugador: datosPartido.partido.jugadorDestacado.id_jugador,
+                  id_usuario: '',
+                  nombre: datosPartido.partido.jugadorDestacado.usuario.nombre || '',
+                  apellido: datosPartido.partido.jugadorDestacado.usuario.apellido || ''
+                }
+              : datosPartido.partido?.jugador_destacado || null
+          }
           cambios={datosPartido.cambios || []}
           idPartido={idPartido}
         />

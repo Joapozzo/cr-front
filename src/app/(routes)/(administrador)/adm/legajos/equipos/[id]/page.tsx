@@ -130,7 +130,7 @@ const EquipoDetallePage = () => {
 
     if (errorInfo || !equipoInfo) {
         return (
-            <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-6 text-center">
+            <div className="bg-[var(--red)]/10 border border-[var(--red)]/30 rounded-lg p-6 text-center flex items-center justify-center flex-col">
                 <AlertTriangle className="w-8 h-8 text-[var(--red)] mx-auto mb-3" />
                 <h3 className="text-[var(--red)] font-medium mb-2">Error al cargar el equipo</h3>
                 <p className="text-[var(--red)]/80 text-sm mb-4">
@@ -185,6 +185,7 @@ const EquipoDetallePage = () => {
                         page={pagePartidos}
                         onPageChange={setPagePartidos}
                         idEquipo={idEquipo}
+                        equipoInfo={equipoInfo}
                     />
                 )}
 

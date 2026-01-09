@@ -42,7 +42,7 @@ const ingresosCards: IngresoCardWithDisabled[] = [
         description: 'Registrar pagos de cancha por partido',
         icon: CreditCard,
         href: '/cajero/ingresos/pago-cancha',
-        color: 'text-green-400'
+        color: 'text-[var(--color-primary)]'
     },
     {
         title: 'Validar Transferencias',

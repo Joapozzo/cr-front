@@ -84,7 +84,7 @@ export default function TablaPreciosGlobales({
                                             }
                                         </span>
                                         {precio.activo && (
-                                            <span className="ml-2 px-2 py-0.5 bg-green-500/20 text-green-400 rounded-full text-xs flex items-center gap-1">
+                                            <span className="ml-2 px-2 py-0.5 bg-[var(--color-primary)]/20 text-[var(--color-primary)] rounded-full text-xs flex items-center gap-1">
                                                 <CheckCircle className="w-3 h-3" />
                                                 Vigente
                                             </span>

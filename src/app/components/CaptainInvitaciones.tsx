@@ -103,7 +103,7 @@ const InvitacionesCapitan: React.FC<InvitacionesCapitanProps> = ({
         switch (estadoStr) {
             case 'A':
             case 'aceptada':
-                return 'text-green-400 bg-green-500/20 border-green-500/30';
+                return 'text-[var(--color-primary)] bg-[var(--color-primary)]/20 border-[var(--color-primary)]/30';
             case 'R':
             case 'rechazada':
                 return 'text-red-400 bg-red-500/20 border-red-500/30';

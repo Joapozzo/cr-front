@@ -56,7 +56,7 @@ export const ModalExpulsarJugador: React.FC<ModalExpulsarJugadorProps> = ({
                             <p className="text-[var(--gray-100)] text-sm mb-2">
                                 Estás a punto de expulsar permanentemente a <span className="text-[var(--white)] font-medium">{jugadorNombre}</span> del torneo.
                             </p>
-                            <p className="text-[var(--color-secondary)] text-sm font-medium mb-2">
+                            <p className="text-[var(--color-danger)] text-sm font-medium mb-2">
                                 ⚠️ Esta acción es permanente y el jugador no podrá:
                             </p>
                             <ul className="text-[var(--gray-100)] text-sm list-disc list-inside space-y-1">

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-interface EdicionSeleccionada {
+export interface EdicionSeleccionada {
     id_edicion: number;
     nombre: string;
     temporada: number;

@@ -131,7 +131,7 @@ const ObservacionesPlanillero = ({ idPartido, onObservacionesChange }: Observaci
     return (
         <BaseCard>
             <CardHeader
-                icon={<FileText className="text-green-400" size={16} />}
+                icon={<FileText className="text-[var(--color-primary)]" size={16} />}
                 title="Observaciones del partido"
             />
             <div className="flex flex-col gap-4 p-4">

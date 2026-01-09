@@ -58,7 +58,7 @@ export default function QRModal({ isOpen, onClose, qrData, monto, equipo }: QRMo
                             </p>
                             <button
                                 onClick={handleCopy}
-                                className="flex items-center gap-2 mx-auto px-4 py-2 bg-[var(--color-primary)] hover:bg-green-300 text-white rounded-lg transition-colors text-sm"
+                                className="flex items-center gap-2 mx-auto px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)] text-white rounded-lg transition-colors text-sm"
                             >
                                 {copied ? (
                                     <>

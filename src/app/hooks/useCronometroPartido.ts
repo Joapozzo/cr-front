@@ -36,7 +36,7 @@ export const useCronometroPartido = () => {
     // Restaurar estado al montar el componente
     useEffect(() => {
         restaurarEstado();
-    }, []);
+    }, [restaurarEstado]);
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -45,6 +45,7 @@ export const useCronometroPartido = () => {
         const actualizarCronometro = () => {
             let minutosTranscurridos = 0;
             let fase: 'PT' | 'HT' | 'ST' | 'ET' = 'PT';
+            let esSegundoTiempo = false;
 
             // Determinar qué tiempo mostrar según el estado
             switch (estadoPartido) {
@@ -57,26 +58,34 @@ export const useCronometroPartido = () => {
                     fase = 'HT';
                     break;
                 case 'C2':
-                    minutosTranscurridos = getTiempoTranscurridoSegundoTiempo();
+                    // ST arranca desde donde terminó el PT
+                    minutosTranscurridos = minutosPorTiempo + getTiempoTranscurridoSegundoTiempo();
                     fase = 'ST';
+                    esSegundoTiempo = true;
                     break;
                 case 'T':
-                    // Tiempo extra: usar el tiempo transcurrido del segundo tiempo
-                    minutosTranscurridos = getTiempoTranscurridoSegundoTiempo();
+                    // Tiempo extra: sumar los minutos del PT
+                    minutosTranscurridos = minutosPorTiempo + getTiempoTranscurridoSegundoTiempo();
                     fase = 'ET';
+                    esSegundoTiempo = true;
                     break;
                 case 'F':
-                    minutosTranscurridos = getTiempoTranscurridoSegundoTiempo();
+                    // Finalizado: sumar los minutos del PT
+                    minutosTranscurridos = minutosPorTiempo + getTiempoTranscurridoSegundoTiempo();
                     fase = 'ST';
+                    esSegundoTiempo = true;
                     break;
                 default:
                     minutosTranscurridos = 0;
                     fase = 'PT';
             }
 
-            // CAMBIO: Calcular segundos totales correctamente
+            // Calcular segundos totales correctamente
             const segundosTranscurridos = Math.floor(minutosTranscurridos * 60);
-            const segundosPermitidos = minutosPorTiempo * 60;
+            // Para el segundo tiempo, los segundos permitidos son el doble (PT + ST)
+            const segundosPermitidos = esSegundoTiempo 
+                ? minutosPorTiempo * 2 * 60 
+                : minutosPorTiempo * 60;
 
             const minutoActual = Math.floor(minutosTranscurridos);
             
@@ -95,7 +104,7 @@ export const useCronometroPartido = () => {
                     tiempoAdicional: minutosAdicionales,
                     fase: fase,
                     shouldShowAdicional: true,
-                    minuto: minutosPorTiempo + minutosAdicionales
+                    minuto: (esSegundoTiempo ? minutosPorTiempo * 2 : minutosPorTiempo) + minutosAdicionales
                 });
             }
         };

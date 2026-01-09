@@ -15,11 +15,34 @@ interface TabNavigationProps {
 export const TabNavigation: React.FC<TabNavigationProps> = ({ tabs }) => {
     const pathname = usePathname();
 
+    const getIsActive = (tabHref: string): boolean => {
+        if (!pathname) return false;
+        
+        // Coincidencia exacta
+        if (pathname === tabHref) {
+            return true;
+        }
+        
+        // Para la tab de equipos, verificar subrutas (incluyendo rutas dinámicas)
+        if (tabHref === '/adm/legajos/equipos') {
+            return pathname.startsWith('/adm/legajos/equipos');
+        }
+        
+        // Para la tab de jugadores (raíz), verificar que no sea equipos
+        // Incluye rutas dinámicas como /adm/legajos/jugadores/[id]
+        if (tabHref === '/adm/legajos') {
+            return pathname.startsWith('/adm/legajos') && !pathname.startsWith('/adm/legajos/equipos');
+        }
+        
+        return false;
+    };
+
     return (
         <div className="border-b border-[var(--gray-300)]">
             <nav className="flex -mb-px space-x-8 overflow-x-auto" aria-label="Tabs">
                 {tabs.map((tab) => {
-                    const isActive = pathname === tab.href || pathname?.startsWith(tab.href + '/');
+                    const isActive = getIsActive(tab.href);
+                    
                     return (
                         <Link
                             key={tab.href}

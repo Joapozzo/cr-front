@@ -142,7 +142,7 @@ export default function PerfilAdminPage() {
                             className="flex items-center gap-2"
                         >
                             <Save className="w-4 h-4" />
-                            {isPending ? 'Guardando...' : 'Guardar Cambios'}
+                            {isPending ? 'Guardando...' : 'Guardar cambios'}
                         </Button>
                     )}
                 </div>

@@ -11,7 +11,8 @@ export const JugadorDestacadoFooter: React.FC<JugadorDestacadoFooterProps> = ({
     jugadorDestacado,
     estadoPartido
 }) => {
-    if (!(['T', 'F'].includes(estadoPartido || '')) || !jugadorDestacado?.nombre || !jugadorDestacado?.apellido) {
+    // Mostrar solo si el partido está terminado (T) o finalizado (F) y hay un jugador destacado con nombre y apellido
+    if (!['T', 'F'].includes(estadoPartido || '') || !jugadorDestacado?.nombre || !jugadorDestacado?.apellido) {
         return null;
     }
 

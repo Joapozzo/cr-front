@@ -5,6 +5,7 @@ import { IncidenciaAgrupada } from '../types';
 import { SeparadorTiempo } from './SeparadorTiempo';
 import { JugadorDestacadoFooter } from './JugadorDestacadoFooter';
 import { JugadorDestacado } from '@/app/types/partido';
+import { IncidenciasSkeleton } from '@/app/components/skeletons/IncidenciasSkeleton';
 
 interface IncidenciasTabProps {
     incidenciasProcesadas: IncidenciaAgrupada[];
@@ -18,6 +19,7 @@ interface IncidenciasTabProps {
     onDeleteIncidencia?: (incidencia: IncidenciaPartido) => void;
     onEditCambio: (incidencia: IncidenciaPartido) => void;
     onDeleteCambio: (incidencia: IncidenciaPartido) => void;
+    isLoading?: boolean;
 }
 
 export const IncidenciasTab: React.FC<IncidenciasTabProps> = ({
@@ -31,8 +33,15 @@ export const IncidenciasTab: React.FC<IncidenciasTabProps> = ({
     onEditIncidencia,
     onDeleteIncidencia,
     onEditCambio,
-    onDeleteCambio
+    onDeleteCambio,
+    isLoading = false
 }) => {
+    // Mostrar skeleton si está cargando
+    if (isLoading) {
+        return <IncidenciasSkeleton />;
+    }
+
+    // Solo mostrar mensaje vacío si no está cargando y no hay incidencias
     if (incidenciasProcesadas.length === 0) {
         return (
             <div className="text-center py-12 text-[#737373]">

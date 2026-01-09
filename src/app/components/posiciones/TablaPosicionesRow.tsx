@@ -35,9 +35,9 @@ export const TablaPosicionesRow: React.FC<TablaPosicionesRowProps> = ({
   const isUserTeam = userTeamIds.includes(equipo.id_equipo);
   const posicion = 'posicion' in equipo ? equipo.posicion : index + 1;
 
-  const equipoConLive = equipo as (IEquipoPosicion | EquipoPosicion) & {
-    en_vivo?: boolean;
-  };
+  // Acceder directamente a en_vivo desde el objeto original
+  const equipoAny = equipo as any;
+  const enVivo = equipoAny.en_vivo === true;
 
   return (
     <tr
@@ -81,7 +81,7 @@ export const TablaPosicionesRow: React.FC<TablaPosicionesRowProps> = ({
               }`}>
                 {equipo.nombre_equipo}
               </span>
-              {equipoConLive.en_vivo && (
+              {enVivo && (
                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[var(--color-primary)] text-white animate-pulse flex-shrink-0">
                   <span className="w-1 h-1 bg-white rounded-full"></span>
                   {variant === 'home' ? 'LIVE' : 'EN VIVO'}
@@ -149,7 +149,7 @@ export const TablaPosicionesRow: React.FC<TablaPosicionesRowProps> = ({
           <Link href={`/equipos/${equipo.id_equipo}`} className="block">
             <span className={`text-sm font-medium ${
               stats.diferenciaGoles > 0
-                ? variant === 'home' && esMiEquipo ? 'text-[var(--color-primary)]' : 'text-green-400'
+                ? variant === 'home' && esMiEquipo ? 'text-[var(--color-primary)]' : 'text-[var(--color-primary)]'
                 : stats.diferenciaGoles < 0
                   ? 'text-red-400'
                   : variant === 'home' && esMiEquipo ? 'text-[var(--color-primary)]' : 'text-gray-400'

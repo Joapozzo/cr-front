@@ -40,7 +40,7 @@ const HistorialEquipoChat: React.FC<HistorialEquipoChatProps> = ({
     const getEstadoInfo = (estado: string) => {
         switch (estado) {
             case 'A':
-                return { text: 'Aceptada', color: 'text-green-400', icon: <CheckCircle size={14} /> };
+                return { text: 'Aceptada', color: 'text-[var(--color-primary)]', icon: <CheckCircle size={14} /> };
             case 'R':
                 return { text: 'Rechazada', color: 'text-red-400', icon: <XCircle size={14} /> };
             case 'C':

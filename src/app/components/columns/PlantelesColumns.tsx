@@ -85,7 +85,7 @@ const getPlantelColumns = (actions?: PlantelActions) => {
                 const dniValue = String(value);
                 return (
                     <span className={`font-mono text-sm ${dniValue === 'Sin DNI'
-                        ? 'text-[var(--color-secondary)] font-medium'
+                        ? 'text-[var(--color-warning)] font-medium'
                         : 'text-[var(--white)]'
                         }`}>
                         {dniValue}

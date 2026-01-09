@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from './ui//Button';
 import { Input } from './ui/Input';
 import { TiptapEditor } from './TipTapEditor';
@@ -8,6 +8,7 @@ import { ImageUploader } from './ImageUploader';
 import SelectGeneral from './ui/SelectGeneral';
 // import { useCategoriaStore } from '../stores/categoriaStore';
 import { useCategoriasPorEdicionActivas } from '../hooks/useCategorias';
+import { useTiposNoticia } from '../hooks/useNoticias';
 import { Loader2 } from 'lucide-react';
 
 interface NoticiaFormProps {
@@ -31,26 +32,38 @@ export const NoticiaForm: React.FC<NoticiaFormProps> = ({
     onCancel,
     isLoading = false
 }) => {
+    // Primero declarar los hooks
+    const { data: categoriasData, isLoading: isLoadingCategorias } = useCategoriasPorEdicionActivas();
+    const { data: tiposNoticiaData, isLoading: isLoadingTiposNoticia } = useTiposNoticia();
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
+    // Transformar tipos de noticia del backend al formato del SelectGeneral
+    const tiposNoticia = tiposNoticiaData?.map(tipo => ({
+        value: tipo.id_tipo_noticia,
+        label: tipo.nombre
+    })) || [];
+
+    // Obtener el primer tipo de noticia disponible como valor por defecto
+    const primerTipoNoticia = tiposNoticiaData && tiposNoticiaData.length > 0 
+        ? tiposNoticiaData[0].id_tipo_noticia 
+        : undefined;
+
     const [formData, setFormData] = useState({
         titulo: initialData?.titulo || '',
         contenido: initialData?.contenido || '{"type":"doc","content":[{"type":"paragraph"}]}',
         img_portada: initialData?.img_portada || '',
-        id_tipo_noticia: initialData?.id_tipo_noticia || 1,
+        id_tipo_noticia: initialData?.id_tipo_noticia || undefined,
         destacada: initialData?.destacada || false,
         publicada: initialData?.publicada || false,
         categorias: initialData?.categorias || []
     });
-    const { data: categoriasData, isLoading: isLoadingCategorias } = useCategoriasPorEdicionActivas();
-    const [errors, setErrors] = useState<Record<string, string>>({});
 
-    // Tipos de noticia mock (en producción vienen del backend)
-    const tiposNoticia = [
-        { value: 1, label: 'Informativa' },
-        { value: 2, label: 'Institucional' },
-        { value: 3, label: 'Resultado' },
-        { value: 4, label: 'Anuncio' },
-        { value: 5, label: 'Entrevista' }
-    ];
+    // Actualizar id_tipo_noticia cuando cargan los tipos de noticia (solo si no hay initialData)
+    useEffect(() => {
+        if (!initialData?.id_tipo_noticia && primerTipoNoticia && !formData.id_tipo_noticia) {
+            setFormData(prev => ({ ...prev, id_tipo_noticia: primerTipoNoticia }));
+        }
+    }, [primerTipoNoticia, initialData?.id_tipo_noticia, formData.id_tipo_noticia]);
 
     const validate = () => {
         const newErrors: Record<string, string> = {};
@@ -105,14 +118,14 @@ export const NoticiaForm: React.FC<NoticiaFormProps> = ({
             {/* Contenido */}
             <div>
                 <label className="block text-sm font-medium text-[var(--white)] mb-2">
-                    Contenido <span className="text-[var(--color-secondary)]">*</span>
+                    Contenido <span className="text-[var(--color-danger)]">*</span>
                 </label>
                 <TiptapEditor
                     content={formData.contenido}
                     onChange={(content) => setFormData({ ...formData, contenido: content })}
                 />
                 {errors.contenido && (
-                    <p className="mt-1 text-sm text-[var(--color-secondary)]">{errors.contenido}</p>
+                    <p className="mt-1 text-sm text-[var(--color-danger)]">{errors.contenido}</p>
                 )}
             </div>
 
@@ -121,11 +134,20 @@ export const NoticiaForm: React.FC<NoticiaFormProps> = ({
                 <label className="block text-sm font-medium text-[var(--white)] mb-2">
                     Tipo de noticia
                 </label>
-                <SelectGeneral
-                    value={formData.id_tipo_noticia}
-                    onChange={(value) => setFormData({ ...formData, id_tipo_noticia: typeof value === 'number' ? value : parseInt(value) })}
-                    options={tiposNoticia}
-                />
+                {isLoadingTiposNoticia ? (
+                    <div className="text-[var(--gray-100)] text-sm">Cargando tipos de noticia...</div>
+                ) : tiposNoticia.length === 0 ? (
+                    <div className="text-[var(--color-danger)] text-sm">
+                        No hay tipos de noticia disponibles. Por favor, crea al menos uno.
+                    </div>
+                ) : (
+                    <SelectGeneral
+                        value={formData.id_tipo_noticia}
+                        onChange={(value) => setFormData({ ...formData, id_tipo_noticia: typeof value === 'number' ? value : parseInt(value) })}
+                        options={tiposNoticia}
+                        placeholder="Seleccionar tipo de noticia"
+                    />
+                )}
             </div>
 
             {/* Categorías */}

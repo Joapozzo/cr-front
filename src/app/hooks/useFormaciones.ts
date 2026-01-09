@@ -7,6 +7,8 @@ import {
     ActualizarFormacionData
 } from '../services/formaciones.services';
 import { useAuthStore } from '../stores/authStore';
+import { planilleroKeys } from './usePartidosPlanillero';
+import { JugadorPlantel, DatosCompletosPlanillero } from '../types/partido';
 
 // ====================================================================
 // QUERY KEYS
@@ -38,6 +40,75 @@ export const useMarcarEnCancha = (
             }
             return await formacionesService.marcarEnCancha(idPartido, enCanchaData, usuario.uid);
         },
+        onMutate: async ({ idPartido, enCanchaData }) => {
+            // Cancelar queries en progreso
+            await queryClient.cancelQueries({
+                queryKey: planilleroKeys.plantel(idPartido, enCanchaData.id_equipo)
+            });
+            await queryClient.cancelQueries({
+                queryKey: planilleroKeys.datosCompletos(idPartido)
+            });
+
+            // Snapshot del valor anterior
+            const previousPlantel = queryClient.getQueryData<JugadorPlantel[]>(
+                planilleroKeys.plantel(idPartido, enCanchaData.id_equipo)
+            );
+            const previousData = queryClient.getQueryData<DatosCompletosPlanillero>(
+                planilleroKeys.datosCompletos(idPartido)
+            );
+
+            // Actualizar optimísticamente el plantel
+            if (previousPlantel) {
+                const updatedPlantel = previousPlantel.map(jugador =>
+                    jugador.id_jugador === enCanchaData.id_jugador
+                        ? { ...jugador, en_cancha: true }
+                        : jugador
+                );
+                queryClient.setQueryData<JugadorPlantel[]>(
+                    planilleroKeys.plantel(idPartido, enCanchaData.id_equipo),
+                    updatedPlantel
+                );
+            }
+
+            // Actualizar optimísticamente datos completos
+            if (previousData) {
+                const equipoKey = enCanchaData.id_equipo === previousData.partido.equipoLocal?.id_equipo
+                    ? 'plantel_local'
+                    : 'plantel_visita';
+                const plantel = previousData[equipoKey] || [];
+                const updatedPlantel = plantel.map(jugador =>
+                    jugador.id_jugador === enCanchaData.id_jugador
+                        ? { ...jugador, en_cancha: true }
+                        : jugador
+                );
+                queryClient.setQueryData<DatosCompletosPlanillero>(
+                    planilleroKeys.datosCompletos(idPartido),
+                    {
+                        ...previousData,
+                        [equipoKey]: updatedPlantel
+                    }
+                );
+            }
+
+            return { previousPlantel, previousData };
+        },
+        onError: (error, variables, context) => {
+            // Revertir en caso de error
+            const ctx = context as { previousPlantel?: JugadorPlantel[]; previousData?: DatosCompletosPlanillero } | undefined;
+            if (ctx?.previousPlantel) {
+                queryClient.setQueryData(
+                    planilleroKeys.plantel(variables.idPartido, variables.enCanchaData.id_equipo),
+                    ctx.previousPlantel
+                );
+            }
+            if (ctx?.previousData) {
+                queryClient.setQueryData(
+                    planilleroKeys.datosCompletos(variables.idPartido),
+                    ctx.previousData
+                );
+            }
+            options?.onError?.(error, variables, context);
+        },
         onSuccess: (data, variables) => {
             // Invalidar queries relacionadas
             queryClient.invalidateQueries({
@@ -46,20 +117,17 @@ export const useMarcarEnCancha = (
             queryClient.invalidateQueries({
                 queryKey: formacionesKeys.jugador(variables.idPartido, variables.enCanchaData.id_jugador)
             });
+            // Invalidar plantel del equipo afectado
             queryClient.invalidateQueries({
-                queryKey: ['planillero', 'datos-completos', variables.idPartido]
+                queryKey: planilleroKeys.plantel(variables.idPartido, variables.enCanchaData.id_equipo)
             });
             queryClient.invalidateQueries({
                 queryKey: ['cambios-jugador', 'partido', variables.idPartido]
             });
-            // Refetch inmediato para actualizar UI
-            queryClient.refetchQueries({
-                queryKey: ['planillero', 'datos-completos', variables.idPartido]
+            queryClient.invalidateQueries({
+                queryKey: planilleroKeys.datosCompletos(variables.idPartido)
             });
             options?.onSuccess?.(data, variables, undefined);
-        },
-        onError: (error, variables, context) => {
-            options?.onError?.(error, variables, context);
         },
         ...options,
     });
@@ -89,6 +157,75 @@ export const useDesmarcarEnCancha = (
             }
             return await formacionesService.desmarcarEnCancha(idPartido, idJugador, desmarcarData, usuario.uid);
         },
+        onMutate: async ({ idPartido, idJugador, desmarcarData }) => {
+            // Cancelar queries en progreso
+            await queryClient.cancelQueries({
+                queryKey: planilleroKeys.plantel(idPartido, desmarcarData.id_equipo)
+            });
+            await queryClient.cancelQueries({
+                queryKey: planilleroKeys.datosCompletos(idPartido)
+            });
+
+            // Snapshot del valor anterior
+            const previousPlantel = queryClient.getQueryData<JugadorPlantel[]>(
+                planilleroKeys.plantel(idPartido, desmarcarData.id_equipo)
+            );
+            const previousData = queryClient.getQueryData<DatosCompletosPlanillero>(
+                planilleroKeys.datosCompletos(idPartido)
+            );
+
+            // Actualizar optimísticamente el plantel
+            if (previousPlantel) {
+                const updatedPlantel = previousPlantel.map(jugador =>
+                    jugador.id_jugador === idJugador
+                        ? { ...jugador, en_cancha: false }
+                        : jugador
+                );
+                queryClient.setQueryData<JugadorPlantel[]>(
+                    planilleroKeys.plantel(idPartido, desmarcarData.id_equipo),
+                    updatedPlantel
+                );
+            }
+
+            // Actualizar optimísticamente datos completos
+            if (previousData) {
+                const equipoKey = desmarcarData.id_equipo === previousData.partido.equipoLocal?.id_equipo
+                    ? 'plantel_local'
+                    : 'plantel_visita';
+                const plantel = previousData[equipoKey] || [];
+                const updatedPlantel = plantel.map(jugador =>
+                    jugador.id_jugador === idJugador
+                        ? { ...jugador, en_cancha: false }
+                        : jugador
+                );
+                queryClient.setQueryData<DatosCompletosPlanillero>(
+                    planilleroKeys.datosCompletos(idPartido),
+                    {
+                        ...previousData,
+                        [equipoKey]: updatedPlantel
+                    }
+                );
+            }
+
+            return { previousPlantel, previousData };
+        },
+        onError: (error, variables, context) => {
+            // Revertir en caso de error
+            const ctx = context as { previousPlantel?: JugadorPlantel[]; previousData?: DatosCompletosPlanillero } | undefined;
+            if (ctx?.previousPlantel) {
+                queryClient.setQueryData(
+                    planilleroKeys.plantel(variables.idPartido, variables.desmarcarData.id_equipo),
+                    ctx.previousPlantel
+                );
+            }
+            if (ctx?.previousData) {
+                queryClient.setQueryData(
+                    planilleroKeys.datosCompletos(variables.idPartido),
+                    ctx.previousData
+                );
+            }
+            options?.onError?.(error, variables, context);
+        },
         onSuccess: (data, variables) => {
             // Invalidar queries relacionadas
             queryClient.invalidateQueries({
@@ -97,20 +234,17 @@ export const useDesmarcarEnCancha = (
             queryClient.invalidateQueries({
                 queryKey: formacionesKeys.jugador(variables.idPartido, variables.idJugador)
             });
+            // Invalidar plantel del equipo afectado
             queryClient.invalidateQueries({
-                queryKey: ['planillero', 'datos-completos', variables.idPartido]
+                queryKey: planilleroKeys.plantel(variables.idPartido, variables.desmarcarData.id_equipo)
             });
             queryClient.invalidateQueries({
                 queryKey: ['cambios-jugador', 'partido', variables.idPartido]
             });
-            // Refetch inmediato para actualizar UI
-            queryClient.refetchQueries({
-                queryKey: ['planillero', 'datos-completos', variables.idPartido]
+            queryClient.invalidateQueries({
+                queryKey: planilleroKeys.datosCompletos(variables.idPartido)
             });
             options?.onSuccess?.(data, variables, undefined);
-        },
-        onError: (error, variables, context) => {
-            options?.onError?.(error, variables, context);
         },
         ...options,
     });
@@ -148,8 +282,9 @@ export const useActualizarFormacion = (
             queryClient.invalidateQueries({
                 queryKey: formacionesKeys.jugador(variables.idPartido, variables.idJugador)
             });
+            // Invalidar plantel del equipo afectado (necesitamos obtener id_equipo desde el cache o invalidar todos)
             queryClient.invalidateQueries({
-                queryKey: ['planillero', 'datos-completos', variables.idPartido]
+                queryKey: ['planillero', 'plantel', variables.idPartido]
             });
             
             // Si se actualizó el estado en_cancha, invalidar también cambios
@@ -158,6 +293,10 @@ export const useActualizarFormacion = (
                     queryKey: ['cambios-jugador', 'partido', variables.idPartido]
                 });
             }
+            
+            queryClient.invalidateQueries({
+                queryKey: planilleroKeys.datosCompletos(variables.idPartido)
+            });
             
             options?.onSuccess?.(data, variables, undefined);
         },

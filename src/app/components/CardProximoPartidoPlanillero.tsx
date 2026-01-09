@@ -50,7 +50,7 @@ const CardProximoPartido: React.FC<ProximoPartidoProps> = ({ partido }) => {
         return (
             <BaseCard>
                 <CardHeader
-                    icon={<Calendar className="text-green-400" size={16} />}
+                    icon={<Calendar className="text-[var(--color-primary)]" size={16} />}
                     title="Próximo Partido"
                 />
                 <div className="px-6 py-4">

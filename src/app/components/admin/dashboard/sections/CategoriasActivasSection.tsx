@@ -1,10 +1,20 @@
 ﻿import { motion } from 'framer-motion';
-import { Trophy, Activity, Users, Calendar } from 'lucide-react';
+import { Trophy, Activity, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 import { CategoriaActiva } from '@/app/types/admin.types';
 import { Badge } from '@/app/components/admin/dashboard/base/Badge';
 import { LoadingSkeleton } from '@/app/components/admin/dashboard/base/LoadingSkeleton';
+
+// Helper para convertir hex a rgba con opacidad
+const hexToRgba = (hex: string | null | undefined, opacity: number = 0.1): string => {
+    if (!hex) return '';
+    const cleanHex = hex.replace('#', '');
+    const r = parseInt(cleanHex.substring(0, 2), 16);
+    const g = parseInt(cleanHex.substring(2, 4), 16);
+    const b = parseInt(cleanHex.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
 
 interface CategoriasActivasSectionProps {
     data: CategoriaActiva[] | null;
@@ -47,7 +57,7 @@ export const CategoriasActivasSection: React.FC<CategoriasActivasSectionProps> =
 
     if (error) {
         return (
-            <div className="bg-[var(--color-secondary-500)]/10 border border-[var(--color-secondary-500)]/20 rounded-xl p-6 text-center text-[var(--color-secondary-500)]">
+            <div className="bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/20 rounded-xl p-6 text-center text-[var(--color-danger)]">
                 <Activity className="mx-auto mb-2" size={24} />
                 <p>Error al cargar categorías activas</p>
             </div>
@@ -59,7 +69,7 @@ export const CategoriasActivasSection: React.FC<CategoriasActivasSectionProps> =
             <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center text-[#737373]">
                 <Trophy className="mx-auto mb-3 opacity-50" size={32} />
                 <p>No hay categorías activas en este momento</p>
-                <div className="mt-4"><Badge variant="neutral">Sin Actividad</Badge></div>
+                <div className="mt-4"><Badge variant="neutral">Sin actividad</Badge></div>
             </div>
         );
     }
@@ -71,7 +81,15 @@ export const CategoriasActivasSection: React.FC<CategoriasActivasSectionProps> =
             animate="show"
             className={`grid ${getGridCols(data.length)} gap-4 w-full`}
         >
-            {data.map((cat) => (
+            {data.map((cat) => {
+                const borderColor = cat.color || '#262626';
+                const backgroundColor = cat.color ? hexToRgba(cat.color, 0.05) : undefined;
+                const borderColorWithOpacity = cat.color ? hexToRgba(cat.color, 0.25) : '#262626';
+                const baseClassName = cat.color 
+                    ? "rounded-xl p-5 flex flex-col justify-between group cursor-pointer h-full"
+                    : "bg-[var(--black-900)] border border-[#262626] rounded-xl p-5 flex flex-col justify-between group cursor-pointer h-full";
+                
+                return (
                 <Link
                     key={cat.id_categoria_edicion}
                     href={`/adm/ediciones/${cat.id_edicion}/${cat.id_categoria_edicion}/resumen`}
@@ -81,7 +99,14 @@ export const CategoriasActivasSection: React.FC<CategoriasActivasSectionProps> =
                         variants={item}
                         whileHover={{ scale: 1.03, y: -4 }}
                         transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                        className="bg-[var(--black-900)] border border-[#262626] hover:border-[var(--color-primary)]/30 rounded-xl p-5 flex flex-col justify-between group cursor-pointer h-full"
+                        className={baseClassName}
+                        style={cat.color ? {
+                            backgroundColor: backgroundColor,
+                            borderLeft: `3px solid ${borderColor}`,
+                            borderTop: `1px solid ${borderColorWithOpacity}`,
+                            borderRight: `1px solid ${borderColorWithOpacity}`,
+                            borderBottom: `1px solid ${borderColorWithOpacity}`,
+                        } : undefined}
                     >
                     <div className="flex justify-between items-start mb-3">
                         <div className="p-2 bg-[var(--black-800)] rounded-lg text-white group-hover:bg-[var(--color-primary)] group-hover:text-black transition-colors duration-300">
@@ -109,7 +134,7 @@ export const CategoriasActivasSection: React.FC<CategoriasActivasSectionProps> =
                     </div>
                     </motion.div>
                 </Link>
-            ))}
+            )})}
         </motion.div>
     );
 };

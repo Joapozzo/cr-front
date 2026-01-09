@@ -33,7 +33,7 @@ export const CardEstadisticas: React.FC<EstadisticasProps> = ({
     return (
         <BaseCard>
             <CardHeader
-                icon={<TrendingUp className="text-green-400" size={16} />}
+                icon={<TrendingUp className="text-[var(--color-primary)]" size={16} />}
                 title="Mi actividad"
             />
             <div className="px-6 py-4">
@@ -58,7 +58,7 @@ export const CardEstadisticas: React.FC<EstadisticasProps> = ({
                         <div className="text-xs text-[#525252]">Completados</div>
                         <div className="w-full h-1 bg-[#262626] rounded-full mt-2">
                             <div 
-                                className="h-full bg-green-400 rounded-full transition-all duration-500 ease-out" 
+                                className="h-full bg-[var(--color-primary)] rounded-full transition-all duration-500 ease-out" 
                                 style={{ width: `${porcentajes.completados}%` }}
                             ></div>
                         </div>
@@ -71,7 +71,7 @@ export const CardEstadisticas: React.FC<EstadisticasProps> = ({
                         <div className="text-xs text-[#525252]">Este mes</div>
                         <div className="w-full h-1 bg-[#262626] rounded-full mt-2">
                             <div 
-                                className="h-full bg-green-400 rounded-full transition-all duration-500 ease-out" 
+                                className="h-full bg-[var(--color-primary)] rounded-full transition-all duration-500 ease-out" 
                                 style={{ width: `${porcentajes.mensuales}%` }}
                             ></div>
                         </div>

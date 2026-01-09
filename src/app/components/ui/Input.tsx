@@ -98,7 +98,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
     placeholder-[#555555] 
     focus:outline-none 
     focus:ring-2 
-    focus:ring-[#2AD174] 
+    focus:ring-[var(--color-primary)] 
     focus:border-transparent 
     transition-all 
     duration-200 
@@ -117,7 +117,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
     [&:-webkit-autofill:focus]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
     [&:-webkit-autofill:focus]:border-transparent
     [&:-webkit-autofill:focus]:ring-2
-    [&:-webkit-autofill:focus]:ring-[#2AD174]
+    [&:-webkit-autofill:focus]:ring-[var(--color-primary)]
     [&:-webkit-autofill]:transition-[background-color,color,-webkit-text-fill-color]
     [&:-webkit-autofill]:duration-[5000s]
   `;
@@ -125,7 +125,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
     const widthClasses = fullWidth ? 'w-full' : '';
     const iconClasses = icon ? 'pl-12' : '';
     const passwordClasses = isPassword ? 'pr-12' : '';
-    const errorClasses = error ? 'border-[#EF4444] focus:ring-[#EF4444]' : '';
+    const errorClasses = error ? 'border-[var(--color-danger)] focus:ring-[var(--color-danger)]' : '';
 
     return (
         <div className={classNames('flex flex-col gap-1', fullWidth ? 'w-full' : '')}>
@@ -161,7 +161,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--gray-100)] hover:text-[#2AD174] transition-colors"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--gray-100)] hover:text-[var(--color-primary)] transition-colors"
                         tabIndex={-1}
                     >
                         {showPassword ? (
@@ -173,7 +173,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
                 )}
             </div>
             {error && (
-                <span className="text-xs text-[#EF4444] mt-1">
+                <span className="text-xs text-[var(--color-danger)] mt-1">
                     {error}
                 </span>
             )}
@@ -209,7 +209,7 @@ export const Textarea: React.FC<TextareaProps> = ({
     placeholder-[#555555] 
     focus:outline-none 
     focus:ring-2 
-    focus:ring-[#2AD174] 
+    focus:ring-[var(--color-primary)] 
     focus:border-transparent 
     transition-all 
     duration-200 
@@ -230,13 +230,13 @@ export const Textarea: React.FC<TextareaProps> = ({
     [&:-webkit-autofill:focus]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
     [&:-webkit-autofill:focus]:border-transparent
     [&:-webkit-autofill:focus]:ring-2
-    [&:-webkit-autofill:focus]:ring-[#2AD174]
+    [&:-webkit-autofill:focus]:ring-[var(--color-primary)]
     [&:-webkit-autofill]:transition-[background-color,color,-webkit-text-fill-color]
     [&:-webkit-autofill]:duration-[5000s]
   `;
 
     const widthClasses = fullWidth ? 'w-full' : '';
-    const errorClasses = error ? 'border-[#EF4444] focus:ring-[#EF4444]' : '';
+    const errorClasses = error ? 'border-[var(--color-danger)] focus:ring-[var(--color-danger)]' : '';
 
     return (
         <div className={classNames('flex flex-col gap-1', fullWidth ? 'w-full' : '')}>
@@ -259,7 +259,7 @@ export const Textarea: React.FC<TextareaProps> = ({
                 {...props}
             />
             {error && (
-                <span className="text-xs text-[#EF4444] mt-1">
+                <span className="text-xs text-[var(--color-danger)] mt-1">
                     {error}
                 </span>
             )}
@@ -293,7 +293,7 @@ export const DateInput: React.FC<DateInputProps> = ({
     placeholder-[#555555] 
     focus:outline-none 
     focus:ring-2 
-    focus:ring-[#2AD174] 
+    focus:ring-[var(--color-primary)] 
     focus:border-transparent 
     transition-all 
     duration-200 
@@ -315,13 +315,13 @@ export const DateInput: React.FC<DateInputProps> = ({
     [&:-webkit-autofill:focus]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
     [&:-webkit-autofill:focus]:border-transparent
     [&:-webkit-autofill:focus]:ring-2
-    [&:-webkit-autofill:focus]:ring-[#2AD174]
+    [&:-webkit-autofill:focus]:ring-[var(--color-primary)]
     [&:-webkit-autofill]:transition-[background-color,color,-webkit-text-fill-color]
     [&:-webkit-autofill]:duration-[5000s]
   `;
 
     const widthClasses = fullWidth ? 'w-full' : '';
-    const errorClasses = error ? 'border-[#EF4444] focus:ring-[#EF4444]' : '';
+    const errorClasses = error ? 'border-[var(--color-danger)] focus:ring-[var(--color-danger)]' : '';
 
     return (
         <div className={classNames('flex flex-col gap-1', fullWidth ? 'w-full' : '')}>
@@ -360,7 +360,7 @@ export const DateInput: React.FC<DateInputProps> = ({
                 </button>
             </div>
             {error && (
-                <span className="text-xs text-[#EF4444] mt-1">
+                <span className="text-xs text-[var(--color-danger)] mt-1">
                     {error}
                 </span>
             )}
@@ -394,7 +394,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({
     placeholder-[#555555] 
     focus:outline-none 
     focus:ring-2 
-    focus:ring-[#2AD174] 
+    focus:ring-[var(--color-primary)] 
     focus:border-transparent 
     transition-all 
     duration-200 
@@ -419,13 +419,13 @@ export const TimeInput: React.FC<TimeInputProps> = ({
     [&:-webkit-autofill:focus]:shadow-[inset_0_0_0px_1000px_#1A1A1A]
     [&:-webkit-autofill:focus]:border-transparent
     [&:-webkit-autofill:focus]:ring-2
-    [&:-webkit-autofill:focus]:ring-[#2AD174]
+    [&:-webkit-autofill:focus]:ring-[var(--color-primary)]
     [&:-webkit-autofill]:transition-[background-color,color,-webkit-text-fill-color]
     [&:-webkit-autofill]:duration-[5000s]
   `;
 
     const widthClasses = fullWidth ? 'w-full' : '';
-    const errorClasses = error ? 'border-[#EF4444] focus:ring-[#EF4444]' : '';
+    const errorClasses = error ? 'border-[var(--color-danger)] focus:ring-[var(--color-danger)]' : '';
 
     return (
         <div className={classNames('flex flex-col gap-1', fullWidth ? 'w-full' : '')}>
@@ -454,7 +454,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({
                 </div>
             </div>
             {error && (
-                <span className="text-xs text-[#EF4444] mt-1">
+                <span className="text-xs text-[var(--color-danger)] mt-1">
                     {error}
                 </span>
             )}

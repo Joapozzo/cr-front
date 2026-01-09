@@ -178,3 +178,24 @@ export const useCrearNombreCategoria = (options?: {
         },
     });
 };
+
+export const useCrearDivision = (options?: {
+    onSuccess?: () => void;
+    onError?: (error: Error) => void;
+}) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ nombre, descripcion, genero }: { nombre: string; descripcion?: string; genero?: 'M' | 'F' | 'X' }) =>
+            categoriasService.crearDivision(nombre, descripcion, genero),
+        onSuccess: () => {
+            // Invalidar las queries relacionadas para refrescar los datos disponibles
+            queryClient.invalidateQueries({ queryKey: categoriasKeys.datosCrear() });
+            options?.onSuccess?.();
+        },
+        onError: (error: Error) => {
+            console.error('Error al crear división:', error);
+            options?.onError?.(error);
+        },
+    });
+};

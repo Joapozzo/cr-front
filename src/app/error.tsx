@@ -19,16 +19,16 @@ export default function Error({ error, reset }: ErrorProps) {
   }, [error]);
 
   return (
-    <div className="min-h-screen w-full bg-[#101011] flex items-center justify-center px-4">
+    <div className="min-h-screen w-full bg-[var(--gray-500)] flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center space-y-8">
         {/* Error Icon */}
         <div className="space-y-4">
           <div className="flex justify-center">
-            <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-[#2AD174]/20 flex items-center justify-center">
-              <AlertCircle className="w-12 h-12 md:w-14 md:h-14 text-[#2AD174]" />
+            <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-[var(--color-primary-opacity)] flex items-center justify-center">
+              <AlertCircle className="w-12 h-12 md:w-14 md:h-14 text-[var(--color-primary)]" />
             </div>
           </div>
-          <div className="w-24 h-1 bg-[#2AD174] mx-auto rounded-full"></div>
+          <div className="w-24 h-1 bg-[var(--color-primary)] mx-auto rounded-full"></div>
         </div>
 
         {/* Message */}
@@ -36,7 +36,7 @@ export default function Error({ error, reset }: ErrorProps) {
           <h2 className="text-2xl md:text-3xl font-semibold text-white">
             Algo salió mal
           </h2>
-          <p className="text-[#65656B] text-base md:text-lg">
+          <p className="text-[var(--gray-200)] text-base md:text-lg">
             Ocurrió un error inesperado. Por favor, intenta nuevamente.
           </p>
         </div>

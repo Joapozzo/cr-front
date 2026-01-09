@@ -5,6 +5,7 @@ import { useLogin } from './useLogin';
 import { useLoginGoogle } from './useLoginGoogle';
 import { useAuth } from './useAuth';
 import { determinarRutaRedireccion } from '@/app/utils/authRedirect';
+import { useEmailExpansion } from './useEmailExpansion';
 
 type LoginState = 'idle' | 'loading' | 'success' | 'error';
 
@@ -19,11 +20,16 @@ export const useLoginController = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loginState, setLoginState] = useState<LoginState>('idle');
+    
+    // Hook personalizado para manejar la expansión del formulario de email
+    const { isEmailExpanded, expandEmail } = useEmailExpansion();
 
     const isFormValid = email.trim() !== '' && password.trim() !== '';
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        // Limpiar toasts anteriores antes de iniciar un nuevo intento
+        toast.dismiss();
         setLoginState('loading');
 
         login(
@@ -40,6 +46,8 @@ export const useLoginController = () => {
                 },
                 onError: (error) => {
                     setLoginState('idle');
+                    // Mantener el formulario expandido cuando falla el login para mejor UX
+                    // No se colapsa el formulario, permitiendo al usuario corregir y reintentar
                     toast.error(error.message);
                 },
             }
@@ -47,6 +55,8 @@ export const useLoginController = () => {
     };
 
     const handleLoginGoogle = () => {
+        // Limpiar toasts anteriores antes de iniciar un nuevo intento
+        toast.dismiss();
         setLoginState('loading');
         
         loginGoogle(undefined, {
@@ -77,6 +87,8 @@ export const useLoginController = () => {
         isPendingGoogle,
         handleSubmit,
         handleLoginGoogle,
+        isEmailExpanded,
+        expandEmail,
     };
 };
 

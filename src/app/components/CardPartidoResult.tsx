@@ -105,10 +105,10 @@ const CardPartidoResult: React.FC<PartidoCardProps> = ({
                     {/* Estado del partido */}
                     <div className="flex items-center gap-2 text-sm">
                         {partido.estado === 'C1' && (
-                            <MdOutlineWatchLater className="text-green-500 animate-pulse" />
+                            <MdOutlineWatchLater className="text-[var(--color-primary)] animate-pulse" />
                         )}
                         {partido.estado === 'C2' && (
-                            <MdOutlineWatchLater className="text-green-500 animate-pulse" />
+                            <MdOutlineWatchLater className="text-[var(--color-primary)] animate-pulse" />
                         )}
                         {partido.estado === 'E' && (
                             <MdOutlineWatchLater className="text-orange-500 animate-pulse" />

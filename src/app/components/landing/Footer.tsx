@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { MapPin, Mail } from 'lucide-react';
 import { FaInstagram, FaFacebook, FaWhatsapp } from 'react-icons/fa';
@@ -11,6 +11,12 @@ import { useTenant } from '@/app/contexts/TenantContext';
 
 const Footer = () => {
     const tenant = useTenant();
+    const [currentYear, setCurrentYear] = useState<number | null>(null);
+
+    useEffect(() => {
+        setCurrentYear(new Date().getFullYear());
+    }, []);
+
     return (
         <footer className="bg-[var(--black)] border-t border-[var(--black-900)] pt-16 pb-8">
             <div className="container mx-auto px-4">
@@ -76,7 +82,7 @@ const Footer = () => {
 
                 <div className="border-t border-[var(--black-900)] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-[var(--gray-200)] text-sm">
-                        © {new Date().getFullYear()} {tenant.nombre_empresa}. Todos los derechos reservados.
+                        © {currentYear ?? new Date().getFullYear()} {tenant.nombre_empresa}. Todos los derechos reservados.
                     </p>
                     <p className="text-[var(--gray-200)] text-xs">
                         Diseñado y Desarrollado por amor al fútbol.

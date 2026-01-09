@@ -92,7 +92,7 @@ export default function CerrarCajaModal({
                             {hayDiferencia && (
                                 <div>
                                     <p className="text-xs text-[var(--gray-100)] mb-1">Diferencia</p>
-                                    <p className={`text-lg font-semibold ${diferencia > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    <p className={`text-lg font-semibold ${diferencia > 0 ? 'text-[var(--color-primary)]' : 'text-red-400'}`}>
                                         {diferencia > 0 ? '+' : ''}${diferencia.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </p>
                                 </div>
@@ -122,11 +122,11 @@ export default function CerrarCajaModal({
                 {hayDiferencia && (
                     <div className={`p-4 rounded-lg border ${
                         diferencia > 0 
-                            ? 'bg-green-500/10 border-green-500/50' 
+                            ? 'bg-[var(--color-primary)]/10 border-[var(--color-primary)]/50' 
                             : 'bg-red-500/10 border-red-500/50'
                     }`}>
                         <p className={`text-sm font-medium ${
-                            diferencia > 0 ? 'text-green-400' : 'text-red-400'
+                            diferencia > 0 ? 'text-[var(--color-primary)]' : 'text-red-400'
                         }`}>
                             {diferencia > 0 
                                 ? `⚠️ Hay un sobrante de $${Math.abs(diferencia).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`

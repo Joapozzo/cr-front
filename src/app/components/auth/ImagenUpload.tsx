@@ -61,7 +61,7 @@ export const ImageUpload = ({
                 onClick={() => inputRef.current?.click()}
                 className={`
           relative w-full h-40 rounded-lg border-2 border-dashed 
-          ${error ? 'border-[var(--color-secondary)]' : 'border-[var(--gray-300)]'}
+          ${error ? 'border-[var(--color-danger)]' : 'border-[var(--gray-300)]'}
           ${imageUrl ? 'border-[var(--color-primary)]' : ''}
           bg-[var(--gray-400)] cursor-pointer
           hover:bg-[var(--gray-300)] transition-all
@@ -109,7 +109,7 @@ export const ImageUpload = ({
             </div>
 
             {error && (
-                <span className="text-xs text-[var(--color-secondary)] ml-2">{error}</span>
+                <span className="text-xs text-[var(--color-danger)] ml-2">{error}</span>
             )}
         </div>
     );

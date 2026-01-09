@@ -9,10 +9,10 @@ const DreamTeamSkeleton: React.FC = () => {
     return (
         <SkeletonTheme baseColor="#1f1f1f" highlightColor="#333333">
             <div className="relative w-full max-w-full">
-                {/* Campo de fútbol */}
+                {/* Campo de fútbol - Reducido */}
                 <div 
                     className="relative bg-transparent border-2 border-[var(--gray-200)] rounded-xl overflow-hidden w-full"
-                    style={{ aspectRatio: '1.4/1', minHeight: '700px' }}
+                    style={{ aspectRatio: '1.8/1', minHeight: '350px', maxHeight: '400px' }}
                 >
                     <CardCanchaFutbol />
 
@@ -33,27 +33,27 @@ const DreamTeamSkeleton: React.FC = () => {
                                         marginLeft: '-50%'
                                     }}
                                 >
-                                    <div className="flex justify-center items-center gap-30" style={{ width: '90%' }}>
+                                    <div className="flex justify-center items-center gap-4" style={{ width: '90%' }}>
                                         {Array.from({ length: cantidad }).map((_, jugadorIndex) => (
                                             <div
                                                 key={jugadorIndex}
                                                 className="flex flex-col items-center relative"
                                             >
                                                 <div className="relative">
-                                                    {/* Avatar skeleton */}
+                                                    {/* Avatar skeleton - Reducido */}
                                                     <Skeleton 
                                                         circle 
-                                                        width={56} 
-                                                        height={56} 
+                                                        width={40} 
+                                                        height={40} 
                                                         className="shadow-lg"
                                                     />
                                                 </div>
 
-                                                {/* Nombre skeleton */}
-                                                <div className="mt-3">
+                                                {/* Nombre skeleton - Reducido */}
+                                                <div className="mt-2">
                                                     <Skeleton 
-                                                        width={100} 
-                                                        height={28} 
+                                                        width={70} 
+                                                        height={20} 
                                                         borderRadius={6}
                                                     />
                                                 </div>
@@ -65,27 +65,6 @@ const DreamTeamSkeleton: React.FC = () => {
                         })}
                     </div>
 
-                    {/* Indicador de formación skeleton */}
-                    <div className="absolute top-4 left-4">
-                        <Skeleton width={80} height={36} borderRadius={8} />
-                    </div>
-
-                    {/* Estadísticas skeleton */}
-                    <div className="absolute top-4 right-4">
-                        <Skeleton width={60} height={36} borderRadius={8} />
-                    </div>
-                </div>
-
-                {/* Selector de formaciones skeleton */}
-                <div className="mt-6 flex flex-wrap gap-3 justify-center">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                        <Skeleton 
-                            key={i} 
-                            width={100} 
-                            height={40} 
-                            borderRadius={8}
-                        />
-                    ))}
                 </div>
             </div>
         </SkeletonTheme>

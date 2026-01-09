@@ -157,7 +157,9 @@ export const noticiasService = {
     // Obtener tipos de noticia
     obtenerTiposNoticia: async (): Promise<Array<{ id_tipo_noticia: number; nombre: string }>> => {
         try {
-            return await api.get<Array<{ id_tipo_noticia: number; nombre: string }>>('/admin/noticias/tipos/lista');
+            const response = await api.get<{ success: boolean; data: Array<{ id_tipo_noticia: number; nombre: string; descripcion?: string | null }> }>('/admin/noticias/tipos/lista');
+            // El backend devuelve { success: true, data: [...] }
+            return response.data || [];
         } catch (error) {
             console.error("Error al obtener tipos de noticia:", error);
             throw new Error("No se pudieron cargar los tipos de noticia");

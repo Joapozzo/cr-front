@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { IncidenciaPartido, JugadorPlantel, EstadoPartido, JugadorDestacado } from '@/app/types/partido';
 import CambioJugadorModal from '../CambioJugadorModal';
-import { useCrearCambioJugador } from '@/app/hooks/useCambiosJugador';
+import { useCrearCambioCompleto } from '@/app/hooks/useCambiosJugador';
 import { DeleteModal, ConfirmDeleteIncidentModal } from '../../modals/ModalAdmin';
 import toast from 'react-hot-toast';
 
@@ -149,7 +149,7 @@ const JugadoresTabsUnified: React.FC<JugadoresTabsProps> = ({
         jugadoresEnCanchaVisita
     });
 
-    const { mutateAsync: crearCambioAsync, isPending: isCreandoCambio } = useCrearCambioJugador();
+    const { mutateAsync: crearCambioCompletoAsync, isPending: isCreandoCambio } = useCrearCambioCompleto();
 
     // Handler para solicitar cambio
     const handleSolicitarCambio = useCallback((jugador: JugadorPlantel) => {
@@ -183,27 +183,14 @@ const JugadoresTabsUnified: React.FC<JugadoresTabsProps> = ({
             : equipoVisita.id_equipo;
 
         try {
-            // Crear dos cambios: SALIDA del que sale y ENTRADA del que entra
-            // Primero la salida
-            await crearCambioAsync({
+            // Crear cambio completo (SALIDA + ENTRADA) en una sola transacción
+            await crearCambioCompletoAsync({
                 idPartido,
                 cambioData: {
                     id_categoria_edicion: idCategoriaEdicion,
                     id_equipo: equipoId,
-                    tipo_cambio: 'SALIDA',
-                    id_jugador: modalState.modalCambio.jugadorSale.id_jugador,
-                    minuto
-                }
-            });
-
-            // Luego la entrada
-            await crearCambioAsync({
-                idPartido,
-                cambioData: {
-                    id_categoria_edicion: idCategoriaEdicion,
-                    id_equipo: equipoId,
-                    tipo_cambio: 'ENTRADA',
-                    id_jugador: jugadorEntraId,
+                    id_jugador_sale: modalState.modalCambio.jugadorSale.id_jugador,
+                    id_jugador_entra: jugadorEntraId,
                     minuto
                 }
             });
@@ -216,7 +203,7 @@ const JugadoresTabsUnified: React.FC<JugadoresTabsProps> = ({
                 || 'Error al registrar cambio';
             toast.error(errorMessage);
         }
-    }, [idPartido, idCategoriaEdicion, modalState, estadoPartido, equipoLocal.id_equipo, equipoVisita.id_equipo, crearCambioAsync]);
+    }, [idPartido, idCategoriaEdicion, modalState, estadoPartido, equipoLocal.id_equipo, equipoVisita.id_equipo, crearCambioCompletoAsync]);
 
     // Handler para abrir modal de edición
     const handleEditCambio = useCallback((incidencia: IncidenciaPartido) => {
@@ -357,6 +344,7 @@ const JugadoresTabsUnified: React.FC<JugadoresTabsProps> = ({
                             onDeleteIncidencia={handleDeleteIncidencia}
                             onEditCambio={handleEditCambio}
                             onDeleteCambio={handleDeleteCambio}
+                            isLoading={loading}
                         />
                     )}
 
@@ -440,12 +428,12 @@ const JugadoresTabsUnified: React.FC<JugadoresTabsProps> = ({
             <DeleteModal
                 isOpen={modalState.modalEliminarCambio.isOpen}
                 onClose={modalState.cerrarModalEliminarCambio}
-                title="Eliminar Cambio"
+                title="Eliminar cambio"
                 message={modalState.modalEliminarCambio.incidencia 
                     ? `¿Estás seguro que quieres eliminar el cambio del minuto ${modalState.modalEliminarCambio.incidencia.minuto}?`
                     : '¿Estás seguro que quieres eliminar este cambio?'}
                 itemName={modalState.modalEliminarCambio.incidencia 
-                    ? `${modalState.modalEliminarCambio.incidencia.jugador_sale_nombre || ''} → ${modalState.modalEliminarCambio.incidencia.jugador_entra_nombre || ''}`
+                    ? `Cambio: ${modalState.modalEliminarCambio.incidencia.jugador_sale_nombre || ''} → ${modalState.modalEliminarCambio.incidencia.jugador_entra_nombre || ''}`
                     : undefined}
                 onConfirm={handleConfirmarEliminarCambio}
                 error={null}

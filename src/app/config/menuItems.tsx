@@ -38,11 +38,11 @@ export const userMenuItems = [
     href: '/perfil',
     icon: <UserCircle className="w-5 h-5" />,
   },
-  {
-    label: 'Configuración',
-    href: '/perfil/configuracion',
-    icon: <Settings className="w-5 h-5" />,
-  },
+  // {
+  //   label: 'Configuración',
+  //   href: '/perfil/configuracion',
+  //   icon: <Settings className="w-5 h-5" />,
+  // },
 ];
 
 // Menú para PLANILLERO

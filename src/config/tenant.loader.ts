@@ -13,6 +13,12 @@ export interface TenantConfig {
         titulo_pagina: string;
         favicons_path: string;
     };
+    imagenes: {
+        hero: string;
+        hero_mobile: string;
+        about: string;
+        login: string;
+    };
     seo: {
         keywords: string[];
         description: string;

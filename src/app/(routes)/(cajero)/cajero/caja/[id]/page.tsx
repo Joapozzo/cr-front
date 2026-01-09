@@ -101,7 +101,7 @@ export default function CajaDetallePage() {
                 </div>
                 <div className="bg-[var(--black-900)] border border-[var(--gray-300)] rounded-lg p-4">
                     <p className="text-sm text-[var(--gray-100)] mb-1">Ingresos</p>
-                    <p className="text-2xl font-semibold text-green-400">
+                    <p className="text-2xl font-semibold text-[var(--color-primary)]">
                         ${ingresos.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>
                 </div>
@@ -133,7 +133,7 @@ export default function CajaDetallePage() {
                         <p className="text-sm text-[var(--gray-100)]">Estado</p>
                         <span className={`px-3 py-1 rounded text-sm font-medium ${
                             caja.cerrada 
-                                ? 'bg-green-500/20 text-green-400' 
+                                ? 'bg-[var(--color-primary)]/20 text-[var(--color-primary)]' 
                                 : 'bg-yellow-500/20 text-yellow-400'
                         }`}>
                             {caja.cerrada ? 'Cerrada' : 'Abierta'}

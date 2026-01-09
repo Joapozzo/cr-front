@@ -12,7 +12,7 @@ interface BadgeProps {
 const variants: Record<BadgeVariant, string> = {
     success: 'bg-[var(--color-primary-opacity)] text-[var(--color-primary)] border-[var(--color-primary)]',
     warning: 'bg-[var(--color-warning)]/10 text-[var(--color-warning)] border-[var(--color-warning)]',
-    danger: 'bg-[var(--color-secondary-500)]/10 text-[var(--color-secondary-500)] border-[var(--color-secondary-500)]',
+    danger: 'bg-[var(--color-danger)]/10 text-[var(--color-danger)] border-[var(--color-danger)]',
     info: 'bg-[var(--blue-500)]/10 text-[var(--blue-500)] border-[var(--blue-500)]',
     neutral: 'bg-[var(--gray-700)] text-[var(--gray-100)] border-[var(--gray-600)]'
 };

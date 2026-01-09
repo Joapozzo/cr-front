@@ -24,7 +24,7 @@ const CTASection = () => {
 
                 <div className="flex justify-center">
                     <a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer">
-                        <Button variant="footer" size="md" className="gap-2 font-bold shadow-lg shadow-green-900/20 rounded-full px-8">
+                        <Button variant="footer" size="md" className="gap-2 font-bold shadow-lg shadow-[var(--color-primary)]/20 rounded-full px-8">
                             <FaWhatsapp size={20} />
                             Inscribir mi Equipo
                         </Button>

@@ -4,12 +4,26 @@ import { obtenerToken } from '../services/auth.services';
 
 /**
  * Obtiene la URL base del API desde la variable de entorno
+ * Detecta automáticamente si se accede desde localhost o desde la red
+ * y ajusta la URL del API en consecuencia
  */
 export const getApiBaseUrl = (): string => {
   const envUrl = process.env.NEXT_PUBLIC_API_URL;
   if (!envUrl) {
     throw new Error('NEXT_PUBLIC_API_URL no está definida en las variables de entorno');
   }
+  
+  // Si estamos en el navegador y la URL contiene localhost, intentar detectar la IP real
+  if (typeof window !== 'undefined' && envUrl.includes('localhost')) {
+    const hostname = window.location.hostname;
+    // Si accedemos desde una IP de red (no localhost), reemplazar localhost con esa IP
+    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      const adjustedUrl = envUrl.replace('localhost', hostname);
+      console.log(`🌐 Detección automática: ${envUrl} → ${adjustedUrl}`);
+      return adjustedUrl;
+    }
+  }
+  
   return envUrl;
 };
 

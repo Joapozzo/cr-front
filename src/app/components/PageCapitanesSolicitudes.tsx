@@ -106,7 +106,7 @@ export default function SolicitudesCapitanPage({  equipoSeleccionado, esCapitan 
                     </span>
                     <span className={`flex items-center gap-1 px-3 py-1 rounded-full border transition-colors cursor-pointer ${
                         activeTab === 'jugador' 
-                            ? 'bg-green-500/20 text-green-400 border-green-500/30' 
+                            ? 'bg-[var(--color-primary)]/20 text-[var(--color-primary)] border-[var(--color-primary)]/30' 
                             : 'bg-[var(--gray-400)]/20 text-[var(--gray-200)] border-[var(--gray-300)]/30'
                     }`}
                     onClick={() => setActiveTab('jugador')}

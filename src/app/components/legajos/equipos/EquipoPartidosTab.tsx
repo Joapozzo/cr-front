@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { HistorialPartidosEquipoResponse, FixtureEquipo, PartidoEquipo as PartidoEquipoLegajo } from '@/app/types/legajos';
+import { HistorialPartidosEquipoResponse, FixtureEquipo, PartidoEquipo as PartidoEquipoLegajo, EquipoInformacionBasica } from '@/app/types/legajos';
 import MatchCard from '@/app/components/CardPartidoGenerico';
 import { PartidoEquipo, EstadoPartido } from '@/app/types/partido';
 import { Pagination } from '@/app/components/legajos/shared/Pagination';
@@ -23,6 +23,7 @@ interface EquipoPartidosTabProps {
     page: number;
     onPageChange: (page: number) => void;
     idEquipo: number;
+    equipoInfo?: EquipoInformacionBasica;
 }
 
 // Tipo para partido simplificado (usado en ListaPartidos) - compatible con Partido
@@ -70,13 +71,17 @@ interface PartidoMatchCard extends Omit<PartidoEquipo, 'incidencias'> {
 }
 
 // Función para convertir PartidoEquipo (legajos) a PartidoEquipo (formato del componente MatchCard)
-const convertirPartido = (partido: PartidoEquipoLegajo | FixtureEquipo, idEquipo: number): PartidoMatchCard => {
+const convertirPartido = (partido: PartidoEquipoLegajo | FixtureEquipo, idEquipo: number, equipoInfo?: EquipoInformacionBasica): PartidoMatchCard => {
     // Si es un fixture, puede que solo tenga rival
     if ('rival' in partido) {
         const fixture = partido as FixtureEquipo;
         const rivalNombre = fixture.rival?.nombre || 'Por definir';
         const rivalImg = fixture.rival?.img || undefined;
         const rivalId = fixture.rival?.id_equipo || 0;
+        
+        // Determinar si el equipo es local o visita basándose en el rival
+        // Si el rival está definido, asumimos que nuestro equipo es el opuesto
+        const esLocal = true; // Por defecto asumimos que es local en fixtures
         
         return {
             id_partido: fixture.id_partido,
@@ -91,15 +96,15 @@ const convertirPartido = (partido: PartidoEquipoLegajo | FixtureEquipo, idEquipo
             cancha: fixture.cancha?.id_cancha || 0,
             id_zona: 0,
             id_categoria_edicion: 0,
-            id_equipolocal: idEquipo,
-            id_equipovisita: rivalId,
+            id_equipolocal: esLocal ? idEquipo : rivalId,
+            id_equipovisita: esLocal ? rivalId : idEquipo,
             equipoLocal: {
-                nombre: 'Mi equipo',
-                img: undefined,
+                nombre: esLocal ? (equipoInfo?.nombre || 'Mi equipo') : rivalNombre,
+                img: esLocal ? (equipoInfo?.img || undefined) : rivalImg,
             },
             equipoVisita: {
-                nombre: rivalNombre,
-                img: rivalImg,
+                nombre: esLocal ? rivalNombre : (equipoInfo?.nombre || 'Mi equipo'),
+                img: esLocal ? rivalImg : (equipoInfo?.img || undefined),
             },
             incidencias: {
                 goles: [],
@@ -165,6 +170,7 @@ export const EquipoPartidosTab = ({
     categoriaSeleccionada,
     onPageChange,
     idEquipo,
+    equipoInfo,
 }: EquipoPartidosTabProps) => {
     const [tabActivo, setTabActivo] = useState<'fixture' | 'historial'>('fixture');
     const [vistaActiva, setVistaActiva] = useState<'fecha' | 'jornada'>('jornada');
@@ -177,7 +183,7 @@ export const EquipoPartidosTab = ({
     // Convertir fixtures a formato Partido para usar con ListaPartidos
     const convertirFixtureAPartido = useMemo(() => {
         return (fixture: FixtureEquipo): PartidoSimplificado => {
-            const partidoConvertido = convertirPartido(fixture, idEquipo);
+            const partidoConvertido = convertirPartido(fixture, idEquipo, equipoInfo);
             return {
                 id_partido: partidoConvertido.id_partido,
                 jornada: partidoConvertido.jornada,
@@ -194,7 +200,7 @@ export const EquipoPartidosTab = ({
                 cancha: partidoConvertido.cancha,
             };
         };
-    }, [idEquipo]);
+    }, [idEquipo, equipoInfo]);
 
     // Agrupar próximos partidos por jornada
     const proximosPorJornada = useMemo(() => {
@@ -318,8 +324,8 @@ export const EquipoPartidosTab = ({
                                 </SkeletonTheme>
                             ) : (
                                 <div className="space-y-4">
-                                    {/* Tabs y Filtros */}
-                                    <div className="flex items-center justify-between gap-4">
+                                    {/* Tabs, Filtros y Título */}
+                                    <div className="flex items-center gap-4 flex-wrap">
                                         <div className="flex gap-2 bg-[var(--black-900)] border border-[#262626] rounded-xl p-1">
                                             <button
                                                 onClick={() => {
@@ -356,16 +362,33 @@ export const EquipoPartidosTab = ({
                                                 loading={isLoadingProximos}
                                             />
                                         )}
+
+                                        {/* Título junto a los selectores */}
+                                        {vistaActiva === 'jornada' && jornadaSeleccionada && partidosJornadaActual.length > 0 && (
+                                            <div className="flex-shrink-0">
+                                                <h4 className="text-sm font-semibold text-[var(--white)]">Jornada {jornadaSeleccionada}</h4>
+                                                {partidosJornadaActual[0]?.dia && (
+                                                    <p className="text-xs text-[#737373]">{formatearFechaCompleta(partidosJornadaActual[0].dia)}</p>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Contenido */}
                                     {vistaActiva === 'jornada' ? (
                                         jornadaSeleccionada && partidosJornadaActual.length > 0 ? (
-                                            <ListaPartidos
-                                                partidos={partidosJornadaActual}
-                                                titulo={`Jornada ${jornadaSeleccionada}`}
-                                                subtitulo={partidosJornadaActual[0]?.dia ? formatearFechaCompleta(partidosJornadaActual[0].dia) : undefined}
-                                            />
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                {partidosJornadaActual.map((partido) => {
+                                                    const fixture = fixturesProximos!.find(f => f.id_partido === partido.id_partido);
+                                                    if (!fixture) return null;
+                                                    const partidoConvertido = convertirPartido(fixture, idEquipo, equipoInfo);
+                                                    return (
+                                                        <div key={partido.id_partido} className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
+                                                            <MatchCard partido={partidoConvertido as unknown as PartidoEquipo} misEquiposIds={[idEquipo]} />
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
                                         ) : (
                                             <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center">
                                                 <p className="text-[#737373] text-sm">
@@ -376,13 +399,30 @@ export const EquipoPartidosTab = ({
                                     ) : (
                                         fechasOrdenadas.length > 0 ? (
                                             <div className="space-y-4">
-                                                {fechasOrdenadas.map((fecha) => (
-                                                    <ListaPartidos
-                                                        key={fecha}
-                                                        partidos={proximosPorFecha[fecha]}
-                                                        titulo={formatearFechaCompleta(fecha)}
-                                                    />
-                                                ))}
+                                                {fechasOrdenadas.map((fecha) => {
+                                                    const partidosFecha = proximosPorFecha[fecha];
+                                                    return (
+                                                        <div key={fecha}>
+                                                            <div className="flex items-center gap-4 mb-3 flex-wrap">
+                                                                <div className="flex-shrink-0">
+                                                                    <h4 className="text-sm font-semibold text-[var(--white)]">{formatearFechaCompleta(fecha)}</h4>
+                                                                </div>
+                                                            </div>
+                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                                {partidosFecha.map((partido) => {
+                                                                    const fixture = fixturesProximos!.find(f => f.id_partido === partido.id_partido);
+                                                                    if (!fixture) return null;
+                                                                    const partidoConvertido = convertirPartido(fixture, idEquipo, equipoInfo);
+                                                                    return (
+                                                                        <div key={partido.id_partido} className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
+                                                                            <MatchCard partido={partidoConvertido as unknown as PartidoEquipo} misEquiposIds={[idEquipo]} />
+                                                                        </div>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
                                             </div>
                                         ) : (
                                             <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-8 text-center">
@@ -397,18 +437,18 @@ export const EquipoPartidosTab = ({
                         </div>
                     )}
 
-                    {/* Partidos Recientes */}
+                    {/* Partidos recientes */}
                     {tieneRecientes && (
                         <div>
-                            <h3 className="text-lg font-semibold text-[var(--white)] mb-3">Partidos Recientes</h3>
+                            <h3 className="text-lg font-semibold text-[var(--white)] mb-3">Partidos recientes</h3>
                             {isLoadingRecientes ? (
                                 <SkeletonTheme baseColor="#1f1f1f" highlightColor="#333333">
                                     <Skeleton height={100} borderRadius={6} />
                                 </SkeletonTheme>
                             ) : (
-                                <div className="space-y-3">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     {fixturesRecientes!.map((fixture) => {
-                                        const partidoConvertido = convertirPartido(fixture, idEquipo);
+                                        const partidoConvertido = convertirPartido(fixture, idEquipo, equipoInfo);
                                         return (
                                             <div key={fixture.id_partido} className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
                                                 <MatchCard partido={partidoConvertido as unknown as PartidoEquipo} misEquiposIds={[idEquipo]} />
@@ -430,9 +470,9 @@ export const EquipoPartidosTab = ({
                     {tienePartidos ? (
                         <div>
                             <h3 className="text-lg font-semibold text-[var(--white)] mb-3">Historial de partidos</h3>
-                            <div className="space-y-3">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {partidos!.data.map((partido) => {
-                                    const partidoConvertido = convertirPartido(partido, idEquipo);
+                                    const partidoConvertido = convertirPartido(partido, idEquipo, equipoInfo);
                                     return (
                                         <div key={partido.id_partido} className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)]">
                                             <MatchCard partido={partidoConvertido as unknown as PartidoEquipo} misEquiposIds={[idEquipo]} />

@@ -210,7 +210,7 @@ export default function ModalCrearUsuarioAdministrativo({
                 {/* Email con prefijo editable */}
                 <div className="space-y-2">
                     <label className="block text-sm font-light text-[var(--white)]">
-                        Email <span className="text-[var(--color-secondary)]">*</span>
+                        Email <span className="text-[var(--color-danger)]">*</span>
                     </label>
                     <div className="flex items-center gap-2">
                         <Input
@@ -233,7 +233,7 @@ export default function ModalCrearUsuarioAdministrativo({
                 {/* Password con botón de generar integrado */}
                 <div className="space-y-2">
                     <label className="block text-sm font-light text-[var(--white)]">
-                        Contraseña <span className="text-[var(--color-secondary)]">*</span>
+                        Contraseña <span className="text-[var(--color-danger)]">*</span>
                     </label>
                     <div className="relative">
                         <Input

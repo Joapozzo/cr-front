@@ -88,14 +88,14 @@ export default function JugadorSelectionModal({
             <div className="space-y-4">
                     {/* Error Message */}
                     {errorMessage && (
-                        <div className="bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg p-4">
+                        <div className="bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/30 rounded-lg p-4">
                             <div className="flex items-center gap-3">
-                                <AlertTriangle className="w-5 h-5 text-[var(--color-secondary)] flex-shrink-0" />
+                                <AlertTriangle className="w-5 h-5 text-[var(--color-danger)] flex-shrink-0" />
                                 <div>
-                                    <h4 className="text-[var(--color-secondary)] font-medium text-sm">
+                                    <h4 className="text-[var(--color-danger)] font-medium text-sm">
                                         Error en la operación
                                     </h4>
-                                    <p className="text-[var(--color-secondary)]/80 text-sm mt-1">
+                                    <p className="text-[var(--color-danger)]/80 text-sm mt-1">
                                         {errorMessage}
                                     </p>
                                 </div>
@@ -140,8 +140,8 @@ export default function JugadorSelectionModal({
                             )}
 
                             {searchError && (
-                                <div className="bg-[var(--color-secondary)]/10 border border-[var(--color-secondary)]/30 rounded-lg p-4 text-center">
-                                    <p className="text-[var(--color-secondary)] text-sm">
+                                <div className="bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/30 rounded-lg p-4 text-center">
+                                    <p className="text-[var(--color-danger)] text-sm">
                                         Error al buscar jugadores. Intenta nuevamente.
                                     </p>
                                 </div>

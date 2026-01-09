@@ -1,182 +1,269 @@
 ﻿'use client';
 
-import { useState } from 'react';
-import { TablaPosiciones } from '@/app/types/legajos';
-import PlayoffBracket from '@/app/components/playoff/PlayoffBracket';
+import { useMemo } from 'react';
+import { TablaPosiciones as TablaPosicionesType } from '@/app/types/legajos';
+import { TablaPosiciones } from '@/app/components/posiciones/TablaPosiciones';
+import { EquipoPosicion } from '@/app/types/posiciones';
 import { Zona } from '@/app/types/zonas';
-import { Award, Trophy } from 'lucide-react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { useZonasPlayoffPorCategoriaEdicion } from '@/app/hooks/useEstadisticas';
 
 interface EquipoTablaTabProps {
-    tabla: TablaPosiciones | undefined;
+    tabla: TablaPosicionesType | undefined;
     isLoading: boolean;
     categoriaSeleccionada: number | undefined;
     idEquipo: number;
 }
 
 export const EquipoTablaTab = ({ tabla, isLoading, categoriaSeleccionada, idEquipo }: EquipoTablaTabProps) => {
-    const [tabActivo, setTabActivo] = useState<'posiciones' | 'playoff'>('posiciones');
-
-    if (!categoriaSeleccionada) {
-        return (
-            <p className="text-[var(--gray-100)] text-center py-8">Selecciona una categoría para ver la tabla</p>
-        );
-    }
-
-    if (isLoading) {
-        return (
-            <SkeletonTheme baseColor="#1f1f1f" highlightColor="#333333">
-                <Skeleton height={200} borderRadius={6} />
-            </SkeletonTheme>
-        );
-    }
-
-    if (!tabla) {
-        return (
-            <p className="text-[var(--gray-100)] text-center py-8">No se pudo cargar la tabla</p>
-        );
-    }
+    // Obtener zonas de playoff desde el hook (similar a StatsTab)
+    const { data: zonasPlayoffData, isLoading: loadingPlayoff } = useZonasPlayoffPorCategoriaEdicion(
+        categoriaSeleccionada || null,
+        { enabled: !!categoriaSeleccionada }
+    );
 
     // Separar zonas de todos contra todos (tipo 1 y 3) y eliminación directa (tipo 2 y 4)
     // 1: todos-contra-todos
     // 2: eliminacion-directa
     // 3: todos-contra-todos-ida-vuelta
     // 4: eliminacion-directa-ida-vuelta
-    const zonasTodosContraTodos = tabla.tablas.filter(t => {
-        const tipo = t.zona.tipo;
-        // Tipo 1 (todos-contra-todos) y tipo 3 (todos-contra-todos-ida-vuelta)
-        return tipo === '1' || tipo === '3' || !tipo;
-    });
+    const zonasTodosContraTodos = useMemo(() => {
+        if (!tabla) return [];
+        return tabla.tablas.filter(t => {
+            const tipo = t.zona.tipo;
+            // Tipo 1 (todos-contra-todos) y tipo 3 (todos-contra-todos-ida-vuelta)
+            return tipo === '1' || tipo === '3' || !tipo;
+        });
+    }, [tabla]);
 
-    const zonasEliminacionDirecta = tabla.tablas.filter(t => {
-        const tipo = t.zona.tipo;
-        // Solo tipo 2 (eliminacion-directa) y tipo 4 (eliminacion-directa-ida-vuelta)
-        return tipo === '2' || tipo === '4';
-    });
+    const zonasEliminacionDirecta = useMemo(() => {
+        if (!tabla) return [];
+        return tabla.tablas.filter(t => {
+            const tipo = t.zona.tipo;
+            // Solo tipo 2 (eliminacion-directa) y tipo 4 (eliminacion-directa-ida-vuelta)
+            return tipo === '2' || tipo === '4';
+        });
+    }, [tabla]);
 
-    // Convertir zonas de eliminación directa al formato de PlayoffBracket
-    const zonasParaBracket: Zona[] = zonasEliminacionDirecta.map(tablaZona => ({
-        id_zona: tablaZona.zona.id_zona,
-        nombre: tablaZona.zona.nombre,
-        numero_fase: tablaZona.zona.fase || 0,
-        id_categoria_edicion: categoriaSeleccionada,
-        etapa: {
-            id_etapa: 0,
-            nombre: tablaZona.zona.nombre || '',
-        },
-        partidos: [], // Los partidos vendrían del backend si están disponibles
-        temporadas: [],
-    } as Zona));
+    // Convertir zonas de todos contra todos a formato EquipoPosicion[]
+    const posicionesAplanadas = useMemo(() => {
+        if (!tabla || zonasTodosContraTodos.length === 0) return [];
 
-    return (
-        <div className="space-y-6">
-            {/* Tabs: Posiciones vs Playoff */}
-            <div className="border-b border-[var(--gray-300)]">
-                <nav className="flex -mb-px space-x-8" aria-label="Tabs">
-                    <button
-                        onClick={() => setTabActivo('posiciones')}
-                        className={`
-                            whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2
-                            ${tabActivo === 'posiciones'
-                                ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
-                                : 'border-transparent text-[var(--gray-100)] hover:text-[var(--white)] hover:border-[var(--gray-200)]'
-                            }
-                        `}
-                    >
-                        <Award className="w-4 h-4" />
-                        Posiciones
-                    </button>
-                    <button
-                        onClick={() => setTabActivo('playoff')}
-                        className={`
-                            whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2
-                            ${tabActivo === 'playoff'
-                                ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
-                                : 'border-transparent text-[var(--gray-100)] hover:text-[var(--white)] hover:border-[var(--gray-200)]'
-                            }
-                        `}
-                    >
-                        <Trophy className="w-4 h-4" />
-                        Playoff
-                    </button>
-                </nav>
+        // Si hay una sola zona, convertir directamente
+        if (zonasTodosContraTodos.length === 1) {
+            return zonasTodosContraTodos[0].tabla.map(equipo => ({
+                id_equipo: equipo.equipo.id_equipo,
+                nombre_equipo: equipo.equipo.nombre,
+                partidos_jugados: equipo.partidos_jugados,
+                ganados: equipo.ganados,
+                empatados: equipo.empatados,
+                perdidos: equipo.perdidos,
+                goles_favor: equipo.goles_favor,
+                goles_contra: equipo.goles_contra,
+                diferencia_goles: equipo.diferencia_goles,
+                puntos: equipo.puntos,
+                ultima_actualizacion: new Date().toISOString().split('T')[0],
+                img_equipo: equipo.equipo.img,
+            } as EquipoPosicion));
+        }
+
+        // Si hay múltiples zonas, aplanarlas todas
+        const todasPosiciones: EquipoPosicion[] = [];
+        zonasTodosContraTodos.forEach(tablaZona => {
+            tablaZona.tabla.forEach(equipo => {
+                todasPosiciones.push({
+                    id_equipo: equipo.equipo.id_equipo,
+                    nombre_equipo: equipo.equipo.nombre,
+                    partidos_jugados: equipo.partidos_jugados,
+                    ganados: equipo.ganados,
+                    empatados: equipo.empatados,
+                    perdidos: equipo.perdidos,
+                    goles_favor: equipo.goles_favor,
+                    goles_contra: equipo.goles_contra,
+                    diferencia_goles: equipo.diferencia_goles,
+                    puntos: equipo.puntos,
+                    ultima_actualizacion: new Date().toISOString().split('T')[0],
+                    img_equipo: equipo.equipo.img,
+                } as EquipoPosicion);
+            });
+        });
+
+        // Ordenar por puntos, diferencia de goles, goles a favor
+        return todasPosiciones.sort((a, b) => {
+            if (b.puntos !== a.puntos) return b.puntos - a.puntos;
+            if (b.diferencia_goles !== a.diferencia_goles) return b.diferencia_goles - a.diferencia_goles;
+            return b.goles_favor - a.goles_favor;
+        });
+    }, [tabla, zonasTodosContraTodos]);
+
+    // Convertir posiciones por zona (para mostrar cada zona por separado si hay múltiples)
+    const posicionesPorZona = useMemo(() => {
+        if (!tabla || zonasTodosContraTodos.length === 0) return [];
+        
+        return zonasTodosContraTodos.map(tablaZona => ({
+            id_zona: tablaZona.zona.id_zona,
+            nombre_zona: tablaZona.zona.nombre,
+            posiciones: tablaZona.tabla.map(equipo => ({
+                id_equipo: equipo.equipo.id_equipo,
+                nombre_equipo: equipo.equipo.nombre,
+                partidos_jugados: equipo.partidos_jugados,
+                ganados: equipo.ganados,
+                empatados: equipo.empatados,
+                perdidos: equipo.perdidos,
+                goles_favor: equipo.goles_favor,
+                goles_contra: equipo.goles_contra,
+                diferencia_goles: equipo.diferencia_goles,
+                puntos: equipo.puntos,
+                ultima_actualizacion: new Date().toISOString().split('T')[0],
+                img_equipo: equipo.equipo.img,
+            } as EquipoPosicion)),
+        }));
+    }, [tabla, zonasTodosContraTodos]);
+
+    // Obtener posiciones de zonas de eliminación directa si existen
+    const posicionesDeEliminacion = useMemo(() => {
+        if (!tabla || zonasEliminacionDirecta.length === 0) return [];
+        
+        const posiciones: EquipoPosicion[] = [];
+        zonasEliminacionDirecta.forEach(tablaZona => {
+            if (tablaZona.tabla && tablaZona.tabla.length > 0) {
+                tablaZona.tabla.forEach(equipo => {
+                    posiciones.push({
+                        id_equipo: equipo.equipo.id_equipo,
+                        nombre_equipo: equipo.equipo.nombre,
+                        partidos_jugados: equipo.partidos_jugados,
+                        ganados: equipo.ganados,
+                        empatados: equipo.empatados,
+                        perdidos: equipo.perdidos,
+                        goles_favor: equipo.goles_favor,
+                        goles_contra: equipo.goles_contra,
+                        diferencia_goles: equipo.diferencia_goles,
+                        puntos: equipo.puntos,
+                        ultima_actualizacion: new Date().toISOString().split('T')[0],
+                        img_equipo: equipo.equipo.img,
+                    } as EquipoPosicion);
+                });
+            }
+        });
+        return posiciones;
+    }, [tabla, zonasEliminacionDirecta]);
+
+    // Convertir zonas de eliminación directa al formato de PlayoffBracket (fallback)
+    const zonasParaBracket: Zona[] = useMemo(() => {
+        if (!tabla) return [];
+        return zonasEliminacionDirecta.map(tablaZona => ({
+            id_zona: tablaZona.zona.id_zona,
+            nombre: tablaZona.zona.nombre,
+            numero_fase: tablaZona.zona.fase || 0,
+            id_categoria_edicion: categoriaSeleccionada || 0,
+            etapa: {
+                id_etapa: 0,
+                nombre: tablaZona.zona.nombre || '',
+            },
+            partidos: [],
+            temporadas: [],
+        } as Zona));
+    }, [tabla, zonasEliminacionDirecta, categoriaSeleccionada]);
+
+    // Usar zonas de playoff del hook si están disponibles, sino usar las de la tabla
+    const zonasPlayoffFinales = zonasPlayoffData && zonasPlayoffData.length > 0 
+        ? zonasPlayoffData 
+        : zonasParaBracket;
+
+    if (!categoriaSeleccionada) {
+        return (
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-8">
+                <p className="text-[var(--gray-100)] text-center text-sm">Selecciona una categoría para ver la tabla</p>
             </div>
+        );
+    }
 
-            {/* Contenido según tab activo */}
-            {tabActivo === 'posiciones' ? (
-                <div className="space-y-6">
-                    {/* Tablas de todos contra todos */}
-                    {zonasTodosContraTodos.length > 0 ? (
-                        <>
-                            <h2 className="text-xl font-bold text-[var(--white)] mb-4">Tabla de posiciones</h2>
-                            {zonasTodosContraTodos.map((tablaZona, idx) => (
-                                <div key={idx} className="space-y-4">
-                                    <h3 className="text-lg font-semibold text-[var(--white)]">
-                                        {tablaZona.zona.nombre}
-                                    </h3>
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full">
-                                            <thead>
-                                                <tr className="border-b border-[var(--gray-300)]">
-                                                    <th className="text-left py-2 px-4 text-[var(--white)] font-semibold">Pos</th>
-                                                    <th className="text-left py-2 px-4 text-[var(--white)] font-semibold">Equipo</th>
-                                                    <th className="text-center py-2 px-4 text-[var(--white)] font-semibold">PJ</th>
-                                                    <th className="text-center py-2 px-4 text-[var(--white)] font-semibold">G</th>
-                                                    <th className="text-center py-2 px-4 text-[var(--white)] font-semibold">E</th>
-                                                    <th className="text-center py-2 px-4 text-[var(--white)] font-semibold">P</th>
-                                                    <th className="text-center py-2 px-4 text-[var(--white)] font-semibold">GF</th>
-                                                    <th className="text-center py-2 px-4 text-[var(--white)] font-semibold">GC</th>
-                                                    <th className="text-center py-2 px-4 text-[var(--white)] font-semibold">DG</th>
-                                                    <th className="text-center py-2 px-4 text-[var(--white)] font-semibold">Pts</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {tablaZona.tabla.map((equipo, index) => (
-                                                    <tr
-                                                        key={equipo.equipo.id_equipo}
-                                                        className={`border-b border-[var(--gray-300)] ${equipo.equipo.id_equipo === idEquipo
-                                                                ? 'bg-[var(--color-primary)]/20'
-                                                                : ''
-                                                            }`}
-                                                    >
-                                                        <td className="py-2 px-4 text-[var(--white)] font-semibold">{index + 1}</td>
-                                                        <td className="py-2 px-4 text-[var(--white)]">{equipo.equipo.nombre}</td>
-                                                        <td className="py-2 px-4 text-center text-[var(--gray-100)]">{equipo.partidos_jugados}</td>
-                                                        <td className="py-2 px-4 text-center text-[var(--color-primary)]">{equipo.ganados}</td>
-                                                        <td className="py-2 px-4 text-center text-[var(--yellow)]">{equipo.empatados}</td>
-                                                        <td className="py-2 px-4 text-center text-[var(--color-secondary)]">{equipo.perdidos}</td>
-                                                        <td className="py-2 px-4 text-center text-[var(--gray-100)]">{equipo.goles_favor}</td>
-                                                        <td className="py-2 px-4 text-center text-[var(--gray-100)]">{equipo.goles_contra}</td>
-                                                        <td className="py-2 px-4 text-center text-[var(--gray-100)]">{equipo.diferencia_goles}</td>
-                                                        <td className="py-2 px-4 text-center text-[var(--color-primary)] font-bold">{equipo.puntos}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            ))}
-                        </>
-                    ) : (
-                        <p className="text-[var(--gray-100)] text-center py-8">No hay tablas de posiciones disponibles</p>
-                    )}
-                </div>
-            ) : (
-                <div className="space-y-4">
-                    {/* Bracket de eliminación directa (SOLO PLAYOFF) */}
-                    {zonasEliminacionDirecta.length > 0 ? (
-                        <>
-                            <h2 className="text-xl font-bold text-[var(--white)] mb-4">Playoff - Eliminación Directa</h2>
-                            <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-4">
-                                <PlayoffBracket zonas={zonasParaBracket} />
-                            </div>
-                        </>
-                    ) : (
-                        <p className="text-[var(--gray-100)] text-center py-8">No hay partidos de playoff disponibles</p>
-                    )}
-                </div>
-            )}
+    if (isLoading || loadingPlayoff) {
+        return (
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-6">
+                <SkeletonTheme baseColor="#ffffff08" highlightColor="#ffffff15">
+                    <Skeleton height={200} borderRadius={8} />
+                </SkeletonTheme>
+            </div>
+        );
+    }
+
+    if (!tabla) {
+        return (
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-8">
+                <p className="text-[var(--gray-100)] text-center text-sm">No se pudo cargar la tabla</p>
+            </div>
+        );
+    }
+
+    // Si hay múltiples zonas, mostrar cada una por separado
+    if (posicionesPorZona.length > 1) {
+        return (
+            <div className="space-y-4">
+                {posicionesPorZona.map((zona) => (
+                    <div key={zona.id_zona} className="space-y-2">
+                        {zona.nombre_zona && (
+                            <h3 className="text-white/90 font-medium text-sm px-1">
+                                {zona.nombre_zona}
+                            </h3>
+                        )}
+                        <TablaPosiciones
+                            variant="completa"
+                            posiciones={zona.posiciones}
+                            zonasPlayoff={zonasPlayoffFinales}
+                            isLoading={false}
+                            userTeamIds={[idEquipo]}
+                            showPlayoffTabs={true}
+                            showZonaSelector={false}
+                        />
+                    </div>
+                ))}
+            </div>
+        );
+    }
+
+    // Si hay una sola zona o zonas aplanadas, mostrar tabla única
+    if (posicionesAplanadas.length > 0) {
+        return (
+            <TablaPosiciones
+                variant="completa"
+                posiciones={posicionesAplanadas}
+                zonasPlayoff={zonasPlayoffFinales}
+                isLoading={false}
+                userTeamIds={[idEquipo]}
+                showPlayoffTabs={true}
+                showZonaSelector={false}
+            />
+        );
+    }
+
+    // Si solo hay playoff pero también hay posiciones, mostrar ambos
+    if (zonasPlayoffFinales.length > 0) {
+        // Si hay posiciones disponibles (de todos contra todos o eliminación directa), mostrarlas junto con playoff
+        const posicionesParaMostrar = posicionesAplanadas.length > 0 
+            ? posicionesAplanadas 
+            : posicionesDeEliminacion.length > 0 
+                ? posicionesDeEliminacion 
+                : [];
+
+        return (
+            <TablaPosiciones
+                variant="completa"
+                posiciones={posicionesParaMostrar}
+                zonasPlayoff={zonasPlayoffFinales}
+                isLoading={false}
+                userTeamIds={[idEquipo]}
+                showPlayoffTabs={true}
+                showZonaSelector={false}
+            />
+        );
+    }
+
+    // Si no hay nada
+    return (
+        <div className="bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-8">
+            <p className="text-[var(--gray-100)] text-center text-sm">No hay tablas de posiciones disponibles</p>
         </div>
     );
 };

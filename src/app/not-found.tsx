@@ -6,14 +6,14 @@ import { Button } from './components/ui/Button';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen w-full bg-[#101011] flex items-center justify-center px-4">
+    <div className="min-h-screen w-full bg-[var(--gray-500)] flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center space-y-8">
         {/* Error Code */}
         <div className="space-y-4">
-          <h1 className="text-8xl md:text-9xl font-bold text-[#2AD174] leading-none">
+          <h1 className="text-8xl md:text-9xl font-bold text-[var(--color-primary)] leading-none">
             404
           </h1>
-          <div className="w-24 h-1 bg-[#2AD174] mx-auto rounded-full"></div>
+          <div className="w-24 h-1 bg-[var(--color-primary)] mx-auto rounded-full"></div>
         </div>
 
         {/* Message */}
@@ -21,7 +21,7 @@ export default function NotFound() {
           <h2 className="text-2xl md:text-3xl font-semibold text-white">
             Página no encontrada
           </h2>
-          <p className="text-[#65656B] text-base md:text-lg">
+          <p className="text-[var(--gray-200)] text-base md:text-lg">
             Lo sentimos, la página que buscas no existe o ha sido movida.
           </p>
         </div>

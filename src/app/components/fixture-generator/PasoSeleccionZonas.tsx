@@ -24,12 +24,12 @@ export default function PasoSeleccionZonas({
         <div className="space-y-4">
             <div>
                 <label className="block text-sm font-medium text-[var(--white)] mb-2">
-                    Seleccionar Zonas (Todos contra Todos)
+                    Seleccionar zonas (todos contra todos)
                 </label>
                 {loadingZonas ? (
                     <p className="text-[var(--gray-100)]">Cargando zonas...</p>
                 ) : zonasElegibles.length === 0 ? (
-                    <p className="text-[var(--color-secondary)]">
+                    <p className="text-[var(--color-danger)]">
                         No hay zonas de tipo &quot;todos contra todos&quot; disponibles
                     </p>
                 ) : (
@@ -52,7 +52,7 @@ export default function PasoSeleccionZonas({
                                     <p className="text-sm text-[var(--gray-100)]">
                                         {zona.cantidad_equipos} equipos
                                         {zona.es_impar && (
-                                            <span className="ml-2 text-[var(--color-secondary)]">
+                                            <span className="ml-2 text-[var(--color-danger)]">
                                                 (impar - requiere fecha libre)
                                             </span>
                                         )}

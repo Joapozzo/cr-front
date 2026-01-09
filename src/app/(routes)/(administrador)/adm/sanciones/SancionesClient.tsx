@@ -100,7 +100,7 @@ export default function SancionesClient({
                                 variant='success'
                             >
                                 <Plus className="w-5 h-5" />
-                                Nueva Sanción
+                                Nueva sanción
                             </Button>
                         </div>
                     </div>

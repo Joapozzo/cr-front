@@ -17,6 +17,7 @@ export interface EquipoBusqueda {
             nombre: string | null;
             temporada: number | null;
         };
+        color?: string | null;
     }>;
     total_jugadores: number;
     link_legajo: string;

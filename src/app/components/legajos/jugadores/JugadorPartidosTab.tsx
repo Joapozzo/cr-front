@@ -128,7 +128,7 @@ export const JugadorPartidosTab = ({
                                             </div>
                                         )}
                                         {partido.estadisticas_individuales.rojas.length > 0 && (
-                                            <div className="flex items-center gap-1 text-[var(--color-secondary)]">
+                                            <div className="flex items-center gap-1 text-[var(--color-danger)]">
                                                 <span className="font-semibold">{partido.estadisticas_individuales.rojas.length} roja(s)</span>
                                             </div>
                                         )}

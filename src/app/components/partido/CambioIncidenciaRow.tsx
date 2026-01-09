@@ -63,10 +63,10 @@ const CambioIncidenciaRow: React.FC<CambioIncidenciaRowProps> = ({
                                 {/* Entra - verde, más grande, con flecha a la derecha */}
                                 {tieneEntrada && (
                                     <div className="flex items-center gap-1.5">
-                                        <span className="text-xs sm:text-sm font-medium text-green-400 truncate">
+                                        <span className="text-xs sm:text-sm font-medium text-[var(--color-primary)] truncate">
                                             {nombreEntra}
                                         </span>
-                                        <ArrowRight className="w-3 h-3 text-green-400 flex-shrink-0" />
+                                        <ArrowRight className="w-3 h-3 text-[var(--color-primary)] flex-shrink-0" />
                                     </div>
                                 )}
                                 {/* Sale - rojo, más chico, con flecha a la izquierda */}
@@ -107,10 +107,10 @@ const CambioIncidenciaRow: React.FC<CambioIncidenciaRowProps> = ({
                                 {/* Entra - verde, más grande, con flecha a la derecha */}
                                 {tieneEntrada && (
                                     <div className="flex items-center gap-1.5">
-                                        <span className="text-xs sm:text-sm font-medium text-green-400 truncate">
+                                        <span className="text-xs sm:text-sm font-medium text-[var(--color-primary)] truncate">
                                             {nombreEntra}
                                         </span>
-                                        <ArrowRight className="w-3 h-3 text-green-400 flex-shrink-0" />
+                                        <ArrowRight className="w-3 h-3 text-[var(--color-primary)] flex-shrink-0" />
                                     </div>
                                 )}
                                 {/* Sale - rojo, más chico, con flecha a la izquierda */}

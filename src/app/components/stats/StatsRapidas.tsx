@@ -42,15 +42,15 @@ const EstadisticasRapidas: React.FC<EstadisticasRapidasProps> = ({ stats }) => {
             icon: CircleAlert,
             label: 'Partidos pendientes',
             value: stats.partidos_pendientes,
-            bgColor: 'bg-[var(--color-secondary)]/20',
-            iconColor: 'text-[var(--color-secondary)]',
+            bgColor: 'bg-[var(--color-danger)]/20',
+            iconColor: 'text-[var(--color-danger)]',
         },
         {
             icon: Ban,
             label: 'Jugadores sancionados',
             value: stats.jugadores_sancionados,
-            bgColor: 'bg-[var(--color-secondary)]/20',
-            iconColor: 'text-[var(--color-secondary)]',
+            bgColor: 'bg-[var(--color-danger)]/20',
+            iconColor: 'text-[var(--color-danger)]',
         },
     ];
 

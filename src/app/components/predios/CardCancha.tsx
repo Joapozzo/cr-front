@@ -115,14 +115,14 @@ const CardCancha: React.FC<CardCanchaProps> = ({
         if (!isAvailable) return 'border-red-500/50 hover:border-red-500';
         if (isOcupada) return 'border-red-500/50 hover:border-red-500';
         if (partidosFinales.length === 0) return 'border-[var(--gray-300)] hover:border-[var(--gray-200)]';
-        return 'border-green-500/50 hover:border-green-500';
+        return 'border-[var(--color-primary)]/50 hover:border-[var(--color-primary)]';
     };
 
     const getHeaderBg = () => {
         if (!isAvailable) return 'bg-red-500/10';
         if (isOcupada) return 'bg-red-500/10';
         if (partidosFinales.length === 0) return 'bg-[var(--gray-300)]/10';
-        return 'bg-green-500/10';
+        return 'bg-[var(--color-primary)]/10';
     };
 
     const getCanchaColor = () => {
@@ -275,7 +275,7 @@ const CardCancha: React.FC<CardCanchaProps> = ({
                                 <div
                                     className={`flex items-center gap-1.5 px-2 py-1 rounded-lg border transition-all ${
                                         fixtureUrl 
-                                            ? 'bg-green-500/20 border-green-500/50 hover:bg-green-500/30 hover:border-green-500 cursor-pointer' 
+                                            ? 'bg-[var(--color-primary)]/20 border-[var(--color-primary)]/50 hover:bg-[var(--color-primary)]/30 hover:border-[var(--color-primary)] cursor-pointer' 
                                             : 'bg-[var(--black-900)]/90 backdrop-blur-sm border-[var(--gray-300)]/30'
                                     }`}
                                 >
@@ -321,7 +321,7 @@ const CardCancha: React.FC<CardCanchaProps> = ({
                         ? 'bg-red-500/80 text-white'
                         : partidosFinales.length === 0
                             ? 'bg-[var(--gray-400)]/80 text-[var(--gray-100)]'
-                            : 'bg-green-500/80 text-white'
+                            : 'bg-[var(--color-primary)]/80 text-white'
                 }`}>
                     {!isAvailable ? 'Inactiva' : partidosFinales.length === 0 ? 'Disponible' : `${partidosFinales.length}/5 ${isOcupada ? 'Ocupada' : 'Disponible'}`}
                 </div>

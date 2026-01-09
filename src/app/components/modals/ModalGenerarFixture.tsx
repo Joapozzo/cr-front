@@ -81,6 +81,8 @@ export default function ModalGenerarFixture({
     const { data: canchas = [], isLoading: loadingCanchas } = useCanchas({ 
         incluir_inactivas: false,
         id_predio: idPredioSeleccionado
+    }, {
+        enabled: isOpen && !!idPredioSeleccionado  // Solo ejecutar cuando el modal esté abierto Y haya un predio seleccionado
     });
 
     const { mutateAsync: generarFixture, isPending: isGenerating } = useGenerarFixture();
@@ -316,7 +318,7 @@ export default function ModalGenerarFixture({
         <BaseModal
             isOpen={isOpen}
             onClose={onClose}
-            title="Generar Fixture Automático"
+            title="Generar fixture automático"
             type="create"
             maxWidth="max-w-4xl"
         >

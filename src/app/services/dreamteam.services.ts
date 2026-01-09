@@ -4,19 +4,70 @@ import {
     DreamTeamResponse,
     AgregarJugadorRequest,
     AgregarJugadorResponse,
-    convertirDreamTeamBackendAFrontend
+    convertirDreamTeamBackendAFrontend,
+    JugadorDreamTeam
 } from "../types/dreamteam";
+import { DreamTeamPublicoResponse } from "../types/dreamteamPublico";
 
 export const dreamteamService = {
+    obtenerJornadasDisponibles: async (
+        id_categoria_edicion: number
+    ): Promise<number[]> => {
+        try {
+            // Usar ruta pública optimizada
+            const response = await api.get<number[]>(
+                `/user/public/dreamteam/categoria/${id_categoria_edicion}/jornadas`
+            );
+            return response;
+        } catch (error: any) {
+            console.error('Error al obtener jornadas disponibles:', error);
+            return [];
+        }
+    },
+
     obtenerDreamTeamCategoriaJornada: async (
         id_categoria_edicion: number,
         jornada: number
     ): Promise<DreamTeam | null> => {
         try {
-            const response = await api.get<DreamTeamResponse>(
-                `/admin/dreamteam/categoria/${id_categoria_edicion}/jornada/${jornada}`
+            // Usar ruta pública optimizada (sin autenticación)
+            const response = await api.get<DreamTeamPublicoResponse>(
+                `/user/public/dreamteam/categoria/${id_categoria_edicion}/jornada/${jornada}`
             );
-            return convertirDreamTeamBackendAFrontend(response);
+            
+            // Transformar respuesta optimizada a formato DreamTeam
+            const jugadores: JugadorDreamTeam[] = response.jugadores.map((j) => ({
+                id_jugador: j.id_jugador,
+                id_partido: 0, // No necesario para visualización
+                id_equipo: j.equipo.id_equipo,
+                nombre: j.nombre,
+                apellido: j.apellido,
+                posicion: {
+                    id_posicion: 0, // No disponible en respuesta pública optimizada
+                    codigo: j.posicion_codigo || '',
+                    nombre: j.posicion_codigo || '',
+                },
+                posicionEnFormacion: String(j.posicion_index || 0),
+                posicion_index: j.posicion_index || undefined,
+                posicion_codigo: j.posicion_codigo || undefined,
+                equipo: j.equipo,
+                usuario: {
+                    img: j.img,
+                    nombre: j.nombre,
+                    apellido: j.apellido,
+                },
+            }));
+
+            return {
+                id_dreamteam: response.id_dreamteam,
+                id_categoria_edicion: response.id_categoria_edicion,
+                jornada: response.jornada,
+                formacion: response.formacion,
+                publicado: true, // Siempre true porque solo traemos publicados
+                jugadores,
+                creado_en: '',
+                actualizado_en: '',
+            };
         } catch (error: any) {
             // Si no existe el dreamteam, retornar null en lugar de error
             if (error.response?.status === 404) {

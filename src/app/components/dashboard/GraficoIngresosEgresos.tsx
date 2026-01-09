@@ -35,7 +35,7 @@ export default function GraficoIngresosEgresos({ data, isLoading }: GraficoIngre
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                        <TrendingUp className="w-4 h-4 text-green-400" />
+                        <TrendingUp className="w-4 h-4 text-[var(--color-primary)]" />
                         <span className="text-xs text-[var(--gray-100)]">Ingresos</span>
                     </div>
                     <div className="flex items-center gap-2">

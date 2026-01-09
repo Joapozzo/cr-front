@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack -H 0.0.0.0",
     "dev:https": "node server-https.js",
     "start": "next start",
     "lint": "next lint",
@@ -11,12 +11,9 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "test:run": "vitest run",
-
     "dev:coparelampago": "cross-env NODE_ENV=development dotenv -e .env.coparelampago ts-node-dev src/index.ts",
     "dev:ucfa": "cross-env NODE_ENV=development dotenv -e .env.ucfa ts-node-dev src/index.ts",
-    
-    "build": "tsc",
-
+    "build": "next build && tsc --noEmit",
     "start:coparelampago": "cross-env NODE_ENV=production dotenv -e .env.coparelampago node dist/index.js",
     "start:ucfa": "cross-env NODE_ENV=production dotenv -e .env.ucfa node dist/index.js"
   },

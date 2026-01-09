@@ -1,6 +1,5 @@
 ﻿'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { Toaster } from 'react-hot-toast';
 import { AiOutlineLock } from 'react-icons/ai';
@@ -25,6 +24,8 @@ interface LoginFormProps {
     isPendingGoogle: boolean;
     handleSubmit: (e: React.FormEvent) => void;
     handleLoginGoogle: () => void;
+    isEmailExpanded: boolean;
+    expandEmail: () => void;
 }
 
 const LoginFormUI = ({
@@ -37,8 +38,9 @@ const LoginFormUI = ({
     isPendingGoogle,
     handleSubmit,
     handleLoginGoogle,
+    isEmailExpanded,
+    expandEmail,
 }: LoginFormProps) => {
-    const [isEmailExpanded, setIsEmailExpanded] = useState(false);
 
     return (
         <div className="w-full flex flex-col items-center">
@@ -64,7 +66,7 @@ const LoginFormUI = ({
 
                 {/* 2. Email Card (Secundaria) */}
                 <EmailAuthButton
-                    onClick={() => setIsEmailExpanded(true)}
+                    onClick={expandEmail}
                     disabled={isEmailExpanded}
                     isEmailExpanded={isEmailExpanded}
                     label="Ingresá con tu mail"
@@ -162,6 +164,8 @@ export const LoginForm = () => {
         isPendingGoogle,
         handleSubmit,
         handleLoginGoogle,
+        isEmailExpanded,
+        expandEmail,
     } = useLoginController();
 
     // Mostrar LoadingScreen si está en proceso de login
@@ -186,6 +190,8 @@ export const LoginForm = () => {
             isPendingGoogle={isPendingGoogle}
             handleSubmit={handleSubmit}
             handleLoginGoogle={handleLoginGoogle}
+            isEmailExpanded={isEmailExpanded}
+            expandEmail={expandEmail}
         />
     );
 };

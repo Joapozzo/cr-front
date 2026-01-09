@@ -5,6 +5,9 @@ import { DatosCompletosPlanillero } from "../types/partido";
 export interface PlanilleroPartidosResponse {
     message: string;
     total: number;
+    limit: number;
+    offset: number;
+    page: number;
     partidos: any[];
 }
 
@@ -19,9 +22,9 @@ export const planilleroService = {
         }
     },
     
-    partidosPendientesPlanillero: async (): Promise<PlanilleroPartidosResponse> => {
+    partidosPendientesPlanillero: async (page: number = 1, limit: number = 5): Promise<PlanilleroPartidosResponse> => {
         try {
-            const response = await api.get<PlanilleroPartidosResponse>(`/planillero/partidos-pendientes`);
+            const response = await api.get<PlanilleroPartidosResponse>(`/planillero/partidos-pendientes?page=${page}&limit=${limit}`);
             return response;
         } catch (error) {
             console.error('Error al obtener partidos pendientes del planillero:', error);
@@ -29,9 +32,9 @@ export const planilleroService = {
         }
     },
 
-    partidosPlanilladosPlanillero: async (): Promise<PlanilleroPartidosResponse> => {
+    partidosPlanilladosPlanillero: async (page: number = 1, limit: number = 5): Promise<PlanilleroPartidosResponse> => {
         try {
-            const response = await api.get<PlanilleroPartidosResponse>(`/planillero/partidos-planillados`);
+            const response = await api.get<PlanilleroPartidosResponse>(`/planillero/partidos-planillados?page=${page}&limit=${limit}`);
             return response;
         } catch (error) {
             console.error('Error al obtener partidos planillados del planillero:', error);
@@ -46,6 +49,26 @@ export const planilleroService = {
         } catch (error) {
             console.error('Error al obtener datos completos del partido:', error);
             throw new Error('No se pudieron cargar los datos del partido');
+        }
+    },
+
+    obtenerDatosBasicosPartido: async (idPartido: number) => {
+        try {
+            const response = await api.get(`/planillero/partidos/${idPartido}/basicos`) as { partido: any };
+            return response.partido;
+        } catch (error) {
+            console.error('Error al obtener datos básicos del partido:', error);
+            throw new Error('No se pudieron cargar los datos del partido');
+        }
+    },
+
+    obtenerPlantelEquipo: async (idPartido: number, idEquipo: number, idCategoriaEdicion: number) => {
+        try {
+            const response = await api.get(`/planillero/partidos/${idPartido}/plantel/${idEquipo}?id_categoria_edicion=${idCategoriaEdicion}`) as { plantel: any };
+            return response.plantel;
+        } catch (error) {
+            console.error('Error al obtener plantel del equipo:', error);
+            throw new Error('No se pudo cargar el plantel del equipo');
         }
     },
 
@@ -164,8 +187,14 @@ export const planilleroService = {
 
     // INCIDENCIAS GENERALES
     obtenerIncidenciasPartido: async (idPartido: number) => {
-        const response = await api.get(`/planillero/incidencias/partido/${idPartido}`);
-        return response;
+        try {
+            const response = await api.get(`/planillero/incidencias/partido/${idPartido}`) as { data?: { incidencias?: any[] }, incidencias?: any[] };
+            // El endpoint devuelve { message, data: { incidencias, partido, resumen } }
+            return response.data?.incidencias || response.incidencias || [];
+        } catch (error) {
+            console.error('Error al obtener incidencias del partido:', error);
+            throw new Error('No se pudieron cargar las incidencias del partido');
+        }
     },
 
     // JUGADORES EVENTUALES

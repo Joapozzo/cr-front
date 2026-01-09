@@ -4,10 +4,13 @@ import {
     CambioJugador,
     CambiosJugadorResponse,
     CambioJugadorResponse,
+    CambioCompletoResponse,
     CrearCambioJugadorData,
+    CrearCambioCompletoData,
     EditarCambioJugadorData
 } from '../services/cambiosJugador.services';
 import { useAuthStore } from '../stores/authStore';
+import { planilleroKeys } from './usePartidosPlanillero';
 
 // ====================================================================
 // QUERY KEYS
@@ -90,11 +93,58 @@ export const useCrearCambioJugador = (
             queryClient.invalidateQueries({
                 queryKey: cambiosJugadorKeys.partido(variables.idPartido)
             });
-            queryClient.invalidateQueries({
-                queryKey: ['planillero', 'datos-completos', variables.idPartido]
-            });
+            // Invalidar plantel del equipo afectado
+            const idEquipo = variables.cambioData.id_equipo;
+            if (idEquipo) {
+                queryClient.invalidateQueries({
+                    queryKey: planilleroKeys.plantel(variables.idPartido, idEquipo)
+                });
+            }
             queryClient.invalidateQueries({
                 queryKey: ['formaciones', 'partido', variables.idPartido]
+            });
+            queryClient.invalidateQueries({
+                queryKey: planilleroKeys.datosCompletos(variables.idPartido)
+            });
+            options?.onSuccess?.(data, variables, undefined);
+        },
+        onError: (error, variables, context) => {
+            options?.onError?.(error, variables, context);
+        },
+        ...options,
+    });
+};
+
+/**
+ * Hook para crear un cambio completo (SALIDA + ENTRADA) en una sola transacción
+ */
+export const useCrearCambioCompleto = (
+    options?: UseMutationOptions<CambioCompletoResponse, Error, { idPartido: number; cambioData: CrearCambioCompletoData }>
+) => {
+    const queryClient = useQueryClient();
+    const usuario = useAuthStore((state) => state.usuario);
+
+    return useMutation<CambioCompletoResponse, Error, { idPartido: number; cambioData: CrearCambioCompletoData }>({
+        mutationFn: async ({ idPartido, cambioData }) => {
+            return await cambiosJugadorService.crearCambioCompleto(idPartido, cambioData);
+        },
+        onSuccess: (data, variables) => {
+            // Invalidar queries relacionadas
+            queryClient.invalidateQueries({
+                queryKey: cambiosJugadorKeys.partido(variables.idPartido)
+            });
+            // Invalidar plantel del equipo afectado
+            const idEquipo = variables.cambioData.id_equipo;
+            if (idEquipo) {
+                queryClient.invalidateQueries({
+                    queryKey: planilleroKeys.plantel(variables.idPartido, idEquipo)
+                });
+            }
+            queryClient.invalidateQueries({
+                queryKey: ['formaciones', 'partido', variables.idPartido]
+            });
+            queryClient.invalidateQueries({
+                queryKey: planilleroKeys.datosCompletos(variables.idPartido)
             });
             options?.onSuccess?.(data, variables, undefined);
         },
@@ -134,8 +184,16 @@ export const useEditarCambioJugador = (
             queryClient.invalidateQueries({
                 queryKey: cambiosJugadorKeys.cambio(variables.idCambio, variables.idPartido)
             });
+            // Invalidar todos los planteles porque no sabemos qué equipo se afectó
+            // (EditarCambioJugadorData no incluye id_equipo)
             queryClient.invalidateQueries({
-                queryKey: ['planillero', 'datos-completos', variables.idPartido]
+                queryKey: ['planillero', 'plantel', variables.idPartido]
+            });
+            queryClient.invalidateQueries({
+                queryKey: ['formaciones', 'partido', variables.idPartido]
+            });
+            queryClient.invalidateQueries({
+                queryKey: planilleroKeys.datosCompletos(variables.idPartido)
             });
             options?.onSuccess?.(data, variables, undefined);
         },
@@ -167,11 +225,15 @@ export const useEliminarCambioJugador = (
             queryClient.removeQueries({
                 queryKey: cambiosJugadorKeys.cambio(variables.idCambio, variables.idPartido)
             });
+            // Invalidar todos los planteles porque no sabemos qué equipo se afectó
             queryClient.invalidateQueries({
-                queryKey: ['planillero', 'datos-completos', variables.idPartido]
+                queryKey: ['planillero', 'plantel', variables.idPartido]
             });
             queryClient.invalidateQueries({
                 queryKey: ['formaciones', 'partido', variables.idPartido]
+            });
+            queryClient.invalidateQueries({
+                queryKey: planilleroKeys.datosCompletos(variables.idPartido)
             });
             options?.onSuccess?.(data, variables, undefined);
         },

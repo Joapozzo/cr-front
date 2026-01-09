@@ -2,6 +2,7 @@
 import { BaseCardTableSkeleton } from "@/app/components/skeletons/BaseCardTableSkeleton";
 import MatchCardSkeleton from "@/app/components/skeletons/CardPartidoGenericoSkeleton";
 import { NoticiaCardSkeleton2 } from "@/app/components/skeletons/NoticiaCardSkeleton";
+import DreamTeamSkeleton from "@/app/components/skeletons/DreamTeamSkeleton";
 import { Calendar, Shield, AlertTriangle, Newspaper, Trophy } from "lucide-react";
 
 export const PartidosEquipoCardFallback = () => (
@@ -73,6 +74,12 @@ export const UnirseEquipoCardFallback = () => (
       </div>
       <div className="h-12 bg-[#262626] rounded-lg w-full max-w-xs animate-pulse" />
     </div>
+  </div>
+);
+
+export const DreamTeamHomeFallback = () => (
+  <div className="bg-[var(--black-900)] rounded-2xl overflow-hidden">
+    <DreamTeamSkeleton />
   </div>
 );
 

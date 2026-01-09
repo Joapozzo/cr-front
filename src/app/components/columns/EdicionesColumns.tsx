@@ -99,7 +99,7 @@ export const getEdicionesColumns = (
                         e.stopPropagation(); // Prevenir que se active el click de la fila
                         handleIngresarEdicion(row.id_edicion);
                     }}
-                    className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
+                    className="text-[var(--color-primary)] hover:text-[var(--color-primary-strong)] hover:bg-[var(--color-primary-opacity)]"
                 >
                     Ingresar
                 </Button>

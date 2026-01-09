@@ -159,7 +159,7 @@ export default function PagarCanchaModal({ isOpen, onClose, pago, onPagoRegistra
                             </div>
                             <div>
                                 <p className="text-xs text-[var(--gray-100)] mb-1">Monto Pagado</p>
-                                <p className="text-sm font-medium text-green-400">${Number(pago.monto_pagado).toLocaleString('es-AR')}</p>
+                                <p className="text-sm font-medium text-[var(--color-primary)]">${Number(pago.monto_pagado).toLocaleString('es-AR')}</p>
                             </div>
                             <div>
                                 <p className="text-xs text-[var(--gray-100)] mb-1">Monto Pendiente</p>

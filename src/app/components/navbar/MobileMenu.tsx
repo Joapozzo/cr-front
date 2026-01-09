@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { X, LogOut, ChevronRight } from 'lucide-react';
 import { useAuth } from '@/app/hooks/auth/useAuth';
-import { AvatarPerfil } from '../perfil/AvatarPerfil';
 import { ImagenPublica } from '../common/ImagenPublica';
 
 interface MenuItem {

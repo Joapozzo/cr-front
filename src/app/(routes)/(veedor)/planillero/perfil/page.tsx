@@ -138,7 +138,7 @@ const PerfilUsuario: React.FC = () => {
                                     icon={<Mail className="w-4 h-4" />}
                                 />
                                 <Input
-                                    label="Nombre de Usuario"
+                                    label="Nombre de usuario"
                                     value={usuario.username}
                                     disabled
                                     icon={<User className="w-4 h-4" />}
@@ -168,12 +168,12 @@ const PerfilUsuario: React.FC = () => {
                         {/* Account Information */}
                         <div className="bg-[#1A1A1A] border border-[#2D2F30] rounded-2xl p-6">
                             <h3 className="text-lg font-semibold text-white mb-4">
-                                Información de Cuenta
+                                Información de cuenta
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="text-sm font-medium text-[#fafafa] mb-1 block">
-                                        Estado de Cuenta
+                                        Estado de cuenta
                                     </label>
                                     <p className="text-[#65656B]">
                                         {usuario.cuenta_activada ? 'Activada' : 'Pendiente'}
@@ -181,7 +181,7 @@ const PerfilUsuario: React.FC = () => {
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-[#fafafa] mb-1 block">
-                                        Último Acceso
+                                        Último acceso
                                     </label>
                                     <p className="text-[#65656B]">
                                         {formatDate(usuario.ultimo_login)}
@@ -189,7 +189,7 @@ const PerfilUsuario: React.FC = () => {
                                 </div>
                                 {/* <div>
                                     <label className="text-sm font-medium text-[#fafafa] mb-1 block">
-                                        Estado de Cuenta
+                                        Estado de cuenta
                                     </label>
                                     <span className={userData.cuenta_activada ? 'bg-[#22C55E] bg-opacity-20 text-[#22C55E]' : 'bg-[#EF4444] bg-opacity-20 text-[#EF4444]'}>
                                         <div className={userData.cuenta_activada ? 'w-2 h-2 rounded-full bg-[#22C55E]' : 'w-2 h-2 rounded-full bg-[#EF4444]'} />

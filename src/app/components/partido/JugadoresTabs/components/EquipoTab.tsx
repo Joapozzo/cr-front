@@ -52,6 +52,18 @@ export const EquipoTab: React.FC<EquipoTabProps> = ({
     onToggleDestacado,
     onAgregarEventual
 }) => {
+    const jugadoresOrdenados = ordenarJugadoresPorDorsal(jugadores);
+
+    // Calcular si hay suplentes disponibles (jugadores con dorsal que NO están en cancha y NO están inhabilitados)
+    const haySuplentesDisponibles = React.useMemo(() => {
+        return jugadores.some(jugador => {
+            const tieneDorsal = jugador.dorsal !== null && jugador.dorsal !== undefined && jugador.dorsal !== 0;
+            const noEstaEnCancha = !jugador.en_cancha;
+            const noEstaInhabilitado = jugador.sancionado !== 'S';
+            return tieneDorsal && noEstaEnCancha && noEstaInhabilitado;
+        });
+    }, [jugadores]);
+
     if (jugadores.length === 0) {
         return (
             <div className="text-center py-12 text-[#737373]">
@@ -59,8 +71,6 @@ export const EquipoTab: React.FC<EquipoTabProps> = ({
             </div>
         );
     }
-
-    const jugadoresOrdenados = ordenarJugadoresPorDorsal(jugadores);
 
     return (
         <div className="space-y-2 pb-2">
@@ -72,13 +82,14 @@ export const EquipoTab: React.FC<EquipoTabProps> = ({
                         acciones={calcularAccionesJugador(jugador, incidenciasParaAcciones)}
                         equipo={equipo}
                         equipoId={equipoId}
-                        esDestacado={esJugadorDestacado(jugador.id_jugador, equipoId, destacados)}
+                        esDestacado={jugador.destacado === true || esJugadorDestacado(jugador.id_jugador, equipoId, destacados)}
                         index={index}
                         mode={mode}
                         permitirAcciones={permitirAcciones}
                         estaCargando={jugadorCargando === jugador.id_jugador || jugadoresCargando.has(jugador.id_jugador)}
                         limiteEnCancha={tipoFutbol}
                         jugadoresEnCanchaActuales={jugadoresEnCancha}
+                        haySuplentesDisponibles={haySuplentesDisponibles}
                         onToggleEnCancha={permitirAcciones ? onToggleEnCancha : undefined}
                         onSolicitarCambio={permitirAcciones ? onSolicitarCambio : undefined}
                         onJugadorClick={() => onJugadorClick?.(jugador.id_jugador, equipo)}

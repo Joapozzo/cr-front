@@ -89,8 +89,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 };
             case 'danger':
                 return {
-                    iconBg: 'bg-[var(--color-secondary-500)]/10',
-                    iconColor: 'text-[var(--color-secondary-400)]',
+                    iconBg: 'bg-[var(--color-danger)]/10',
+                    iconColor: 'text-[var(--color-danger)]',
                     buttonVariant: 'danger' as const
                 };
             default:

@@ -301,7 +301,7 @@ const ConfiguracionCategoriaPage = () => {
             {/* Formulario de configuración */}
             <div className="rounded-lg w-[70%]">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Tipo de Fútbol */}
+                    {/* Tipo de fútbol */}
                     <div className="flex flex-col gap-1 w-full">
                         <label className="text-sm font-medium text-[var(--white)] mb-1">
                             TIPO DE FÚTBOL
@@ -447,7 +447,7 @@ const ConfiguracionCategoriaPage = () => {
                         onClick={handleSubmit}
                         disabled={!hasChanges || isLoading}
                         className={`px-8 transition-colors ${hasChanges
-                            ? "bg-[var(--green)] hover:bg-[var(--green-win)] text-white"
+                            ? "bg-[var(--color-primary)] hover:bg-[var(--color-primary-strong)] text-white"
                             : "bg-[var(--gray-300)] text-[var(--gray-100)] cursor-not-allowed"
                             }`}
                     >

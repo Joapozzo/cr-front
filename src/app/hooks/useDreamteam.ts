@@ -26,6 +26,23 @@ export const dreamteamKeys = {
 
 // ==================== QUERIES ====================
 
+// Hook para obtener jornadas disponibles con dreamteam
+export const useJornadasDisponibles = (
+    id_categoria_edicion: number,
+    options?: Omit<UseQueryOptions<number[], Error>, 'queryKey' | 'queryFn'>
+) => {
+    return useQuery({
+        queryKey: [...dreamteamKeys.categoria(id_categoria_edicion), 'jornadas-disponibles'],
+        queryFn: () => dreamteamService.obtenerJornadasDisponibles(id_categoria_edicion),
+        enabled: !!id_categoria_edicion,
+        staleTime: 10 * 60 * 1000, // 10 minutos
+        gcTime: 15 * 60 * 1000, // 15 minutos
+        retry: 2,
+        refetchOnWindowFocus: false,
+        ...options,
+    });
+};
+
 // Hook para obtener dreamteam por categoría y jornada
 export const useDreamteamCategoriaJornada = (
     id_categoria_edicion: number,

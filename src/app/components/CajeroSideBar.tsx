@@ -206,7 +206,7 @@ export default function CajeroSideBar() {
                         </div>
 
                         <div className="mt-3 flex space-x-2">
-                            <Link href="/cajero/perfil" className="flex-1 bg-[var(--color-primary)] text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-300 transition-colors flex items-center justify-center space-x-2">
+                            <Link href="/cajero/perfil" className="flex-1 bg-[var(--color-primary)] text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-strong)] transition-colors flex items-center justify-center space-x-2">
                                 <User className="w-4 h-4" />
                                 <span>Perfil</span>
                             </Link>

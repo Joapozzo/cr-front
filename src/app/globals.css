@@ -144,3 +144,8 @@ html {
 .animate-shine {
   animation: shine 2s ease-in-out infinite;
 }
+
+/* Estilos para filas de categoría con color personalizado */
+.categoria-row-hover:hover {
+  background-color: var(--row-hover-color) !important;
+}

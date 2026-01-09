@@ -69,7 +69,7 @@ export default function NoticiaPage({ params }: NoticiaPageProps) {
                         </p>
                         <button
                             onClick={() => router.back()}
-                            className="mt-4 inline-flex items-center gap-2 text-[var(--green)] hover:text-[var(--green)]/80 transition-colors"
+                            className="mt-4 inline-flex items-center gap-2 text-[var(--color-primary)] hover:text-[var(--color-primary)]/80 transition-colors"
                         >
                             <ArrowLeft size={16} />
                             Volver
@@ -111,7 +111,7 @@ export default function NoticiaPage({ params }: NoticiaPageProps) {
                         {/* Badges */}
                         <div className="flex items-center gap-2 mb-4">
                             {noticia.tipoNoticia && (
-                                <span className="px-3 py-1 text-xs font-semibold rounded-md bg-[var(--green)]/90 text-white">
+                                <span className="px-3 py-1 text-xs font-semibold rounded-md bg-[var(--color-primary)]/90 text-white">
                                     {noticia.tipoNoticia.nombre}
                                 </span>
                             )}
@@ -143,7 +143,7 @@ export default function NoticiaPage({ params }: NoticiaPageProps) {
 
                         {/* Contenido */}
                         <div
-                            className="prose prose-invert max-w-none text-white prose-headings:text-white prose-p:text-[#e5e5e5] prose-strong:text-white prose-a:text-[var(--green)] prose-a:hover:text-[var(--green)]/80"
+                            className="prose prose-invert max-w-none text-white prose-headings:text-white prose-p:text-[#e5e5e5] prose-strong:text-white prose-a:text-[var(--color-primary)] prose-a:hover:text-[var(--color-primary)]/80"
                             dangerouslySetInnerHTML={{ __html: contenidoHtml }}
                         />
                     </div>

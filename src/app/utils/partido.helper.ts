@@ -7,7 +7,7 @@ export const getEstadoInfo = (estado: EstadoPartido) => {
         case 'C1':
         case 'E':
         case 'C2':
-            return { text: 'EN VIVO', color: 'text-green-400', bg: 'bg-green-400/10 animate-pulse' };
+            return { text: 'EN VIVO', color: 'text-[var(--color-primary)]', bg: 'bg-[var(--color-primary)]/10 animate-pulse' };
         case 'T':
         case 'F':
             return { text: 'FINALIZADO', color: 'text-white', bg: 'bg-[var(--color-primary)]/10' };

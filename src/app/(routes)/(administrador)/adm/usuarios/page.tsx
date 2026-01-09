@@ -240,7 +240,7 @@ const UsuariosPage = () => {
             {error ? (
                 <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-12">
                     <div className="flex flex-col items-center justify-center text-center">
-                        <p className="text-[var(--color-secondary)] mb-4">Error al cargar los usuarios</p>
+                        <p className="text-[var(--color-danger)] mb-4">Error al cargar los usuarios</p>
                         <Button onClick={handleRefresh}>
                             Reintentar
                         </Button>

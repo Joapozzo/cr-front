@@ -137,7 +137,7 @@ const JugadorDetallePage = () => {
                     <select
                         value={categoriaSeleccionada || ''}
                         onChange={(e) => setSelectedCategoria(Number(e.target.value))}
-                        className="block w-full px-3 py-2 border border-[var(--gray-300)] rounded-lg bg-[var(--gray-300)] text-[var(--white)] focus:outline-none focus:ring-2 focus:ring-[var(--green)]"
+                        className="block w-full px-3 py-2 border border-[var(--gray-300)] rounded-lg bg-[var(--gray-300)] text-[var(--white)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                     >
                         {categoriasUnicas.map((cat) => (
                             <option key={cat.id_categoria_edicion} value={cat.id_categoria_edicion}>

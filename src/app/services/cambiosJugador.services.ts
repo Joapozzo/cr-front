@@ -45,6 +45,16 @@ export interface CrearCambioJugadorData {
     observaciones?: string;
 }
 
+export interface CrearCambioCompletoData {
+    id_categoria_edicion: number;
+    id_equipo: number;
+    id_jugador_sale: number;
+    id_jugador_entra: number;
+    minuto: number;
+    tiempo?: string;
+    observaciones?: string;
+}
+
 export interface EditarCambioJugadorData {
     minuto?: number;
     tiempo?: string;
@@ -59,6 +69,12 @@ export interface CambiosJugadorResponse {
 export interface CambioJugadorResponse {
     message: string;
     cambio: CambioJugador;
+}
+
+export interface CambioCompletoResponse {
+    message: string;
+    salida: CambioJugador;
+    entrada: CambioJugador;
 }
 
 // ====================================================================
@@ -85,6 +101,28 @@ export const cambiosJugadorService = {
                 throw new Error(error.message);
             }
             throw new Error('No se pudo crear el cambio de jugador');
+        }
+    },
+
+    /**
+     * Crea un cambio completo (SALIDA + ENTRADA) en una sola transacción
+     */
+    crearCambioCompleto: async (
+        idPartido: number,
+        cambioData: CrearCambioCompletoData
+    ): Promise<CambioCompletoResponse> => {
+        try {
+            const response = await api.post<CambioCompletoResponse>(
+                `/planillero/cambios/completo/${idPartido}`,
+                cambioData
+            );
+            return response;
+        } catch (error) {
+            console.error('Error al crear cambio completo:', error);
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            throw new Error('No se pudo crear el cambio completo');
         }
     },
 

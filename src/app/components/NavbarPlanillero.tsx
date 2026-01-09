@@ -1,14 +1,13 @@
 ﻿'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, Bell } from "lucide-react";
 import { MobileMenuPlanillero } from './navbar/MobileMenuPlanillero';
+import { NavbarBase } from './navbar/NavbarBase';
 import { useTenant } from '@/app/contexts/TenantContext';
 
 const NavbarPlanillero: React.FC = () => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const tenant = useTenant();
 
     const navItems = [
@@ -17,81 +16,53 @@ const NavbarPlanillero: React.FC = () => {
         { label: 'Perfil', href: '/planillero/perfil', isExternal: true },
     ];
 
+    const homeRoute = '/planillero/home';
+
+    // Contenido desktop
+    const desktopContent = (
+        <>
+            {/* Desktop Logo */}
+            <Link
+                href={homeRoute}
+                className="flex items-center cursor-pointer"
+            >
+                <Image
+                    src={tenant.branding.logo_principal}
+                    alt={`Logo ${tenant.nombre_empresa}`}
+                    width={200}
+                    height={40}
+                    className="h-10 w-auto"
+                />
+            </Link>
+
+            {/* Navigation List */}
+            <ul className="flex items-center gap-12 md:gap-10">
+                {navItems.map((item) => (
+                    <li key={item.label}>
+                        <Link
+                            href={item.href}
+                            className="text-white text-md font-medium hover:text-[var(--color-primary)] transition-colors duration-300"
+                        >
+                            {item.label}
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+        </>
+    );
+
     return (
-        <header className="w-full h-[80px] md:h-[80px] bg-[var(--gray-500)] flex justify-center sticky top-0 select-none z-[102]">
-            <div className="flex justify-between items-center w-full h-full relative max-w-[1300px] mx-auto px-6">
-
-                {/* Mobile Layout */}
-                <div className="flex md:hidden items-center justify-between w-full">
-                    {/* Left - Menu Button */}
-                    <button
-                        onClick={() => setIsMenuOpen(true)}
-                        className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--color-primary)] transition-colors duration-300"
-                        aria-label="Abrir menú"
-                    >
-                        <Menu className="text-white w-5 h-5" />
-                    </button>
-
-                    {/* Center - Mobile Logo */}
-                    <Link
-                        href="/"
-                        className="absolute left-1/2 transform -translate-x-1/2 h-[30%] flex items-center cursor-pointer"
-                    >
-                        <div className="relative h-full w-[40px]">
-                            <Image
-                                src={tenant.branding.logo_header}
-                                alt={`Logo ${tenant.nombre_empresa} Mobile`}
-                                fill
-                                className="object-contain"
-                            />
-                        </div>
-                    </Link>
-
-                    {/* Right - Notifications */}
-                    {/* <button className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--color-primary)] transition-colors duration-300">
-                        <Bell className="text-white w-5 h-5" />
-                    </button> */}
-                </div>
-
-                {/* Desktop Layout */}
-                <div className="hidden md:flex justify-between items-center w-full">
-                    {/* Desktop Logo */}
-                    <Link
-                        href="/planillero/home"
-                        className="flex items-center cursor-pointer"
-                    >
-                        <Image
-                            src={tenant.branding.logo_principal}
-                            alt={`Logo ${tenant.nombre_empresa}`}
-                            width={120}
-                            height={20}
-                            className="h-5 w-auto"
-                        />
-                    </Link>
-
-
-                    {/* Navigation List */}
-                    <ul className="flex items-center gap-12 md:gap-10">
-                        {navItems.map((item) => (
-                            <li key={item.label}>
-                                <Link
-                                    href={item.href}
-                                    className="text-white text-md font-medium hover:text-[var(--color-primary)] transition-colors duration-300"
-                                >
-                                    {item.label}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </div>
-
-            {/* Mobile Menu */}
-            <MobileMenuPlanillero
-                isOpen={isMenuOpen}
-                onClose={() => setIsMenuOpen(false)}
-            />
-        </header>
+        <NavbarBase
+            homeRoute={homeRoute}
+            desktopContent={desktopContent}
+            renderMobileMenu={(isOpen, onClose) => (
+                <MobileMenuPlanillero
+                    isOpen={isOpen}
+                    onClose={onClose}
+                />
+            )}
+            zIndex={102}
+        />
     );
 };
 

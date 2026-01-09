@@ -81,13 +81,13 @@ const menuItems: MenuItem[] = [
         href: '/adm/predios',
         color: 'text-[var(--color-primary)]'
     },
-    {
-        id: 'caja',
-        label: 'Caja',
-        icon: Wallet,
-        href: '/cajero/caja',
-        color: 'text-[var(--color-primary)]'
-    },
+    // {
+    //     id: 'caja',
+    //     label: 'Caja',
+    //     icon: Wallet,
+    //     href: '/cajero/caja',
+    //     color: 'text-[var(--color-primary)]'
+    // },
     // {
     //     id: 'configuracion-precios',
     //     label: 'Configuración de Precios',
@@ -125,17 +125,17 @@ export default function Sidebar() {
                         <Image
                             src={tenant.branding.logo_principal}
                             alt={tenant.nombre_empresa}
-                            width={200}
-                            height={40}
-                            className="h-4 w-auto object-contain"
+                            width={700}
+                            height={200}
+                            className="h-15 w-auto object-contain"
                             priority
                         />
                     ) : (
                         <Image
                             src={tenant.branding.logo_header}
                             alt={tenant.nombre_empresa}
-                            width={200}
-                            height={40}
+                            width={700}
+                            height={200}
                             className="h-8 w-auto object-contain"
                             priority
                         />
@@ -172,7 +172,7 @@ export default function Sidebar() {
                             className="w-full p-2 rounded-lg transition-colors group hover:bg-[var(--black-900)] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                             title={isLoggingOut ? 'Saliendo...' : 'Cerrar sesión'}
                         >
-                            <LogOut className={`w-5 h-5 text-[var(--color-secondary-500)] group-hover:text-[var(--color-secondary-400)] transition-colors ${isLoggingOut ? 'opacity-50' : ''}`} />
+                            <LogOut className={`w-5 h-5 text-[var(--color-primary)] group-hover:text-[var(--color-primary-300)] transition-colors ${isLoggingOut ? 'opacity-50' : ''}`} />
                         </button>
                     </div>
                 ) : (
@@ -203,7 +203,7 @@ export default function Sidebar() {
                             <button
                                 onClick={logout}
                                 disabled={isLoggingOut}
-                                className="flex-1 border border-[var(--color-secondary-500)] text-[var(--color-secondary-500)] px-3 py-2 rounded-lg text-sm font-medium hover:bg-[var(--color-secondary-500)] hover:text-white transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex-1 border border-[var(--color-primary)] text-[var(--color-primary)] px-3 py-2 rounded-lg text-sm font-medium hover:bg-[var(--color-primary)] hover:text-white transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <LogOut className="w-4 h-4" />
                                 <span>{isLoggingOut ? 'Saliendo...' : 'Salir'}</span>

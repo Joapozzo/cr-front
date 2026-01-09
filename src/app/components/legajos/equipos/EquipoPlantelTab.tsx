@@ -81,9 +81,7 @@ export const EquipoPlantelTab = ({ plantel, isLoading, categoriaSeleccionada }: 
                 <h3 className="text-lg font-semibold text-[var(--white)] mb-3">Jugadores</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {plantel.jugadores.map((jugador) => {
-                        const esEventual = jugador.tipo === 'eventual';
-                        const imgUrl = jugador.jugador.img ? `${URI_IMG}${jugador.jugador.img}` : undefined;
-                        
+                        const esEventual = jugador.tipo === 'eventual';                        
                         return (
                             <div
                                 key={jugador.jugador.id_jugador}
@@ -96,7 +94,7 @@ export const EquipoPlantelTab = ({ plantel, isLoading, categoriaSeleccionada }: 
                                     {/* Foto del jugador */}
                                     <div className="w-16 h-16 rounded-full overflow-hidden bg-[var(--gray-400)] flex-shrink-0 border-2 border-[var(--gray-200)]">
                                         <ImagenPublica
-                                            src={imgUrl}
+                                            src={jugador.jugador.img}
                                             alt={`${jugador.jugador.nombre} ${jugador.jugador.apellido}`}
                                             width={64}
                                             height={64}

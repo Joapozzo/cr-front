@@ -5,8 +5,7 @@ import Link from 'next/link';
 import { User as UserIcon, LogOut } from 'lucide-react';
 import { useAuth } from '@/app/hooks/auth/useAuth';
 import { AvatarPerfil } from '../perfil/AvatarPerfil';
-
-import Image from 'next/image';
+import { ImagenPublica } from '../common/ImagenPublica';
 
 export const UserDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,21 +21,16 @@ export const UserDropdown = () => {
     >
       {/* Avatar Trigger */}
       <button
-        className="bg-[var(--gray-300)] rounded-full p-2 hover:bg-[var(--color-primary)] transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 focus:ring-offset-[var(--gray-500)]"
+        className="rounded-full overflow-hidden p-1 hover:ring-2 hover:ring-[var(--color-primary)] transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 focus:ring-offset-[var(--gray-500)]"
         aria-label="Menú de usuario"
       >
-        <div className="relative w-6 h-6 rounded-full overflow-hidden">
-          {usuario.img ? (
-            <Image
-              src={usuario.img}
-              alt={usuario.nombre}
-              fill
-              className="object-cover"
-            />
-          ) : (
-            <UserIcon className="text-white w-full h-full p-0.5" />
-          )}
-        </div>
+        <ImagenPublica
+          src={usuario.img}
+          alt={`Foto de ${usuario.nombre} ${usuario.apellido}`}
+          width={40}
+          height={40}
+          className="rounded-full"
+        />
       </button>
 
       {/* Puente invisible para mantener el hover */}
