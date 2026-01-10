@@ -5,7 +5,11 @@ export interface EdicionConCategorias {
     nombre: string;
     temporada: number;
     img: string | null;
-    categorias: Categoria[];
+    categorias: Array<{
+        id_categoria_edicion: number;
+        nombre: string;
+        color?: string | null;
+    }>;
 }
 
 export interface Edicion {

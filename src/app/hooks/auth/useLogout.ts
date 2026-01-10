@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/app/stores/authStore';
 import { usePlayerStore } from '@/app/stores/playerStore';
@@ -78,7 +78,7 @@ export const useLogout = (): UseLogoutReturn => {
   const [state, setState] = useState<LogoutState>('idle');
   const [error, setError] = useState<string | null>(null);
 
-  const performLogout = async () => {
+  const performLogout = useCallback(async () => {
     try {
       setState('loading');
       setError(null);
@@ -131,15 +131,15 @@ export const useLogout = (): UseLogoutReturn => {
       clearPartidoStore();
       limpiarLocalStorageCompleto();
     }
-  };
+  }, [router, clearAuthStore, clearPlayerStore, clearEquiposStore, clearCategoriaStore, clearEdicionStore, clearEquipoSeleccionadoStore, clearPartidoStore]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     await performLogout();
-  };
+  }, [performLogout]);
 
-  const retry = async () => {
+  const retry = useCallback(async () => {
     await performLogout();
-  };
+  }, [performLogout]);
 
   return {
     logout,

@@ -279,6 +279,7 @@ export const useScannerDNI = ({
       setShowPhotoButton(false);
       stopScanner();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isScanning]);
 
   return {

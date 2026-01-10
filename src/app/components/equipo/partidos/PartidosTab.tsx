@@ -54,7 +54,7 @@ export const PartidosTab: React.FC<PartidosTabProps> = ({
     if (vistaActiva === 'jornada') {
       setJornadaSeleccionada(undefined);
     }
-  }, [idEquipo, idCategoriaEdicion, vistaActiva]);
+  }, [idEquipo, idCategoriaEdicion, vistaActiva, currentQueryKey]);
 
   // Actualizar queryKeyRef cuando cambia currentQueryKey (para evitar procesar datos antiguos)
   useEffect(() => {

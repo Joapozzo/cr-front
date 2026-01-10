@@ -37,7 +37,7 @@ export const DniValidationStep = () => {
       // Navegar al siguiente step (SELFIE)
       goToNextStep();
     }
-  }, [usuario?.dni_validado, updateUserData, setUsuario, goToNextStep, currentStep]);
+  }, [usuario, currentStep, updateUserData, setUsuario, goToNextStep]);
 
   // Reset el ref cuando cambiamos de step
   useEffect(() => {

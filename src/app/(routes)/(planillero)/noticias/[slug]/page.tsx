@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
+import { use, useEffect, useState, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useNoticiaPorSlug } from '@/app/hooks/useNoticias';
 import { UserPageWrapper } from '@/app/components/layouts/UserPageWrapper';
@@ -14,7 +14,8 @@ interface NoticiaPageProps {
     params: Promise<{ slug: string }>;
 }
 
-export default function NoticiaPage({ params }: NoticiaPageProps) {
+// Componente interno con la lógica
+function NoticiaPageContent({ params }: NoticiaPageProps) {
     const { slug } = use(params);
     const router = useRouter();
     const { data: noticia, isLoading, error } = useNoticiaPorSlug(slug);
@@ -151,4 +152,19 @@ export default function NoticiaPage({ params }: NoticiaPageProps) {
             </div>
         </UserPageWrapper>
     );
+}
+
+// Componente principal que envuelve en Suspense
+export default function NoticiaPage({ params }: NoticiaPageProps) {
+  return (
+    <Suspense fallback={
+      <UserPageWrapper>
+        <div className="w-full space-y-6">
+          <NoticiaCardSkeleton2 />
+        </div>
+      </UserPageWrapper>
+    }>
+      <NoticiaPageContent params={params} />
+    </Suspense>
+  );
 }

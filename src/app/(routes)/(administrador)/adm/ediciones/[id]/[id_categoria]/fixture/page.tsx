@@ -1,5 +1,6 @@
 'use client';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, Suspense } from 'react';
+import { useParams } from 'next/navigation';
 import ModalCrearPartido from '@/app/components/modals/ModalCrearPartido';
 import ModalActualizarPartido from '@/app/components/modals/ModalActualizarPartido';
 import ModalGenerarFixture from '@/app/components/modals/ModalGenerarFixture';
@@ -16,9 +17,14 @@ import { FixtureActions } from '../../../../../../../components/admin/FixtureAct
 import { FixtureTable } from '../../../../../../../components/admin/FixtureTable';
 import { DreamTeamSection } from '../../../../../../../components/admin/DreamTeamSection';
 
-export default function FixtureDreamTeamPage() {
+// Componente interno con la lógica
+function FixtureDreamTeamPageContent() {
+    const params = useParams();
     const { categoriaSeleccionada } = useCategoriaStore();
-    const idCategoriaEdicion = Number(categoriaSeleccionada?.id_categoria_edicion);
+    // Priorizar el param de la URL sobre el store
+    const idCategoriaEdicion = params?.id_categoria 
+        ? Number(params.id_categoria) 
+        : (categoriaSeleccionada?.id_categoria_edicion ? Number(categoriaSeleccionada.id_categoria_edicion) : 0);
     const [vistaActual, setVistaActual] = useState<'fixture' | 'dreamteam'>('fixture');
     const [isRefetch, setIsRefetch] = useState(false);
     const [isModalGenerarFixtureOpen, setIsModalGenerarFixtureOpen] = useState(false);
@@ -202,4 +208,22 @@ export default function FixtureDreamTeamPage() {
             )}
         </div>
     );
+}
+
+// Componente principal que envuelve en Suspense
+export default function FixtureDreamTeamPage() {
+  return (
+    <Suspense fallback={
+      <div className="space-y-6">
+        <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-[var(--gray-300)] rounded w-1/3" />
+            <div className="h-4 bg-[var(--gray-300)] rounded w-1/2" />
+          </div>
+        </div>
+      </div>
+    }>
+      <FixtureDreamTeamPageContent />
+    </Suspense>
+  );
 }

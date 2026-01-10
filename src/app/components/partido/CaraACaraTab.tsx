@@ -78,7 +78,7 @@ export const CaraACaraTab: React.FC<CaraACaraTabProps> = ({
       porcentaje_victorias_visita: porcentajeVisita,
       porcentaje_empates: porcentajeEmpates
     };
-  }, [historial, idEquipoLocal, idEquipoVisita]);
+  }, [historial, idEquipoLocal]);
 
   // Ordenar partidos por fecha (más reciente primero)
   const partidosOrdenados = useMemo(() => {

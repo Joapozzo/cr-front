@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
+import { Suspense } from 'react';
 import { PageHeader } from '@/app/components/ui/PageHeader';
 import { useCajaPorId } from '@/app/hooks/useCaja';
 import { Button } from '@/app/components/ui/Button';
@@ -17,7 +18,8 @@ type CajaDiariaConMovimientos = CajaDiaria & {
     movimientos?: MovimientoCaja[];
 };
 
-export default function CajaDetallePage() {
+// Componente interno con la lógica
+function CajaDetallePageContent() {
     const params = useParams();
     const router = useRouter();
     const id_caja = parseInt(params.id as string);
@@ -182,3 +184,11 @@ export default function CajaDetallePage() {
     );
 }
 
+// Componente principal que envuelve en Suspense
+export default function CajaDetallePage() {
+  return (
+    <Suspense fallback={<CajaDetalleSkeleton />}>
+      <CajaDetallePageContent />
+    </Suspense>
+  );
+}

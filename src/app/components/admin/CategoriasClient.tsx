@@ -12,6 +12,9 @@ import { useCategoriasPorEdicion } from '@/app/hooks/useCategorias';
 import { useCategoriasAdmin } from '../../hooks/useCategoriasAdmin';
 import HelperCrearNombreCategoria from '@/app/components/modals/HelperCrearNombreCategoria';
 import HelperCrearDivision from '@/app/components/modals/HelperCrearDivision';
+import HelperColorPicker from '@/app/components/modals/HelperColorPicker';
+import { FormDataValue } from '@/app/components/modals/ModalAdmin';
+import { useState, useEffect } from 'react';
 
 interface CategoriasClientProps {
     initialCategorias?: CategoriaEdicionDto[] | null;
@@ -28,11 +31,54 @@ export const CategoriasClient = ({
         handleRefresh,
         handleIngresarCategoria,
         handleAgregarCategoria,
-        handleCrearCategoria,
+        handleCrearCategoria: handleCrearCategoriaOriginal,
         categoriaFields,
         validationSchema,
         isLoadingDatos,
     } = useCategoriasAdmin(edicionId);
+
+    // Wrapper para handleCrearCategoria que incluye el color del estado local
+    const handleCrearCategoria = async (data: Record<string, any>): Promise<void> => {
+        // Asegurar que el color esté en los datos antes de enviar
+        const dataConColor = {
+            ...data,
+            color: colorValue || '#3B82F6'
+        };
+        return handleCrearCategoriaOriginal(dataConColor);
+    };
+
+    // Estado local para el color del formulario
+    const [colorValue, setColorValue] = useState<string | null>('#3B82F6');
+    const [colorError, setColorError] = useState<string>('');
+
+    // Resetear el color cuando se abre el modal
+    useEffect(() => {
+        if (modals.create) {
+            setColorValue('#3B82F6');
+            setColorError('');
+        }
+    }, [modals.create]);
+
+    // Handler para cambios en el color - también actualiza el FormModal
+    const handleColorChange = (name: string, value: FormDataValue) => {
+        // Solo manejar cambios del campo 'color'
+        if (name === 'color') {
+            // El color nunca debería ser un File, pero verificamos por seguridad
+            if (value instanceof File) {
+                // Si por alguna razón es un File, ignoramos el cambio
+                return;
+            }
+            const colorStr = value ? String(value) : null;
+            setColorValue(colorStr || '#3B82F6');
+            setColorError(''); // Limpiar error al cambiar
+        }
+    };
+
+    // Función para actualizar el FormModal directamente
+    const updateFormModalColor = (color: string | null) => {
+        // Esta función se pasará al HelperColorPicker para que actualice el FormModal
+        // El FormModal se actualizará a través de onFieldChange cuando se llame desde el HelperColorPicker
+    };
 
     // Usar React Query para obtener categorías (con initialData del server)
     const { data: categorias, error, isLoading, isFetching } = useCategoriasPorEdicion(edicionId, {
@@ -147,9 +193,27 @@ export const CategoriasClient = ({
                     onSubmit={handleCrearCategoria}
                     type="create"
                     validationSchema={validationSchema}
+                    onFieldChange={(name, value) => {
+                        // Actualizar estado local para el color
+                        if (name === 'color') {
+                            handleColorChange(name, value);
+                        }
+                        // El FormModal manejará otros campos internamente
+                    }}
+                    initialData={{ color: colorValue || '#3B82F6' }}
                 >
                     <HelperCrearNombreCategoria />
                     <HelperCrearDivision />
+                    <div className="mb-4">
+                        <HelperColorPicker 
+                            value={colorValue} 
+                            onChange={(name, value) => {
+                                // Actualizar estado local
+                                handleColorChange(name, value);
+                            }}
+                            error={colorError}
+                        />
+                    </div>
                 </FormModal>
             )}
         </div>

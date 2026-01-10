@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { Button } from '@/app/components/ui/Button';
 import {
@@ -30,7 +30,8 @@ import { EquipoHeaderSkeleton } from '@/app/components/legajos/equipos/EquipoHea
 
 type TabType = 'info' | 'plantel' | 'partidos' | 'tabla' | 'goleadores' | 'capitanes' | 'solicitudes';
 
-const EquipoDetallePage = () => {
+// Componente interno con la lógica
+const EquipoDetallePageContent = () => {
     const params = useParams();
     const router = useRouter();
     const idEquipo = Number(params.id);
@@ -226,4 +227,15 @@ const EquipoDetallePage = () => {
     );
 };
 
-export default EquipoDetallePage;
+// Componente principal que envuelve en Suspense
+export default function EquipoDetallePage() {
+  return (
+    <Suspense fallback={
+      <div className="space-y-6">
+        <EquipoHeaderSkeleton />
+      </div>
+    }>
+      <EquipoDetallePageContent />
+    </Suspense>
+  );
+}

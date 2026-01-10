@@ -83,7 +83,7 @@ const LoginFormUI = ({
                         transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
                         className="w-full overflow-hidden"
                     >
-                        <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full bg-[var(--gray-400)]/30 border border-[var(--gray-300)] rounded-2xl p-6 lg:p-8 mb-6">
+                        <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full bg-[var(--gray-400)]/30 border border-[var(--gray-300)] rounded-2xl p-6 lg:p-10 mb-6">
                             <div className="flex flex-col gap-4">
                                 <Input
                                     type="text"

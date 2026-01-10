@@ -284,6 +284,15 @@ const FormModal = ({
         }
     };
 
+    // Función para actualizar formData desde fuera (para componentes children)
+    const updateFormData = (name: string, value: FormDataValue) => {
+        setFormData(prev => ({ ...prev, [name]: value }));
+        // También notificar al padre si existe onFieldChange
+        if (onFieldChange) {
+            onFieldChange(name, value);
+        }
+    };
+
     const handleFileChange = (name: string, file: File | null) => {
         setFormData(prev => ({ ...prev, [name]: file }));
     };

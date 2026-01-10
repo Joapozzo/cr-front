@@ -1,6 +1,8 @@
 'use client';
 
 import { Plus, Loader2 } from 'lucide-react';
+import { Suspense } from 'react';
+import { useParams } from 'next/navigation';
 import { Button } from '@/app/components/ui/Button';
 import FaseSection from '@/app/components/fase/FaseSection';
 import { useCategoriaFormato } from '@/app/hooks/useCategoriaFormato';
@@ -10,7 +12,12 @@ import { CategoriaFormatoEmpty } from '@/app/components/formato/CategoriaFormato
 import { CategoriaFormatoError } from '@/app/components/formato/CategoriaFormatoError';
 import { CategoriaFormatoSkeleton } from '@/app/components/skeletons/CategoriaFormatoSkeleton';
 
-export default function CategoriaFormatoPage() {
+// Componente interno con la lógica
+function CategoriaFormatoPageContent() {
+    const params = useParams();
+    // Leer el id_categoria_edicion directamente de la URL (prioridad sobre el store)
+    const idCategoriaEdicionFromParams = params?.id_categoria ? Number(params.id_categoria) : null;
+    
     const {
         categoriaSeleccionada,
         fases,
@@ -23,7 +30,7 @@ export default function CategoriaFormatoPage() {
         error,
         handleCrearFase,
         handleRefetch,
-    } = useCategoriaFormato();
+    } = useCategoriaFormato(idCategoriaEdicionFromParams);
 
     if (isLoading) {
         return <CategoriaFormatoSkeleton />;
@@ -62,7 +69,7 @@ export default function CategoriaFormatoPage() {
                             <FaseSection
                                 key={fase.numero_fase}
                                 fase={fase}
-                                idCatEdicion={Number(categoriaSeleccionada?.id_categoria_edicion) || 0}
+                                idCatEdicion={idCategoriaEdicionFromParams || Number(categoriaSeleccionada?.id_categoria_edicion) || 0}
                             />
                         ))}
 
@@ -93,4 +100,13 @@ export default function CategoriaFormatoPage() {
             <CategoriaFormatoInfoPanel />
         </div>
     );
+}
+
+// Componente principal que envuelve en Suspense
+export default function CategoriaFormatoPage() {
+  return (
+    <Suspense fallback={<CategoriaFormatoSkeleton />}>
+      <CategoriaFormatoPageContent />
+    </Suspense>
+  );
 }

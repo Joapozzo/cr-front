@@ -16,6 +16,7 @@ export interface Categoria {
   nombre: string;
   id_edicion: number;
   id_categoria_edicion: number;
+  color?: string | null;
 }
 
 export interface CategoriaActual {

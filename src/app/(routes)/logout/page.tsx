@@ -9,7 +9,7 @@ export default function LogoutPage() {
 
   useEffect(() => {
     logout();
-  }, []);
+  }, [logout]);
 
   const getMessages = () => {
     switch (state) {

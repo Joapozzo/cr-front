@@ -34,7 +34,7 @@ export const FormSection = ({
   const isFullPageMobile = isRegistroPage || isLoginPage;
 
   return (
-    <div className={`w-full lg:w-1/2 flex flex-col h-screen lg:h-auto lg:min-h-0 lg:justify-center relative overflow-hidden bg-[var(--gray-500)]`}>
+    <div className={`w-full ${isLoginPage ? 'lg:w-[60%]' : 'lg:w-1/2'} flex flex-col h-screen lg:h-auto lg:min-h-0 lg:justify-center relative overflow-hidden bg-[var(--gray-500)]`}>
       {/* Botón volver en la parte superior izquierda - Solo mobile, sobre la foto */}
       {showBackButton && !isFullPageMobile && (
         <button
@@ -76,12 +76,12 @@ export const FormSection = ({
           Modified logic: if isLoginPage or isRegistroPage, behave like full page (centered, no rounded top) 
       */}
       <div className={`
-          w-full ${isRegistroPage || isLoginPage ? 'lg:max-w-lg' : 'lg:max-w-xl'} lg:mx-auto flex flex-col 
+          w-full ${isLoginPage ? 'lg:max-w-none lg:px-16' : isRegistroPage ? 'lg:max-w-lg lg:mx-auto' : 'lg:max-w-xl lg:mx-auto'} flex flex-col 
           ${isFullPageMobile ? 'h-full flex-1' : 'flex-shrink-0 lg:flex-none'} 
           bg-[var(--gray-500)] lg:bg-[var(--gray-500)] z-10 relative 
           ${isRegistroPage || isLoginPage ? 'justify-center lg:justify-center' : 'justify-start'} 
           ${isFullPageMobile ? 'rounded-none' : 'rounded-t-[30px] lg:rounded-none'} 
-          ${(isLoginPage || isRegistroPage) ? 'px-8 lg:px-20' : 'px-6 lg:px-16'}
+          ${isLoginPage ? 'px-8' : (isRegistroPage ? 'px-8 lg:px-20' : 'px-6 lg:px-16')}
           ${(isLoginPage || isRegistroPage) ? 'pt-6' : 'pt-4 lg:pt-8'} 
           ${(isLoginPage || isRegistroPage) ? 'pb-8 lg:pb-12' : 'pb-4 lg:pb-8'} overflow-y-auto lg:overflow-hidden
       `}>

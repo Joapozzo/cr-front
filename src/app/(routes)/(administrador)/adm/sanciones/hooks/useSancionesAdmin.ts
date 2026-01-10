@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 import { useCategoriasPorEdicionActivas } from '@/app/hooks/useCategorias';
 import {
@@ -32,7 +32,7 @@ export function useSancionesAdmin({
 
     // Obtener categorías de la edición
     const { data: categoriasData, isLoading: isLoadingCategorias } = useCategoriasPorEdicionActivas();
-    const categorias = categoriasData || initialCategorias || [];
+    const categorias = useMemo(() => categoriasData || initialCategorias || [], [categoriasData, initialCategorias]);
 
     // Seleccionar automáticamente la primera categoría si hay categorías disponibles
     useEffect(() => {

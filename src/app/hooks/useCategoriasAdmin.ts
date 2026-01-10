@@ -67,19 +67,28 @@ export const useCategoriasAdmin = (edicionId: number) => {
             }
 
             // Procesar id_division si existe y no es 0 (Sin división)
-            if (data.id_division !== undefined && data.id_division !== null) {
-                const divisionValue = typeof data.id_division === 'number' ? data.id_division : parseInt(String(data.id_division));
-                if (divisionValue !== 0) {
+            if (data.id_division !== undefined && data.id_division !== null && data.id_division !== '') {
+                const divisionValue = typeof data.id_division === 'number' 
+                    ? data.id_division 
+                    : parseInt(String(data.id_division));
+                // Solo agregar si es un número válido y positivo
+                if (!isNaN(divisionValue) && divisionValue > 0) {
                     idDivision = divisionValue;
                 }
             }
 
-            // Agregar publicada por defecto y color default
+            // Agregar publicada por defecto y color (del formulario o default)
             const dataConDefaults: any = {
                 ...data,
                 publicada: 'N', // Por defecto no publicada
-                color: '#3B82F6', // Color default (azul)
             };
+
+            // Procesar color: usar el del formulario si existe y es válido, sino usar default
+            if (data.color && typeof data.color === 'string' && data.color.trim() !== '') {
+                dataConDefaults.color = data.color.trim();
+            } else {
+                dataConDefaults.color = '#3B82F6'; // Color default (azul)
+            }
 
             // Reemplazar id_categoria con el valor correcto
             delete dataConDefaults.id_categoria;
@@ -89,8 +98,11 @@ export const useCategoriasAdmin = (edicionId: number) => {
                 dataConDefaults.id_nombre_cat = idNombreCat;
             }
 
-            // Agregar id_division si existe
-            if (idDivision) {
+            // Eliminar id_division del objeto (para evitar enviar 0 o valores inválidos)
+            delete dataConDefaults.id_division;
+            
+            // Agregar id_division solo si existe y es válido (positivo)
+            if (idDivision && idDivision > 0) {
                 dataConDefaults.id_division = idDivision;
             }
 

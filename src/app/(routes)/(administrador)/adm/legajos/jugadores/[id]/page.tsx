@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { Button } from '@/app/components/ui/Button';
 import {
@@ -25,7 +25,8 @@ import { JugadorHeaderSkeleton } from '@/app/components/legajos/jugadores/Jugado
 
 type TabType = 'info' | 'equipos' | 'partidos' | 'estadisticas' | 'disciplina' | 'solicitudes';
 
-const JugadorDetallePage = () => {
+// Componente interno con la lógica
+const JugadorDetallePageContent = () => {
     const params = useParams();
     const router = useRouter();
     const idJugador = Number(params.id);
@@ -206,5 +207,16 @@ const JugadorDetallePage = () => {
     );
 };
 
-export default JugadorDetallePage;
+// Componente principal que envuelve en Suspense
+export default function JugadorDetallePage() {
+  return (
+    <Suspense fallback={
+      <div className="space-y-6">
+        <JugadorHeaderSkeleton />
+      </div>
+    }>
+      <JugadorDetallePageContent />
+    </Suspense>
+  );
+}
 

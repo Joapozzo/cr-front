@@ -2,9 +2,10 @@ import { useCategoriaStore } from '../stores/categoriaStore';
 import { useFases } from './useFases';
 import toast from 'react-hot-toast';
 
-export const useCategoriaFormato = () => {
+export const useCategoriaFormato = (idCategoriaEdicionFromParams?: number | null) => {
     const { categoriaSeleccionada } = useCategoriaStore();
-    const idCatEdicion = Number(categoriaSeleccionada?.id_categoria_edicion) || 0;
+    // Priorizar el param de la URL sobre el store
+    const idCatEdicion = idCategoriaEdicionFromParams || Number(categoriaSeleccionada?.id_categoria_edicion) || 0;
 
     const {
         fases,

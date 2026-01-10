@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useParams } from 'next/navigation';
 import BackButton from '@/app/components/ui/BackButton';
 import { PartidoTabs, TabPartido } from '@/app/components/partido/PartidoTabs';
@@ -21,7 +21,8 @@ import { usePartidoDetalleUsuario } from '@/app/hooks/usePartidos';
 import { useCronometroPartido } from '@/app/hooks/useCronometroPartido';
 import { useSyncPartidoToStore } from '@/app/hooks/useSyncPartidoToStore';
 
-export default function PartidoPageUsuario() {
+// Componente interno con la lógica
+function PartidoPageUsuarioContent() {
   const params = useParams();
   const idPartido = params?.id_partido ? parseInt(params.id_partido as string) : null;
   
@@ -163,6 +164,21 @@ export default function PartidoPageUsuario() {
         </>
       ) : null}
     </div>
+  );
+}
+
+// Componente principal que envuelve en Suspense
+export default function PartidoPageUsuario() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen p-3 sm:p-4 flex flex-col gap-4 sm:gap-6 max-w-4xl mx-auto w-full overflow-x-hidden">
+        <BackButton />
+        <CardPartidoHeaderFallback />
+        <JugadoresTabsUnifiedFallback />
+      </div>
+    }>
+      <PartidoPageUsuarioContent />
+    </Suspense>
   );
 }
 

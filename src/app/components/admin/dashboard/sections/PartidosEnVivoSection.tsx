@@ -16,8 +16,7 @@ interface PartidosEnVivoSectionProps {
 export const PartidosEnVivoSection: React.FC<PartidosEnVivoSectionProps> = ({ data, loading, error }) => {
     // Hook personalizado que actualiza el tiempo cada minuto para recalcular tiempo transcurrido
     // Al actualizar el estado, el componente se re-renderiza y todos los hijos también
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _currentTime = useCurrentTime(); // Solo usado para trigger re-render, el valor no se necesita directamente
+    useCurrentTime(); // Solo usado para trigger re-render, el valor no se necesita directamente
 
     if (loading) return <LoadingSkeleton type="card" count={2} className="h-40" />;
 

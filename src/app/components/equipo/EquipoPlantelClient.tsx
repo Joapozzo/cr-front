@@ -65,7 +65,10 @@ export default function EquipoPlantelClient() {
     const [jugadorSeleccionado, setJugadorSeleccionado] = useState<{ id: number; nombre: string } | null>(null);
     const [imageTimestamp, setImageTimestamp] = useState(Date.now());
 
-    const idCategoriaEdicion = Number(categoriaSeleccionada?.id_categoria_edicion);
+    // Priorizar el param de la URL sobre el store
+    const idCategoriaEdicion = params?.id_categoria 
+        ? Number(params.id_categoria) 
+        : (categoriaSeleccionada?.id_categoria_edicion ? Number(categoriaSeleccionada.id_categoria_edicion) : 0);
     const idEquipo = Number(params.id_equipo);
 
     // Hook para obtener datos

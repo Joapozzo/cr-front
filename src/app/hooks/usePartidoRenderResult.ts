@@ -25,7 +25,7 @@ export const usePartidoData = (partido: PartidoCompleto | null | undefined, inci
                 return { ...gol, asistencia } as GolConAsistencia;
             });
             
-    }, [incidencias, partido?.equipoLocal?.id_equipo, partido?.equipoVisita?.id_equipo]);
+    }, [incidencias, partido]);
 
     const golesVisita = useMemo(() => {
         if (!partido) return [];
@@ -45,7 +45,7 @@ export const usePartidoData = (partido: PartidoCompleto | null | undefined, inci
                 );
                 return { ...gol, asistencia } as GolConAsistencia;
             });
-    }, [incidencias, partido?.equipoLocal?.id_equipo, partido?.equipoVisita?.id_equipo]);
+    }, [incidencias, partido]);
 
     const tieneGoles = useMemo(() =>
         golesLocal.length > 0 || golesVisita.length > 0,
@@ -54,12 +54,12 @@ export const usePartidoData = (partido: PartidoCompleto | null | undefined, inci
 
     const esPartidoActivo = useMemo(() =>
         partido ? ['C1', 'E', 'C2'].includes(partido.estado) : false,
-        [partido?.estado]
+        [partido]
     );
 
     const mostrarGoleadores = useMemo(() =>
         partido ? partido.estado !== 'P' && partido.estado !== 'A' && tieneGoles : false,
-        [partido?.estado, tieneGoles]
+        [partido, tieneGoles]
     );
 
     return {

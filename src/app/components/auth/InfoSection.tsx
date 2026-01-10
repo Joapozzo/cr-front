@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { useTenant } from '@/app/contexts/TenantContext';
 
 interface InfoSectionProps {
@@ -13,9 +14,12 @@ export const InfoSection = ({
   infoDescription,
 }: InfoSectionProps) => {
   const tenant = useTenant();
+  const pathname = usePathname();
+  const isLoginPage = pathname === '/login';
+  
   return (
     <div
-      className="hidden lg:flex relative w-1/2 flex-col items-center justify-center bg-cover bg-center"
+      className={`hidden lg:flex relative ${isLoginPage ? 'w-[40%]' : 'w-1/2'} flex-col items-center justify-center bg-cover bg-center`}
       style={{ backgroundImage: `url('${tenant.imagenes.login}')` }}
     >
       {/* Overlay oscuro */}

@@ -11,6 +11,7 @@ interface EdicionConCategorias {
   categorias: Array<{
     id_categoria_edicion: number;
     nombre: string;
+    color?: string | null;
   }>;
 }
 
@@ -22,6 +23,7 @@ interface CategoriaSeleccionada {
   img_edicion: string | null;
   nombre_edicion: string;
   temporada_edicion: number;
+  color?: string | null;
 }
 
 interface EdicionCategoriaContextType {
@@ -61,7 +63,8 @@ export const EdicionCategoriaProvider = ({ children }: { children: ReactNode }) 
           id_edicion: edicion.id_edicion,
           img_edicion: edicion.img,
           nombre_edicion: edicion.nombre,
-          temporada_edicion: edicion.temporada
+          temporada_edicion: edicion.temporada,
+          color: categoria.color
         });
       });
     });
