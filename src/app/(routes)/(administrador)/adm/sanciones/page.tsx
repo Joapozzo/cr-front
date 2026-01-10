@@ -1,6 +1,9 @@
 ﻿import { fetchCategoriasActivas, fetchSancionesPorCategoria } from './lib/server-fetch';
 import SancionesClient from './SancionesClient';
 
+// Forzar renderizado dinámico porque usa cookies y no-store fetch
+export const dynamic = 'force-dynamic';
+
 export default async function SancionesPage() {
     // Fetch initial data on the server
     const categorias = await fetchCategoriasActivas();
