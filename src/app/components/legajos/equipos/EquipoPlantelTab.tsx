@@ -6,6 +6,7 @@ import { User, Calendar, Volleyball } from 'lucide-react';
 import { URI_IMG } from '@/app/components/ui/utils';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { useRouter } from 'next/navigation';
 
 interface EquipoPlantelTabProps {
     plantel: PlantelEquipo | undefined;
@@ -14,6 +15,8 @@ interface EquipoPlantelTabProps {
 }
 
 export const EquipoPlantelTab = ({ plantel, isLoading, categoriaSeleccionada }: EquipoPlantelTabProps) => {
+    const router = useRouter();
+
     if (!categoriaSeleccionada) {
         return (
             <p className="text-[var(--gray-100)] text-center py-8">Selecciona una categoría para ver el plantel</p>
@@ -41,6 +44,10 @@ export const EquipoPlantelTab = ({ plantel, isLoading, categoriaSeleccionada }: 
         );
     }
 
+    const handleJugadorClick = (idJugador: number) => {
+        router.push(`/adm/legajos/jugadores/${idJugador}`);
+    };
+
     const getEstadoColor = (estado: string, sancionado: boolean) => {
         if (sancionado) return 'border-[var(--color-secondary)]';
         if (estado === 'baja') return 'border-[var(--gray-200)]';
@@ -64,7 +71,11 @@ export const EquipoPlantelTab = ({ plantel, isLoading, categoriaSeleccionada }: 
                     <h3 className="text-lg font-semibold text-[var(--white)] mb-3">Capitanes</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {plantel.capitanes.map((capitan) => (
-                            <div key={capitan.id_jugador} className="bg-[var(--gray-300)] rounded-lg p-4">
+                            <div
+                                key={capitan.id_jugador}
+                                onClick={() => handleJugadorClick(capitan.id_jugador)}
+                                className="bg-[var(--gray-300)] rounded-lg p-4 cursor-pointer hover:bg-[var(--gray-400)] transition-colors"
+                            >
                                 <p className="text-[var(--white)] font-semibold">
                                     {capitan.nombre} {capitan.apellido}
                                 </p>
@@ -85,8 +96,9 @@ export const EquipoPlantelTab = ({ plantel, isLoading, categoriaSeleccionada }: 
                         return (
                             <div
                                 key={jugador.jugador.id_jugador}
+                                onClick={() => handleJugadorClick(jugador.jugador.id_jugador)}
                                 className={`
-                                    bg-[var(--gray-300)] rounded-lg p-4 border-2 transition-all hover:shadow-lg
+                                    bg-[var(--gray-300)] rounded-lg p-4 border-2 transition-all hover:shadow-lg cursor-pointer
                                     ${getEstadoColor(jugador.estado, jugador.sancionado)}
                                 `}
                             >

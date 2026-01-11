@@ -26,6 +26,7 @@ export const useTablaPosiciones = (
         gcTime: 5 * 60 * 1000, // 5 minutos
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -45,6 +46,7 @@ export const useTablasTodasLasZonas = (
         gcTime: 5 * 60 * 1000, // 5 minutos
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -85,6 +87,7 @@ export const useTablas = <T extends TablasType>(
         gcTime: 5 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     } as any);
 };

@@ -20,6 +20,10 @@ export function Providers({ children, tenantConfig }: ProvidersProps) {
                     queries: {
                         staleTime: 5 * 60 * 1000,
                         gcTime: 10 * 60 * 1000,
+                        refetchOnWindowFocus: false,
+                        refetchOnMount: false, // Usar cache si los datos están frescos
+                        refetchOnReconnect: true, // Refetchear si reconecta internet
+                        retry: 2,
                     },
                 },
             })

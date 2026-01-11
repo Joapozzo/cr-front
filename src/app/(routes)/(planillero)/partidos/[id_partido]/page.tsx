@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import BackButton from '@/app/components/ui/BackButton';
 import { PartidoTabs, TabPartido } from '@/app/components/partido/PartidoTabs';
@@ -24,16 +24,25 @@ import { useSyncPartidoToStore } from '@/app/hooks/useSyncPartidoToStore';
 // Componente interno con la lógica
 function PartidoPageUsuarioContent() {
   const params = useParams();
-  const idPartido = params?.id_partido ? parseInt(params.id_partido as string) : null;
-  
   const [tabActiva, setTabActiva] = useState<TabPartido>('previa');
+  
+  // Memoizar y validar el ID de partido
+  const idPartido = useMemo(() => {
+    if (params?.id_partido) {
+      const parsed = parseInt(params.id_partido as string);
+      return !isNaN(parsed) && parsed > 0 ? parsed : null;
+    }
+    return null;
+  }, [params?.id_partido]);
 
-  // Hook para obtener detalle del partido
+  // Hook para obtener detalle del partido - TODOS los hooks deben llamarse antes de cualquier early return
   const { 
     data: datosPartido, 
     isLoading: isLoadingData, 
     error 
-  } = usePartidoDetalleUsuario(idPartido);
+  } = usePartidoDetalleUsuario(idPartido, {
+    enabled: idPartido !== null
+  });
   
   // Solo considerar loading si no hay datos (isLoading solo en carga inicial)
   // Si hay datos pero está fetching, no bloquear renderizado
@@ -45,7 +54,7 @@ function PartidoPageUsuarioContent() {
   // Sync the partido to the store
   useSyncPartidoToStore({ partido: datosPartido?.partido });
 
-
+  // Early return si no hay ID válido DESPUÉS de todos los hooks
   if (!idPartido) {
     return (
       <div className="min-h-screen p-4 flex flex-col gap-6 max-w-4xl mx-auto">

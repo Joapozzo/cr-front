@@ -1,5 +1,5 @@
 'use client';
-import { useState, useCallback, Suspense } from 'react';
+import { useState, useCallback, Suspense, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import ModalCrearPartido from '@/app/components/modals/ModalCrearPartido';
 import ModalActualizarPartido from '@/app/components/modals/ModalActualizarPartido';
@@ -21,18 +21,34 @@ import { DreamTeamSection } from '../../../../../../../components/admin/DreamTea
 function FixtureDreamTeamPageContent() {
     const params = useParams();
     const { categoriaSeleccionada } = useCategoriaStore();
-    // Priorizar el param de la URL sobre el store
-    const idCategoriaEdicion = params?.id_categoria 
-        ? Number(params.id_categoria) 
-        : (categoriaSeleccionada?.id_categoria_edicion ? Number(categoriaSeleccionada.id_categoria_edicion) : 0);
+    
+    // Memoizar y validar el ID de categoría - Priorizar el param de la URL sobre el store
+    const idCategoriaEdicion = useMemo(() => {
+        if (params?.id_categoria) {
+            const id = Number(params.id_categoria);
+            if (!isNaN(id) && id > 0) {
+                return id;
+            }
+        }
+        if (categoriaSeleccionada?.id_categoria_edicion) {
+            const id = Number(categoriaSeleccionada.id_categoria_edicion);
+            if (!isNaN(id) && id > 0) {
+                return id;
+            }
+        }
+        return null;
+    }, [params?.id_categoria, categoriaSeleccionada?.id_categoria_edicion]);
+    
     const [vistaActual, setVistaActual] = useState<'fixture' | 'dreamteam'>('fixture');
     const [isRefetch, setIsRefetch] = useState(false);
     const [isModalGenerarFixtureOpen, setIsModalGenerarFixtureOpen] = useState(false);
 
-    // Query inicial para obtener totalJornadas (usando jornada 1)
+    // Query inicial para obtener totalJornadas (usando jornada 1) - TODOS los hooks deben llamarse antes de cualquier early return
     const {
         data: partidosInicial,
-    } = usePartidosPorJornadaYCategoria(1, idCategoriaEdicion);
+    } = usePartidosPorJornadaYCategoria(1, idCategoriaEdicion ?? 0, {
+        enabled: idCategoriaEdicion !== null
+    });
 
     // Hook de navegación de jornadas
     const totalJornadas = partidosInicial?.totalJornadas || 1;
@@ -52,7 +68,9 @@ function FixtureDreamTeamPageContent() {
         isLoading,
         isError,
         refetch,
-    } = usePartidosPorJornadaYCategoria(jornadaActual, idCategoriaEdicion);
+    } = usePartidosPorJornadaYCategoria(jornadaActual, idCategoriaEdicion ?? 0, {
+        enabled: idCategoriaEdicion !== null
+    });
 
     // Hook de modales
     const {
@@ -90,6 +108,20 @@ function FixtureDreamTeamPageContent() {
             closeDeleteModal();
         },
     });
+
+    // Early return si no hay ID válido DESPUÉS de todos los hooks
+    if (!idCategoriaEdicion) {
+        return (
+            <div className="space-y-6">
+                <div className="bg-[var(--gray-400)] rounded-lg border border-[var(--gray-300)] p-6">
+                    <div className="animate-pulse space-y-4">
+                        <div className="h-8 bg-[var(--gray-300)] rounded w-1/3" />
+                        <div className="h-4 bg-[var(--gray-300)] rounded w-1/2" />
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     // Handlers
     const handlePartidoCreado = () => {

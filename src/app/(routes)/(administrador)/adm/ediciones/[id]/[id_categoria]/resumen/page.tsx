@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useMemo } from "react";
 import { useCategoriaStore } from "@/app/stores/categoriaStore";
 import { useCategoriaResumenData } from "@/app/hooks/useCategoriaResumenData";
 import { useCategoriaPublicacion } from "@/app/hooks/useCategoriaPublicacion";
@@ -20,23 +20,36 @@ function CategoriaResumenPageContent() {
     const params = useParams();
     const { categoriaSeleccionada, setCategoriaSeleccionada } = useCategoriaStore();
     
-    // Priorizar el param de la URL sobre el store
-    const idCategoriaEdicion = params?.id_categoria 
-        ? Number(params.id_categoria) 
-        : (categoriaSeleccionada?.id_categoria_edicion ? Number(categoriaSeleccionada.id_categoria_edicion) : 0);
+    // Memoizar y validar el ID de categoría - Priorizar el param de la URL sobre el store
+    const idCategoriaEdicion = useMemo(() => {
+        if (params?.id_categoria) {
+            const id = Number(params.id_categoria);
+            if (!isNaN(id) && id > 0) {
+                return id;
+            }
+        }
+        if (categoriaSeleccionada?.id_categoria_edicion) {
+            const id = Number(categoriaSeleccionada.id_categoria_edicion);
+            if (!isNaN(id) && id > 0) {
+                return id;
+            }
+        }
+        return null;
+    }, [params?.id_categoria, categoriaSeleccionada?.id_categoria_edicion]);
 
-    // Validar que el ID sea válido antes de hacer las llamadas
-    const isValidId = idCategoriaEdicion > 0;
+    // Validar que el ID sea válido - usar 0 como valor seguro si es null para los hooks
+    const isValidId = idCategoriaEdicion !== null && idCategoriaEdicion > 0;
+    const idCategoriaForHooks = idCategoriaEdicion || 0;
 
     // Cargar la categoría completa desde la API para sincronizar el store
     const { data: categoriaCompleta } = useCategoriaEdicionPorId(
-        idCategoriaEdicion,
+        idCategoriaForHooks,
         { enabled: isValidId }
     );
 
     // Sincronizar el store cuando se carga la categoría desde la URL
     useEffect(() => {
-        if (categoriaCompleta?.configuracion && idCategoriaEdicion > 0) {
+        if (categoriaCompleta?.configuracion && idCategoriaEdicion && idCategoriaEdicion > 0) {
             // Solo actualizar si el ID coincide o si no hay categoría seleccionada en el store
             const shouldUpdate = !categoriaSeleccionada || 
                 categoriaSeleccionada.id_categoria_edicion !== idCategoriaEdicion ||
@@ -65,13 +78,13 @@ function CategoriaResumenPageContent() {
     }, [categoriaCompleta, idCategoriaEdicion, categoriaSeleccionada, setCategoriaSeleccionada]);
 
     const { estadisticas, proximosPartidos, ultimosPartidos, isLoading } = 
-        useCategoriaResumenData(idCategoriaEdicion);
+        useCategoriaResumenData(idCategoriaForHooks);
     
     const { isPublicada, togglePublicada, isUpdating } = 
-        useCategoriaPublicacion(idCategoriaEdicion);
-    
-    // Mostrar skeleton si el ID no es válido todavía (esperando a que los params estén disponibles)
-    if (!isValidId) {
+        useCategoriaPublicacion(idCategoriaForHooks);
+
+    // Early return si no hay ID válido DESPUÉS de todos los hooks
+    if (!idCategoriaEdicion) {
         return (
             <div className="space-y-6">
                 <CategoriaResumenHeader
@@ -84,6 +97,7 @@ function CategoriaResumenPageContent() {
             </div>
         );
     }
+    
 
     // Renderizar skeleton mientras carga o si no hay datos listos
     if (isLoading || !estadisticas) {

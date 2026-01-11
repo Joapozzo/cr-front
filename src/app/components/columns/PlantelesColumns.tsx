@@ -108,7 +108,7 @@ const getPlantelColumns = (actions?: PlantelActions) => {
                             fallbackIcon={<User className="w-4 h-4 text-[var(--gray-100)]" />}
                         />
                     </div>
-                    <span className="text-[var(--white)] font-medium">
+                    <span className="text-[var(--white)] font-medium underline decoration-1 underline-offset-2 hover:decoration-2 transition-all">
                         {String(value)}
                     </span>
                 </div>

@@ -20,6 +20,7 @@ export const useEdicionesConCategorias = (
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -34,6 +35,7 @@ export const useEdicionesActuales = (
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -48,6 +50,7 @@ export const useTodasLasEdiciones = (
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -112,6 +115,7 @@ export const useEdiciones = <T extends EdicionesType>(
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     } as any);
 };

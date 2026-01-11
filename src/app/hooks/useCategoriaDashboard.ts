@@ -11,6 +11,8 @@ export const useStatsCategoria = (
         queryFn: () => categoriasService.obtenerStatsCategoria(id_categoria_edicion),
         staleTime: 5 * 60 * 1000, // 5 minutos
         gcTime: 10 * 60 * 1000, // 10 minutos
+        refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         enabled: !!id_categoria_edicion,
         ...options,
     });
@@ -27,6 +29,8 @@ export const usePosicionesZonaCategoria = (
         queryFn: () => categoriasService.obtenerPosicionesZonaCategoria(id_zona, id_categoria_edicion),
         staleTime: 3 * 60 * 1000, // 3 minutos
         gcTime: 10 * 60 * 1000,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         enabled: !!id_zona && !!id_categoria_edicion,
         ...options,
     });
@@ -48,6 +52,8 @@ export const useGoleadoresCategoria = (
         ),
         staleTime: 5 * 60 * 1000, // 5 minutos
         gcTime: 10 * 60 * 1000,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         enabled: !!id_categoria_edicion,
         ...options,
     });
@@ -69,6 +75,8 @@ export const useExpulsadosCategoria = (
         ),
         staleTime: 5 * 60 * 1000, // 5 minutos
         gcTime: 10 * 60 * 1000,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         enabled: !!id_categoria_edicion,
         ...options,
     });
@@ -83,6 +91,8 @@ export const useZonasPlayoffCategoria = (
         queryFn: () => categoriasService.obtenerZonasPlayoffCategoria(id_categoria_edicion),
         staleTime: 5 * 60 * 1000, // 5 minutos
         gcTime: 10 * 60 * 1000,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         enabled: !!id_categoria_edicion,
         ...options,
     });
@@ -94,6 +104,8 @@ export const useEstadisticasCategoriaEdicion = (id_categoria_edicion: number) =>
         queryFn: () => categoriasService.obtenerEstadisticasCategoriaEdicion(id_categoria_edicion),
         staleTime: 5 * 60 * 1000, // 5 minutos
         gcTime: 10 * 60 * 1000,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         enabled: !!id_categoria_edicion,
     });
 };
@@ -104,6 +116,8 @@ export const useProximosPartidos = (id_categoria_edicion: number) => {
         queryFn: () => categoriasService.obtenerProximosPartidos(id_categoria_edicion),
         staleTime: 5 * 60 * 1000, // 5 minutos
         gcTime: 10 * 60 * 1000,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         enabled: !!id_categoria_edicion,
     });
 };
@@ -114,6 +128,8 @@ export const useUltimosPartidosJugados = (id_categoria_edicion: number) => {
         queryFn: () => categoriasService.obtenerUltimosPartidosJugados(id_categoria_edicion),
         staleTime: 5 * 60 * 1000, // 5 minutos
         gcTime: 10 * 60 * 1000,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         enabled: !!id_categoria_edicion,
     });
 };

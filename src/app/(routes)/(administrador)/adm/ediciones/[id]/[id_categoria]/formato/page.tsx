@@ -1,7 +1,7 @@
 'use client';
 
 import { Plus, Loader2 } from 'lucide-react';
-import { Suspense } from 'react';
+import { Suspense, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { Button } from '@/app/components/ui/Button';
 import FaseSection from '@/app/components/fase/FaseSection';
@@ -15,8 +15,15 @@ import { CategoriaFormatoSkeleton } from '@/app/components/skeletons/CategoriaFo
 // Componente interno con la lógica
 function CategoriaFormatoPageContent() {
     const params = useParams();
-    // Leer el id_categoria_edicion directamente de la URL (prioridad sobre el store)
-    const idCategoriaEdicionFromParams = params?.id_categoria ? Number(params.id_categoria) : null;
+    
+    // Memoizar y validar el ID de categoría - Leer directamente de la URL (prioridad sobre el store)
+    const idCategoriaEdicionFromParams = useMemo(() => {
+        if (params?.id_categoria) {
+            const id = Number(params.id_categoria);
+            return !isNaN(id) && id > 0 ? id : null;
+        }
+        return null;
+    }, [params?.id_categoria]);
     
     const {
         categoriaSeleccionada,
@@ -30,7 +37,12 @@ function CategoriaFormatoPageContent() {
         error,
         handleCrearFase,
         handleRefetch,
-    } = useCategoriaFormato(idCategoriaEdicionFromParams);
+    } = useCategoriaFormato(idCategoriaEdicionFromParams ?? 0);
+
+    // Early return si no hay ID válido DESPUÉS de todos los hooks
+    if (!idCategoriaEdicionFromParams) {
+        return <CategoriaFormatoSkeleton />;
+    }
 
     if (isLoading) {
         return <CategoriaFormatoSkeleton />;

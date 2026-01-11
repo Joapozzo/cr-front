@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { useCategoriaDatos } from './hooks/useCategoriaDatos';
 import { useCategoriaForm } from './hooks/useCategoriaForm';
@@ -15,7 +15,15 @@ import FormActions from './components/FormActions';
  */
 function ConfiguracionCategoriaContent() {
     const params = useParams();
-    const idCategoriaFromParams = params?.id_categoria as string | undefined;
+    
+    // Memoizar y validar el ID de categoría
+    const idCategoriaFromParams = useMemo(() => {
+        if (params?.id_categoria) {
+            const id = Number(params.id_categoria);
+            return !isNaN(id) && id > 0 ? params.id_categoria as string : null;
+        }
+        return null;
+    }, [params?.id_categoria]);
 
     // Hook personalizado para datos - decide fuente de verdad y sincroniza store
     const { 
@@ -25,7 +33,7 @@ function ConfiguracionCategoriaContent() {
         error,
         nombreCompleto,
         isPublicada 
-    } = useCategoriaDatos(idCategoriaFromParams);
+    } = useCategoriaDatos(idCategoriaFromParams || undefined);
 
     // Hook personalizado para el formulario - maneja estado y detección de cambios
     const { 
@@ -44,6 +52,11 @@ function ConfiguracionCategoriaContent() {
     } = useCategoriaActions(
         categoria?.id_categoria_edicion || 0
     );
+
+    // Early return si no hay ID válido DESPUÉS de todos los hooks
+    if (!idCategoriaFromParams) {
+        return <ConfiguracionSkeleton />;
+    }
 
     // Handler para submit del formulario
     const handleSubmit = async () => {

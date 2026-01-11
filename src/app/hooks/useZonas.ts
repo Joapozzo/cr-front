@@ -20,6 +20,7 @@ export const useZonasPorFase = (
         gcTime: 10 * 60 * 1000, // 10 minutos
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         enabled: !!id_categoria_edicion && !!numero_fase, // Solo ejecutar si hay valores válidos
         ...options,
     });
@@ -36,6 +37,7 @@ export const useDatosParaCrearZona = (
         gcTime: 15 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -117,6 +119,7 @@ export const useObtenerTodasLasZonas = (
         gcTime: 10 * 60 * 1000, // 10 minutos
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         enabled: !!id_categoria_edicion, // Solo ejecutar si hay valor válido
         ...options,
     });
@@ -193,6 +196,7 @@ export const useFormatosPosicion = (
         gcTime: 10 * 60 * 1000, // 10 minutos
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         enabled: !!id_zona, // Solo ejecutar si hay valor válido
         ...options,
     });

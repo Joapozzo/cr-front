@@ -47,6 +47,7 @@ export const usePredios = (
         gcTime: 10 * 60 * 1000, // 10 minutos
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -66,6 +67,7 @@ export const usePredioPorId = (
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -144,6 +146,7 @@ export const useCanchas = (
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -167,6 +170,7 @@ export const useCanchasPorPredio = (
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -186,6 +190,7 @@ export const useCanchaPorId = (
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };

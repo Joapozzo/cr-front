@@ -189,6 +189,7 @@ export const useUltimos5PartidosEquipo = (
         gcTime: 5 * 60 * 1000, // 5 minutos
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -208,6 +209,7 @@ export const useUltimoPartidoEquipo = (
         gcTime: 5 * 60 * 1000, // 5 minutos
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -227,6 +229,7 @@ export const useProximoPartidoEquipo = (
         gcTime: 10 * 60 * 1000, // 10 minutos
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };

@@ -41,6 +41,8 @@ export const useObtenerSolicitudesJugador = (
         staleTime: 1 * 60 * 1000,
         gcTime: 5 * 60 * 1000,
         retry: 2,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };

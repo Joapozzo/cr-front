@@ -16,6 +16,9 @@ export const useFasesPorCategoria = (id_categoria_edicion: number) => {
         queryFn: () => fasesService.obtenerFases(id_categoria_edicion),
         enabled: !!id_categoria_edicion && id_categoria_edicion > 0,
         staleTime: 5 * 60 * 1000, // 5 minutos
+        gcTime: 10 * 60 * 1000, // 10 minutos
+        refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         retry: (failureCount, error: any) => {
             // No reintentar si es error 404 (categoría no encontrada)
             if (error?.response?.status === 404) {

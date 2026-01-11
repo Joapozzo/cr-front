@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, useMemo } from 'react';
 import { PageHeader } from '@/app/components/ui/PageHeader';
 import { useCajaPorId } from '@/app/hooks/useCaja';
 import { Button } from '@/app/components/ui/Button';
@@ -22,10 +22,25 @@ type CajaDiariaConMovimientos = CajaDiaria & {
 function CajaDetallePageContent() {
     const params = useParams();
     const router = useRouter();
-    const id_caja = parseInt(params.id as string);
     const [cerrarCajaModalAbierto, setCerrarCajaModalAbierto] = useState(false);
 
-    const { data: cajaData, isLoading, error, refetch } = useCajaPorId(id_caja);
+    // Memoizar y validar el ID de caja
+    const id_caja = useMemo(() => {
+        if (params?.id) {
+            const parsed = parseInt(params.id as string);
+            return !isNaN(parsed) && parsed > 0 ? parsed : null;
+        }
+        return null;
+    }, [params?.id]);
+
+    const { data: cajaData, isLoading, error, refetch } = useCajaPorId(id_caja ?? 0, {
+        enabled: id_caja !== null
+    });
+
+    // Early return si no hay ID válido DESPUÉS de todos los hooks
+    if (!id_caja) {
+        return <CajaDetalleSkeleton />;
+    }
     const caja = cajaData as CajaDiariaConMovimientos | undefined;
 
     if (isLoading) {

@@ -63,6 +63,7 @@ export const usePartidosPlanilleroPaginados = (
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos (listado de partidos)
         enabled: !!usuario?.uid,
         ...options,
     });

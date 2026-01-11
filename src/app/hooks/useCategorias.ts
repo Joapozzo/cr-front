@@ -21,6 +21,7 @@ export const useCategoriasPorEdicion = (
         gcTime: 10 * 60 * 1000, // 10 minutos
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         enabled: !!id_edicion, // Solo ejecutar si hay un id_edicion válido
         ...options,
     });
@@ -36,6 +37,7 @@ export const useCategoriasPorEdicionActivas = (
         gcTime: 10 * 60 * 1000, // 10 minutos
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -52,6 +54,7 @@ export const useCategoriaEdicionPorId = (
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         enabled: !!id_categoria_edicion, // Solo ejecutar si hay un id válido
         ...options,
     });
@@ -88,6 +91,7 @@ export const useCategorias = <T extends CategoriasQueryType>(
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         enabled: !!id,
         ...options,
     } as any);
@@ -103,6 +107,7 @@ export const useDatosParaCrearCategoria = (
         gcTime: 15 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };

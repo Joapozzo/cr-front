@@ -25,6 +25,7 @@ export const useEquiposActuales = (
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -39,6 +40,7 @@ export const useTodosLosEquipos = (
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -55,6 +57,7 @@ export const useEquipoPorId = (
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -71,6 +74,7 @@ export const useEquiposPorCategoriaEdicion = (
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -104,6 +108,7 @@ export const useEquipos = <T extends EquiposType>(
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     } as any);
 };
@@ -158,6 +163,7 @@ export const useBuscarEquiposDisponibles = (
         gcTime: 5 * 60 * 1000, // 5 minutos
         retry: 1, // Solo 1 retry para búsquedas
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -176,6 +182,7 @@ export const useBuscarEquiposEdicionDisponibles = (
         gcTime: 5 * 60 * 1000, // 5 minutos
         retry: 1, // Solo 1 retry para búsquedas
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -300,6 +307,7 @@ export const useBuscarJugadores = (
         gcTime: 5 * 60 * 1000,
         retry: 1,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -382,6 +390,7 @@ export const useEquiposInactivosPorCategoriaEdicion = (
         gcTime: 10 * 60 * 1000,
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };

@@ -29,6 +29,7 @@ export const useUsuariosAdmin = (
         gcTime: 10 * 60 * 1000, // 10 minutos
         retry: 2,
         refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
         ...options,
     });
 };
@@ -40,6 +41,8 @@ export const useRolesAdministrativos = () => {
         queryFn: () => usuariosService.obtenerRolesAdministrativos(),
         staleTime: 10 * 60 * 1000, // 10 minutos
         gcTime: 30 * 60 * 1000, // 30 minutos
+        refetchOnWindowFocus: false,
+        refetchOnMount: false, // Usar cache si los datos están frescos
     });
 };
 

@@ -37,29 +37,49 @@ function EquipoPageContent() {
   const params = useParams();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const idEquipo = params?.id ? parseInt(params.id as string) : null;
-  const { equipos, esCapitanDeEquipo } = usePlayerStore();
   
-  const { data: equipo, isLoading: loadingEquipo } = useEquipoPorId(idEquipo || 0, {
-    enabled: !!idEquipo
-  });
+  // Memoizar y validar el ID de equipo
+  const idEquipo = useMemo(() => {
+    if (params?.id) {
+      const parsed = parseInt(params.id as string);
+      return !isNaN(parsed) && parsed > 0 ? parsed : null;
+    }
+    return null;
+  }, [params?.id]);
+  
+  const { equipos, esCapitanDeEquipo } = usePlayerStore();
 
   // Obtener el tab desde search params (sin stats para equipos/[id])
   const tabActivo = useMemo(() => {
+    if (!searchParams) return 'resumen' as TabEquipo;
     const tabParam = searchParams.get('tab');
     if (tabParam && ['resumen', 'plantel', 'partidos', 'participaciones'].includes(tabParam)) {
       return tabParam as TabEquipo;
     }
     return 'resumen' as TabEquipo;
   }, [searchParams]);
+  
+  const { data: equipo, isLoading: loadingEquipo } = useEquipoPorId(idEquipo ?? 0, {
+    enabled: idEquipo !== null
+  });
 
   // Verificar si el usuario pertenece a este equipo
   const perteneceAlEquipo = useMemo(() => {
-    if (!idEquipo) return false;
     return equipos.some(eq => eq.id_equipo === idEquipo);
   }, [equipos, idEquipo]);
+  
+  // Early return si no hay ID válido DESPUÉS de todos los hooks
+  if (!idEquipo) {
+    return (
+      <UserPageWrapper>
+        <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-12 text-center">
+          <p className="text-[#737373] text-sm">Equipo no encontrado</p>
+        </div>
+      </UserPageWrapper>
+    );
+  }
 
-  const esCapitan = idEquipo ? esCapitanDeEquipo(idEquipo) : false;
+  const esCapitan = esCapitanDeEquipo(idEquipo);
 
   // Handler para ver todos los stats - redirige a estadisticas
   const handleVerTodosStats = (tipo: string) => {
@@ -75,17 +95,6 @@ function EquipoPageContent() {
 
   // Obtener id_categoria_edicion del equipo (necesitamos esto para los componentes)
   const idCategoriaEdicion = equipo?.categorias?.[0]?.id_categoria_edicion || undefined;
-
-  // Early returns DESPUÉS de todos los hooks
-  if (!idEquipo) {
-    return (
-      <UserPageWrapper>
-        <div className="bg-[var(--black-900)] border border-[#262626] rounded-xl p-12 text-center">
-          <p className="text-[#737373] text-sm">Equipo no encontrado</p>
-        </div>
-      </UserPageWrapper>
-    );
-  }
 
   if (!equipo && !loadingEquipo) {
     return (

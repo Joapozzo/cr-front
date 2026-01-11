@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect, useState, Suspense } from 'react';
+import { use, useEffect, useState, Suspense, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useNoticiaPorSlug } from '@/app/hooks/useNoticias';
 import { UserPageWrapper } from '@/app/components/layouts/UserPageWrapper';
@@ -16,9 +16,20 @@ interface NoticiaPageProps {
 
 // Componente interno con la lógica
 function NoticiaPageContent({ params }: NoticiaPageProps) {
-    const { slug } = use(params);
     const router = useRouter();
-    const { data: noticia, isLoading, error } = useNoticiaPorSlug(slug);
+    const resolvedParams = use(params);
+    
+    // Validar que el slug exista y sea válido
+    const slug = useMemo(() => {
+        if (resolvedParams?.slug && typeof resolvedParams.slug === 'string' && resolvedParams.slug.trim() !== '') {
+            return resolvedParams.slug;
+        }
+        return null;
+    }, [resolvedParams?.slug]);
+    
+    const { data: noticia, isLoading, error } = useNoticiaPorSlug(slug || '', {
+        enabled: slug !== null
+    });
 
     // Convertir contenido JSON de Tiptap a HTML sanitizado
     const [contenidoHtml, setContenidoHtml] = useState<string>('');

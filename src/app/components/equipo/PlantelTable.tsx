@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { Plus } from 'lucide-react';
 import { Button } from '@/app/components/ui/Button';
 import { DataTable } from '@/app/components/ui/DataTable';
@@ -27,6 +28,8 @@ export default function PlantelTable({
     onDarBaja,
     onExpulsar
 }: PlantelTableProps) {
+    const router = useRouter();
+
     const handleDarBaja = useCallback(
         (id_jugador: number, nombre: string) => {
             onDarBaja(id_jugador, nombre);
@@ -39,6 +42,13 @@ export default function PlantelTable({
             onExpulsar(id_jugador, nombre);
         },
         [onExpulsar]
+    );
+
+    const handleRowClick = useCallback(
+        (row: JugadorPlantel) => {
+            router.push(`/adm/legajos/jugadores/${row.id_jugador}`);
+        },
+        [router]
     );
 
     const columns = useMemo(
@@ -79,6 +89,7 @@ export default function PlantelTable({
                 data={plantel}
                 columns={columns}
                 emptyMessage="No se encontraron jugadores en el plantel."
+                onRowClick={handleRowClick}
             />
         </div>
     );

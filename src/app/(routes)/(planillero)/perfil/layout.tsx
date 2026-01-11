@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, User, BarChart3, MessageSquare, Settings } from 'lucide-react';
+import { ArrowLeft, User, BarChart3, MessageSquare, Settings, CreditCard } from 'lucide-react';
 import { useAuthStore } from '@/app/stores/authStore';
 import { AvatarPerfil } from '@/app/components/perfil/AvatarPerfil';
 
@@ -21,6 +21,12 @@ export default function PerfilLayout({
             label: 'Mis datos',
             icon: User,
             href: '/perfil',
+        },
+        {
+            id: 'credenciales',
+            label: 'Credenciales',
+            icon: CreditCard,
+            href: '/perfil/credenciales',
         },
         // {
         //     id: 'estadisticas',
@@ -43,7 +49,11 @@ export default function PerfilLayout({
     ];
 
     const isActiveTab = (href: string) => {
-        return pathname === href;
+        // Manejar rutas exactas y rutas que empiezan con el href
+        if (href === '/perfil') {
+            return pathname === '/perfil';
+        }
+        return pathname === href || pathname?.startsWith(href + '/');
     };
 
     return (
