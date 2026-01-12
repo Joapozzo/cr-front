@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, Suspense } from 'react';
+import { useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { TablaJugadoresEstadisticas } from '@/app/components/estadisticas/TablaJugadoresEstadisticas';
 import {
@@ -12,7 +12,6 @@ import {
 } from '@/app/hooks/useEstadisticas';
 import { useEdicionCategoria } from '@/app/contexts/EdicionCategoriaContext';
 import { TipoEstadistica } from '@/app/types/estadisticas';
-import { BaseCardTableSkeleton } from '@/app/components/skeletons/BaseCardTableSkeleton';
 
 interface JugadoresEstadisticasContentProps {
   tipo: TipoEstadistica;
@@ -92,10 +91,6 @@ function JugadoresEstadisticasContentInner({ tipo }: JugadoresEstadisticasConten
 }
 
 export default function JugadoresEstadisticasContent({ tipo }: JugadoresEstadisticasContentProps) {
-  return (
-    <Suspense fallback={<BaseCardTableSkeleton columns={3} rows={4} hasAvatar={true} />}>
-      <JugadoresEstadisticasContentInner tipo={tipo} />
-    </Suspense>
-  );
+  return <JugadoresEstadisticasContentInner tipo={tipo} />;
 }
 

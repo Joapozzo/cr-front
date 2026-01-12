@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, Suspense } from 'react';
+import { useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { TablaPosiciones } from '@/app/components/posiciones/TablaPosiciones';
 import {
@@ -146,10 +146,6 @@ function PosicionesContentInner() {
 }
 
 export default function PosicionesContent() {
-  return (
-    <Suspense fallback={<BaseCardTableSkeleton columns={5} rows={6} hasAvatar={false} />}>
-      <PosicionesContentInner />
-    </Suspense>
-  );
+  return <PosicionesContentInner />;
 }
 
