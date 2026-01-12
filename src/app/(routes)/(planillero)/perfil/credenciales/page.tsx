@@ -88,13 +88,13 @@ export default function CredencialesPage() {
                         Credenciales digitales activas para validación
                     </p>
                 </div>
-                <button
+                {/* <button
                     onClick={() => setShowGlobalInfo(true)}
                     className="p-2 rounded-full bg-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-700 transition-colors"
                     aria-label="Información importante"
                 >
                     <Info size={20} />
-                </button>
+                </button> */}
             </div>
 
             {/* Lista de credenciales */}

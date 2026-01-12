@@ -12,6 +12,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { cn } from './utils';
 import { useTenant } from '@/app/contexts/TenantContext';
 import { CardInfoPopover } from './CardInfoPopover';
+import { credencialesService } from '@/app/services/credenciales.client';
 
 const geistSans = Geist({
     subsets: ['latin'],
@@ -40,6 +41,7 @@ export const TarjetaCredencial: React.FC<TarjetaCredencialProps> = ({
 }) => {
     const [isFlipped, setIsFlipped] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
+    const [dni, setDni] = useState<string>(credencial.jugador.dni || '');
     const infoButtonRef = React.useRef<HTMLButtonElement>(null);
     const tenant = useTenant();
 
@@ -49,6 +51,24 @@ export const TarjetaCredencial: React.FC<TarjetaCredencialProps> = ({
             return () => clearTimeout(timer);
         }
     }, [autoFlip]);
+
+    // Obtener DNI del backend si no viene
+    useEffect(() => {
+        const obtenerDniDelBackend = async () => {
+            // Solo obtener si no tenemos DNI inicialmente
+            if (!credencial.jugador.dni && credencial.id) {
+                try {
+                    const credencialCompleta = await credencialesService.obtenerCredencial(credencial.id);
+                    if (credencialCompleta.jugador.dni) {
+                        setDni(credencialCompleta.jugador.dni);
+                    }
+                } catch (error) {
+                    console.error('Error al obtener DNI del backend:', error);
+                }
+            }
+        };
+        obtenerDniDelBackend();
+    }, [credencial.id, credencial.jugador.dni]);
 
     // Handle flip logic
     // Handle flip logic
@@ -95,15 +115,22 @@ export const TarjetaCredencial: React.FC<TarjetaCredencialProps> = ({
                     transition={{ type: "spring", stiffness: 200, damping: 25, mass: 0.8 }}
                 >
                     {/* --- FRONTAL --- */}
-                    <div
+                    <motion.div
                         className="absolute inset-0 w-full h-full backface-hidden rounded-[1.2rem] overflow-hidden bg-neutral-900 border border-white/5"
                         style={{ 
                             backfaceVisibility: 'hidden', 
                             WebkitBackfaceVisibility: 'hidden',
                             transform: 'rotateY(0deg)',
+                        }}
+                        animate={{
                             opacity: isFlipped ? 0 : 1,
-                            visibility: isFlipped ? 'hidden' : 'visible',
-                            pointerEvents: isFlipped ? 'none' : 'auto'
+                        }}
+                        transition={{
+                            opacity: { 
+                                duration: 0.2, 
+                                delay: isFlipped ? 0 : 0.1,
+                                ease: "easeInOut"
+                            }
                         }}
                     >
                         {/* Fondo Minimalista Premium (Igual en ambos lados) */}
@@ -217,18 +244,25 @@ export const TarjetaCredencial: React.FC<TarjetaCredencialProps> = ({
                             </div>
 
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* --- DORSO (Updated) --- */}
-                    <div
+                    <motion.div
                         className="absolute inset-0 w-full h-full backface-hidden rounded-[1.2rem] overflow-hidden bg-neutral-900 border border-white/5"
                         style={{
                             transform: 'rotateY(180deg)',
                             backfaceVisibility: 'hidden',
                             WebkitBackfaceVisibility: 'hidden',
+                        }}
+                        animate={{
                             opacity: isFlipped ? 1 : 0,
-                            visibility: isFlipped ? 'visible' : 'hidden',
-                            pointerEvents: isFlipped ? 'auto' : 'none'
+                        }}
+                        transition={{
+                            opacity: { 
+                                duration: 0.2, 
+                                delay: isFlipped ? 0.1 : 0,
+                                ease: "easeInOut"
+                            }
                         }}
                     >
                         {/* Fondo Minimalista Premium (IDÉNTICO AL FRENTE) */}
@@ -247,7 +281,17 @@ export const TarjetaCredencial: React.FC<TarjetaCredencialProps> = ({
                                 fgColor="#FFFFFF"
                             />
 
-                            {/* 2. ID Credencial Simple */}
+                            {/* 2. DNI */}
+                            {dni && (
+                                <div className="flex flex-col items-center gap-1">
+                                    <p className="text-[9px] text-neutral-500 uppercase font-bold tracking-wider leading-none">DNI</p>
+                                    <p className={`text-sm text-white font-medium tracking-wider ${geistMono.className}`}>
+                                        {dni}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* 3. ID Credencial Simple */}
                             <div
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -261,7 +305,7 @@ export const TarjetaCredencial: React.FC<TarjetaCredencialProps> = ({
                                 <Copy size={14} className="text-neutral-400 group-hover/id:text-white" />
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
                 </motion.div>
             </div>
 
