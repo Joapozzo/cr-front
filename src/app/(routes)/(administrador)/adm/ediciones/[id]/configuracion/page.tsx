@@ -1,6 +1,9 @@
 import { edicionesService } from '@/app/services/ediciones.services';
 import { EdicionConfigClient } from '@/app/components/admin/EdicionConfigClient';
 
+// Forzar renderizado dinámico para rutas dinámicas
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
     params: Promise<{
         id: string;

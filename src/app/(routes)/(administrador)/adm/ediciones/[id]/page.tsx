@@ -1,6 +1,9 @@
 import { categoriasService } from '@/app/services/categorias.services';
 import { CategoriasClient } from '../../../../../components/admin/CategoriasClient';
 
+// Forzar renderizado dinámico para rutas dinámicas
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
     params: Promise<{
         id: string;

@@ -1,5 +1,8 @@
 import { redirect } from 'next/navigation';
 
+// Forzar renderizado dinámico para rutas dinámicas
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
     params: Promise<{ id: string }>;
 }

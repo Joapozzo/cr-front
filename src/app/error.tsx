@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import Link from 'next/link';
-import { Home, RefreshCw, AlertCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, RefreshCw, AlertCircle } from 'lucide-react';
 import { Button } from './components/ui/Button';
 
 interface ErrorProps {
@@ -11,6 +11,8 @@ interface ErrorProps {
 }
 
 export default function Error({ error, reset }: ErrorProps) {
+  const router = useRouter();
+
   useEffect(() => {
     // Log error to console in development
     if (process.env.NODE_ENV === 'development') {
@@ -52,12 +54,15 @@ export default function Error({ error, reset }: ErrorProps) {
             <RefreshCw className="w-4 h-4 mr-2" />
             Intentar de nuevo
           </Button>
-          <Link href="/" className="w-full sm:w-auto flex-1">
-            <Button variant="default" size="lg" className="w-full sm:w-auto flex-1">
-              <Home className="w-4 h-4 mr-2" />
-              Volver al inicio
-            </Button>
-          </Link>
+          <Button 
+            variant="default" 
+            size="lg" 
+            className="w-full sm:w-auto flex-1"
+            onClick={() => router.back()}
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Volver atrás
+          </Button>
         </div>
       </div>
     </div>

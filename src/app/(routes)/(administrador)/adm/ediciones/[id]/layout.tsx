@@ -12,28 +12,25 @@ interface LayoutProps {
     }>;
 }
 
+// Forzar renderizado dinámico porque usa cookies y no-store fetch
+export const dynamic = 'force-dynamic';
+
 export default async function EdicionLayout({ children, params }: LayoutProps) {
     const resolvedParams = await params;
     const edicionId = parseInt(resolvedParams.id);
     const idCategoria = resolvedParams.id_categoria ? parseInt(resolvedParams.id_categoria) : undefined;
 
-    // La edición es obligatoria para el layout (dato estructural)
-    // Si no existe, debemos mostrar 404 en lugar de renderizar con datos faltantes
-    let edicion;
+    // La edición es opcional para el layout - si falla SSR, el cliente la obtendrá
+    // NO lanzar error - permitir degradación elegante
+    let edicion = null;
     try {
         const ediciones = await edicionesService.obtenerTodasLasEdiciones();
-        edicion = ediciones.find(e => e.id_edicion === edicionId);
-        
-        // Si la edición no existe, usar notFound() para mostrar página 404
-        if (!edicion) {
-            notFound();
-        }
+        edicion = ediciones.find(e => e.id_edicion === edicionId) || null;
     } catch (error) {
-        // Solo capturamos errores de red/fetch inesperados
-        // Errores críticos deben propagarse para que Next.js los maneje correctamente
-        console.error('Error al obtener edición en servidor:', error);
-        // Re-lanzar el error para que Next.js lo maneje con error boundaries
-        throw error;
+        // NO lanzar el error - en producción esto causa el error genérico
+        // En su lugar, permitir que el cliente maneje el fetching
+        console.warn('SSR falló para edición, el cliente hará el fetch:', error);
+        // Continuar con edicion = null
     }
 
     // La categoría es opcional (solo si existe id_categoria en params)
