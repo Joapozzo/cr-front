@@ -152,6 +152,41 @@ const getPlantelColumns = (actions?: PlantelActions) => {
             ),
         },
         {
+            key: "fichaMedica",
+            label: "FICHA MÉDICA",
+            render: (_value: unknown, row: any, _index: number) => {
+                const fichaMedica = row.fichaMedica;
+                if (!fichaMedica) {
+                    return (
+                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-[var(--color-danger)] text-white">
+                            Sin ficha
+                        </span>
+                    );
+                }
+                
+                const getEstadoColor = () => {
+                    if (fichaMedica.valida) return 'bg-[var(--color-primary)] text-white';
+                    if (fichaMedica.estado === 'V') return 'bg-[var(--color-warning)] text-white';
+                    if (fichaMedica.estado === 'R') return 'bg-[var(--color-danger)] text-white';
+                    return 'bg-[var(--gray-300)] text-[var(--gray-100)]';
+                };
+
+                const getEstadoTexto = () => {
+                    if (fichaMedica.valida) return 'Válida';
+                    if (fichaMedica.estado === 'V') return 'Vencida';
+                    if (fichaMedica.estado === 'R') return 'Rechazada';
+                    if (fichaMedica.estado === 'I') return 'Inactiva';
+                    return 'Sin ficha';
+                };
+
+                return (
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getEstadoColor()}`}>
+                        {getEstadoTexto()}
+                    </span>
+                );
+            },
+        },
+        {
             key: "Capitan",
             label: "Rol",
             render: (_value: unknown, row: any, _index: number) => (

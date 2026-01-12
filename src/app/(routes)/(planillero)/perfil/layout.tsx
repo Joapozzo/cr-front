@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, User, BarChart3, MessageSquare, Settings, CreditCard } from 'lucide-react';
+import { ArrowLeft, User, BarChart3, MessageSquare, Settings, CreditCard, FileCheck } from 'lucide-react';
 import { useAuthStore } from '@/app/stores/authStore';
 import { AvatarPerfil } from '@/app/components/perfil/AvatarPerfil';
 
@@ -39,6 +39,12 @@ export default function PerfilLayout({
             label: 'Solicitudes',
             icon: MessageSquare,
             href: '/perfil/solicitudes',
+        },
+        {
+            id: 'ficha-medica',
+            label: 'Ficha médica',
+            icon: FileCheck,
+            href: '/perfil/ficha-medica',
         },
         // {
         //     id: 'configuracion',

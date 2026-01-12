@@ -206,6 +206,9 @@ export default function EquiposClient() {
                 equiposInactivos={stats.equiposInactivos}
                 totalJugadores={stats.totalJugadores}
                 totalSolicitudes={stats.totalSolicitudes}
+                // TODO: Calcular estadísticas de fichas médicas cuando el backend las devuelva
+                // jugadoresConFichaValida={stats.jugadoresConFichaValida}
+                // jugadoresSinFicha={stats.jugadoresSinFicha}
             />
 
             <EquiposAlerts

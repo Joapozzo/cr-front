@@ -96,9 +96,9 @@ export const useAdmin = (autoFetch: boolean = false): UseAdminReturn => {
         setLoadingCategorias(true);
         setErrorCategorias(null);
         try {
-            console.log('[useAdmin] Fetching categorías activas...');
+            // console.log('[useAdmin] Fetching categorías activas...');
             const data = await adminService.getCategoriasActivas();
-            console.log('[useAdmin] Categorías recibidas:', data?.length || 0);
+            // console.log('[useAdmin] Categorías recibidas:', data?.length || 0);
             setCategoriasActivas(data);
         } catch (error: any) {
             console.error('[useAdmin] Error al obtener categorías:', error);

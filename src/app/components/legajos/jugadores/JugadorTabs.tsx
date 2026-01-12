@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FileText, Users, Calendar, BarChart3, Shield, Mail, CreditCard } from 'lucide-react';
+import { FileText, Users, Calendar, BarChart3, Shield, Mail, CreditCard, FileCheck } from 'lucide-react';
 
-type TabType = 'info' | 'equipos' | 'partidos' | 'estadisticas' | 'disciplina' | 'solicitudes' | 'credenciales';
+type TabType = 'info' | 'equipos' | 'partidos' | 'estadisticas' | 'disciplina' | 'solicitudes' | 'credenciales' | 'ficha-medica';
 
 interface JugadorTabsProps {
     idJugador: number;
@@ -18,6 +18,7 @@ const tabs: Array<{ id: TabType; label: string; icon: React.ReactNode; path: str
     { id: 'disciplina', label: 'Disciplina', icon: <Shield className="w-4 h-4" />, path: 'disciplina' },
     { id: 'solicitudes', label: 'Solicitudes', icon: <Mail className="w-4 h-4" />, path: 'solicitudes' },
     { id: 'credenciales', label: 'Credenciales', icon: <CreditCard className="w-4 h-4" />, path: 'credenciales' },
+    { id: 'ficha-medica', label: 'Ficha médica', icon: <FileCheck className="w-4 h-4" />, path: 'ficha-medica' },
 ];
 
 export const JugadorTabs = ({ idJugador }: JugadorTabsProps) => {

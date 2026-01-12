@@ -42,6 +42,7 @@ export const TarjetaCredencial: React.FC<TarjetaCredencialProps> = ({
     const [isFlipped, setIsFlipped] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
     const [dni, setDni] = useState<string>(credencial.jugador.dni || '');
+    const [copied, setCopied] = useState(false);
     const infoButtonRef = React.useRef<HTMLButtonElement>(null);
     const tenant = useTenant();
 
@@ -105,32 +106,21 @@ export const TarjetaCredencial: React.FC<TarjetaCredencialProps> = ({
                 style={{ perspective: '1200px' }}
             >
                 <motion.div
-                    className="relative w-full h-full duration-500 preserve-3d shadow-xl rounded-[1.2rem]"
+                    className="relative w-full h-full preserve-3d shadow-xl rounded-[1.2rem]"
                     style={{ 
                         transformStyle: 'preserve-3d',
-                        willChange: 'transform'
                     }}
                     animate={isFlipped ? 'back' : 'front'}
                     variants={variants}
-                    transition={{ type: "spring", stiffness: 200, damping: 25, mass: 0.8 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30, mass: 0.5 }}
                 >
                     {/* --- FRONTAL --- */}
-                    <motion.div
+                    <div
                         className="absolute inset-0 w-full h-full backface-hidden rounded-[1.2rem] overflow-hidden bg-neutral-900 border border-white/5"
                         style={{ 
                             backfaceVisibility: 'hidden', 
                             WebkitBackfaceVisibility: 'hidden',
                             transform: 'rotateY(0deg)',
-                        }}
-                        animate={{
-                            opacity: isFlipped ? 0 : 1,
-                        }}
-                        transition={{
-                            opacity: { 
-                                duration: 0.2, 
-                                delay: isFlipped ? 0 : 0.1,
-                                ease: "easeInOut"
-                            }
                         }}
                     >
                         {/* Fondo Minimalista Premium (Igual en ambos lados) */}
@@ -244,25 +234,15 @@ export const TarjetaCredencial: React.FC<TarjetaCredencialProps> = ({
                             </div>
 
                         </div>
-                    </motion.div>
+                    </div>
 
                     {/* --- DORSO (Updated) --- */}
-                    <motion.div
+                    <div
                         className="absolute inset-0 w-full h-full backface-hidden rounded-[1.2rem] overflow-hidden bg-neutral-900 border border-white/5"
                         style={{
                             transform: 'rotateY(180deg)',
                             backfaceVisibility: 'hidden',
                             WebkitBackfaceVisibility: 'hidden',
-                        }}
-                        animate={{
-                            opacity: isFlipped ? 1 : 0,
-                        }}
-                        transition={{
-                            opacity: { 
-                                duration: 0.2, 
-                                delay: isFlipped ? 0.1 : 0,
-                                ease: "easeInOut"
-                            }
                         }}
                     >
                         {/* Fondo Minimalista Premium (IDÉNTICO AL FRENTE) */}
@@ -270,9 +250,9 @@ export const TarjetaCredencial: React.FC<TarjetaCredencialProps> = ({
                         <div className="absolute inset-0 opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
                         <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
 
-                        <div className="relative z-10 w-full h-full flex flex-col items-center justify-center gap-6 p-6">
+                        <div className="relative z-10 w-full h-full flex flex-col items-center justify-center gap-3 p-6">
 
-                            {/* 1. QR Code Centralizado y Grande */}
+                            {/* QR Code centrado */}
                             <QRCredencial
                                 value={credencial.qrData}
                                 size={180}
@@ -281,31 +261,35 @@ export const TarjetaCredencial: React.FC<TarjetaCredencialProps> = ({
                                 fgColor="#FFFFFF"
                             />
 
-                            {/* 2. DNI */}
-                            {dni && (
-                                <div className="flex flex-col items-center gap-1">
-                                    <p className="text-[9px] text-neutral-500 uppercase font-bold tracking-wider leading-none">DNI</p>
-                                    <p className={`text-sm text-white font-medium tracking-wider ${geistMono.className}`}>
-                                        {dni}
-                                    </p>
-                                </div>
-                            )}
-
-                            {/* 3. ID Credencial Simple */}
+                            {/* ID Credencial abajo - Para copiar */}
                             <div
-                                onClick={(e) => {
+                                onClick={async (e) => {
                                     e.stopPropagation();
-                                    navigator.clipboard.writeText(credencial.id);
+                                    try {
+                                        await navigator.clipboard.writeText(credencial.id);
+                                        setCopied(true);
+                                        setTimeout(() => setCopied(false), 2000);
+                                    } catch (error) {
+                                        console.error('Error al copiar:', error);
+                                    }
                                 }}
-                                className="group/id flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all opacity-80 hover:opacity-100"
+                                className="group/id flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all"
                             >
-                                <span className={`text-base text-white font-medium tracking-wider ${geistMono.className}`}>
-                                    {credencial.id}
-                                </span>
-                                <Copy size={14} className="text-neutral-400 group-hover/id:text-white" />
+                                {copied ? (
+                                    <span className="text-base text-green-400 font-medium tracking-wider">
+                                        ¡Copiado!
+                                    </span>
+                                ) : (
+                                    <>
+                                        <span className={`text-base text-white font-medium tracking-wider ${geistMono.className}`}>
+                                            {credencial.id}
+                                        </span>
+                                        <Copy size={14} className="text-white/60 group-hover/id:text-white transition-colors" />
+                                    </>
+                                )}
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </motion.div>
             </div>
 

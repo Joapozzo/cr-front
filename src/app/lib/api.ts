@@ -50,7 +50,7 @@ const createRequestKey = (endpoint: string): string => {
  * - Servidor: usa cookies de Next.js
  * - Cliente: usa Firebase auth
  */
-async function getAuthToken(): Promise<string | null> {
+export async function getAuthToken(): Promise<string | null> {
   // Detectar si estamos en servidor
   const isServer = typeof window === 'undefined';
   
