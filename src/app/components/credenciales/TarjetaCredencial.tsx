@@ -86,7 +86,10 @@ export const TarjetaCredencial: React.FC<TarjetaCredencialProps> = ({
             >
                 <motion.div
                     className="relative w-full h-full duration-500 preserve-3d shadow-xl rounded-[1.2rem]"
-                    style={{ transformStyle: 'preserve-3d' }}
+                    style={{ 
+                        transformStyle: 'preserve-3d',
+                        willChange: 'transform'
+                    }}
                     animate={isFlipped ? 'back' : 'front'}
                     variants={variants}
                     transition={{ type: "spring", stiffness: 200, damping: 25, mass: 0.8 }}
@@ -94,7 +97,14 @@ export const TarjetaCredencial: React.FC<TarjetaCredencialProps> = ({
                     {/* --- FRONTAL --- */}
                     <div
                         className="absolute inset-0 w-full h-full backface-hidden rounded-[1.2rem] overflow-hidden bg-neutral-900 border border-white/5"
-                        style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
+                        style={{ 
+                            backfaceVisibility: 'hidden', 
+                            WebkitBackfaceVisibility: 'hidden',
+                            transform: 'rotateY(0deg)',
+                            opacity: isFlipped ? 0 : 1,
+                            visibility: isFlipped ? 'hidden' : 'visible',
+                            pointerEvents: isFlipped ? 'none' : 'auto'
+                        }}
                     >
                         {/* Fondo Minimalista Premium (Igual en ambos lados) */}
                         <div className="absolute inset-0 bg-gradient-to-br from-neutral-800/80 to-neutral-950"></div>
@@ -215,7 +225,10 @@ export const TarjetaCredencial: React.FC<TarjetaCredencialProps> = ({
                         style={{
                             transform: 'rotateY(180deg)',
                             backfaceVisibility: 'hidden',
-                            WebkitBackfaceVisibility: 'hidden'
+                            WebkitBackfaceVisibility: 'hidden',
+                            opacity: isFlipped ? 1 : 0,
+                            visibility: isFlipped ? 'visible' : 'hidden',
+                            pointerEvents: isFlipped ? 'auto' : 'none'
                         }}
                     >
                         {/* Fondo Minimalista Premium (IDÉNTICO AL FRENTE) */}
