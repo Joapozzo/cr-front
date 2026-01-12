@@ -1,5 +1,6 @@
-import fs from 'fs';
-import path from 'path';
+// Importar JSONs directamente en lugar de usar fs (funciona en Vercel)
+import coparelampagoConfig from '../../config/tenants/coparelampago.json';
+import ucfaConfig from '../../config/tenants/ucfa.json';
 
 export interface TenantConfig {
     id: string;
@@ -56,6 +57,12 @@ export interface TenantConfig {
     };
 }
 
+// Mapa de configuraciones por tenant ID
+const tenantConfigs: Record<string, TenantConfig> = {
+    'coparelampago': coparelampagoConfig as TenantConfig,
+    'ucfa': ucfaConfig as TenantConfig,
+};
+
 let tenantConfig: TenantConfig | null = null;
 
 export const loadTenantConfig = (): TenantConfig => {
@@ -66,26 +73,27 @@ export const loadTenantConfig = (): TenantConfig => {
     // Lee de variable de entorno (NEXT_PUBLIC_ para acceso en cliente)
     const tenantId = process.env.NEXT_PUBLIC_TENANT_ID || process.env.TENANT_ID || 'coparelampago';
 
-    // Usar process.cwd() en lugar de __dirname para Next.js/Turbopack
-    // process.cwd() apunta al directorio raíz del proyecto (client/)
-    const configPath = path.join(
-        process.cwd(),
-        'config',
-        'tenants',
-        `${tenantId}.json`
-    );
+    // Buscar configuración en el mapa
+    const config = tenantConfigs[tenantId];
 
-    try {
-        const configFile = fs.readFileSync(configPath, 'utf-8');
-        tenantConfig = JSON.parse(configFile);
-
-        console.log(`✅ Configuración cargada para: ${tenantConfig?.nombre_empresa}`);
-
-        return tenantConfig as TenantConfig;
-    } catch (error) {
-        console.error(`❌ Error al cargar configuración para tenant: ${tenantId}`);
-        throw error;
+    if (!config) {
+        console.error(`❌ Configuración no encontrada para tenant: ${tenantId}`);
+        console.log(`✅ Tenants disponibles: ${Object.keys(tenantConfigs).join(', ')}`);
+        
+        // Fallback a coparelampago si no se encuentra
+        if (tenantConfigs['coparelampago']) {
+            console.warn(`⚠️ Usando configuración por defecto: coparelampago`);
+            tenantConfig = tenantConfigs['coparelampago'] as TenantConfig;
+            return tenantConfig;
+        }
+        
+        throw new Error(`Tenant configuration not found: ${tenantId}`);
     }
+
+    tenantConfig = config;
+    console.log(`✅ Configuración cargada para: ${tenantConfig.nombre_empresa}`);
+
+    return tenantConfig;
 };
 
 // Singleton para acceso rápido

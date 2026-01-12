@@ -76,6 +76,11 @@ const nextConfig = {
       });
     }
 
+    config.resolve.extensionAlias = {
+      '.js': ['.ts', '.tsx', '.js', '.jsx'],
+      '.json': ['.json'],
+    };
+
     return config;
   },
 };
