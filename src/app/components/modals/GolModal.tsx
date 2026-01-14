@@ -59,7 +59,7 @@ const GolModal: React.FC<GolModalProps> = ({
 
     useEffect(() => {
         if (isOpen) {
-            setTipoGol(null);
+            setTipoGol('normal');
             setTieneAsistencia(false);
             setJugadorAsistencia(null);
         }

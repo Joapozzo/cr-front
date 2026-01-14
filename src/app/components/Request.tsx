@@ -13,7 +13,7 @@ import { SolicitudEnviada } from "../types/solicitudes";
 import toast from "react-hot-toast";
 import { useDebounce } from "../hooks/useDebounce";
 import SolicitudesSkeleton from "./skeletons/CardSolicitudesSkeleton";
-import UserAvatar from "./ui/UserAvatar";
+import { EscudoEquipo } from "./common/EscudoEquipo";
 
 interface SolicitudesProps {
     id_edicion: number | null;
@@ -58,10 +58,10 @@ const SolicitudItemComponent = memo(({
         <div className="p-3 bg-[var(--background)] rounded-lg border border-[var(--gray-300)]">
             <div className="flex items-start gap-3">
                 {/* Imagen del jugador que envía la solicitud */}
-                <UserAvatar
-                    img={solicitud.img_jugador}
+                <EscudoEquipo
+                    src={solicitud.img_jugador}
                     alt={solicitud.nombre_jugador || 'Jugador'}
-                    size="sm"
+                    size={28}
                 />
 
                 <div className="flex-1">
@@ -261,18 +261,9 @@ const Solicitudes: React.FC<SolicitudesProps> = ({
                 toast.success(mensajeExito);
             },
             onError: (error: unknown) => {
-                // Extraer el mensaje de error de diferentes formas posibles
-                const errorMessage =
-                    (error instanceof Error && error.message) ||
-                    (typeof error === 'object' && error !== null && 'response' in error &&
-                        typeof (error as { response?: { data?: { error?: string } } }).response?.data?.error === 'string'
-                        ? (error as { response: { data: { error: string } } }).response.data.error : null) ||
-                    (typeof error === 'object' && error !== null && 'error' in error &&
-                        typeof (error as { error?: string }).error === 'string'
-                        ? (error as { error: string }).error : null) ||
-                    'Error al enviar la solicitud';
-                toast.error(errorMessage);
                 console.error('Error al enviar solicitud:', error);
+                const errorMessage = (error instanceof Error ? error.message : String(error)) || 'Error al enviar la solicitud';
+                toast.error(errorMessage);
             }
         });
     };
@@ -355,10 +346,10 @@ const Solicitudes: React.FC<SolicitudesProps> = ({
                                                     className="flex items-center justify-between p-3 bg-[var(--background)] rounded-lg border border-[var(--gray-300)]"
                                                 >
                                                     <div className="flex items-center gap-3">
-                                                        <UserAvatar
-                                                            img={equipo.img}
+                                                        <EscudoEquipo
+                                                            src={equipo.img}
                                                             alt={equipo.nombre}
-                                                            size="md"
+                                                            size={36}
                                                         />
                                                         <div>
                                                             <p className="text-[var(--white)] font-medium">

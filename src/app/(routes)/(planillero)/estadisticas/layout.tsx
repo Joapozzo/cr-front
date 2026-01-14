@@ -63,6 +63,14 @@ function EstadisticasLayoutContent({ children }: EstadisticasLayoutProps) {
     }
   }, [categoriaIdFromQuery, categoriasDisponibles, categoriaSeleccionada?.id, setCategoriaSeleccionada]);
 
+  // Asegurar que siempre haya una categoría seleccionada cuando hay categorías disponibles
+  useEffect(() => {
+    if (!loadingCategorias && categoriasDisponibles.length > 0 && !categoriaSeleccionada && !categoriaIdFromQuery) {
+      // Seleccionar la primera categoría disponible
+      setCategoriaSeleccionada(categoriasDisponibles[0]);
+    }
+  }, [loadingCategorias, categoriasDisponibles, categoriaSeleccionada, categoriaIdFromQuery, setCategoriaSeleccionada]);
+
   return (
     <UserPageWrapper>
       <EdicionLayout

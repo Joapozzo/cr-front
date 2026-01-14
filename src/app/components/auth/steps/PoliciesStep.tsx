@@ -4,17 +4,18 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/app/components/ui/Button';
 import { Loader2 } from 'lucide-react';
+import { HiArrowLeft } from 'react-icons/hi';
 import { EMAIL_SUPPORT } from '@/app/constants/constants';
 import { useRegistrationContext } from '@/app/contexts/RegistrationContext';
 import { useAuthStore } from '@/app/stores/authStore';
-import { StepBackButton } from '../StepBackButton';
+import { limpiarDatosRegistro } from '@/app/utils/registrationCleanup';
 
 /**
  * Step de políticas - Renderizado inline (no modal)
  * Optimizado para renderizado rápido sin delays artificiales
  */
 export const PoliciesStep = () => {
-  const { goToNextStep, updateUserData } = useRegistrationContext();
+  const { goToNextStep, updateUserData, reset, setStep, setUsuario } = useRegistrationContext();
   const usuario = useAuthStore((state) => state.usuario);
   const [aceptaTerminos, setAceptaTerminos] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,6 +47,20 @@ export const PoliciesStep = () => {
     }
   }, [aceptaTerminos, updateUserData, goToNextStep]);
 
+  const handleGoBack = useCallback(() => {
+    // Usar la función utilitaria para limpiar todos los datos
+    limpiarDatosRegistro();
+    
+    // Limpiar el usuario del contexto (para evitar que useRegistrationFlow recalcule)
+    setUsuario(null);
+    
+    // Resetear el contexto de registro
+    reset();
+    
+    // Volver al step REGISTER
+    setStep('REGISTER');
+  }, [reset, setStep, setUsuario]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -55,7 +70,13 @@ export const PoliciesStep = () => {
       className="w-full"
     >
       <div className="mb-4">
-        <StepBackButton />
+        <button
+          onClick={handleGoBack}
+          className="flex items-center gap-2 text-[var(--gray-200)] hover:text-[var(--color-primary)] transition-colors cursor-pointer w-fit"
+        >
+          <HiArrowLeft />
+          <span className="text-xs">Volver</span>
+        </button>
       </div>
       <div className="flex flex-col gap-6 w-full">
         {/* Título */}

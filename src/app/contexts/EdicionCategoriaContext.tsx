@@ -115,20 +115,39 @@ export const EdicionCategoriaProvider = ({ children }: { children: ReactNode }) 
     }
   }, [isLoading, edicionesConCategorias, categoriasDisponibles, edicionSeleccionadaId, categoriaSeleccionada]);
 
-  // Cuando se selecciona una edición, limpiar la categoría si no pertenece a esa edición
-  const handleSetEdicionSeleccionada = (idEdicion: number | null) => {
-    setEdicionSeleccionadaId(idEdicion);
-    // Si la categoría seleccionada no pertenece a la nueva edición, limpiarla
-    if (categoriaSeleccionada && categoriaSeleccionada.id_edicion !== idEdicion) {
-      setCategoriaSeleccionada(null);
+  // Asegurar que siempre haya una categoría seleccionada cuando hay categorías disponibles
+  useEffect(() => {
+    if (!isLoading && categoriasDisponibles.length > 0 && !categoriaSeleccionada) {
+      // Si hay una edición seleccionada, buscar categorías de esa edición
+      if (edicionSeleccionada) {
+        const categoriasDeEdicion = categoriasDisponibles.filter(cat => cat.id_edicion === edicionSeleccionada.id_edicion);
+        if (categoriasDeEdicion.length > 0) {
+          setCategoriaSeleccionada(categoriasDeEdicion[0]);
+          return;
+        }
+      }
+      // Si no hay edición seleccionada o no hay categorías de esa edición, seleccionar la primera disponible
+      setCategoriaSeleccionada(categoriasDisponibles[0]);
     }
-    // Si hay categorías de la nueva edición, seleccionar la primera automáticamente
-    if (idEdicion) {
-      const categoriasDeNuevaEdicion = categoriasDisponibles.filter(cat => cat.id_edicion === idEdicion);
-      if (categoriasDeNuevaEdicion.length > 0 && !categoriaSeleccionada) {
-        setCategoriaSeleccionada(categoriasDeNuevaEdicion[0]);
+  }, [isLoading, categoriasDisponibles, categoriaSeleccionada, edicionSeleccionada]);
+
+  // Cuando cambia la edición seleccionada, asegurar que haya una categoría seleccionada de esa edición
+  useEffect(() => {
+    if (!isLoading && edicionSeleccionada && categoriasDisponibles.length > 0) {
+      // Si no hay categoría seleccionada o la categoría seleccionada no pertenece a la edición actual
+      if (!categoriaSeleccionada || categoriaSeleccionada.id_edicion !== edicionSeleccionada.id_edicion) {
+        const categoriasDeEdicion = categoriasDisponibles.filter(cat => cat.id_edicion === edicionSeleccionada.id_edicion);
+        if (categoriasDeEdicion.length > 0) {
+          setCategoriaSeleccionada(categoriasDeEdicion[0]);
+        }
       }
     }
+  }, [isLoading, edicionSeleccionada, categoriasDisponibles, categoriaSeleccionada]);
+
+  // Cuando se selecciona una edición, actualizar el estado
+  const handleSetEdicionSeleccionada = (idEdicion: number | null) => {
+    setEdicionSeleccionadaId(idEdicion);
+    // El useEffect anterior se encargará de seleccionar la categoría correcta
   };
 
   const value: EdicionCategoriaContextType = {

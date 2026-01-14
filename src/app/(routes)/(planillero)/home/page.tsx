@@ -3,6 +3,7 @@
 import { UserPageWrapper } from "@/app/components/layouts/UserPageWrapper";
 import { usePlayerStore } from "@/app/stores/playerStore";
 import { useWelcomeToast } from "@/app/hooks/useWelcomeToast";
+import { usePartidosGlobalLive } from "@/app/hooks/usePartidosGlobalLive";
 import {
   LazyUnirseEquipoCard,
   LazyPartidosEquipoCard,
@@ -16,6 +17,9 @@ export default function Home() {
   const { equipos } = usePlayerStore();
 
   useWelcomeToast();
+  
+  // WebSocket hook para actualizaciones en tiempo real de listas de partidos
+  usePartidosGlobalLive();
 
   return (
     <UserPageWrapper>

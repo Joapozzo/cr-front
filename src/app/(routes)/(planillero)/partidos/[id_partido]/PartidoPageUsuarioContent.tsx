@@ -20,6 +20,7 @@ import {
 import { usePartidoDetalleUsuario } from '@/app/hooks/usePartidos';
 import { useCronometroPartido } from '@/app/hooks/useCronometroPartido';
 import { useSyncPartidoToStore } from '@/app/hooks/useSyncPartidoToStore';
+import { usePartidoLive } from '@/app/hooks/usePartidoLive';
 
 export default function PartidoPageUsuarioContent() {
   const params = useParams();
@@ -52,6 +53,9 @@ export default function PartidoPageUsuarioContent() {
 
   // Sync the partido to the store
   useSyncPartidoToStore({ partido: datosPartido?.partido });
+
+  // WebSocket hook para actualizaciones en tiempo real
+  usePartidoLive(idPartido);
 
   // Early return si no hay ID válido DESPUÉS de todos los hooks
   if (!idPartido) {

@@ -271,3 +271,35 @@ export interface PartidoZona {
     info_vacante_local: InfoVacante;
     info_vacante_visita: InfoVacante;
 }
+
+// Tipos centralizados para cronómetro
+export type FasePartido = 'PT' | 'ET' | 'ST';
+
+/**
+ * Tipo completo de cronómetro usado en useCronometroPartido
+ * Incluye todos los campos necesarios para el cronómetro completo
+ */
+export interface CronometroData {
+    tiempoFormateado: string;
+    tiempoAdicional: number;
+    fase: FasePartido;
+    shouldShowAdicional: boolean;
+    minuto: number;
+}
+
+/**
+ * Tipo simple de cronómetro usado en useCronometroSimple
+ * Versión simplificada sin tiempo adicional
+ */
+export interface CronometroSimple {
+    tiempoFormateado: string;
+    fase: FasePartido;
+    enVivo: boolean;
+}
+
+/**
+ * Tipo para props de componentes que reciben cronómetro
+ * Similar a CronometroData pero sin el campo minuto
+ * Compatible con CronometroData (acepta objetos con más propiedades)
+ */
+export type CronometroProps = Omit<CronometroData, 'minuto'>;

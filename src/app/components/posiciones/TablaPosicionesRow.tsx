@@ -84,7 +84,7 @@ export const TablaPosicionesRow: React.FC<TablaPosicionesRowProps> = ({
               {enVivo && (
                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[var(--color-primary)] text-white animate-pulse flex-shrink-0">
                   <span className="w-1 h-1 bg-white rounded-full"></span>
-                  {variant === 'home' ? 'LIVE' : 'EN VIVO'}
+                  EN VIVO
                 </span>
               )}
             </div>

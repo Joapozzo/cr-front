@@ -22,8 +22,8 @@ const ExpulsionModal: React.FC<ExpulsionModalProps> = ({
     const [motivo, setMotivo] = useState<string>('');
 
     const motivosExpulsion = [
-        { value: '', label: 'Seleccionar motivo...' },
-        { value: 'Doble amarilla', label: 'Doble amarilla' },
+        // { value: '', label: 'Seleccionar motivo...' },
+        // { value: 'Doble amarilla', label: 'Doble amarilla' },
         { value: 'Roja directa', label: 'Roja directa' },
         { value: 'Conducta violenta', label: 'Conducta violenta' },
         { value: 'Agresión al árbitro', label: 'Agresión al árbitro' },

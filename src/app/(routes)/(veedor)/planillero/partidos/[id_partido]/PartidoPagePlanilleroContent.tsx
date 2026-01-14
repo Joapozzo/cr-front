@@ -18,6 +18,8 @@ import { useIncidenciasActions } from "@/app/hooks/useIncidenciasActions";
 import { useCronometroPartido } from "@/app/hooks/useCronometroPartido";
 import { usePartidoPlanilleroSync } from "@/app/hooks/usePartidoPlanilleroSync";
 import { usePartidoPlanilleroHandlers } from "@/app/hooks/usePartidoPlanilleroHandlers";
+import { usePartidoLive } from "@/app/hooks/usePartidoLive";
+import { usePrecargarSelfiesPartido } from "@/app/hooks/usePrecargarSelfiesPartido";
 
 // Store y tipos
 import usePartidoStore from "@/app/stores/partidoStore";
@@ -68,6 +70,12 @@ export default function PartidoPagePlanilleroContent() {
         estadoPartido,
         isLoadingMutation: partidoTimesActions.isLoading
     });
+
+    // WebSocket hook para actualizaciones en tiempo real
+    usePartidoLive(id_partido);
+
+    // ✅ Precargar selfies privadas cuando se cargan los datos del partido
+    usePrecargarSelfiesPartido(datosPartido, !isLoading && !!datosPartido);
 
     // Early return si no hay ID válido DESPUÉS de todos los hooks
     if (!id_partido) {

@@ -12,6 +12,7 @@ import { formatearFechaCompleta } from '@/app/utils/fechas';
 import { usePartidosUsuario } from '@/app/hooks/usePartidos';
 import { useEdicionCategoria } from '@/app/contexts/EdicionCategoriaContext';
 import { useTenant } from '@/app/contexts/TenantContext';
+import { usePartidosGlobalLive } from '@/app/hooks/usePartidosGlobalLive';
 
 type VistaType = 'fecha' | 'jornada';
 
@@ -30,6 +31,9 @@ export default function PartidosPage() {
     edicionActual, 
     isLoading: loadingCategorias 
   } = useEdicionCategoria();
+  
+  // WebSocket hook para actualizaciones en tiempo real de listas de partidos
+  usePartidosGlobalLive();
 
   // Hook para obtener partidos
   const { 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { PartidoCompleto, IncidenciaGol } from '@/app/types/partido';
+import { PartidoCompleto, IncidenciaGol, CronometroProps } from '@/app/types/partido';
 import PartidoHeaderSticky from '../CardPartidoHeader';
 import { CardPartidoHeaderSkeleton } from '../../skeletons/CardPartidoHeaderSkeleton';
 
@@ -9,12 +9,7 @@ interface PartidoHeaderSectionProps {
     isLoading: boolean;
     isLoadingButton: boolean;
     actionInProgress?: 'empezarPartido' | 'terminarPrimerTiempo' | 'empezarSegundoTiempo' | 'terminarPartido' | 'finalizarPartido' | 'suspenderPartido' | null;
-    cronometro?: {
-        fase: 'PT' | 'HT' | 'ST' | 'ET';
-        tiempoFormateado: string;
-        shouldShowAdicional: boolean;
-        tiempoAdicional: number;
-    };
+    cronometro?: CronometroProps;
     onEmpezarPartido?: () => void;
     onTerminarPrimerTiempo?: () => void;
     onEmpezarSegundoTiempo?: () => void;

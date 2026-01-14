@@ -61,6 +61,12 @@ export const useLoginController = () => {
         
         loginGoogle(undefined, {
             onSuccess: (data) => {
+                // Solo procesar si no es redirect (el redirect se maneja en useEffect de useLoginGoogle)
+                if ('isRedirect' in data && data.isRedirect) return;
+                
+                // Type guard: verificar que data tiene usuario
+                if (!('usuario' in data)) return;
+                
                 setLoginState('success');
                 
                 setTimeout(() => {

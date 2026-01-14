@@ -27,11 +27,11 @@ export const usePosicionesPorCategoriaEdicion = (
     return useQuery({
         queryKey: estadisticasKeys.posiciones(stableId),
         queryFn: () => estadisticasService.obtenerPosicionesPorCategoriaEdicion(id_categoria_edicion!),
-        staleTime: 5 * 60 * 1000, // 5 minutos (aumentado para mejor cache)
-        gcTime: 15 * 60 * 1000, // 15 minutos (aumentado para mantener cache más tiempo)
+        staleTime: 0, // Siempre considerar stale para datos en vivo
+        gcTime: 5 * 60 * 1000, // 5 minutos (mantener cache para no perder datos)
         retry: 2,
         refetchOnWindowFocus: false,
-        refetchOnMount: false, // Evitar refetch si los datos están fresh
+        refetchOnMount: true, // Forzar refetch al montar
         enabled: isEnabled,
         ...options,
     });

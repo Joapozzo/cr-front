@@ -7,7 +7,7 @@ import { EstadisticaTab } from '@/app/components/estadisticas/EstadisticasTabs';
 
 // Lazy load de componentes de estadísticas
 const PosicionesContent = dynamic(
-  () => import('./components/PosicionesContent'),
+  () => import('./PosicionesContent'),
   {
     loading: () => <div className="animate-pulse space-y-4"><div className="h-64 bg-[#262626] rounded" /></div>,
     ssr: false
@@ -15,7 +15,7 @@ const PosicionesContent = dynamic(
 );
 
 const JugadoresEstadisticasContent = dynamic(
-  () => import('./components/JugadoresEstadisticasContent'),
+  () => import('./JugadoresEstadisticasContent'),
   {
     loading: () => <div className="animate-pulse space-y-4"><div className="h-64 bg-[#262626] rounded" /></div>,
     ssr: false

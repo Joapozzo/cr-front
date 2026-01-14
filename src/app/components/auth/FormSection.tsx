@@ -34,7 +34,7 @@ export const FormSection = ({
   const isFullPageMobile = isRegistroPage || isLoginPage;
 
   return (
-    <div className={`w-full ${isLoginPage ? 'lg:w-[60%]' : 'lg:w-1/2'} flex flex-col h-screen lg:h-auto lg:min-h-0 lg:justify-center relative overflow-hidden bg-[var(--gray-500)]`}>
+    <div className="w-full lg:w-1/2 flex flex-col h-screen lg:h-auto lg:min-h-0 lg:justify-center relative overflow-hidden bg-[var(--gray-500)]">
       {/* Botón volver en la parte superior izquierda - Solo mobile, sobre la foto */}
       {showBackButton && !isFullPageMobile && (
         <button
@@ -76,7 +76,7 @@ export const FormSection = ({
           Modified logic: if isLoginPage or isRegistroPage, behave like full page (centered, no rounded top) 
       */}
       <div className={`
-          w-full ${isLoginPage ? 'lg:max-w-none lg:px-16' : isRegistroPage ? 'lg:max-w-lg lg:mx-auto' : 'lg:max-w-xl lg:mx-auto'} flex flex-col 
+          w-full flex flex-col 
           ${isFullPageMobile ? 'h-full flex-1' : 'flex-shrink-0 lg:flex-none'} 
           bg-[var(--gray-500)] lg:bg-[var(--gray-500)] z-10 relative 
           ${isRegistroPage || isLoginPage ? 'justify-center lg:justify-center' : 'justify-start'} 
@@ -87,7 +87,7 @@ export const FormSection = ({
       `}>
         {/* Contenedor centrado verticalmente - Login y Register idénticos */}
         {(isLoginPage || isRegistroPage) ? (
-          <div className="flex-1 flex flex-col justify-center lg:justify-center">
+          <div className={`flex-1 flex flex-col justify-center lg:justify-center ${isLoginPage ? 'lg:max-w-md' : 'lg:max-w-lg'} lg:mx-auto w-full`}>
             {/* Botón volver Mobile y Desktop para Login y Register */}
             {showBackButton && (
               <div className={`w-full lg:w-auto flex-shrink-0 ${isRegistroPage || isLoginPage ? 'mb-8 lg:mb-4' : 'mb-4'}`}>
@@ -120,7 +120,7 @@ export const FormSection = ({
             </div>
           </div>
         ) : (
-          <>
+          <div className="lg:max-w-xl lg:mx-auto w-full">
             {/* Botón volver Desktop para otras páginas (standard view) */}
             {showBackButton && !isFullPageMobile && (
               <button
@@ -149,7 +149,7 @@ export const FormSection = ({
             <div className="flex-shrink-0">
               {children}
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>

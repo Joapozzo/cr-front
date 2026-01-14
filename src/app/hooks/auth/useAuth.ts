@@ -105,26 +105,70 @@ export const useAuth = (options: UseAuthOptions | boolean = {}) => {
 
     // Si está autenticado y estamos en rutas públicas de auth → redirigir
     // PERO solo si la cuenta está activada (no durante proceso de registro)
-    if (redirectIfAuthenticated && isAuthenticated && usuario && usuario.cuenta_activada) {
-      const authRoutes = ['/login', '/registro', '/recuperar-password', '/reset-password'];
-      
-      // Solo redirigir si estamos en una ruta de auth
-      if (authRoutes.includes(pathname)) {
-        // Usar función centralizada para determinar ruta según estado
-        const { ruta, paso } = determinarRutaRedireccion(usuario);
+    // IMPORTANTE: Si hay token pero usuario es null, NO redirigir todavía (esperar a que se cargue o validar token)
+    if (redirectIfAuthenticated) {
+      // NUEVO: Manejar estado inconsistente - usuario existe pero no hay token
+      // Si hay usuario con cuenta activada pero no hay token, limpiar el estado
+      // Esto puede pasar si el token expiró o hubo un logout parcial
+      if (usuario && usuario.cuenta_activada && !token && !isAuthenticated) {
+        // Estado inconsistente: usuario con cuenta activada pero sin token
+        // Limpiar el usuario para evitar problemas de navegación
+        logout();
+        return;
+      }
+
+      // Redirigir si está autenticado y tiene cuenta activada
+      if (isAuthenticated && usuario && usuario.cuenta_activada) {
+        const authRoutes = ['/login', '/registro', '/recuperar-password', '/reset-password'];
         
-        // Si el paso es VERIFICAR_EMAIL y estamos en /registro, NO redirigir (ya está en la ruta correcta)
-        if (paso === 'VERIFICAR_EMAIL' && pathname === '/registro') {
-          return; // No redirigir, el usuario necesita estar en /registro para verificar email
-        }
-        
-        // Solo redirigir si la ruta es diferente a la actual
-        if (ruta !== pathname) {
-          router.replace(ruta);
+        // Solo redirigir si estamos en una ruta de auth
+        if (authRoutes.includes(pathname)) {
+          // Usar función centralizada para determinar ruta según estado
+          const { ruta, paso } = determinarRutaRedireccion(usuario);
+          
+          // Si el paso es VERIFICAR_EMAIL y estamos en /registro, NO redirigir (ya está en la ruta correcta)
+          if (paso === 'VERIFICAR_EMAIL' && pathname === '/registro') {
+            return; // No redirigir, el usuario necesita estar en /registro para verificar email
+          }
+          
+          // Solo redirigir si la ruta es diferente a la actual
+          if (ruta !== pathname) {
+            router.replace(ruta);
+          }
         }
       }
     }
-  }, [requireAuth, requireRole, redirectIfAuthenticated, isAuthenticated, usuario, router, pathname, hasRequiredRole, isHydrated]);
+
+    // Si hay token pero no hay usuario, y estamos en /login, validar token automáticamente
+    // Esto permite auto-login cuando hay un token válido en localStorage
+    if (redirectIfAuthenticated && isAuthenticated && !usuario && pathname === '/login' && token) {
+      // Validar token automáticamente llamando al backend
+      const validateToken = async () => {
+        try {
+          const { authService } = await import('@/app/services/auth.services');
+          const response = await authService.obtenerPerfil();
+          
+          if (response.success && response.usuario) {
+            // Token válido, actualizar store y redirigir según estado
+            const { login } = useAuthStore.getState();
+            login(token, response.usuario);
+            
+            // Redirigir según el estado del usuario
+            const { ruta } = determinarRutaRedireccion(response.usuario);
+            router.replace(ruta);
+          }
+        } catch (error) {
+          // Token inválido o expirado, limpiar y dejar en login
+          console.error('Error al validar token:', error);
+          const { logout } = useAuthStore.getState();
+          logout();
+        }
+      };
+      
+      validateToken();
+      return; // No hacer nada más mientras se valida el token
+    }
+  }, [requireAuth, requireRole, redirectIfAuthenticated, isAuthenticated, usuario, router, pathname, hasRequiredRole, isHydrated, token, logout]);
 
   // ✅ Helper para agregar el token al fetch
   const getAuthHeaders = () => ({

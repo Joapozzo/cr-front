@@ -6,6 +6,7 @@ import { BaseModal } from '@/app/components/modals/ModalAdmin';
 import { useState } from 'react';
 import { jugadoresLegajosService } from '@/app/services/legajos/jugadores.service';
 import { ImagenPublica } from '../common/ImagenPublica';
+import { useImagenPrivada } from '@/app/hooks/useImagenPrivada';
 
 interface ImageViewerModalProps {
     isOpen: boolean;
@@ -25,49 +26,27 @@ export const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
     id_jugador
 }) => {
     const [isSelfieRevealed, setIsSelfieRevealed] = useState(false);
-    const [selfiePrivadaUrl, setSelfiePrivadaUrl] = useState<string | null>(null);
-    const [isLoadingSelfie, setIsLoadingSelfie] = useState(false);
+
+    // Cargar selfie privada usando el hook con cache optimizado (solo cuando se revele y tengamos id_jugador)
+    const { blobUrl: selfiePrivadaUrl, isLoading: isLoadingSelfie } = useImagenPrivada({
+        urlOrLoader: id_jugador 
+            ? () => jugadoresLegajosService.obtenerSelfiePrivada(id_jugador)
+            : null,
+        enabled: isSelfieRevealed && !!id_jugador,
+        deps: [id_jugador],
+        useQueryCache: true, // ✅ Activar cache de React Query
+        queryKey: id_jugador ? ['selfie-privada', id_jugador] : undefined, // ✅ Key específica
+    });
 
     // Reset selfie visibility when modal closes
     const handleClose = () => {
         setIsSelfieRevealed(false);
-        setSelfiePrivadaUrl(null);
-        setIsLoadingSelfie(false);
         onClose();
     };
 
-    // Cargar selfie privada cuando se revele
-    const handleRevealSelfie = async () => {
-        if (isSelfieRevealed) {
-            setIsSelfieRevealed(false);
-            return;
-        }
-
-        // Si ya tenemos la URL, solo mostrar
-        if (selfiePrivadaUrl) {
-            setIsSelfieRevealed(true);
-            return;
-        }
-
-        // Si no tenemos id_jugador, no podemos cargar la selfie privada
-        if (!id_jugador) {
-            setIsSelfieRevealed(true);
-            return;
-        }
-
-        // Cargar selfie privada desde el backend
-        setIsLoadingSelfie(true);
-        try {
-            const url = await jugadoresLegajosService.obtenerSelfiePrivada(id_jugador);
-            setSelfiePrivadaUrl(url);
-            setIsSelfieRevealed(true);
-        } catch (error) {
-            console.error('Error al cargar selfie privada:', error);
-            // Si falla, intentar mostrar la selfie pública si existe
-            setIsSelfieRevealed(true);
-        } finally {
-            setIsLoadingSelfie(false);
-        }
+    // Toggle selfie visibility
+    const handleRevealSelfie = () => {
+        setIsSelfieRevealed(!isSelfieRevealed);
     };
 
     const hasImages = imgPublica || imgSelfie || selfiePrivadaUrl;
@@ -122,6 +101,7 @@ export const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
                                                     ? 'blur-0 opacity-100'
                                                     : 'blur-md opacity-50'
                                                 }`}
+                                            unoptimized={!!selfiePrivadaUrl}
                                         />
                                         {!isSelfieRevealed && (
                                             <div className="absolute inset-0 flex items-center justify-center bg-black/30">

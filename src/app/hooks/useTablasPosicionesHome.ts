@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from 'react';
 import { useTablasPosicionesPorEquipos } from './useTablasPosiciones';
 import { useAuthStore } from '../stores/authStore';
 import { ITablaPosicion } from '../types/posiciones';
+import { usePosicionesLive } from './usePosicionesLive';
 
 interface UseTablasPosicionesHomeProps {
     tablas?: ITablaPosicion[];
@@ -77,8 +78,17 @@ export const useTablasPosicionesHome = ({
             posiciones: tabla.posiciones,
             formatosPosicion: tabla.formatosPosicion,
             id_categoria_edicion: tabla.id_categoria_edicion,
+            id_zona: tabla.id_zona,
         }));
     }, [tablasProp, tablasData]);
+
+    // Obtener id_zona e id_categoria_edicion de la primera tabla para usar en usePosicionesLive
+    const primeraTabla = tablas && tablas.length > 0 ? tablas[0] : null;
+    const idZona = primeraTabla?.id_zona || null;
+    const idCategoriaEdicion = primeraTabla?.id_categoria_edicion || null;
+
+    // WebSocket hook para actualizaciones en tiempo real de posiciones
+    usePosicionesLive(idZona, idCategoriaEdicion);
 
     // Estado del tab activo y dirección de slide
     const [currentTablaIndex, setCurrentTablaIndex] = useState(0);

@@ -3,6 +3,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   sendEmailVerification,
   sendPasswordResetEmail,
@@ -91,6 +93,21 @@ export const obtenerToken = async (forceRefresh = false): Promise<string | null>
 
 export const authService = {
   // ==================== FIREBASE AUTH ====================
+
+  /**
+   * Detectar si el navegador es Safari o iOS Safari
+   * Safari y iOS tienen problemas con pop-ups, se usa redirect
+   */
+  _esSafari: (): boolean => {
+    if (typeof window === 'undefined') return false;
+    
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isSafariUA = /safari/.test(userAgent) && !/chrome/.test(userAgent) && !/chromium/.test(userAgent);
+    const isSafariVendor = /apple/i.test(window.navigator.vendor);
+    const isIOS = /iphone|ipad|ipod/.test(userAgent) && !(window as any).MSStream;
+    
+    return (isSafariUA && isSafariVendor) || isIOS;
+  },
 
   /**
    * Registrarse con email y contraseña
@@ -357,6 +374,7 @@ export const authService = {
 
   /**
    * Iniciar sesión con Google
+   * Usa redirect en Safari/iOS para evitar problemas con pop-ups bloqueados
    */
   loginConGoogle: async () => {
     try {
@@ -365,6 +383,15 @@ export const authService = {
         prompt: 'select_account',
       });
 
+      // Safari y iOS tienen problemas con pop-ups, usar redirect
+      if (authService._esSafari()) {
+        await signInWithRedirect(auth, provider);
+        // El redirect redirige a Google y luego vuelve a la página
+        // El resultado se maneja con obtenerResultadoRedirect
+        return { success: true, user: null, isRedirect: true };
+      }
+
+      // Otros navegadores usan pop-up
       const userCredential = await signInWithPopup(auth, provider);
       return { success: true, user: userCredential.user };
     } catch (error: any) {
@@ -375,9 +402,28 @@ export const authService = {
         mensaje = 'Ventana cerrada por el usuario';
       } else if (error.code === 'auth/cancelled-popup-request') {
         mensaje = 'Operación cancelada';
+      } else if (error.code === 'auth/popup-blocked') {
+        mensaje = 'El navegador bloqueó la ventana emergente. Por favor, habilita los pop-ups para este sitio e intenta nuevamente.';
       }
 
       return { success: false, error: mensaje };
+    }
+  },
+
+  /**
+   * Obtener el resultado del redirect de Google
+   * Debe llamarse cuando el usuario vuelve de Google después de autenticarse
+   */
+  obtenerResultadoRedirect: async () => {
+    try {
+      const result = await getRedirectResult(auth);
+      if (result?.user) {
+        return { success: true, user: result.user };
+      }
+      return { success: false, user: null };
+    } catch (error: any) {
+      console.error('Error al obtener resultado del redirect:', error);
+      return { success: false, error: error.message, user: null };
     }
   },
 
@@ -497,7 +543,7 @@ export const authService = {
    */
   obtenerPerfil: async (): Promise<{ success: boolean; usuario: UsuarioAuth }> => {
     try {
-      return await api.get<{ success: boolean; usuario: UsuarioAuth }>('/auth/perfil');
+      return await api.get<{ success: boolean; usuario: UsuarioAuth }>('/user/perfil');
     } catch (error: any) {
       console.error('Error al obtener perfil:', error);
       throw new Error(error.response?.data?.error || 'Error al obtener perfil');

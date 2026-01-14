@@ -2,6 +2,7 @@
 
 import { HiArrowLeft } from 'react-icons/hi';
 import { useRegistrationContext, type RegistrationStep } from '@/app/contexts/RegistrationContext';
+import { limpiarDatosRegistro } from '@/app/utils/registrationCleanup';
 
 interface StepBackButtonProps {
   className?: string;
@@ -9,9 +10,10 @@ interface StepBackButtonProps {
 
 /**
  * Botón para volver al step anterior en el flujo de registro
+ * Cuando se hace clic, limpia todos los datos del registro y vuelve al step REGISTER
  */
 export const StepBackButton = ({ className = '' }: StepBackButtonProps) => {
-  const { goToPreviousStep, currentStep } = useRegistrationContext();
+  const { currentStep, reset, setStep, setUsuario } = useRegistrationContext();
 
   const steps: RegistrationStep[] = [
     'REGISTER',
@@ -28,7 +30,17 @@ export const StepBackButton = ({ className = '' }: StepBackButtonProps) => {
   }
 
   const handleGoBack = () => {
-    goToPreviousStep();
+    // Limpiar todos los datos del registro
+    limpiarDatosRegistro();
+    
+    // Limpiar el usuario del contexto (para evitar que useRegistrationFlow recalcule)
+    setUsuario(null);
+    
+    // Resetear el contexto de registro
+    reset();
+    
+    // Volver al step REGISTER
+    setStep('REGISTER');
   };
 
   return (

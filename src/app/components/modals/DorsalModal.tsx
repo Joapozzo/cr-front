@@ -4,6 +4,7 @@ import { Button } from '../ui/Button';
 import { Loader2, Save, User } from 'lucide-react';
 import BaseModal from './ModalPlanillero';
 import { useAsignarDorsal } from '@/app/hooks/useAsignarDorsal';
+import { useImagenPrivada } from '@/app/hooks/useImagenPrivada';
 import { jugadoresLegajosService } from '@/app/services/legajos/jugadores.service';
 import toast from 'react-hot-toast';
 
@@ -16,6 +17,7 @@ interface DorsalModalProps {
         apellido: string;
         dorsal: number | null;
         id_equipo: number;
+        dni?: string | null;
     };
     idPartido: number;
     idCategoriaEdicion: number;
@@ -32,38 +34,25 @@ const DorsalModal: React.FC<DorsalModalProps> = ({
 }) => {
     const [newDorsal, setNewDorsal] = useState<string>(jugador.dorsal ? String(jugador.dorsal) : '');
     const [error, setError] = useState('');
-    const [selfieUrl, setSelfieUrl] = useState<string | null>(null);
-    const [isLoadingSelfie, setIsLoadingSelfie] = useState(false);
-    const [imageError, setImageError] = useState(false);
 
     const { mutateAsync: asignarDorsal, isPending } = useAsignarDorsal();
 
-    // Cargar selfie privada cuando se abre el modal
+    // Cargar selfie privada usando el hook con cache optimizado
+    const { blobUrl, isLoading: isLoadingSelfie, error: imageError } = useImagenPrivada({
+        urlOrLoader: () => jugadoresLegajosService.obtenerSelfiePrivada(jugador.id_jugador),
+        enabled: isOpen,
+        deps: [jugador.id_jugador],
+        useQueryCache: true, // ✅ Activar cache de React Query
+        queryKey: ['selfie-privada', jugador.id_jugador], // ✅ Key específica
+    });
+
+    // Resetear formulario cuando se abre el modal
     useEffect(() => {
         if (isOpen) {
             setNewDorsal(jugador.dorsal ? String(jugador.dorsal) : '');
             setError('');
-            setSelfieUrl(null);
-            setImageError(false);
-
-            // Cargar imagen privada
-            const loadSelfie = async () => {
-                setIsLoadingSelfie(true);
-                try {
-                    const url = await jugadoresLegajosService.obtenerSelfiePrivada(jugador.id_jugador);
-                    setSelfieUrl(url);
-                } catch (error) {
-                    console.error('Error al cargar selfie privada:', error);
-                    setImageError(true);
-                    // No mostrar error al usuario, simplemente no mostrar la imagen
-                } finally {
-                    setIsLoadingSelfie(false);
-                }
-            };
-
-            loadSelfie();
         }
-    }, [isOpen, jugador.dorsal, jugador.id_jugador]);
+    }, [isOpen, jugador.dorsal]);
 
     useEffect(() => {
         if (onLoadingChange) {
@@ -169,16 +158,14 @@ const DorsalModal: React.FC<DorsalModalProps> = ({
                             <div className="w-28 h-28 bg-[#171717] rounded-lg flex items-center justify-center border border-[#262626]">
                                 <Loader2 size={24} className="animate-spin text-[#737373]" />
                             </div>
-                        ) : selfieUrl && !imageError ? (
+                        ) : blobUrl && !imageError ? (
                             <Image
-                                src={selfieUrl}
+                                src={blobUrl}
                                 alt={`${jugador.nombre} ${jugador.apellido}`}
                                 width={112}
                                 height={112}
                                 className="w-28 h-28 object-cover rounded-lg border-2 border-[#262626] shadow-lg"
-                                onError={() => {
-                                    setImageError(true);
-                                }}
+                                unoptimized
                             />
                         ) : (
                             <div className="w-28 h-28 bg-[#171717] rounded-lg flex items-center justify-center border border-[#262626]">
@@ -191,7 +178,12 @@ const DorsalModal: React.FC<DorsalModalProps> = ({
                         <h3 className="text-white font-bold text-lg">
                             {jugador.nombre} {jugador.apellido}
                         </h3>
-                        <div className="flex items-center justify-center gap-2 mt-1">
+                        {jugador.dni && (
+                            <p className="text-[#737373] text-sm mt-1 font-mono">
+                                DNI: {jugador.dni}
+                            </p>
+                        )}
+                        <div className="flex items-center justify-center gap-2 mt-2">
                             {jugador.dorsal ? (
                                 <span className="text-[var(--color-primary)] font-mono text-sm bg-[var(--color-primary)]/10 px-2 py-0.5 rounded">
                                     Dorsal actual: #{jugador.dorsal}

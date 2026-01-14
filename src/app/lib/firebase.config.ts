@@ -1,5 +1,5 @@
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth } from 'firebase/auth';
+import { getAuth, Auth, onAuthStateChanged } from 'firebase/auth';
 import { getStorage, FirebaseStorage } from 'firebase/storage';
 
 const firebaseConfig = {
@@ -28,4 +28,4 @@ if (typeof window !== 'undefined') {
   }
 }
 
-export { app, auth, storage };
+export { app, auth, storage, onAuthStateChanged };

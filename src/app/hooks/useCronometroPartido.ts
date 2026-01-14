@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
 import usePartidoStore from '../stores/partidoStore';
-
-interface CronometroData {
-    tiempoFormateado: string;
-    tiempoAdicional: number;
-    fase: 'PT' | 'HT' | 'ST' | 'ET';
-    shouldShowAdicional: boolean;
-    minuto: number; // Minuto actual del partido
-}
+import { CronometroData, FasePartido } from '../types/partido';
 
 export const useCronometroPartido = () => {
     const {
@@ -44,7 +37,7 @@ export const useCronometroPartido = () => {
         // Cambiar esta función para que calcule segundos correctamente
         const actualizarCronometro = () => {
             let minutosTranscurridos = 0;
-            let fase: 'PT' | 'HT' | 'ST' | 'ET' = 'PT';
+            let fase: FasePartido = 'PT';
             let esSegundoTiempo = false;
 
             // Determinar qué tiempo mostrar según el estado
@@ -55,7 +48,7 @@ export const useCronometroPartido = () => {
                     break;
                 case 'E':
                     minutosTranscurridos = getTiempoTranscurridoPrimerTiempo();
-                    fase = 'HT';
+                    fase = 'ET';
                     break;
                 case 'C2':
                     // ST arranca desde donde terminó el PT

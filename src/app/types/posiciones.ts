@@ -65,4 +65,5 @@ export interface ITablaPosicion {
     posiciones: IEquipoPosicion[]; // 6 equipos (contexto alrededor del equipo del usuario)
     formatosPosicion?: FormatoPosicion[]; // Formatos de posición para mostrar badges y leyenda
     id_categoria_edicion?: number; // ID de la categoría edición para navegación
+    id_zona?: number; // ID de la zona para WebSocket live updates
 }

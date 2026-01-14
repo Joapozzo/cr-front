@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import EstadisticasPageContent from './EstadisticasPageContent';
+import EstadisticasPageContent from '../../../components/estadisticas/EstadisticasPageContent';
 import { BaseCardTableSkeleton } from '@/app/components/skeletons/BaseCardTableSkeleton';
 
 export default function EstadisticasPage() {

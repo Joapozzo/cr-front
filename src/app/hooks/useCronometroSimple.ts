@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react';
 import usePartidoStore from '../stores/partidoStore';
-
-interface CronometroSimple {
-    tiempoFormateado: string;
-    fase: 'PT' | 'HT' | 'ST';
-    enVivo: boolean;
-}
+import { CronometroSimple } from '../types/partido';
 
 export const useCronometroSimple = (partidoId: number, estadoPartido: string) => {
     const {
@@ -44,7 +39,7 @@ export const useCronometroSimple = (partidoId: number, estadoPartido: string) =>
 
         const actualizarCronometro = () => {
             let minutosTranscurridos = 0;
-            let fase: 'PT' | 'HT' | 'ST' = 'PT';
+            let fase: 'PT' | 'ET' | 'ST' = 'PT' as const;
 
             switch (estadoPartido) {
                 case 'C1':
@@ -55,7 +50,7 @@ export const useCronometroSimple = (partidoId: number, estadoPartido: string) =>
                 case 'E':
                     // Durante el entretiempo, mantener el tiempo del primer tiempo
                     minutosTranscurridos = minutosPorTiempo || 45; // Usar valor por defecto
-                    fase = 'HT';
+                    fase = 'ET';
                     // console.log('E - Entretiempo, mostrando:', minutosTranscurridos);
                     break;
                 case 'C2':

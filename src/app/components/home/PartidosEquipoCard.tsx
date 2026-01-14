@@ -132,7 +132,7 @@ export const PartidosEquipoCard = ({
             }`}
           >
             {partidosActivos.map((partido) => (
-              <div key={partido.id_partido} className="w-full">
+              <div key={`partido-${partido.id_partido}-${partido.goles_local ?? 0}-${partido.goles_visita ?? 0}`} className="w-full">
                 <MatchCard partido={partido} misEquiposIds={equiposIds} />
               </div>
             ))}

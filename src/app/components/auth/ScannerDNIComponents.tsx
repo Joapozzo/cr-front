@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { MdCameraAlt, MdPhotoLibrary } from 'react-icons/md';
+import { MdCameraAlt, MdPhotoLibrary, MdExpandMore, MdExpandLess } from 'react-icons/md';
 import { Loader2, ArrowRight, Info } from 'lucide-react';
 import { RefObject, useState } from 'react';
 
@@ -32,6 +32,7 @@ export const ScannerIdleView = ({
   isMediaDevicesAvailable,
 }: ScannerIdleViewProps) => {
   const [showTips, setShowTips] = useState(false);
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
 
   return (
     <div className="w-full flex flex-col gap-4 lg:gap-5 flex-1 lg:flex-none justify-center lg:justify-start">
@@ -99,10 +100,10 @@ export const ScannerIdleView = ({
       <button
         onClick={onStartScanning}
         disabled={!isSecureContext || !isMediaDevicesAvailable}
-        className="w-full h-56 lg:h-48 bg-[var(--gray-400)] rounded-lg border-2 border-dashed border-[var(--gray-300)] flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-[var(--gray-300)] hover:border-[var(--color-primary)] transition-all disabled:opacity-50 overflow-hidden relative"
+        className="w-full h-64 lg:h-56 bg-[var(--gray-400)] rounded-lg border-2 border-dashed border-[var(--color-primary)] flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-[var(--gray-300)] transition-all disabled:opacity-50 overflow-hidden relative group"
       >
         {/* SKELETON DNI */}
-        <div className="relative w-56 lg:w-52 h-36 lg:h-32 bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] rounded-xl shadow-2xl border-2 border-[var(--color-primary)]/30 overflow-hidden">
+        <div className="relative w-56 lg:w-52 h-36 lg:h-32 bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] rounded-xl shadow-2xl border-2 border-[var(--color-primary)] overflow-hidden transition-colors">
   {/* Efecto de barra de escaneo */}
   <div className="absolute inset-0">
     <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent animate-scan-line" />
@@ -159,29 +160,56 @@ export const ScannerIdleView = ({
   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shine" />
 </div>
 
-        <p className="text-sm text-[var(--gray-200)] font-medium text-center">
-          Escanear código de barras
-        </p>
+        {/* Texto principal más claro */}
+        <div className="flex flex-col items-center gap-1">
+          <p className="text-base font-semibold text-white text-center">
+            Toca acá y escanea el código de barras
+          </p>
+          <p className="text-xs text-[var(--gray-300)] text-center">
+            Apunta la cámara al código del dorso del DNI
+          </p>
+        </div>
+
+        {/* Indicador visual de que es clickeable */}
+        <div className="absolute top-2 right-2">
+          <MdCameraAlt className="w-6 h-6 text-[var(--color-primary)]" />
+        </div>
       </button>
 
-      {/* Botones para tomar foto directamente (fallback) */}
+      {/* Botones alternativos con desplegable */}
       {onPhotoScan && (
-        <div className="flex flex-col lg:flex-row gap-2 lg:gap-3">
+        <div className="flex flex-col gap-2">
           <button
-            onClick={onOpenCamera}
-            className="w-full lg:flex-1 py-3 bg-[var(--color-primary)] text-[var(--black)] rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-[var(--color-primary)]/90 transition-colors"
+            onClick={() => setShowMoreOptions(!showMoreOptions)}
+            className="w-full py-2.5 text-sm text-[var(--gray-200)] hover:text-[var(--color-primary)] transition-colors flex items-center justify-center gap-2"
           >
-            <MdCameraAlt size={20} />
-            <span className="hidden lg:inline">Tomar foto</span>
-            <span className="lg:hidden">Tomar foto del código de barras</span>
+            <span>Ver más opciones</span>
+            {showMoreOptions ? (
+              <MdExpandLess size={20} />
+            ) : (
+              <MdExpandMore size={20} />
+            )}
           </button>
-          <button
-            onClick={onOpenGallery}
-            className="w-full lg:flex-1 py-3 bg-[var(--gray-400)] text-[var(--gray-200)] border border-[var(--gray-300)] rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-[var(--gray-300)] transition-colors"
-          >
-            <MdPhotoLibrary size={20} />
-            Elegir de galería
-          </button>
+
+          {/* Opciones desplegables */}
+          {showMoreOptions && (
+            <div className="flex flex-col gap-2 animate-in slide-in-from-top-2">
+              <button
+                onClick={onOpenCamera}
+                className="w-full py-3 bg-[var(--color-primary)] text-[var(--black)] rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-[var(--color-primary)]/90 transition-colors"
+              >
+                <MdCameraAlt size={20} />
+                <span>Tomar foto del código de barras</span>
+              </button>
+              <button
+                onClick={onOpenGallery}
+                className="w-full py-3 bg-[var(--gray-400)] text-[var(--gray-200)] border border-[var(--gray-300)] rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-[var(--gray-300)] transition-colors"
+              >
+                <MdPhotoLibrary size={20} />
+                <span>Elegir de galería</span>
+              </button>
+            </div>
+          )}
         </div>
       )}
 

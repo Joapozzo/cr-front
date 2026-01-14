@@ -285,7 +285,7 @@ export const useUltimosYProximosPartidosJugador = (
     return useQuery({
         queryKey: partidosKeys.jugadorUltimosProximos(),
         queryFn: partidosService.obtenerUltimosYProximosPartidosJugador,
-        staleTime: 2 * 60 * 1000, // 2 minutos - datos considerados frescos
+        staleTime: 0, // Cambiar a 0 para que siempre se considere stale y se refetch cuando se invalida (necesario para datos en vivo)
         gcTime: 5 * 60 * 1000, // 5 minutos - tiempo en cache después de no usar
         retry: 2, // Reintentar 2 veces en caso de error
         refetchOnWindowFocus: false, // No refetch automático al volver a la ventana (optimización)

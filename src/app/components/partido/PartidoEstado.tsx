@@ -1,5 +1,5 @@
 import React from 'react';
-import { EstadoPartido } from '@/app/types/partido';
+import { EstadoPartido, CronometroProps } from '@/app/types/partido';
 import { getEstadoInfo } from '@/app/utils/partido.helper';
 import { estaEnVivo } from '@/app/utils/tiempoPartido.helper';
 import { TiempoPartido } from '../common/TiempoPartido';
@@ -8,12 +8,7 @@ interface PartidoEstadoProps {
     estado: EstadoPartido;
     partidoId: number;
     esPlanillero?: boolean;
-    cronometro?: {
-        fase: 'PT' | 'HT' | 'ST' | 'ET';
-        tiempoFormateado: string;
-        shouldShowAdicional: boolean;
-        tiempoAdicional: number;
-    };
+    cronometro?: CronometroProps;
 }
 
 export const PartidoEstado: React.FC<PartidoEstadoProps> = ({

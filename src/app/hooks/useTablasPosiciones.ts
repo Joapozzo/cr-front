@@ -41,11 +41,11 @@ export const useTablasPosicionesPorEquipos = (
             page,
             equiposIds
         ),
-        staleTime: 3 * 60 * 1000, // 3 minutos - las posiciones cambian menos frecuentemente
-        gcTime: 10 * 60 * 1000, // 10 minutos - mantener en cache más tiempo
+        staleTime: 0, // Cambiar a 0 para que siempre se considere stale y se refetch cuando se invalida
+        gcTime: 10 * 60 * 1000, // 10 minutos - mantener en cache para no perder datos
         retry: 2,
         refetchOnWindowFocus: false, // No refetch automático al volver a la ventana
-        refetchOnMount: false, // Usar cache si los datos están frescos (dentro de staleTime)
+        refetchOnMount: true, // Cambiar a true para forzar refetch al montar (necesario para datos en vivo)
         refetchOnReconnect: true, // Refetch al reconectar
         ...options,
     });

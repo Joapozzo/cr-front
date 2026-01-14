@@ -82,6 +82,12 @@ export const useRegisterController = () => {
     const handleRegistroGoogle = () => {
         loginGoogle(undefined, {
             onSuccess: (data) => {
+                // Si es redirect, no hacer nada (el redirect se maneja en useEffect de useLoginGoogle)
+                if ('isRedirect' in data && data.isRedirect) return;
+
+                // Type guard: verificar que data tiene usuario (es el objeto de login normal)
+                if (!('usuario' in data)) return;
+
                 // Usar función centralizada para determinar ruta según el estado del usuario
                 startTransition(() => {
                     const { ruta } = determinarRutaRedireccion(data.usuario);
