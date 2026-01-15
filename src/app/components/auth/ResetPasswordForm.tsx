@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { toast, Toaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { AiOutlineLock } from 'react-icons/ai';
 import { FaAngleRight } from 'react-icons/fa6';
 import { Loader2 } from 'lucide-react';
@@ -182,8 +182,6 @@ export const ResetPasswordForm = () => {
           Volver al inicio de sesión
         </button>
       </div>
-
-      <Toaster position="top-center" />
     </div>
   );
 };

@@ -7,13 +7,25 @@ import { EmailVerificationStep } from './steps/EmailVerificationStep';
 import { PoliciesStep } from './steps/PoliciesStep';
 import { DniValidationStep } from './steps/DniValidationStep';
 import { SelfieStep } from './steps/SelfieStep';
+import { LoadingScreen } from '../LoadingScreen';
 
 /**
  * Componente principal que maneja el flujo de registro
  * Renderiza el step actual con transiciones fluidas
  */
 export const RegistrationFlow = () => {
-  const { currentStep } = useRegistrationFlow();
+  const { currentStep, isInitializing, isPendingGoogle } = useRegistrationFlow();
+
+  // ✅ Mostrar loading si Google está procesando O si se está inicializando el flujo
+  // Esto asegura que el loader sea continuo desde que se hace clic en Google hasta que se muestra el step
+  if (isInitializing || isPendingGoogle) {
+    return (
+      <LoadingScreen
+        message={isPendingGoogle ? "Iniciando sesión con Google..." : "Cargando información..."}
+        state="loading"
+      />
+    );
+  }
 
   return (
     <AnimatePresence mode="wait">

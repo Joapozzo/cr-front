@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { toast, Toaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { Loader2, Camera, Upload, X, CheckCircle2, ScanFace, RefreshCw, Info } from 'lucide-react';
 import { LoadingScreen } from '../LoadingScreen';
 import { Button } from '../ui/Button';
@@ -27,7 +27,11 @@ import Image from 'next/image';
 
 type ModoCaptura = 'inicial' | 'capturando' | 'preview';
 
-export const SelfieForm = () => {
+interface SelfieFormProps {
+  onLoadingChange?: (loading: boolean) => void;
+}
+
+export const SelfieForm = ({ onLoadingChange }: SelfieFormProps = {}) => {
   const router = useRouter();
   const { mutate: subirSelfie, isPending } = useSubirSelfie();
   const { usuario, isAuthenticated } = useAuth({ requireAuth: false });
@@ -54,6 +58,7 @@ export const SelfieForm = () => {
   const [modelsCargados, setModelsCargados] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [loginState, setLoginState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [loadingMessage, setLoadingMessage] = useState<string>('');
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -162,6 +167,12 @@ export const SelfieForm = () => {
     contadorRef.current = contador;
   }, [contador]);
 
+  // Notificar cambios de loading al componente padre
+  useEffect(() => {
+    onLoadingChange?.(loading || isPending);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, isPending]);
+
   // Detener cámara (definido antes de capturarFoto para poder usarlo)
   const detenerCamera = useCallback(() => {
     if (stopDetectionRef.current) {
@@ -187,6 +198,7 @@ export const SelfieForm = () => {
 
     try {
       setLoading(true);
+      setLoadingMessage('Capturando foto...');
 
       // Detener detección antes de capturar
       if (stopDetectionRef.current) {
@@ -202,11 +214,13 @@ export const SelfieForm = () => {
       const base64Raw = capturarFrameVideo(videoRef.current, 0.8);
 
       // Validar que la foto capturada tenga un rostro válido
+      setLoadingMessage('Validando rostro...');
       const validacion = await validarRostro(base64Raw);
 
       if (!validacion.valido) {
         toast.error(validacion.mensaje || 'No se detectó un rostro válido en la foto');
         setLoading(false);
+        setLoadingMessage('');
         // Reiniciar detección
         if (videoRef.current && modelsCargados) {
           const stopDetection = await detectarRostroEnTiempoReal(
@@ -231,9 +245,11 @@ export const SelfieForm = () => {
         return;
       }
 
+      setLoadingMessage('Procesando imagen...');
       const blob = await fetch(base64Raw).then(r => r.blob());
       const file = new File([blob], 'selfie.jpg', { type: 'image/jpeg' });
 
+      setLoadingMessage('Comprimiendo imagen...');
       const base64Comprimido = await comprimirImagen(file, 800, 800, 0.8);
 
       setSelfieBase64(base64Comprimido);
@@ -248,6 +264,7 @@ export const SelfieForm = () => {
       toast.error('Error al capturar foto');
     } finally {
       setLoading(false);
+      setLoadingMessage('');
     }
   }, [modelsCargados, detenerCamera]);
 
@@ -331,6 +348,7 @@ export const SelfieForm = () => {
   const iniciarCamara = async (deviceId?: string) => {
     try {
       setLoading(true);
+      setLoadingMessage('Iniciando cámara...');
 
       if (stream) {
         detenerCamara(stream);
@@ -403,6 +421,7 @@ export const SelfieForm = () => {
       } catch (primaryError: unknown) {
         // Fallback: intentar sin restricciones
         console.warn('Error con constraints específicos, intentando fallback:', primaryError);
+        setLoadingMessage('Intentando con configuración alternativa...');
 
         const fallbackStream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'user' },
@@ -418,6 +437,7 @@ export const SelfieForm = () => {
           videoRef.current.srcObject = fallbackStream;
 
           // Esperar a que el video esté listo antes de iniciar detección
+          setLoadingMessage('Preparando detección facial...');
           videoRef.current.onloadedmetadata = async () => {
             if (videoRef.current && modelsCargados) {
               // Iniciar detección en tiempo real
@@ -443,6 +463,8 @@ export const SelfieForm = () => {
               );
               stopDetectionRef.current = stopDetection;
             }
+            setLoading(false);
+            setLoadingMessage('');
           };
         }
 
@@ -465,6 +487,7 @@ export const SelfieForm = () => {
       setModo('inicial');
     } finally {
       setLoading(false);
+      setLoadingMessage('');
     }
   };
 
@@ -482,23 +505,27 @@ export const SelfieForm = () => {
 
     try {
       setLoading(true);
+      setLoadingMessage('Cargando imagen...');
 
       // Crear URL temporal para la imagen
       const imageUrl = URL.createObjectURL(file);
 
       // Validar que tenga un rostro válido
+      setLoadingMessage('Validando rostro...');
       const validacionRostro = await validarRostro(imageUrl);
 
       if (!validacionRostro.valido) {
         URL.revokeObjectURL(imageUrl);
         toast.error(validacionRostro.mensaje || 'No se detectó un rostro válido en la imagen');
         setLoading(false);
+        setLoadingMessage('');
         if (fileInputRef.current) {
           fileInputRef.current.value = '';
         }
         return;
       }
 
+      setLoadingMessage('Comprimiendo imagen...');
       const base64Comprimido = await comprimirImagen(file, 800, 800, 0.8);
       URL.revokeObjectURL(imageUrl);
 
@@ -512,6 +539,7 @@ export const SelfieForm = () => {
       toast.error('Error al procesar imagen');
     } finally {
       setLoading(false);
+      setLoadingMessage('');
     }
   };
 
@@ -627,8 +655,6 @@ export const SelfieForm = () => {
   // Render por modo
   return (
     <div className="flex flex-col gap-4 lg:gap-5 w-full h-full flex-1 min-h-0 overflow-y-auto lg:overflow-y-auto lg:max-h-full">
-      <Toaster position="top-center" />
-
       {/* MODO: INICIAL */}
       {modo === 'inicial' && (
         <>
@@ -636,7 +662,8 @@ export const SelfieForm = () => {
           <div className="relative flex justify-end -mt-2 lg:-mt-4 mb-1 flex-shrink-0">
             <button
               onClick={() => setShowTips(!showTips)}
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--gray-400)] hover:bg-[var(--gray-300)] text-[var(--gray-200)] transition-colors mt-5"
+              disabled={loading}
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--gray-400)] hover:bg-[var(--gray-300)] text-[var(--gray-200)] transition-colors mt-5 disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Ver consejos"
             >
               <Info size={18} />
@@ -662,22 +689,33 @@ export const SelfieForm = () => {
             )}
           </div>
 
-          {/* Ilustración/Guía */}
+          {/* Ilustración/Guía - Con indicador de carga dentro */}
           <div className="bg-[var(--gray-400)] rounded-xl p-6 border border-[var(--gray-300)] flex-shrink-0">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-full bg-[var(--gray-300)] flex items-center justify-center">
-                <ScanFace className="w-12 h-12 lg:w-16 lg:h-16 text-[var(--color-primary)]" />
+            {loading ? (
+              <div className="flex flex-col items-center gap-4">
+                <Loader2 className="w-16 h-16 lg:w-20 lg:h-20 text-[var(--color-primary)] animate-spin" />
+                <div className="text-center space-y-2">
+                  <p className="text-sm lg:text-base text-[var(--gray-200)] font-medium">
+                    {loadingMessage || 'Procesando...'}
+                  </p>
+                </div>
               </div>
+            ) : (
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-full bg-[var(--gray-300)] flex items-center justify-center">
+                  <ScanFace className="w-12 h-12 lg:w-16 lg:h-16 text-[var(--color-primary)]" />
+                </div>
 
-              <div className="text-center space-y-2">
-                <h3 className="text-base lg:text-lg font-semibold text-white">
-                  Asegúrate de estar en un lugar bien iluminado
-                </h3>
-                <p className="text-xs lg:text-sm text-[var(--gray-200)]">
-                  Te guiaremos paso a paso para obtener una foto perfecta
-                </p>
+                <div className="text-center space-y-2">
+                  <h3 className="text-base lg:text-lg font-semibold text-white">
+                    Asegúrate de estar en un lugar bien iluminado
+                  </h3>
+                  <p className="text-xs lg:text-sm text-[var(--gray-200)]">
+                    Te guiaremos paso a paso para obtener una foto perfecta
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Botón único */}
@@ -688,7 +726,7 @@ export const SelfieForm = () => {
               className="flex items-center justify-center gap-3 h-14 text-base flex-1"
             >
               <Upload className="w-5 h-5" />
-              Subir Foto
+              Subir foto
             </Button>
 
             <input
@@ -696,6 +734,7 @@ export const SelfieForm = () => {
               type="file"
               accept="image/jpeg,image/png,image/webp"
               onChange={handleFileChange}
+              disabled={loading}
               className="hidden"
             />
           </div>
@@ -703,14 +742,23 @@ export const SelfieForm = () => {
       )}
 
 
-      {/* MODO: CAPTURANDO */}
+          {/* MODO: CAPTURANDO */}
       {modo === 'capturando' && (
         <>
+          {/* Indicador de carga dentro del componente */}
+          {loading && (
+            <div className="bg-[var(--gray-400)] rounded-xl p-4 border border-[var(--gray-300)] flex items-center gap-3 flex-shrink-0">
+              <Loader2 className="w-5 h-5 text-[var(--color-primary)] animate-spin" />
+              <p className="text-sm text-[var(--gray-200)] font-medium">{loadingMessage || 'Procesando...'}</p>
+            </div>
+          )}
+
           {/* Consejos - Popup arriba */}
           <div className="relative flex justify-end -mt-2 lg:-mt-4 mb-1 flex-shrink-0">
             <button
               onClick={() => setShowTips(!showTips)}
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--gray-400)] hover:bg-[var(--gray-300)] text-[var(--gray-200)] transition-colors mt-5"
+              disabled={loading}
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--gray-400)] hover:bg-[var(--gray-300)] text-[var(--gray-200)] transition-colors mt-5 disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Ver consejos"
             >
               <Info size={18} />
@@ -751,7 +799,8 @@ export const SelfieForm = () => {
                 <div className="flex items-center justify-between mb-4">
                   <button
                     onClick={detenerCamera}
-                    className="p-2 bg-black/50 rounded-full text-white"
+                    disabled={loading}
+                    className="p-2 bg-black/50 rounded-full text-white disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <X className="w-6 h-6" />
                   </button>
@@ -872,7 +921,8 @@ export const SelfieForm = () => {
                       const nextIndex = (currentIndex + 1) % cameras.length;
                       iniciarCamara(cameras[nextIndex].deviceId);
                     }}
-                    className="absolute top-4 right-4 p-2 bg-black/50 rounded-full hover:bg-black/70 transition-colors z-10"
+                    disabled={loading}
+                    className="absolute top-4 right-4 p-2 bg-black/50 rounded-full hover:bg-black/70 transition-colors z-10 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <RefreshCw className="w-5 h-5 text-white" />
                   </button>
@@ -931,6 +981,14 @@ export const SelfieForm = () => {
       {/* MODO: PREVIEW */}
       {modo === 'preview' && selfiePreview && (
         <>
+          {/* Indicador de carga dentro del componente */}
+          {loading && (
+            <div className="bg-[var(--gray-400)] rounded-xl p-4 border border-[var(--gray-300)] flex items-center gap-3 flex-shrink-0">
+              <Loader2 className="w-5 h-5 text-[var(--color-primary)] animate-spin" />
+              <p className="text-sm text-[var(--gray-200)] font-medium">{loadingMessage || 'Procesando...'}</p>
+            </div>
+          )}
+
           <div className="flex flex-col gap-2 flex-shrink-0">
             <h2 className="text-lg lg:text-xl font-semibold text-white">Revisa tu foto</h2>
           </div>
@@ -959,7 +1017,7 @@ export const SelfieForm = () => {
           <div className="flex flex-col lg:flex-row gap-3 flex-shrink-0">
             <Button
               onClick={handleSubmit}
-              disabled={isPending || !rostroValidado}
+              disabled={isPending || !rostroValidado || loading}
               className="flex items-center justify-center gap-2 flex-1"
               variant="success"
             >
@@ -978,12 +1036,12 @@ export const SelfieForm = () => {
             
             <Button
               onClick={reiniciar}
-              disabled={isPending}
+              disabled={isPending || loading}
               variant="default"
               className="flex items-center justify-center gap-2 flex-1"
             >
               <RefreshCw className="w-5 h-5" />
-              Tomar Otra
+              Tomar otra
             </Button>
           </div>
         </>

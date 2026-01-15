@@ -1,170 +1,102 @@
-import { useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { useRouter, usePathname } from 'next/navigation';
 import { authService } from '../../services/auth.services';
-import { api } from '../../lib/api';
 import { useAuthStore } from '../../stores/authStore';
-import { toast } from 'react-hot-toast';
-// Removido import de jugadorService - los equipos se cargarán cuando se necesiten
 import { determinarRutaRedireccion } from '../../utils/authRedirect';
+import { procesarUsuarioGoogle } from '../../utils/googleRedirectHandler';
+import { usuariosProcesados } from './useAuthStateListener';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 
 /**
- * Procesar usuario autenticado con Google (compartido entre popup y redirect)
- * Maneja login/registro en backend y retorna los datos del usuario
+ * Hook para iniciar sesión con Google
+ * 
+ * Procesa INMEDIATAMENTE después del popup (desktop y mobile)
+ * Igual que el proyecto que funciona
  */
-const procesarUsuarioGoogle = async (user: any) => {
-  // 1. Obtener token de Firebase
-  const token = await user.getIdToken();
-  
-  // Pequeño delay para asegurar que el usuario esté establecido en Firebase
-  await new Promise(resolve => setTimeout(resolve, 100));
-
-  // 2. Intentar login en backend
-  try {
-    const loginData = await api.post<{
-      success: boolean;
-      usuario: any;
-      proximoPaso: 'VERIFICAR_EMAIL' | 'VALIDAR_DNI' | 'SELFIE' | 'COMPLETO';
-    }>('/auth/login', { uid: user.uid }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    
-    return { success: true, data: loginData, token };
-  } catch (loginError: any) {
-    // Si el error es 401/404, el usuario no existe, registrarlo
-    const errorMessage = loginError.message || String(loginError);
-    const isUserNotFound = 
-      errorMessage.includes('401') || 
-      errorMessage.includes('404') ||
-      errorMessage.includes('Usuario no encontrado') ||
-      errorMessage.includes('No autorizado') ||
-      errorMessage.includes('Unauthorized');
-    
-    if (isUserNotFound) {
-      // Registrar usuario en backend (con email)
-      await api.post('/auth/register', { 
-        uid: user.uid,
-        email: user.email 
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      // Ahora intentar login nuevamente
-      const loginData = await api.post<{
-        success: boolean;
-        usuario: any;
-        proximoPaso: 'VERIFICAR_EMAIL' | 'VALIDAR_DNI' | 'SELFIE' | 'COMPLETO';
-      }>('/auth/login', { uid: user.uid }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      
-      return { success: true, data: loginData, token };
-    }
-    
-    // Si es otro error, relanzarlo
-    throw loginError;
-  }
-};
-
 export const useLoginGoogle = () => {
-  const { login: setAuthState } = useAuthStore();
   const router = useRouter();
-  const pathname = usePathname();
-
-  // Manejar resultado del redirect cuando el usuario vuelve de Google
-  useEffect(() => {
-    // Solo procesar redirect en páginas de auth
-    const authPages = ['/login', '/registro'];
-    if (!authPages.includes(pathname)) return;
-
-    const procesarRedirect = async () => {
-      try {
-        const redirectResult = await authService.obtenerResultadoRedirect();
-        
-        if (redirectResult.success && redirectResult.user) {
-          // Procesar el usuario del redirect
-          const resultado = await procesarUsuarioGoogle(redirectResult.user);
-          
-          if (resultado.success) {
-            // Obtener token actualizado
-            const token = await redirectResult.user.getIdToken(true);
-            
-            // Guardar en store
-            setAuthState(token, resultado.data.usuario);
-            
-            // Redirigir según el estado del usuario
-            const { ruta } = determinarRutaRedireccion(resultado.data.usuario);
-            router.replace(ruta);
-          }
-        }
-      } catch (error: any) {
-        console.error('Error procesando redirect de Google:', error);
-        
-        if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError')) {
-          toast.error('Error de conexión. Verifica que el servidor esté corriendo y tu conexión a internet.');
-        } else {
-          toast.error('Error al procesar la autenticación');
-        }
-      }
-    };
-
-    procesarRedirect();
-  }, [pathname, router, setAuthState]);
+  const { login: setAuthState } = useAuthStore();
 
   return useMutation({
     mutationFn: async () => {
-      // 1. Login con Google en Firebase
       const firebaseResult = await authService.loginConGoogle();
       
-      // Si es redirect, no hacer nada más (el useEffect manejará el resultado)
-      if (firebaseResult.isRedirect) {
-        return { isRedirect: true };
-      }
-      
       if (!firebaseResult.success) {
-        throw new Error(firebaseResult.error);
+        throw new Error(firebaseResult.error || 'Error al iniciar sesión con Google');
       }
 
-      const user = firebaseResult.user!;
-
-      // 2. Procesar usuario (login/registro en backend)
-      const resultado = await procesarUsuarioGoogle(user);
-      
-      if (!resultado.success) {
-        throw new Error('Error al procesar usuario');
-      }
-
-      return resultado.data;
+      // Siempre retornar el user (ya no hay redirect)
+      return { user: firebaseResult.user! };
     },
     onSuccess: async (data) => {
-      // Solo procesar si no es redirect (el redirect se maneja en useEffect)
-      if ('isRedirect' in data && data.isRedirect) return;
+      // ✅ PROCESAR INMEDIATAMENTE después del popup (como el proyecto que funciona)
+      if (data.user) {
+        const uid = data.user.uid;
 
-      // Type guard: verificar que data tiene usuario (es el objeto de login normal)
-      if (!('usuario' in data)) return;
+        // ✅ GUARD: Verificar si ya está siendo procesado
+        if (usuariosProcesados.has(uid)) {
+          console.log(`[LOGIN GOOGLE] Usuario ${uid} ya está siendo procesado, saltando...`);
+          return;
+        }
 
-      // Obtener el token de Firebase actualizado
-      const user = authService.obtenerUsuarioActual();
-      if (user && data.usuario) {
-        // Obtener token actualizado
-        const token = await user.getIdToken(true);
-        
-        // Guardar en authStore con los datos que ya recibimos del login
-        setAuthState(token, data.usuario);
+        // Marcar como procesando ANTES de procesar
+        usuariosProcesados.add(uid);
 
-        // El mensaje de bienvenida se muestra solo en /home mediante useWelcomeToast
-        // Los equipos se cargarán cuando se necesiten (en home o páginas que los requieran)
-        // No cargar aquí para evitar llamadas innecesarias
+        try {
+          console.log('[LOGIN GOOGLE] Procesando usuario inmediatamente...');
+          
+          // Procesar el usuario (login/registro en backend)
+          const resultado = await procesarUsuarioGoogle(data.user);
+          
+          if (!resultado.success || !resultado.data?.usuario) {
+            throw new Error('No se pudo procesar el usuario');
+          }
+
+          // Obtener token actualizado
+          const token = await data.user.getIdToken(true);
+
+          // Guardar en store
+          setAuthState(token, resultado.data.usuario);
+
+          console.log('[LOGIN GOOGLE] Usuario procesado exitosamente');
+
+          // ✅ Determinar ruta pero NO redirigir si estamos en /login (dejar que useLoginController lo maneje)
+          // Solo redirigir si estamos en /registro y la ruta es diferente, o si estamos en otra ruta
+          const { ruta } = determinarRutaRedireccion(resultado.data.usuario);
+          const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+          
+          // ✅ Si estamos en /login, NO redirigir - useLoginController manejará la redirección
+          // Esto permite que useLoginController controle el loginState correctamente
+          if (currentPath === '/login') {
+            console.log('[LOGIN GOOGLE] Estamos en /login, useLoginController manejará la redirección');
+            return; // No redirigir aquí, el onSuccess de useLoginController lo hará
+          }
+          
+          // ✅ NO redirigir si ya estamos en /registro (para evitar perder el estado del step)
+          // El useEffect de useRegistrationFlow detectará el cambio de usuario y actualizará el step
+          if (ruta === '/registro' && currentPath === '/registro') {
+            console.log('[LOGIN GOOGLE] Ya estamos en /registro, el step se actualizará automáticamente');
+            return;
+          }
+          
+          // ✅ Redirigir si estamos en otra ruta
+          console.log(`[LOGIN GOOGLE] Redirigiendo a: ${ruta}`);
+          router.replace(ruta);
+        } catch (error: any) {
+          console.error('[LOGIN GOOGLE] Error procesando usuario:', error);
+          
+          // Remover del set para permitir reintento
+          usuariosProcesados.delete(uid);
+          
+          toast.error(error.message || 'Error al procesar la autenticación');
+          throw error; // Re-lanzar para que onError lo maneje
+        }
       }
     },
     onError: (error: Error) => {
-      console.error('Error en login con Google:', error);
+      console.error('❌ Error en login con Google:', error);
+      const errorMessage = error.message || 'Error desconocido al autenticarse con Google';
+      toast.error(errorMessage);
     },
   });
 };

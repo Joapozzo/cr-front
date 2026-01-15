@@ -37,6 +37,8 @@ interface RegistrationContextType {
   goToNextStep: () => void;
   goToPreviousStep: () => void;
   reset: () => void;
+  isPendingGoogle: boolean;
+  setIsPendingGoogle: (pending: boolean) => void;
 }
 
 const RegistrationContext = createContext<RegistrationContextType | undefined>(undefined);
@@ -53,6 +55,7 @@ export const RegistrationProvider = ({ children }: { children: ReactNode }) => {
   const [currentStep, setCurrentStep] = useState<RegistrationStep>(initialStep);
   const [userData, setUserData] = useState<RegistrationData>(initialData);
   const [usuario, setUsuarioState] = useState<UsuarioAuth | null>(null);
+  const [isPendingGoogle, setIsPendingGoogle] = useState(false);
 
   const setStep = useCallback((step: RegistrationStep) => {
     setCurrentStep(step);
@@ -114,6 +117,8 @@ export const RegistrationProvider = ({ children }: { children: ReactNode }) => {
         goToNextStep,
         goToPreviousStep,
         reset,
+        isPendingGoogle,
+        setIsPendingGoogle,
       }}
     >
       {children}

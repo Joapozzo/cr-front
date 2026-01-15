@@ -3,8 +3,6 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
   GoogleAuthProvider,
   sendEmailVerification,
   sendPasswordResetEmail,
@@ -70,19 +68,19 @@ export const obtenerToken = async (forceRefresh = false): Promise<string | null>
 
     // Obtener el token con información de expiración
     const tokenResult = await user.getIdTokenResult();
-    
+
     // Verificar si el token está por expirar (menos de 5 minutos) o YA expiró
     const expTime = tokenResult.expirationTime ? new Date(tokenResult.expirationTime).getTime() : 0;
     const now = Date.now();
     const timeUntilExpiry = expTime - now;
     const fiveMinutes = 5 * 60 * 1000; // 5 minutos en milisegundos
-    
+
     // Renovar si:
     // - forceRefresh es true, O
     // - el token ya expiró (timeUntilExpiry <= 0), O
     // - el token está por expirar en menos de 5 minutos
     const shouldRefresh = forceRefresh || timeUntilExpiry <= 0 || timeUntilExpiry < fiveMinutes;
-    
+
     const token = await user.getIdToken(shouldRefresh);
     return token;
   } catch (error) {
@@ -93,21 +91,6 @@ export const obtenerToken = async (forceRefresh = false): Promise<string | null>
 
 export const authService = {
   // ==================== FIREBASE AUTH ====================
-
-  /**
-   * Detectar si el navegador es Safari o iOS Safari
-   * Safari y iOS tienen problemas con pop-ups, se usa redirect
-   */
-  _esSafari: (): boolean => {
-    if (typeof window === 'undefined') return false;
-    
-    const userAgent = window.navigator.userAgent.toLowerCase();
-    const isSafariUA = /safari/.test(userAgent) && !/chrome/.test(userAgent) && !/chromium/.test(userAgent);
-    const isSafariVendor = /apple/i.test(window.navigator.vendor);
-    const isIOS = /iphone|ipad|ipod/.test(userAgent) && !(window as any).MSStream;
-    
-    return (isSafariUA && isSafariVendor) || isIOS;
-  },
 
   /**
    * Registrarse con email y contraseña
@@ -124,7 +107,7 @@ export const authService = {
           // Intentar hacer login para verificar si la contraseña es correcta
           try {
             const loginResult = await signInWithEmailAndPassword(auth, email, password);
-            
+
             // Si el login es exitoso, el usuario ya existe y tiene la contraseña correcta
             // Si el email no está verificado, reenviar el email de verificación
             if (!loginResult.user.emailVerified) {
@@ -135,7 +118,7 @@ export const authService = {
                 // No fallar si hay error al enviar email, pero loguear para debugging
               }
             }
-            
+
             // Retornar un resultado especial para indicar que necesita verificar email
             return {
               success: true,
@@ -152,7 +135,7 @@ export const authService = {
 
               if (verificarResponse.ok) {
                 const verificarData = await verificarResponse.json();
-                
+
                 if (verificarData.esEventual) {
                   // Es un eventual, retornar error especial
                   return {
@@ -163,19 +146,19 @@ export const authService = {
                   };
                 }
               }
-              
+
               // No es eventual y la contraseña es incorrecta, o el usuario no existe
               return {
                 success: false,
                 error: 'El email ya está registrado. Si olvidaste tu contraseña, usa la opción de recuperación. Si eres un jugador eventual, contacta al administrador.',
               };
             }
-            
+
             // Otro error en el login
             throw loginError;
           }
         }
-        
+
         // Otro error de Firebase
         throw firebaseError;
       }
@@ -232,7 +215,7 @@ export const authService = {
   establecerPasswordEventual: async (email: string, password: string) => {
     try {
       const apiBaseUrl = getApiBaseUrl();
-      
+
       // Llamar al endpoint para establecer contraseña
       const response = await fetch(`${apiBaseUrl}/auth/establecer-password-eventual`, {
         method: 'POST',
@@ -374,7 +357,8 @@ export const authService = {
 
   /**
    * Iniciar sesión con Google
-   * Usa redirect en Safari/iOS para evitar problemas con pop-ups bloqueados
+   * Usa popup para TODO (desktop y mobile) - más confiable
+   * Procesamiento inmediato después del popup
    */
   loginConGoogle: async () => {
     try {
@@ -383,47 +367,31 @@ export const authService = {
         prompt: 'select_account',
       });
 
-      // Safari y iOS tienen problemas con pop-ups, usar redirect
-      if (authService._esSafari()) {
-        await signInWithRedirect(auth, provider);
-        // El redirect redirige a Google y luego vuelve a la página
-        // El resultado se maneja con obtenerResultadoRedirect
-        return { success: true, user: null, isRedirect: true };
-      }
-
-      // Otros navegadores usan pop-up
+      // ✅ USAR POPUP PARA TODO (como el proyecto que funciona)
+      // No usar redirect - popup funciona bien en mobile moderno
       const userCredential = await signInWithPopup(auth, provider);
       return { success: true, user: userCredential.user };
+
     } catch (error: any) {
       console.error('Error al iniciar sesión con Google:', error);
 
       let mensaje = 'Error al iniciar sesión con Google';
+
       if (error.code === 'auth/popup-closed-by-user') {
         mensaje = 'Ventana cerrada por el usuario';
       } else if (error.code === 'auth/cancelled-popup-request') {
         mensaje = 'Operación cancelada';
       } else if (error.code === 'auth/popup-blocked') {
         mensaje = 'El navegador bloqueó la ventana emergente. Por favor, habilita los pop-ups para este sitio e intenta nuevamente.';
+      } else if (error.code === 'auth/unauthorized-domain') {
+        mensaje = 'Dominio no autorizado. Verifica la configuración en Firebase Console.';
+      } else if (error.code === 'auth/operation-not-allowed') {
+        mensaje = 'Google Sign-In no está habilitado en Firebase';
+      } else if (error.code === 'auth/network-request-failed') {
+        mensaje = 'Error de red. Verifica tu conexión a internet.';
       }
 
       return { success: false, error: mensaje };
-    }
-  },
-
-  /**
-   * Obtener el resultado del redirect de Google
-   * Debe llamarse cuando el usuario vuelve de Google después de autenticarse
-   */
-  obtenerResultadoRedirect: async () => {
-    try {
-      const result = await getRedirectResult(auth);
-      if (result?.user) {
-        return { success: true, user: result.user };
-      }
-      return { success: false, user: null };
-    } catch (error: any) {
-      console.error('Error al obtener resultado del redirect:', error);
-      return { success: false, error: error.message, user: null };
     }
   },
 

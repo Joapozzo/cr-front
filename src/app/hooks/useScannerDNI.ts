@@ -245,11 +245,11 @@ export const useScannerDNI = ({
    * Maneja el inicio del escaneo
    */
   const handleStartScanning = () => {
-    if (!isSecureContext() || !isMediaDevicesAvailable()) {
-      toast.error('Cámara no disponible');
-      return;
-    }
+    // Limpiar errores previos
     setError('');
+    
+    // Intentar iniciar el escaneo - dejar que el navegador maneje los errores
+    // Las validaciones se harán en startScanningDirectly
     setIsScanning(true);
   };
 

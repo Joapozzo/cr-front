@@ -68,8 +68,8 @@ export const ScannerIdleView = ({
         {/* Popup de consejos */}
         {showTips && (
           <>
-            <div 
-              className="fixed inset-0 z-40" 
+            <div
+              className="fixed inset-0 z-40"
               onClick={() => setShowTips(false)}
             />
             <div className="absolute top-full right-0 mt-2 w-64 bg-[var(--gray-400)] rounded-lg p-4 shadow-xl z-50 border border-[var(--gray-300)]">
@@ -98,70 +98,73 @@ export const ScannerIdleView = ({
       )}
 
       <button
-        onClick={onStartScanning}
-        disabled={!isSecureContext || !isMediaDevicesAvailable}
-        className="w-full h-64 lg:h-56 bg-[var(--gray-400)] rounded-lg border-2 border-dashed border-[var(--color-primary)] flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-[var(--gray-300)] transition-all disabled:opacity-50 overflow-hidden relative group"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onStartScanning();
+        }}
+        className="w-full h-64 lg:h-56 bg-[var(--gray-400)] rounded-lg border-2 border-dashed border-[var(--color-primary)] flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-[var(--gray-300)] transition-all overflow-hidden relative group active:scale-[0.98]"
       >
         {/* SKELETON DNI */}
-        <div className="relative w-56 lg:w-52 h-36 lg:h-32 bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] rounded-xl shadow-2xl border-2 border-[var(--color-primary)] overflow-hidden transition-colors">
-  {/* Efecto de barra de escaneo */}
-  <div className="absolute inset-0">
-    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent animate-scan-line" />
-  </div>
-  
-  {/* Contenido del DNI */}
-  <div className="absolute inset-0 p-4 flex flex-col gap-2">
-    {/* Foto placeholder - izquierda */}
-    <div className="absolute left-4 top-6 w-14 h-16 bg-[var(--gray-300)]/20 rounded border border-[var(--gray-300)]/40" />
-    
-    {/* Líneas de texto simuladas - derecha de la foto */}
-    <div className="ml-20 mt-2 space-y-2">
-      <div className="h-3 bg-[var(--gray-300)]/30 rounded w-3/4 animate-pulse" />
-      <div className="h-2 bg-[var(--gray-300)]/20 rounded w-1/2" />
-      <div className="h-2 bg-[var(--gray-300)]/20 rounded w-2/3" />
-      <div className="h-2 bg-[var(--gray-300)]/20 rounded w-1/2" />
-    </div>
-    
-    {/* Número de documento - abajo izquierda */}
-    <div className="absolute bottom-4 left-4">
-      <div className="h-3 bg-[var(--gray-300)]/30 rounded w-24 animate-pulse" />
-    </div>
-    
-    {/* Código de barras PDF417 - abajo derecha más rectangular y bajo */}
-    <div className="absolute bottom-3 right-3 w-24 h-10 bg-[var(--gray-100)]/90 rounded flex items-center justify-center p-1">
-      {/* Simulación de código PDF417 */}
-      <div className="w-full h-full flex flex-col gap-[1px]">
-        {Array.from({ length: 7 }).map((_, rowIndex) => (
-          <div key={rowIndex} className="flex gap-[1px] h-full">
-            {Array.from({ length: 16 }).map((_, colIndex) => {
-              const shouldFill = (rowIndex * 7 + colIndex * 3) % 3 !== 0;
-              return (
-                <div
-                  key={colIndex}
-                  className={`flex-1 ${shouldFill ? 'bg-[var(--gray-600)]' : 'bg-[var(--gray-100)]'}`}
-                />
-              );
-            })}
+        <div className="relative w-56 lg:w-52 h-36 lg:h-32 bg-gradient-to-br from-[var(--gray-400)] to-[var(--gray-500)] rounded-xl shadow-2xl border-2 border-[var(--color-primary)] overflow-hidden transition-colors pointer-events-none">
+          {/* Efecto de barra de escaneo */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent animate-scan-line" />
           </div>
-        ))}
-      </div>
-      
-      {/* Indicador de pulso en el código de barras */}
-      <div className="absolute inset-0 rounded border-2 border-[var(--color-primary)] animate-pulse opacity-80" />
-    </div>
-    
-    {/* Flecha señalando el código de barras */}
-    <div className="absolute bottom-6 right-28 animate-bounce">
-      <ArrowRight className="w-6 h-6 text-[var(--color-primary)] drop-shadow-lg" strokeWidth={3} />
-    </div>
-  </div>
 
-  {/* Efecto de brillo que se mueve */}
-  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shine" />
-</div>
+          {/* Contenido del DNI */}
+          <div className="absolute inset-0 p-4 flex flex-col gap-2 pointer-events-none">
+            {/* Foto placeholder - izquierda */}
+            <div className="absolute left-4 top-6 w-14 h-16 bg-[var(--gray-300)]/20 rounded border border-[var(--gray-300)]/40" />
+
+            {/* Líneas de texto simuladas - derecha de la foto */}
+            <div className="ml-20 mt-2 space-y-2">
+              <div className="h-3 bg-[var(--gray-300)]/30 rounded w-3/4 animate-pulse" />
+              <div className="h-2 bg-[var(--gray-300)]/20 rounded w-1/2" />
+              <div className="h-2 bg-[var(--gray-300)]/20 rounded w-2/3" />
+              <div className="h-2 bg-[var(--gray-300)]/20 rounded w-1/2" />
+            </div>
+
+            {/* Número de documento - abajo izquierda */}
+            <div className="absolute bottom-4 left-4">
+              <div className="h-3 bg-[var(--gray-300)]/30 rounded w-24 animate-pulse" />
+            </div>
+
+            {/* Código de barras PDF417 - abajo derecha más rectangular y bajo */}
+            <div className="absolute bottom-3 right-3 w-24 h-10 bg-[var(--gray-100)]/90 rounded flex items-center justify-center p-1">
+              {/* Simulación de código PDF417 */}
+              <div className="w-full h-full flex flex-col gap-[1px]">
+                {Array.from({ length: 7 }).map((_, rowIndex) => (
+                  <div key={rowIndex} className="flex gap-[1px] h-full">
+                    {Array.from({ length: 16 }).map((_, colIndex) => {
+                      const shouldFill = (rowIndex * 7 + colIndex * 3) % 3 !== 0;
+                      return (
+                        <div
+                          key={colIndex}
+                          className={`flex-1 ${shouldFill ? 'bg-[var(--gray-600)]' : 'bg-[var(--gray-100)]'}`}
+                        />
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+
+              {/* Indicador de pulso en el código de barras */}
+              <div className="absolute inset-0 rounded border-2 border-[var(--color-primary)] animate-pulse opacity-80" />
+            </div>
+
+            {/* Flecha señalando el código de barras */}
+            <div className="absolute bottom-6 right-28 animate-bounce">
+              <ArrowRight className="w-6 h-6 text-[var(--color-primary)] drop-shadow-lg" strokeWidth={3} />
+            </div>
+          </div>
+
+          {/* Efecto de brillo que se mueve */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shine pointer-events-none" />
+        </div>
 
         {/* Texto principal más claro */}
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-1 pointer-events-none">
           <p className="text-base font-semibold text-white text-center">
             Toca acá y escanea el código de barras
           </p>
@@ -171,7 +174,7 @@ export const ScannerIdleView = ({
         </div>
 
         {/* Indicador visual de que es clickeable */}
-        <div className="absolute top-2 right-2">
+        <div className="absolute top-2 right-2 pointer-events-none">
           <MdCameraAlt className="w-6 h-6 text-[var(--color-primary)]" />
         </div>
       </button>
@@ -192,8 +195,12 @@ export const ScannerIdleView = ({
           </button>
 
           {/* Opciones desplegables */}
-          {showMoreOptions && (
-            <div className="flex flex-col gap-2 animate-in slide-in-from-top-2">
+          <div
+            className={`overflow-hidden transition-all duration-300 ease-in-out ${
+              showMoreOptions ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+            }`}
+          >
+            <div className="flex flex-col gap-2 pt-2">
               <button
                 onClick={onOpenCamera}
                 className="w-full py-3 bg-[var(--color-primary)] text-[var(--black)] rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-[var(--color-primary)]/90 transition-colors"
@@ -209,7 +216,7 @@ export const ScannerIdleView = ({
                 <span>Elegir de galería</span>
               </button>
             </div>
-          )}
+          </div>
         </div>
       )}
 
@@ -291,11 +298,11 @@ export const ScannerActiveView = ({
             <p className="text-sm">Buscando código...</p>
           </div>
 
-          <div className="bg-[var(--gray-400)] rounded-lg p-3">
+          {/* <div className="bg-[var(--gray-400)] rounded-lg p-3">
             <p className="text-xs text-[var(--gray-200)] text-center">
               Mantén el código de barras a 15-20 cm. Si no enfoca, aléjalo.
             </p>
-          </div>
+          </div> */}
 
           {/* Botones fallback para tomar foto */}
           {showPhotoButton && onPhotoScan && (
@@ -304,9 +311,9 @@ export const ScannerActiveView = ({
                 ¿No puedes escanear? Elige una opción:
               </p>
               <div className="bg-[var(--yellow)]/10 border border-[var(--yellow)]/30 rounded-lg p-2 mb-2">
-                <p className="text-xs text-[var(--yellow)] text-center">
+                {/* <p className="text-xs text-[var(--yellow)] text-center">
                   ⚠️ Saca foto al código de barras del <strong>DORSO</strong> del DNI
-                </p>
+                </p> */}
               </div>
               <button
                 onClick={onOpenCamera}

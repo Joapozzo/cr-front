@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { toast, Toaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { MdEmail, MdMarkEmailRead } from 'react-icons/md';
 import { FaAngleRight } from 'react-icons/fa6';
 import { Loader2 } from 'lucide-react';
@@ -135,8 +135,6 @@ export const RecuperarPasswordForm = () => {
             Volver al inicio de sesión
           </button>
         </div>
-
-        <Toaster position="top-center" />
       </div>
     );
   }
@@ -188,8 +186,6 @@ export const RecuperarPasswordForm = () => {
           Volver al inicio de sesión
         </button>
       </div>
-
-      <Toaster position="top-center" />
     </div>
   );
 };

@@ -6,13 +6,14 @@ import { limpiarDatosRegistro } from '@/app/utils/registrationCleanup';
 
 interface StepBackButtonProps {
   className?: string;
+  disabled?: boolean;
 }
 
 /**
  * Botón para volver al step anterior en el flujo de registro
  * Cuando se hace clic, limpia todos los datos del registro y vuelve al step REGISTER
  */
-export const StepBackButton = ({ className = '' }: StepBackButtonProps) => {
+export const StepBackButton = ({ className = '', disabled = false }: StepBackButtonProps) => {
   const { currentStep, reset, setStep, setUsuario } = useRegistrationContext();
 
   const steps: RegistrationStep[] = [
@@ -46,9 +47,11 @@ export const StepBackButton = ({ className = '' }: StepBackButtonProps) => {
   return (
     <button
       onClick={handleGoBack}
+      disabled={disabled}
       className={`
         flex items-center gap-2 text-[var(--gray-200)] hover:text-[var(--color-primary)] 
         transition-colors cursor-pointer w-fit
+        disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:text-[var(--gray-200)]
         ${className}
       `}
     >

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { toast, Toaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
@@ -264,12 +264,9 @@ export const ValidarDniForm = () => {
     );
   }
 
-  // Render: wrapper con Toaster siempre montado
+  // Render: wrapper
   return (
     <>
-      {/* Toaster global - siempre montado */}
-      <Toaster position="top-center" />
-
       {/* Vista condicional según step */}
       {step === 'scan' ? (
         <ScannerDNI

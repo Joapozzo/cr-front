@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { SelfieForm } from '../SelfieForm';
 import { useRegistrationContext } from '@/app/contexts/RegistrationContext';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/app/stores/authStore';
 import { StepBackButton } from '../StepBackButton';
 
@@ -16,6 +16,7 @@ export const SelfieStep = () => {
   const { updateUserData } = useRegistrationContext();
   const router = useRouter();
   const usuario = useAuthStore((state) => state.usuario);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Cuando el selfie se complete, el usuario tendrá cuenta_activada = true
   // El flujo detectará esto y redirigirá automáticamente
@@ -36,9 +37,9 @@ export const SelfieStep = () => {
       className="w-full"
     >
       <div className="mb-4">
-        <StepBackButton />
+        <StepBackButton disabled={isLoading} />
       </div>
-      <SelfieForm />
+      <SelfieForm onLoadingChange={setIsLoading} />
     </motion.div>
   );
 };

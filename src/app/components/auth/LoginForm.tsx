@@ -1,7 +1,6 @@
 ﻿'use client';
 
 import Link from 'next/link';
-import { Toaster } from 'react-hot-toast';
 import { AiOutlineLock } from 'react-icons/ai';
 import { MdEmail } from 'react-icons/md';
 import { FaAngleRight } from 'react-icons/fa6';
@@ -146,8 +145,6 @@ const LoginFormUI = ({
                     ¿No tenes cuenta? <span className="font-semibold text-white">Regístrate</span>
                 </Link>
             </div>
-
-            <Toaster position="top-center" />
         </div>
     );
 };

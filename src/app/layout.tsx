@@ -224,7 +224,23 @@ export default function RootLayout({
         <Providers tenantConfig={tenantConfig}>
           {children}
         </Providers>
-        <Toaster />
+        <Toaster 
+          position="top-center"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: 'var(--gray-400)',
+              color: 'white',
+              border: '1px solid var(--color-primary)',
+            },
+            success: {
+              duration: 4000,
+            },
+            error: {
+              duration: 5000,
+            },
+          }}
+        />
       </body>
     </html>
   );

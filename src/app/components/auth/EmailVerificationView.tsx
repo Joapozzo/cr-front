@@ -1,5 +1,4 @@
 ﻿import Link from 'next/link';
-import { Toaster } from 'react-hot-toast';
 import { MdMarkEmailRead } from 'react-icons/md';
 import { FaAngleRight } from 'react-icons/fa6';
 import { Loader2 } from 'lucide-react';
@@ -94,8 +93,6 @@ export const EmailVerificationView = ({
                     Volver al inicio de sesión
                 </Link>
             </div>
-
-            <Toaster position="top-center" />
         </div>
     );
 };

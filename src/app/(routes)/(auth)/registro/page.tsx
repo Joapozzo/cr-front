@@ -4,9 +4,15 @@ import { RegistrationProvider } from "@/app/contexts/RegistrationContext";
 import { RegistrationLayout } from "@/app/components/auth/RegistrationLayout";
 import { RegistrationFlow } from "@/app/components/auth/RegistrationFlow";
 import { useTenant } from "@/app/contexts/TenantContext";
+import { useAuthStateListener } from '@/app/hooks/auth/useAuthStateListener';
 
 export default function RegisterPage() {
   const tenant = useTenant();
+
+  // ✅ MOBILE-SAFE: Usar listener centralizado que procesa usuarios idempotentemente
+  useAuthStateListener({
+    redirigir: true, // Redirigir automáticamente después de procesar
+  });
   
   return (
     <RegistrationProvider>
